@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,6 +53,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Custom breathing app colors
+				breath: {
+					light: '#E0F7FA',
+					DEFAULT: '#4DD0E1',
+					dark: '#00ACC1',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +91,45 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'breathe-in': {
+					'0%': {
+						transform: 'scale(1)',
+						opacity: '0.7'
+					},
+					'100%': {
+						transform: 'scale(1.3)',
+						opacity: '1'
+					}
+				},
+				'breathe-out': {
+					'0%': {
+						transform: 'scale(1.3)',
+						opacity: '1'
+					},
+					'100%': {
+						transform: 'scale(1)',
+						opacity: '0.7'
+					}
+				},
+				'breathe-hold': {
+					'0%': {
+						boxShadow: '0 0 0 0 rgba(77, 208, 225, 0.7)'
+					},
+					'50%': {
+						boxShadow: '0 0 0 20px rgba(77, 208, 225, 0.3)'
+					},
+					'100%': {
+						boxShadow: '0 0 0 0 rgba(77, 208, 225, 0.7)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'breathe-in': 'breathe-in var(--breathe-in-duration, 4s) ease-in-out forwards',
+				'breathe-out': 'breathe-out var(--breathe-out-duration, 4s) ease-in-out forwards',
+				'breathe-hold': 'breathe-hold var(--breathe-hold-duration, 4s) ease-in-out infinite'
 			}
 		}
 	},

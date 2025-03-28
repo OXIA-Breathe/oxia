@@ -1,13 +1,17 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import MainLayout from "@/components/layout/MainLayout";
+import BreathingExercise from "@/components/breathing/BreathingExercise";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <MainLayout>
+      <div className="container py-12 max-w-4xl">
+        <h1 className="text-3xl font-bold mb-8 text-center">Breathify</h1>
+        <div className="flex justify-center items-center">
+          <BreathingExercise />
+        </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 
