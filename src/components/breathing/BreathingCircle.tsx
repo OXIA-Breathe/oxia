@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -14,17 +13,15 @@ const BreathingCircle = ({ phase, duration, size = "lg" }: BreathingCircleProps)
   const [timeRemaining, setTimeRemaining] = useState(duration);
   
   const sizeClasses = {
-    sm: "w-32 h-32",
-    md: "w-48 h-48",
-    lg: "w-64 h-64",
+    sm: "w-24 h-24",
+    md: "w-36 h-36",
+    lg: "w-48 h-48",
   };
 
   useEffect(() => {
-    // Reset timer when phase or duration changes
     setTimeRemaining(duration);
     
     if (circleRef.current) {
-      // Set the CSS variable for animation duration
       if (phase === "inhale") {
         circleRef.current.style.setProperty("--breathe-in-duration", `${duration}s`);
       } else if (phase === "exhale") {
@@ -35,7 +32,6 @@ const BreathingCircle = ({ phase, duration, size = "lg" }: BreathingCircleProps)
     }
   }, [phase, duration]);
   
-  // Countdown timer
   useEffect(() => {
     if (phase === "idle") return;
     
