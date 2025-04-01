@@ -5,8 +5,6 @@ import { Link } from "react-router-dom";
 import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 
 const Index = () => {
   const { user } = useAuth();
@@ -35,15 +33,8 @@ const Index = () => {
             <BreathingExercise />
           </div>
           
-          {/* Bottom Controls */}
+          {/* Bottom Controls - Removed sensor attached section */}
           <div className="mt-auto pb-20">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 flex justify-between items-center">
-              <Label className="text-white flex items-center">
-                Sensor attached
-              </Label>
-              <Switch />
-            </div>
-            
             {user && (
               <div className="mt-4 text-center hidden">
                 <Link to="/consistency">
