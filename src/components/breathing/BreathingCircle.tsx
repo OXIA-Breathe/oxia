@@ -66,10 +66,7 @@ const BreathingCircle = ({
           {phase === "idle" ? (
             <>
               <span className="text-2xl font-bold text-white">
-                {riskLevel}
-              </span>
-              <span className="text-sm text-white/80 mt-1">
-                Seizure risk level
+                Breathe
               </span>
               <div className="mt-4">
                 <Pause className="h-8 w-8 text-white" />

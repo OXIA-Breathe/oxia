@@ -2,7 +2,7 @@
 import MainLayout from "@/components/layout/MainLayout";
 import BreathingExercise from "@/components/breathing/BreathingExercise";
 import { Link } from "react-router-dom";
-import { Calendar, Award } from "lucide-react";
+import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Switch } from "@/components/ui/switch";
@@ -17,25 +17,17 @@ const Index = () => {
         <div className="container py-6 px-6 flex flex-col h-full">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
-            <div className="flex gap-4 items-center">
-              <div className="px-4 py-1 rounded-full border border-white/20 text-sm">
-                Today
-              </div>
-              <div className="px-4 py-1 rounded-full bg-white text-breath font-medium text-sm">
-                Live
-              </div>
+            <div className="invisible">
+              {/* Empty div to maintain spacing */}
             </div>
-            <button className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
-              <Calendar className="h-4 w-4" />
-            </button>
+            <Link to="/profile" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
+              <User className="h-4 w-4" />
+            </Link>
           </div>
           
-          {/* Status Message */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-1">Smooth sailing!</h1>
-            <p className="text-white/80">
-              Please be careful even if the risk of seizures is low.
-            </p>
+          {/* Logo */}
+          <div className="mb-6 text-center">
+            <h1 className="text-4xl font-bold mb-1">OXIA</h1>
           </div>
           
           {/* Breathing Circle */}
@@ -56,7 +48,6 @@ const Index = () => {
               <div className="mt-4 text-center hidden">
                 <Link to="/consistency">
                   <Button variant="outline" className="bg-white/10 text-white border-white/20 flex items-center gap-2 w-full justify-center">
-                    <Award className="h-5 w-5" />
                     Track Your Consistency
                   </Button>
                 </Link>
