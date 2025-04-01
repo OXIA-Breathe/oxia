@@ -131,7 +131,7 @@ const BreathingExercise = () => {
         </p>
       </Card>
       
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center my-8">
         <BreathingCircle 
           phase={phase} 
           duration={
