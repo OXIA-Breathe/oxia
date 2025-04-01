@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
@@ -38,6 +37,12 @@ const BreathingExercise = () => {
       setPhase("inhale");
     } else {
       setIsActive(false);
+    }
+  };
+
+  const handleCircleClick = () => {
+    if (phase === "idle") {
+      toggleExercise();
     }
   };
 
@@ -179,7 +184,8 @@ const BreathingExercise = () => {
               : phase === "exhale" 
               ? settings.exhaleDuration 
               : settings.holdDuration
-          } 
+          }
+          onCircleClick={handleCircleClick}
         />
       </div>
       
@@ -198,7 +204,7 @@ const BreathingExercise = () => {
           onClick={resetExercise} 
           variant="outline"
           size="lg"
-          className="flex items-center space-x-2"
+          className="flex items-center space-x-2 border-red-400 hover:bg-red-100 hover:text-red-600 text-red-500"
           disabled={!isActive && currentRepetition === 0}
         >
           <RotateCcw size={20} />

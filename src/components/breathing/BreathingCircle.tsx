@@ -1,20 +1,21 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { Pause } from "lucide-react";
 
 interface BreathingCircleProps {
   phase: "inhale" | "exhale" | "hold" | "idle";
   duration: number;
   size?: "sm" | "md" | "lg";
   riskLevel?: "Minimal" | "Low" | "Moderate" | "High";
+  onCircleClick?: () => void;
 }
 
 const BreathingCircle = ({ 
   phase, 
   duration, 
   size = "lg", 
-  riskLevel = "Minimal" 
+  riskLevel = "Minimal",
+  onCircleClick
 }: BreathingCircleProps) => {
   const circleRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -57,10 +58,11 @@ const BreathingCircle = ({
     <div className="relative flex flex-col items-center justify-center">
       <div 
         ref={circleRef}
-        className={`breathing-circle ${sizeClasses[size]} ${phase !== "idle" ? phase : ""} backdrop-blur-md bg-opacity-50 shadow-lg relative z-10`}
+        className={`breathing-circle ${sizeClasses[size]} ${phase !== "idle" ? phase : ""} backdrop-blur-md bg-opacity-50 shadow-lg relative z-10 cursor-pointer`}
         style={{ 
           transform: phase === "idle" ? "scale(1)" : undefined
         }}
+        onClick={onCircleClick}
       >
         <div className="text-center flex flex-col items-center justify-center">
           {phase === "idle" ? (
