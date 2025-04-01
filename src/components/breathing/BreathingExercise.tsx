@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
@@ -42,6 +43,9 @@ const BreathingExercise = () => {
 
   const handleCircleClick = () => {
     if (phase === "idle") {
+      toggleExercise();
+    } else {
+      // If session is already active, clicking the circle will toggle pause/play
       toggleExercise();
     }
   };

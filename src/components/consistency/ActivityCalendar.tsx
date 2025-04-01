@@ -26,9 +26,9 @@ export const ActivityCalendar = ({ activityDates }: ActivityCalendarProps) => {
           className="rounded-md"
           disabled={date => date > new Date()}
           classNames={{
-            day_selected: "bg-breath text-white hover:bg-breath-dark hover:text-white",
+            day_selected: "bg-breath text-white hover:bg-breath-dark hover:text-white p-3",
             day_today: "bg-accent text-accent-foreground",
-            day: "rounded-full transition-colors"
+            day: "rounded-full transition-colors p-2 mx-0.5"
           }}
         />
         <p className="text-sm text-muted-foreground mt-4">

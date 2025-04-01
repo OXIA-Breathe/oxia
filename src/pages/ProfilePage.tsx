@@ -32,64 +32,72 @@ const ProfilePage = () => {
         
         <div className="space-y-6">
           {/* Profile Information Section */}
-          <Collapsible 
-            open={openInfo} 
-            onOpenChange={setOpenInfo}
-            className="transition-all duration-200"
-          >
-            <div className="flex items-center justify-between border-b pb-2 mb-4">
-              <h2 className="text-xl font-semibold">Profile Information</h2>
-              <CollapsibleTrigger asChild>
-                <button className="rounded-full p-1 hover:bg-accent transition-colors">
-                  {openInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                </button>
-              </CollapsibleTrigger>
-            </div>
-            <CollapsibleContent className="transition-all duration-300">
-              <ProfileInfo />
-            </CollapsibleContent>
-          </Collapsible>
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <Collapsible 
+              open={openInfo} 
+              onOpenChange={setOpenInfo}
+              className="transition-all duration-200"
+            >
+              <div className="flex items-center justify-between border-b pb-2 mb-4">
+                <h2 className="text-xl font-semibold">Profile Information</h2>
+                <CollapsibleTrigger asChild>
+                  <button className="rounded-full p-1 hover:bg-accent transition-colors">
+                    {openInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                  </button>
+                </CollapsibleTrigger>
+              </div>
+              <CollapsibleContent className="transition-all duration-300">
+                <ProfileInfo />
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
           
           {/* Breathing Statistics Section */}
-          <Collapsible 
-            open={openStats} 
-            onOpenChange={setOpenStats}
-            className="transition-all duration-200"
-          >
-            <div className="flex items-center justify-between border-b pb-2 mb-4">
-              <h2 className="text-xl font-semibold">Breathing Statistics</h2>
-              <CollapsibleTrigger asChild>
-                <button className="rounded-full p-1 hover:bg-accent transition-colors">
-                  {openStats ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                </button>
-              </CollapsibleTrigger>
-            </div>
-            <CollapsibleContent className="transition-all duration-300">
-              <ProfileStats />
-            </CollapsibleContent>
-          </Collapsible>
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <Collapsible 
+              open={openStats} 
+              onOpenChange={setOpenStats}
+              className="transition-all duration-200"
+            >
+              <div className="flex items-center justify-between border-b pb-2 mb-4">
+                <h2 className="text-xl font-semibold">Breathing Statistics</h2>
+                <CollapsibleTrigger asChild>
+                  <button className="rounded-full p-1 hover:bg-accent transition-colors">
+                    {openStats ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                  </button>
+                </CollapsibleTrigger>
+              </div>
+              <CollapsibleContent className="transition-all duration-300">
+                <ProfileStats />
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
           
           {/* Achievements and Badges Section */}
-          <Collapsible 
-            open={openBadges} 
-            onOpenChange={setOpenBadges}
-            className="transition-all duration-200"
-          >
-            <div className="flex items-center justify-between border-b pb-2 mb-4">
-              <h2 className="text-xl font-semibold">Achievements</h2>
-              <CollapsibleTrigger asChild>
-                <button className="rounded-full p-1 hover:bg-accent transition-colors">
-                  {openBadges ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                </button>
-              </CollapsibleTrigger>
-            </div>
-            <CollapsibleContent className="transition-all duration-300">
-              <ProfileBadges />
-            </CollapsibleContent>
-          </Collapsible>
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <Collapsible 
+              open={openBadges} 
+              onOpenChange={setOpenBadges}
+              className="transition-all duration-200"
+            >
+              <div className="flex items-center justify-between border-b pb-2 mb-4">
+                <h2 className="text-xl font-semibold">Achievements</h2>
+                <CollapsibleTrigger asChild>
+                  <button className="rounded-full p-1 hover:bg-accent transition-colors">
+                    {openBadges ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                  </button>
+                </CollapsibleTrigger>
+              </div>
+              <CollapsibleContent className="transition-all duration-300">
+                <ProfileBadges />
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
           
           {/* Account Actions Section (not collapsible) */}
-          <ProfileActions />
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <ProfileActions />
+          </div>
         </div>
       </div>
     </MainLayout>

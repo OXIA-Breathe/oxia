@@ -11,7 +11,7 @@ const Index = () => {
 
   return (
     <MainLayout fullHeight>
-      <div className="h-full breathing-bg text-white">
+      <div className="h-full">
         <div className="container py-6 px-6 flex flex-col h-full">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">

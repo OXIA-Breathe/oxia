@@ -1,5 +1,5 @@
 
-import { Home, BarChart2, Plus, Calendar, Menu } from "lucide-react";
+import { Home, BarChart2, Calendar, Settings } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
@@ -26,12 +26,6 @@ const Navbar = () => {
           <span className="text-xs mt-1">Report</span>
         </Link>
         
-        <Link to="/new" className="flex flex-col items-center justify-center -mt-8">
-          <div className="p-4 rounded-full bg-breath text-white shadow-lg relative">
-            <Plus size={24} />
-          </div>
-        </Link>
-        
         <Link to="/consistency" className="flex flex-col items-center justify-center">
           <div className={`p-2 rounded-full transition-colors ${isActive("/consistency") ? "bg-breath text-white" : "text-gray-500"}`}>
             <Calendar size={22} />
@@ -41,9 +35,9 @@ const Navbar = () => {
         
         <Link to="/settings" className="flex flex-col items-center justify-center">
           <div className={`p-2 rounded-full transition-colors ${isActive("/settings") ? "bg-breath text-white" : "text-gray-500"}`}>
-            <Menu size={22} />
+            <Settings size={22} />
           </div>
-          <span className="text-xs mt-1">Menu</span>
+          <span className="text-xs mt-1">Settings</span>
         </Link>
       </div>
     </div>
