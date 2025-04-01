@@ -1,5 +1,5 @@
 
-import { Home, Clock, Settings } from "lucide-react";
+import { Home, Clock, Settings, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
@@ -31,6 +31,13 @@ const Navbar = () => {
             <Settings size={24} />
           </div>
           <span className="text-xs mt-1 md:text-sm md:mt-0 md:block">Settings</span>
+        </Link>
+        
+        <Link to="/profile" className="flex flex-col items-center justify-center md:flex-row md:justify-start md:space-x-2">
+          <div className={`p-2 rounded-lg transition-colors ${isActive("/profile") ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}>
+            <User size={24} />
+          </div>
+          <span className="text-xs mt-1 md:text-sm md:mt-0 md:block">Profile</span>
         </Link>
       </div>
     </div>
