@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuthContextType {
   user: User | null;
@@ -28,6 +28,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
+        
+        // Update streak data when user logs in
+        if (event === 'SIGNED_IN' && session?.user) {
+          // Defer Supabase calls to avoid auth listener deadlocks
+          setTimeout(() => {
+            updateUserLoginStreak(session.user.id);
+          }, 0);
+        }
       }
     );
 
@@ -36,10 +44,75 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
+      
+      // Update streak data for existing session
+      if (session?.user) {
+        updateUserLoginStreak(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const updateUserLoginStreak = async (userId: string) => {
+    try {
+      // First check if user_streaks record exists
+      const { data: streakData, error: streakError } = await supabase
+        .from("user_streaks")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+      
+      if (streakError && streakError.code !== 'PGRST116') {
+        console.error("Error checking streak data:", streakError);
+        return;
+      }
+      
+      // If no streak data exists yet, create it
+      if (!streakData) {
+        const { error: insertError } = await supabase
+          .from("user_streaks")
+          .insert([{ user_id: userId }]);
+          
+        if (insertError) {
+          console.error("Error creating streak data:", insertError);
+        }
+      }
+      
+      // Check if we already logged in today
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      
+      const { data: activityData, error: activityError } = await supabase
+        .from("daily_activity")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("date", today)
+        .maybeSingle();
+        
+      if (activityError && activityError.code !== 'PGRST116') {
+        console.error("Error checking daily activity:", activityError);
+        return;
+      }
+      
+      // If no activity record for today, create one
+      if (!activityData) {
+        const { error: insertError } = await supabase
+          .from("daily_activity")
+          .insert([{ 
+            user_id: userId,
+            date: today,
+            logged_in: true
+          }]);
+          
+        if (insertError) {
+          console.error("Error creating daily activity:", insertError);
+        }
+      }
+      
+    } catch (error) {
+      console.error("Error updating login streak:", error);
+    }
+  };
 
   const signIn = async (email: string, password: string) => {
     try {

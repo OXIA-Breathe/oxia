@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Award, Calendar as CalendarIcon, Flame, LogIn } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 const ConsistencyPage = () => {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ const ConsistencyPage = () => {
   const [streakData, setStreakData] = useState<any>(null);
   const [activityDates, setActivityDates] = useState<Date[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreatingStreak, setIsCreatingStreak] = useState(false);
 
   useEffect(() => {
     const fetchStreakData = async () => {
@@ -29,9 +31,12 @@ const ConsistencyPage = () => {
           .from("user_streaks")
           .select("*")
           .eq("user_id", user.id)
-          .single();
-
-        if (streakError) throw streakError;
+          .maybeSingle(); // Use maybeSingle instead of single to avoid errors when no data exists
+        
+        if (streakError && streakError.code !== 'PGRST116') {
+          // Only throw if it's not the "no rows returned" error
+          throw streakError;
+        }
         
         // Fetch user daily activity
         const { data: activityData, error: activityError } = await supabase
@@ -44,8 +49,8 @@ const ConsistencyPage = () => {
         
         // Convert activity dates to Date objects for the calendar
         const dates = activityData
-          .filter(day => day.completed_breath_session)
-          .map(day => new Date(day.date));
+          ?.filter(day => day.completed_breath_session)
+          .map(day => new Date(day.date)) || [];
         
         setStreakData(streakData);
         setActivityDates(dates);
@@ -64,6 +69,44 @@ const ConsistencyPage = () => {
     fetchStreakData();
   }, [user, toast]);
 
+  const createUserStreak = async () => {
+    if (!user || isCreatingStreak) return;
+    
+    try {
+      setIsCreatingStreak(true);
+      
+      // Create a new streak record for the user
+      const { data, error } = await supabase
+        .from("user_streaks")
+        .insert([{ user_id: user.id }])
+        .select("*")
+        .single();
+        
+      if (error) throw error;
+      
+      // Create a daily activity record
+      await supabase
+        .from("daily_activity")
+        .insert([{ user_id: user.id }]);
+      
+      setStreakData(data);
+      
+      toast({
+        title: "Success",
+        description: "Your consistency tracking has been initialized!",
+      });
+    } catch (error) {
+      console.error("Error creating streak data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to initialize consistency tracking",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreatingStreak(false);
+    }
+  };
+
   // Function to determine badge color based on streak length
   const getStreakBadgeVariant = (streak: number) => {
     if (streak >= 30) return "default";
@@ -79,6 +122,18 @@ const ConsistencyPage = () => {
         {isLoading ? (
           <div className="flex justify-center">
             <p>Loading your consistency data...</p>
+          </div>
+        ) : user && !streakData ? (
+          <div className="text-center">
+            <p className="text-muted-foreground mb-6">
+              You need to initialize consistency tracking for your account
+            </p>
+            <Button 
+              onClick={createUserStreak} 
+              disabled={isCreatingStreak}
+            >
+              {isCreatingStreak ? "Setting up..." : "Initialize Tracking"}
+            </Button>
           </div>
         ) : streakData ? (
           <div className="grid gap-6 md:grid-cols-2">
