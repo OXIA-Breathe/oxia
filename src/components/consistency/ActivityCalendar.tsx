@@ -11,11 +11,11 @@ export const ActivityCalendar = ({ activityDates }: ActivityCalendarProps) => {
   return (
     <Card className="border-none shadow-md bg-white">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-breath-dark">
-          <CalendarIcon className="h-5 w-5" />
-          Activity Calendar
+        <CardTitle className="flex items-center gap-2">
+          <CalendarIcon className="h-5 w-5 text-breath" />
+          <span className="text-gray-800">Activity Calendar</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-gray-600">
           Days with breathing sessions are highlighted
         </CardDescription>
       </CardHeader>
@@ -31,7 +31,7 @@ export const ActivityCalendar = ({ activityDates }: ActivityCalendarProps) => {
             day: "rounded-full transition-colors p-2 mx-0.5"
           }}
         />
-        <p className="text-sm text-muted-foreground mt-4">
+        <p className="text-sm text-gray-600 mt-4">
           Highlighted days show your completed breathing sessions
         </p>
       </CardContent>

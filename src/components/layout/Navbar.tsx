@@ -16,28 +16,28 @@ const Navbar = () => {
           <div className={`p-2 rounded-full transition-colors ${isActive("/") ? "bg-breath text-white" : "text-gray-500"}`}>
             <Home size={22} />
           </div>
-          <span className="text-xs mt-1">Home</span>
+          <span className={`text-xs mt-1 ${isActive("/") ? "text-breath" : "text-gray-500"}`}>Home</span>
         </Link>
         
         <Link to="/history" className="flex flex-col items-center justify-center">
           <div className={`p-2 rounded-full transition-colors ${isActive("/history") ? "bg-breath text-white" : "text-gray-500"}`}>
             <BarChart2 size={22} />
           </div>
-          <span className="text-xs mt-1">Report</span>
+          <span className={`text-xs mt-1 ${isActive("/history") ? "text-breath" : "text-gray-500"}`}>Report</span>
         </Link>
         
         <Link to="/consistency" className="flex flex-col items-center justify-center">
           <div className={`p-2 rounded-full transition-colors ${isActive("/consistency") ? "bg-breath text-white" : "text-gray-500"}`}>
             <Calendar size={22} />
           </div>
-          <span className="text-xs mt-1">Calendar</span>
+          <span className={`text-xs mt-1 ${isActive("/consistency") ? "text-breath" : "text-gray-500"}`}>Calendar</span>
         </Link>
         
         <Link to="/settings" className="flex flex-col items-center justify-center">
           <div className={`p-2 rounded-full transition-colors ${isActive("/settings") ? "bg-breath text-white" : "text-gray-500"}`}>
             <Settings size={22} />
           </div>
-          <span className="text-xs mt-1">Settings</span>
+          <span className={`text-xs mt-1 ${isActive("/settings") ? "text-breath" : "text-gray-500"}`}>Settings</span>
         </Link>
       </div>
     </div>

@@ -39,7 +39,7 @@ const ProfilePage = () => {
               className="transition-all duration-200"
             >
               <div className="flex items-center justify-between border-b pb-2 mb-4">
-                <h2 className="text-xl font-semibold">Profile Information</h2>
+                <h2 className="text-xl font-semibold text-gray-800">Profile Information</h2>
                 <CollapsibleTrigger asChild>
                   <button className="rounded-full p-1 hover:bg-accent transition-colors">
                     {openInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -60,7 +60,7 @@ const ProfilePage = () => {
               className="transition-all duration-200"
             >
               <div className="flex items-center justify-between border-b pb-2 mb-4">
-                <h2 className="text-xl font-semibold">Breathing Statistics</h2>
+                <h2 className="text-xl font-semibold text-gray-800">Breathing Statistics</h2>
                 <CollapsibleTrigger asChild>
                   <button className="rounded-full p-1 hover:bg-accent transition-colors">
                     {openStats ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -81,7 +81,7 @@ const ProfilePage = () => {
               className="transition-all duration-200"
             >
               <div className="flex items-center justify-between border-b pb-2 mb-4">
-                <h2 className="text-xl font-semibold">Achievements</h2>
+                <h2 className="text-xl font-semibold text-gray-800">Achievements</h2>
                 <CollapsibleTrigger asChild>
                   <button className="rounded-full p-1 hover:bg-accent transition-colors">
                     {openBadges ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
