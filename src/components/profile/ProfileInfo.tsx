@@ -123,7 +123,7 @@ const ProfileInfo = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <p className="text-lg font-medium">{profile?.display_name || "No name set"}</p>
+              <p className="text-lg font-medium text-gray-800">{profile?.display_name || "No name set"}</p>
               <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} title="Edit name">
                 <Edit size={16} />
               </Button>
@@ -135,7 +135,7 @@ const ProfileInfo = () => {
           <h3 className="text-sm font-medium text-muted-foreground mb-1">Email</h3>
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-muted-foreground" />
-            <p>{user?.email}</p>
+            <p className="text-gray-800">{user?.email}</p>
           </div>
         </div>
       </div>
