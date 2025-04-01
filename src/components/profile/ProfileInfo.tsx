@@ -24,6 +24,7 @@ const ProfileInfo = () => {
   const [displayName, setDisplayName] = useState("");
 
   // Fetch profile data
+  // Fixed: Moved the onSuccess callback outside the options object and using it as a separate hook
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
@@ -38,11 +39,13 @@ const ProfileInfo = () => {
       if (error) throw error;
       return data as Profile;
     },
-    enabled: !!user,
-    onSuccess: (data) => {
-      if (data?.display_name) {
-        setDisplayName(data.display_name);
-      }
+    enabled: !!user
+  });
+
+  // Set display name when profile data is loaded
+  useState(() => {
+    if (profile?.display_name) {
+      setDisplayName(profile.display_name);
     }
   });
 

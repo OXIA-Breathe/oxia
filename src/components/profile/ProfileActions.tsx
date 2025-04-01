@@ -51,7 +51,12 @@ const ProfileActions = () => {
       setIsDeleting(true);
       
       // Delete user account from Supabase Auth
-      const { error } = await supabase.auth.admin.deleteUser();
+      // Fixed: The deleteUser method requires the user ID to be passed
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) throw new Error("User not found");
+      
+      const { error } = await supabase.auth.admin.deleteUser(user.id);
       
       if (error) throw error;
       
