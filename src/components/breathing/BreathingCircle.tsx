@@ -68,9 +68,6 @@ const BreathingCircle = ({
               <span className="text-2xl font-bold text-white">
                 Breathe
               </span>
-              <div className="mt-4">
-                <Pause className="h-8 w-8 text-white" />
-              </div>
             </>
           ) : (
             <>
