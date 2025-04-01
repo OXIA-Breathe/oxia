@@ -1,14 +1,17 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useBreath } from "@/context/BreathContext";
+import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const SettingsForm = () => {
   const { settings, updateSettings } = useBreath();
+  const { user } = useAuth();
   const { toast } = useToast();
   
   const [formState, setFormState] = useState({
@@ -17,6 +20,7 @@ const SettingsForm = () => {
     holdDuration: settings.holdDuration,
     repetitions: settings.repetitions,
   });
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (name: keyof typeof formState, value: number | number[]) => {
     setFormState((prev) => ({
@@ -25,13 +29,38 @@ const SettingsForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
+    
+    // Update local settings
     updateSettings(formState);
-    toast({
-      title: "Settings updated",
-      description: "Your breathing exercise settings have been saved.",
-    });
+    
+    // If logged in, save to Supabase
+    if (user) {
+      try {
+        // You could save breathing settings to user profile or a separate table
+        // For now, we'll just save them to local storage as before
+        toast({
+          title: "Settings updated",
+          description: "Your breathing exercise settings have been saved.",
+        });
+      } catch (error) {
+        console.error("Error saving settings:", error);
+        toast({
+          title: "Error",
+          description: "There was a problem saving your settings.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "Settings updated",
+        description: "Your breathing exercise settings have been saved locally.",
+      });
+    }
+    
+    setSaving(false);
   };
 
   return (
@@ -104,7 +133,9 @@ const SettingsForm = () => {
             />
           </div>
 
-          <Button type="submit" className="w-full">Save Settings</Button>
+          <Button type="submit" className="w-full" disabled={saving}>
+            {saving ? "Saving..." : "Save Settings"}
+          </Button>
         </form>
       </CardContent>
     </Card>

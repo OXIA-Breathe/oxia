@@ -1,14 +1,70 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useBreath } from "@/context/BreathContext";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
+import { BreathSession } from "@/types/breath";
 
 const SessionHistory = () => {
-  const { sessions } = useBreath();
+  const { sessions, addSession } = useBreath();
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [onlineSessions, setOnlineSessions] = useState<BreathSession[]>([]);
   
-  if (sessions.length === 0) {
+  useEffect(() => {
+    if (user) {
+      fetchUserSessions();
+    }
+  }, [user]);
+
+  const fetchUserSessions = async () => {
+    if (!user) return;
+    
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("breath_sessions")
+        .select("*")
+        .order("date", { ascending: false });
+
+      if (error) throw error;
+      
+      if (data) {
+        // Convert Supabase data to app format
+        const formattedSessions: BreathSession[] = data.map(session => ({
+          id: session.id,
+          date: session.date,
+          repetitions: session.repetitions,
+          holdDuration: session.hold_duration,
+          totalDuration: session.total_duration,
+          breathCount: session.breath_count
+        }));
+        
+        setOnlineSessions(formattedSessions);
+      }
+    } catch (error) {
+      console.error("Error fetching sessions:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const displaySessions = user ? onlineSessions : sessions;
+  
+  if (isLoading) {
+    return (
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-xl text-center">Loading sessions...</CardTitle>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  if (displaySessions.length === 0) {
     return (
       <Card className="w-full max-w-3xl mx-auto">
         <CardHeader>
@@ -35,7 +91,7 @@ const SessionHistory = () => {
       <CardContent>
         <ScrollArea className="h-[500px] rounded-md">
           <div className="space-y-4">
-            {sessions.map((session) => (
+            {displaySessions.map((session) => (
               <Card key={session.id} className="p-4 hover:bg-accent/50 transition-colors">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>

@@ -9,7 +9,90 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      breath_sessions: {
+        Row: {
+          breath_count: number
+          created_at: string
+          date: string
+          hold_duration: number
+          id: string
+          repetitions: number
+          total_duration: number
+          user_id: string
+        }
+        Insert: {
+          breath_count: number
+          created_at?: string
+          date?: string
+          hold_duration: number
+          id?: string
+          repetitions: number
+          total_duration: number
+          user_id: string
+        }
+        Update: {
+          breath_count?: number
+          created_at?: string
+          date?: string
+          hold_duration?: number
+          id?: string
+          repetitions?: number
+          total_duration?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_settings: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          frequency: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          frequency?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          frequency?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
