@@ -42,6 +42,33 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_activity: {
+        Row: {
+          completed_breath_session: boolean
+          created_at: string
+          date: string
+          id: string
+          logged_in: boolean
+          user_id: string
+        }
+        Insert: {
+          completed_breath_session?: boolean
+          created_at?: string
+          date?: string
+          id?: string
+          logged_in?: boolean
+          user_id: string
+        }
+        Update: {
+          completed_breath_session?: boolean
+          created_at?: string
+          date?: string
+          id?: string
+          logged_in?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       notification_settings: {
         Row: {
           created_at: string
@@ -90,6 +117,45 @@ export type Database = {
           display_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_streaks: {
+        Row: {
+          created_at: string
+          current_breath_streak: number
+          current_login_streak: number
+          id: string
+          last_breath_session_date: string | null
+          last_login_date: string
+          longest_breath_streak: number
+          longest_login_streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_breath_streak?: number
+          current_login_streak?: number
+          id?: string
+          last_breath_session_date?: string | null
+          last_login_date?: string
+          longest_breath_streak?: number
+          longest_login_streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_breath_streak?: number
+          current_login_streak?: number
+          id?: string
+          last_breath_session_date?: string | null
+          last_login_date?: string
+          longest_breath_streak?: number
+          longest_login_streak?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
