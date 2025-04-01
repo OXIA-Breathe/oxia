@@ -72,50 +72,32 @@ const ProfileStats = () => {
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Breathing Statistics</CardTitle>
-          <CardDescription>Your breathing journey summary</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center p-4">Loading stats...</div>
-        </CardContent>
-      </Card>
-    );
+    return <div className="text-center p-4">Loading stats...</div>;
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Breathing Statistics</CardTitle>
-        <CardDescription>Your breathing journey summary</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard 
-            title="Total Sessions" 
-            value={stats?.totalSessions || 0} 
-            unit="sessions"
-          />
-          <StatCard 
-            title="Total Repetitions" 
-            value={stats?.totalRepetitions || 0} 
-            unit="repetitions"
-          />
-          <StatCard 
-            title="Total Breaths" 
-            value={stats?.totalBreaths || 0} 
-            unit="breaths"
-          />
-          <StatCard 
-            title="Total Time" 
-            value={stats?.totalTime ? formatTime(stats.totalTime) : "0 seconds"} 
-            isFormatted
-          />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <StatCard 
+        title="Total Sessions" 
+        value={stats?.totalSessions || 0} 
+        unit="sessions"
+      />
+      <StatCard 
+        title="Total Repetitions" 
+        value={stats?.totalRepetitions || 0} 
+        unit="repetitions"
+      />
+      <StatCard 
+        title="Total Breaths" 
+        value={stats?.totalBreaths || 0} 
+        unit="breaths"
+      />
+      <StatCard 
+        title="Total Time" 
+        value={stats?.totalTime ? formatTime(stats.totalTime) : "0 seconds"} 
+        isFormatted
+      />
+    </div>
   );
 };
 
