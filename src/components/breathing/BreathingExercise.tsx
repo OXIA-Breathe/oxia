@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import BreathingCircle from "./BreathingCircle";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,6 +12,7 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 
 const BreathingExercise = () => {
   const { settings, addSession } = useBreath();
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const [phase, setPhase] = useState<"inhale" | "exhale" | "hold" | "idle">("idle");
@@ -38,6 +41,35 @@ const BreathingExercise = () => {
     }
   };
 
+  const saveSessionToSupabase = async (sessionData) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from("breath_sessions")
+        .insert({
+          id: sessionData.id,
+          user_id: user.id,
+          date: sessionData.date,
+          repetitions: sessionData.repetitions,
+          hold_duration: sessionData.holdDuration,
+          total_duration: sessionData.totalDuration,
+          breath_count: sessionData.breathCount
+        });
+        
+      if (error) {
+        console.error("Error saving session to Supabase:", error);
+        toast({
+          title: "Error saving session",
+          description: "Your session was saved locally but not to your account.",
+          variant: "destructive"
+        });
+      }
+    } catch (err) {
+      console.error("Exception saving session:", err);
+    }
+  };
+
   const completeSession = useCallback(() => {
     const sessionEndTime = Date.now();
     const totalDuration = sessionStartTime ? Math.floor((sessionEndTime - sessionStartTime) / 1000) : 0;
@@ -51,14 +83,21 @@ const BreathingExercise = () => {
       breathCount,
     };
     
+    // Add to local context (for non-logged in users)
     addSession(newSession);
+    
+    // If user is logged in, also save to Supabase
+    if (user) {
+      saveSessionToSupabase(newSession);
+    }
+    
     toast({
       title: "Session completed!",
       description: `You completed ${breathCount} breaths in ${totalDuration} seconds.`,
     });
     
     resetExercise();
-  }, [addSession, breathCount, sessionStartTime, settings, toast]);
+  }, [addSession, breathCount, sessionStartTime, settings, toast, user]);
 
   useEffect(() => {
     let timer: number;
