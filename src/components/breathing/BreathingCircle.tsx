@@ -11,6 +11,7 @@ interface BreathingCircleProps {
 const BreathingCircle = ({ phase, duration, size = "lg" }: BreathingCircleProps) => {
   const circleRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const [timeRemaining, setTimeRemaining] = useState(duration);
   
   const sizeClasses = {
     sm: "w-32 h-32",
@@ -19,6 +20,9 @@ const BreathingCircle = ({ phase, duration, size = "lg" }: BreathingCircleProps)
   };
 
   useEffect(() => {
+    // Reset timer when phase or duration changes
+    setTimeRemaining(duration);
+    
     if (circleRef.current) {
       // Set the CSS variable for animation duration
       if (phase === "inhale") {
@@ -31,6 +35,20 @@ const BreathingCircle = ({ phase, duration, size = "lg" }: BreathingCircleProps)
     }
   }, [phase, duration]);
   
+  // Countdown timer
+  useEffect(() => {
+    if (phase === "idle") return;
+    
+    const timer = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 0) return 0;
+        return prev - 0.1;
+      });
+    }, 100);
+    
+    return () => clearInterval(timer);
+  }, [phase]);
+  
   return (
     <div 
       ref={circleRef}
@@ -39,8 +57,15 @@ const BreathingCircle = ({ phase, duration, size = "lg" }: BreathingCircleProps)
         transform: phase === "idle" ? "scale(1)" : undefined
       }}
     >
-      <div className="text-center">
-        <span className="text-2xl font-bold text-primary-foreground">{phase !== "idle" ? phase.charAt(0).toUpperCase() + phase.slice(1) : "Ready"}</span>
+      <div className="text-center flex flex-col items-center justify-center">
+        <span className="text-2xl font-bold text-primary-foreground">
+          {phase !== "idle" ? phase.charAt(0).toUpperCase() + phase.slice(1) : "Ready"}
+        </span>
+        {phase !== "idle" && (
+          <span className="text-xl text-primary-foreground mt-1">
+            {Math.max(0, Math.ceil(timeRemaining))}
+          </span>
+        )}
       </div>
     </div>
   );
