@@ -19,6 +19,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Nunito', 'sans-serif'],
+				nunito: ['Nunito', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -55,9 +59,9 @@ export default {
 				},
 				// Custom breathing app colors
 				breath: {
-					light: '#E0F7FA',
-					DEFAULT: '#4DD0E1',
-					dark: '#00ACC1',
+					light: '#e0edf5',
+					DEFAULT: '#77A9E8',
+					dark: '#5b8ed8',
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -114,13 +118,13 @@ export default {
 				},
 				'breathe-hold': {
 					'0%': {
-						boxShadow: '0 0 0 0 rgba(77, 208, 225, 0.7)'
+						boxShadow: '0 0 0 0 rgba(119, 169, 232, 0.7)'
 					},
 					'50%': {
-						boxShadow: '0 0 0 20px rgba(77, 208, 225, 0.3)'
+						boxShadow: '0 0 0 20px rgba(119, 169, 232, 0.3)'
 					},
 					'100%': {
-						boxShadow: '0 0 0 0 rgba(77, 208, 225, 0.7)'
+						boxShadow: '0 0 0 0 rgba(119, 169, 232, 0.7)'
 					}
 				}
 			},

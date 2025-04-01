@@ -1,5 +1,5 @@
 
-import { Home, Clock, Settings, User } from "lucide-react";
+import { Home, BarChart2, Plus, Calendar, Menu } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
@@ -10,34 +10,40 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-card border-t border-border z-10 px-2 py-2 md:static md:w-auto md:h-screen md:border-t-0 md:border-r">
-      <div className="flex justify-around md:flex-col md:justify-start md:h-full md:space-y-6 md:p-4">
-        <Link to="/" className="flex flex-col items-center justify-center md:flex-row md:justify-start md:space-x-2">
-          <div className={`p-2 rounded-lg transition-colors ${isActive("/") ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}>
-            <Home size={24} />
+    <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg rounded-t-3xl px-4 py-2 z-20 md:hidden">
+      <div className="flex justify-around items-center">
+        <Link to="/" className="flex flex-col items-center justify-center">
+          <div className={`p-2 rounded-full transition-colors ${isActive("/") ? "bg-breath text-white" : "text-gray-500"}`}>
+            <Home size={22} />
           </div>
-          <span className="text-xs mt-1 md:text-sm md:mt-0 md:block">Breathe</span>
+          <span className="text-xs mt-1">Home</span>
         </Link>
         
-        <Link to="/history" className="flex flex-col items-center justify-center md:flex-row md:justify-start md:space-x-2">
-          <div className={`p-2 rounded-lg transition-colors ${isActive("/history") ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}>
-            <Clock size={24} />
+        <Link to="/history" className="flex flex-col items-center justify-center">
+          <div className={`p-2 rounded-full transition-colors ${isActive("/history") ? "bg-breath text-white" : "text-gray-500"}`}>
+            <BarChart2 size={22} />
           </div>
-          <span className="text-xs mt-1 md:text-sm md:mt-0 md:block">History</span>
+          <span className="text-xs mt-1">Report</span>
         </Link>
         
-        <Link to="/settings" className="flex flex-col items-center justify-center md:flex-row md:justify-start md:space-x-2">
-          <div className={`p-2 rounded-lg transition-colors ${isActive("/settings") ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}>
-            <Settings size={24} />
+        <Link to="/new" className="flex flex-col items-center justify-center -mt-8">
+          <div className="p-4 rounded-full bg-breath text-white shadow-lg relative">
+            <Plus size={24} />
           </div>
-          <span className="text-xs mt-1 md:text-sm md:mt-0 md:block">Settings</span>
         </Link>
         
-        <Link to="/profile" className="flex flex-col items-center justify-center md:flex-row md:justify-start md:space-x-2">
-          <div className={`p-2 rounded-lg transition-colors ${isActive("/profile") ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}>
-            <User size={24} />
+        <Link to="/consistency" className="flex flex-col items-center justify-center">
+          <div className={`p-2 rounded-full transition-colors ${isActive("/consistency") ? "bg-breath text-white" : "text-gray-500"}`}>
+            <Calendar size={22} />
           </div>
-          <span className="text-xs mt-1 md:text-sm md:mt-0 md:block">Profile</span>
+          <span className="text-xs mt-1">Calendar</span>
+        </Link>
+        
+        <Link to="/settings" className="flex flex-col items-center justify-center">
+          <div className={`p-2 rounded-full transition-colors ${isActive("/settings") ? "bg-breath text-white" : "text-gray-500"}`}>
+            <Menu size={22} />
+          </div>
+          <span className="text-xs mt-1">Menu</span>
         </Link>
       </div>
     </div>

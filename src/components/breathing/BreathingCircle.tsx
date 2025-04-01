@@ -1,21 +1,29 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { Pause } from "lucide-react";
 
 interface BreathingCircleProps {
   phase: "inhale" | "exhale" | "hold" | "idle";
   duration: number;
   size?: "sm" | "md" | "lg";
+  riskLevel?: "Minimal" | "Low" | "Moderate" | "High";
 }
 
-const BreathingCircle = ({ phase, duration, size = "lg" }: BreathingCircleProps) => {
+const BreathingCircle = ({ 
+  phase, 
+  duration, 
+  size = "lg", 
+  riskLevel = "Minimal" 
+}: BreathingCircleProps) => {
   const circleRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const [timeRemaining, setTimeRemaining] = useState(duration);
   
   const sizeClasses = {
-    sm: "w-24 h-24",
-    md: "w-36 h-36",
-    lg: "w-48 h-48",
+    sm: "w-32 h-32",
+    md: "w-48 h-48",
+    lg: "w-64 h-64",
   };
 
   useEffect(() => {
@@ -46,22 +54,58 @@ const BreathingCircle = ({ phase, duration, size = "lg" }: BreathingCircleProps)
   }, [phase]);
   
   return (
-    <div 
-      ref={circleRef}
-      className={`breathing-circle ${sizeClasses[size]} ${phase !== "idle" ? phase : ""}`}
-      style={{ 
-        transform: phase === "idle" ? "scale(1)" : undefined
-      }}
-    >
-      <div className="text-center flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold text-primary-foreground">
-          {phase !== "idle" ? phase.charAt(0).toUpperCase() + phase.slice(1) : "Ready"}
-        </span>
-        {phase !== "idle" && (
-          <span className="text-xl text-primary-foreground mt-1">
-            {Math.max(0, Math.ceil(timeRemaining))}
-          </span>
-        )}
+    <div className="relative flex flex-col items-center justify-center">
+      <div 
+        ref={circleRef}
+        className={`breathing-circle ${sizeClasses[size]} ${phase !== "idle" ? phase : ""} backdrop-blur-md bg-opacity-50 shadow-lg relative z-10`}
+        style={{ 
+          transform: phase === "idle" ? "scale(1)" : undefined
+        }}
+      >
+        <div className="text-center flex flex-col items-center justify-center">
+          {phase === "idle" ? (
+            <>
+              <span className="text-2xl font-bold text-white">
+                {riskLevel}
+              </span>
+              <span className="text-sm text-white/80 mt-1">
+                Seizure risk level
+              </span>
+              <div className="mt-4">
+                <Pause className="h-8 w-8 text-white" />
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="text-2xl font-bold text-white">
+                {phase.charAt(0).toUpperCase() + phase.slice(1)}
+              </span>
+              <span className="text-xl text-white mt-1">
+                {Math.max(0, Math.ceil(timeRemaining))}
+              </span>
+            </>
+          )}
+        </div>
+      </div>
+      
+      {/* Circle outline */}
+      <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-20 z-0 flex items-center justify-center">
+        {/* Create a semi-circle progress indicator */}
+        <svg className="absolute inset-0 rotate-270" viewBox="0 0 100 100">
+          <circle
+            cx="50"
+            cy="50"
+            r="48"
+            fill="none"
+            stroke="white"
+            strokeWidth="4"
+            strokeOpacity="0.4"
+            strokeDasharray="301"
+            strokeDashoffset="75"
+            strokeLinecap="round"
+            transform="rotate(-90 50 50)"
+          />
+        </svg>
       </div>
     </div>
   );
