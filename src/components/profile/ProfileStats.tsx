@@ -76,7 +76,7 @@ const ProfileStats = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
       <StatCard 
         title="Total Sessions" 
         value={stats?.totalSessions || 0} 
@@ -109,9 +109,9 @@ interface StatCardProps {
 }
 
 const StatCard = ({ title, value, unit, isFormatted = false }: StatCardProps) => (
-  <div className="bg-accent/50 p-4 rounded-lg flex flex-col items-center justify-center text-center">
-    <h3 className="text-sm font-medium text-muted-foreground mb-1">{title}</h3>
-    <p className="text-2xl font-semibold text-gray-800">
+  <div className="bg-accent/50 p-3 sm:p-4 rounded-lg flex flex-col items-center justify-center text-center">
+    <h3 className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">{title}</h3>
+    <p className="text-xl sm:text-2xl font-semibold text-gray-800">
       {isFormatted ? value : value.toLocaleString()}
     </p>
     {!isFormatted && unit && (

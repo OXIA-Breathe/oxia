@@ -10,38 +10,31 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg rounded-t-3xl px-4 py-2 z-20 md:hidden">
-      <div className="flex justify-around items-center">
-        <Link to="/" className="flex flex-col items-center justify-center">
-          <div className={`p-2 rounded-full transition-colors ${isActive("/") ? "bg-breath text-white" : "text-gray-500"}`}>
-            <Home size={22} />
-          </div>
-          <span className={`text-xs mt-1 ${isActive("/") ? "text-breath" : "text-gray-500"}`}>Home</span>
-        </Link>
-        
-        <Link to="/history" className="flex flex-col items-center justify-center">
-          <div className={`p-2 rounded-full transition-colors ${isActive("/history") ? "bg-breath text-white" : "text-gray-500"}`}>
-            <BarChart2 size={22} />
-          </div>
-          <span className={`text-xs mt-1 ${isActive("/history") ? "text-breath" : "text-gray-500"}`}>Report</span>
-        </Link>
-        
-        <Link to="/consistency" className="flex flex-col items-center justify-center">
-          <div className={`p-2 rounded-full transition-colors ${isActive("/consistency") ? "bg-breath text-white" : "text-gray-500"}`}>
-            <Calendar size={22} />
-          </div>
-          <span className={`text-xs mt-1 ${isActive("/consistency") ? "text-breath" : "text-gray-500"}`}>Calendar</span>
-        </Link>
-        
-        <Link to="/settings" className="flex flex-col items-center justify-center">
-          <div className={`p-2 rounded-full transition-colors ${isActive("/settings") ? "bg-breath text-white" : "text-gray-500"}`}>
-            <Settings size={22} />
-          </div>
-          <span className={`text-xs mt-1 ${isActive("/settings") ? "text-breath" : "text-gray-500"}`}>Settings</span>
-        </Link>
+    <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg rounded-t-3xl px-2 sm:px-4 py-2 z-20 md:hidden">
+      <div className="flex justify-around items-center max-w-screen-xl mx-auto">
+        <NavItem path="/" label="Home" icon={<Home size={20} />} isActive={isActive("/")} />
+        <NavItem path="/history" label="Report" icon={<BarChart2 size={20} />} isActive={isActive("/history")} />
+        <NavItem path="/consistency" label="Calendar" icon={<Calendar size={20} />} isActive={isActive("/consistency")} />
+        <NavItem path="/settings" label="Settings" icon={<Settings size={20} />} isActive={isActive("/settings")} />
       </div>
     </div>
   );
 };
+
+interface NavItemProps {
+  path: string;
+  label: string;
+  icon: React.ReactNode;
+  isActive: boolean;
+}
+
+const NavItem = ({ path, label, icon, isActive }: NavItemProps) => (
+  <Link to={path} className="flex flex-col items-center justify-center">
+    <div className={`p-2 rounded-full transition-colors ${isActive ? "bg-breath text-white" : "text-gray-500"}`}>
+      {icon}
+    </div>
+    <span className={`text-xs mt-1 ${isActive ? "text-breath" : "text-gray-500"}`}>{label}</span>
+  </Link>
+);
 
 export default Navbar;
