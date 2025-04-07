@@ -25,7 +25,11 @@ const Index = () => {
           
           {/* Logo */}
           <div className="mb-6 text-center">
-            <h1 className="text-4xl font-bold mb-1">OXIA</h1>
+            <img 
+              src="/lovable-uploads/2537215b-9aaa-455a-9557-b82a0a16a948.png" 
+              alt="OXIA Logo" 
+              className="mx-auto h-12 w-auto" 
+            />
           </div>
           
           {/* Breathing Circle */}
