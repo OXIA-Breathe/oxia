@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Download, FileText, Mail } from "lucide-react";
@@ -45,14 +46,49 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
   };
 
   const generatePDF = () => {
-    const doc = new jsPDF();
+    // Initialize PDF with A4 portrait orientation
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4"
+    });
     
-    const imgData = "/lovable-uploads/2537215b-9aaa-455a-9557-b82a0a16a948.png";
-    doc.addImage(imgData, "PNG", 15, 10, 60, 25);
+    // Add font
+    doc.addFont("Nunito", "Nunito", "normal");
+    doc.setFont("Nunito");
     
-    doc.setFontSize(20);
-    doc.text("Breathing Session History", 15, 50);
+    // Set background with gradient (approximate using rectangles with different opacities)
+    for (let i = 0; i < 20; i++) {
+      const alpha = 0.02 + (i * 0.005);
+      doc.setFillColor(173, 216, 230, alpha); // Light blue
+      doc.rect(0, i * (297/20), 210, 297/20, "F");
+    }
     
+    // HEADER SECTION
+    // Add OXIA logo
+    const logoData = "/lovable-uploads/2537215b-9aaa-455a-9557-b82a0a16a948.png";
+    doc.addImage(logoData, "PNG", 75, 15, 60, 25);
+    
+    // Title
+    doc.setFontSize(24);
+    doc.setTextColor(41, 82, 156); // Blue text accent
+    doc.text("Breathing Session Report", 105, 55, { align: "center" });
+    
+    // Date range
+    let dateText = "All Sessions";
+    if (exportType === "custom" && dateRange.from && dateRange.to) {
+      dateText = `${format(dateRange.from, "MMMM d")}–${format(dateRange.to, "d, yyyy")}`;
+    }
+    doc.setFontSize(14);
+    doc.setTextColor(100, 100, 100);
+    doc.text(dateText, 105, 63, { align: "center" });
+    
+    // Inspirational subheading
+    doc.setFontSize(12);
+    doc.setTextColor(120, 120, 120);
+    doc.text("Every breath counts.", 105, 70, { align: "center" });
+    
+    // Filter sessions based on date range if custom is selected
     let filteredSessions = sessions;
     if (exportType === "custom" && dateRange.from && dateRange.to) {
       const fromDate = dateRange.from.setHours(0, 0, 0, 0);
@@ -64,45 +100,137 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
       });
     }
     
+    // Calculate summary statistics
     const totalSessions = filteredSessions.length;
     const totalBreaths = filteredSessions.reduce((acc, s) => acc + s.breathCount, 0);
     const totalTime = filteredSessions.reduce((acc, s) => acc + s.totalDuration, 0);
     const avgSessionDuration = totalSessions ? totalTime / totalSessions : 0;
     
-    doc.setFontSize(14);
-    doc.text("Summary", 15, 60);
-    doc.setFontSize(12);
-    doc.text(`Total Sessions: ${totalSessions}`, 15, 70);
-    doc.text(`Total Breaths Taken: ${totalBreaths}`, 15, 78);
-    doc.text(`Total Session Time: ${formatTime(totalTime)}`, 15, 86);
-    doc.text(`Average Session Duration: ${formatTime(Math.round(avgSessionDuration))}`, 15, 94);
+    // SUMMARY BLOCK - Create white card effect
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(15, 85, 180, 60, 5, 5, "F");
     
-    if (exportType === "custom" && dateRange.from && dateRange.to) {
-      doc.text(
-        `Date Range: ${format(dateRange.from, "MMMM d, yyyy")} - ${format(dateRange.to, "MMMM d, yyyy")}`,
-        15,
-        102
-      );
+    // Draw summary boxes (2x2 grid)
+    const drawStatBox = (x: number, y: number, title: string, value: string) => {
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(x, y, 80, 20, 3, 3, "F");
+      
+      doc.setFontSize(9);
+      doc.setTextColor(100, 100, 100);
+      doc.text(title, x + 40, y + 7, { align: "center" });
+      
+      doc.setFontSize(14);
+      doc.setTextColor(41, 82, 156);
+      doc.text(value, x + 40, y + 16, { align: "center" });
+    };
+    
+    drawStatBox(25, 95, "TOTAL SESSIONS", totalSessions.toString());
+    drawStatBox(115, 95, "TOTAL BREATHS", totalBreaths.toString());
+    drawStatBox(25, 125, "TOTAL TIME", formatTime(totalTime));
+    drawStatBox(115, 125, "AVERAGE DURATION", formatTime(Math.round(avgSessionDuration)));
+    
+    // PROGRESS VISUAL - Simple circular chart
+    if (filteredSessions.length > 1) {
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(15, 155, 180, 70, 5, 5, "F");
+      doc.setFontSize(14);
+      doc.setTextColor(41, 82, 156);
+      doc.text("Your Breathing Journey", 105, 170, { align: "center" });
+      
+      // Get last 5 sessions for visualization
+      const recentSessions = filteredSessions.slice(0, Math.min(5, filteredSessions.length)).reverse();
+      
+      // Draw simple bar chart of session durations
+      const barWidth = 25;
+      const maxHeight = 40;
+      const startX = 40;
+      const startY = 210;
+      const gap = 10;
+      const maxDuration = Math.max(...recentSessions.map(s => s.totalDuration));
+      
+      recentSessions.forEach((session, index) => {
+        const barHeight = (session.totalDuration / maxDuration) * maxHeight;
+        const x = startX + (index * (barWidth + gap));
+        
+        // Draw bar
+        const hue = 200 + (index * 10); // Shift from blue to turquoise
+        doc.setFillColor(41, 82, 156, 0.7 - (index * 0.1));
+        doc.roundedRect(x, startY - barHeight, barWidth, barHeight, 2, 2, "F");
+        
+        // Draw date label
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.text(format(new Date(session.date), "MMM d"), x + (barWidth / 2), startY + 8, { align: "center" });
+      });
     }
     
-    const tableData = filteredSessions.map((session) => [
-      format(new Date(session.date), "MMM d, yyyy h:mm a"),
-      session.repetitions.toString(),
-      session.holdDuration.toString() + "s",
-      session.breathCount.toString(),
-      formatTime(session.totalDuration),
-    ]);
+    // SESSION TABLE
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(15, 235, 180, 0, 5, 5, "F"); // Height will be adjusted by autoTable
     
-    autoTable(doc, {
-      startY: 110,
-      head: [["Date", "Repetitions", "Hold Duration", "Breaths", "Total Time"]],
-      body: tableData,
-      theme: "striped",
-      headStyles: { fillColor: [123, 104, 238] },
+    doc.setFontSize(14);
+    doc.setTextColor(41, 82, 156);
+    doc.text("Session Details", 105, 245, { align: "center" });
+    
+    const tableColumns = [
+      "Date", "Time", "Breath Pattern", "Repetitions", "Breaths", "Duration"
+    ];
+    
+    const tableData = filteredSessions.map((session) => {
+      const date = new Date(session.date);
+      return [
+        format(date, "MMM d, yyyy"),
+        format(date, "h:mm a"),
+        `${4}s-${session.holdDuration}s-${4}s`, // Assuming standard inhale/exhale of 4s
+        session.repetitions.toString(),
+        session.breathCount.toString(),
+        formatTime(session.totalDuration),
+      ];
     });
     
+    autoTable(doc, {
+      startY: 255,
+      head: [tableColumns],
+      body: tableData,
+      theme: "grid",
+      headStyles: { 
+        fillColor: [63, 131, 193],
+        textColor: [255, 255, 255],
+        fontSize: 10,
+        fontStyle: "bold",
+      },
+      styles: {
+        overflow: "linebreak",
+        cellWidth: "auto",
+        fontSize: 9,
+      },
+      columnStyles: {
+        0: { cellWidth: 25 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 30 },
+        3: { cellWidth: 25 },
+        4: { cellWidth: 20 },
+        5: { cellWidth: 20 },
+      },
+    });
+    
+    // FOOTER
+    const finalY = (doc as any).lastAutoTable.finalY || 270;
+    
+    // Inspirational quote
+    doc.setFillColor(248, 250, 252, 0.7);
+    doc.roundedRect(30, finalY + 15, 150, 25, 5, 5, "F");
+    
+    doc.setFontSize(11);
+    doc.setTextColor(41, 82, 156);
+    doc.text("Your breath is your superpower. Keep going.", 105, finalY + 25, { align: "center" });
+    
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text("Created with OXIA Breathing App • oxia.breathe", 105, finalY + 35, { align: "center" });
+    
     const pdfOutput = doc.output("blob");
-    const fileName = "OXIA-Breathing-Sessions.pdf";
+    const fileName = "OXIA-Breathing-Report.pdf";
     
     setShowShareOptions(true);
     
@@ -121,8 +249,10 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
     
     toast({
       title: "Export successful",
-      description: "Your breathing sessions have been exported successfully.",
+      description: "Your breathing session report has been exported successfully.",
     });
+    
+    setOpen(false);
   };
 
   const handleShare = (method: "email" | "device" | "drive") => {
@@ -144,7 +274,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
       
       toast({
         title: "Saved to device",
-        description: "Your breathing sessions have been saved to your device.",
+        description: "Your breathing session report has been saved to your device.",
       });
     } else if (method === "drive") {
       toast({
@@ -323,7 +453,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
                 </Button>
               </div>
               
-              <DialogFooter>
+              <DialogFooter className="flex gap-2">
                 <Button variant="outline" onClick={() => setShowShareOptions(false)}>
                   Back
                 </Button>
