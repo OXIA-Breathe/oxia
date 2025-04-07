@@ -145,7 +145,7 @@ const calculateSessionStats = (sessions: BreathSession[]) => {
 };
 
 // Add summary statistics section with cards
-const addSummarySection = (doc: jsPDF, stats: ReturnType<typeof calculateSessionStats>) => {
+const addSummarySection = (doc: jsPDF, stats: ReturnType<typeof calculateSessionStats>, filteredSessions: BreathSession[]) => {
   const { totalSessions, totalBreaths, totalTime, avgSessionDuration } = stats;
   const pageWidth = doc.internal.pageSize.width;
   
@@ -195,7 +195,7 @@ const addSummarySection = (doc: jsPDF, stats: ReturnType<typeof calculateSession
   doc.text("Duration", pageWidth - 45, 172, { align: "center" });
   
   // Add circular progress chart
-  if (sessions.length > 0) {
+  if (filteredSessions.length > 0) {
     const chartCenterX = pageWidth - 50;
     const chartCenterY = 185;
     const chartRadius = 15;
@@ -210,11 +210,19 @@ const addSummarySection = (doc: jsPDF, stats: ReturnType<typeof calculateSession
     doc.setFillColor(0, 180, 216, 0.5);
     doc.setLineWidth(3);
     
-    // Draw arc (simplified - just a visual indicator)
-    const startAngle = 0;
-    const endAngle = Math.PI * 1.5; // 3/4 of a circle
+    // Draw arc using circles and lines since jsPDF doesn't have direct arc support
+    // This creates a simplified visual representation
+    const startAngle = 0; 
+    const endAngle = 270; // 3/4 of a circle in degrees
     
-    doc.arc(chartCenterX, chartCenterY, chartRadius, startAngle, endAngle, "FD");
+    // Draw a series of small segments to approximate an arc
+    for (let angle = startAngle; angle <= endAngle; angle += 10) {
+      const radians = (angle * Math.PI) / 180;
+      const x = chartCenterX + chartRadius * Math.cos(radians);
+      const y = chartCenterY + chartRadius * Math.sin(radians);
+      
+      doc.circle(x, y, 1, "F");
+    }
     
     // Add text inside circle
     doc.setFont("helvetica", "bold");
@@ -239,10 +247,13 @@ const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
   
   const tableData = sessions.map((session) => {
     const date = new Date(session.date);
+    // Use default values for inhale/exhale if not available in the session data
+    const inhaleDuration = 4; // Default value
+    const exhaleDuration = 4; // Default value
     return [
       format(date, "MMM d, yyyy"),
       format(date, "h:mm a"),
-      `${session.inhaleDuration || 4}s / ${session.holdDuration}s / ${session.exhaleDuration || 4}s`,
+      `${inhaleDuration}s / ${session.holdDuration}s / ${exhaleDuration}s`,
       session.repetitions.toString(),
       formatTime(session.totalDuration),
     ];
@@ -328,7 +339,7 @@ export const generatePDF = ({ sessions, dateRange, exportType }: GeneratePDFPara
     const stats = calculateSessionStats(filteredSessions);
     
     // Add summary statistics section
-    addSummarySection(doc, stats);
+    addSummarySection(doc, stats, filteredSessions);
     
     // Add sessions table and get final Y position
     const finalY = addSessionsTable(doc, filteredSessions);
