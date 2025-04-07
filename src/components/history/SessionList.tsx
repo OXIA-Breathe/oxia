@@ -11,9 +11,15 @@ const SessionList = ({ sessions }: SessionListProps) => {
   return (
     <ScrollArea className="h-[500px] rounded-md">
       <div className="space-y-4">
-        {sessions.map((session) => (
-          <SessionCard key={session.id} session={session} />
-        ))}
+        {sessions.length === 0 ? (
+          <div className="text-center p-8 text-muted-foreground">
+            No breathing sessions found.
+          </div>
+        ) : (
+          sessions.map((session) => (
+            <SessionCard key={session.id} session={session} />
+          ))
+        )}
       </div>
     </ScrollArea>
   );

@@ -3,12 +3,10 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { format } from "date-fns";
 import { BreathSession } from "@/types/breath";
+import { formatTime, formatTimeDisplay } from "./formatTime";
 
-export const formatTime = (timeInSeconds: number) => {
-  const minutes = Math.floor(timeInSeconds / 60);
-  const seconds = timeInSeconds % 60;
-  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-};
+// Add Open Sans font
+import "jspdf/dist/polyfills.es.js";
 
 interface GeneratePDFParams {
   sessions: BreathSession[];
@@ -24,48 +22,98 @@ interface PDFOutput {
   fileName: string;
 }
 
-// Initialize PDF document with background
+// Initialize PDF document with gradient background
 const initializePDF = (): jsPDF => {
+  // Create new PDF document
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
     format: "a4"
   });
   
-  // Set background with gradient (approximate using rectangles with different opacities)
-  for (let i = 0; i < 20; i++) {
-    const alpha = 0.02 + (i * 0.005);
-    doc.setFillColor(173, 216, 230, alpha); // Light blue
-    doc.rect(0, i * (297/20), 210, 297/20, "F");
+  // Set up gradient background
+  // Create soft blue gradient from top to bottom
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
+  
+  // First layer - light blue base
+  doc.setFillColor(209, 233, 252); // #D1E9FC - very light blue
+  doc.rect(0, 0, pageWidth, pageHeight, "F");
+  
+  // Add gradient effect with multiple rectangles of varying opacity
+  for (let i = 0; i < 50; i++) {
+    const y = (i / 50) * pageHeight;
+    const height = pageHeight / 50;
+    const alpha = 0.5 - (i / 100); // Gradually decrease opacity
+    
+    // Top part - lighter
+    if (i < 25) {
+      doc.setFillColor(168, 218, 220, alpha); // #A8DADC
+    } 
+    // Bottom part - darker
+    else {
+      doc.setFillColor(69, 123, 157, alpha); // #457B9D
+    }
+    
+    doc.rect(0, y, pageWidth, height, "F");
+  }
+  
+  // Add wavy design at bottom
+  const wavyY = pageHeight - 50;
+  doc.setDrawColor(255, 255, 255, 0.5);
+  doc.setLineWidth(0.5);
+  
+  for (let i = 0; i < 3; i++) {
+    const offsetY = i * 10;
+    doc.setFillColor(255, 255, 255, 0.3 - (i * 0.1));
+    
+    // Create wavy pattern
+    doc.moveTo(0, wavyY + offsetY);
+    for (let x = 0; x < pageWidth; x += 10) {
+      const y = wavyY + offsetY + Math.sin(x/20) * 5;
+      doc.lineTo(x, y);
+    }
+    
+    doc.lineTo(pageWidth, wavyY + offsetY);
+    doc.lineTo(pageWidth, pageHeight);
+    doc.lineTo(0, pageHeight);
+    doc.lineTo(0, wavyY + offsetY);
+    doc.fill();
   }
   
   return doc;
 };
 
-// Add header section
+// Add header section with logo and title
 const addHeader = (doc: jsPDF, dateRange: GeneratePDFParams['dateRange'], exportType: GeneratePDFParams['exportType']) => {
+  const pageWidth = doc.internal.pageSize.width;
+  
   // Add OXIA logo
-  const logoData = "/lovable-uploads/2537215b-9aaa-455a-9557-b82a0a16a948.png";
-  doc.addImage(logoData, "PNG", 75, 15, 60, 25);
+  const logoData = "/lovable-uploads/a94449ed-cc00-43e4-b5d4-7e810331284a.png";
+  doc.addImage(logoData, "PNG", (pageWidth / 2) - 25, 25, 50, 20);
   
   // Title
-  doc.setFontSize(24);
-  doc.setTextColor(41, 82, 156); // Blue text accent
-  doc.text("Breathing Session Report", 105, 55, { align: "center" });
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(36);
+  doc.setTextColor(29, 53, 87); // #1D3557 - deep blue
+  doc.text("Breathing Session", pageWidth / 2, 70, { align: "center" });
+  doc.text("Report", pageWidth / 2, 85, { align: "center" });
   
   // Date range
   let dateText = "All Sessions";
   if (exportType === "custom" && dateRange.from && dateRange.to) {
     dateText = `${format(dateRange.from, "MMMM d")}–${format(dateRange.to, "d, yyyy")}`;
   }
-  doc.setFontSize(14);
-  doc.setTextColor(100, 100, 100);
-  doc.text(dateText, 105, 63, { align: "center" });
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(29, 53, 87, 0.8); // Deep blue with transparency
+  doc.text(dateText, pageWidth / 2, 100, { align: "center" });
   
-  // Inspirational subheading
-  doc.setFontSize(12);
-  doc.setTextColor(120, 120, 120);
-  doc.text("Every breath counts.", 105, 70, { align: "center" });
+  // Inspirational quote
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(29, 53, 87, 0.8);
+  doc.text('"Every breath counts."', pageWidth / 2, 110, { align: "center" });
 };
 
 // Filter sessions based on date range if needed
@@ -91,87 +139,102 @@ const calculateSessionStats = (sessions: BreathSession[]) => {
   const totalSessions = sessions.length;
   const totalBreaths = sessions.reduce((acc, s) => acc + s.breathCount, 0);
   const totalTime = sessions.reduce((acc, s) => acc + s.totalDuration, 0);
-  const avgSessionDuration = totalSessions ? totalTime / totalSessions : 0;
+  const avgSessionDuration = totalSessions ? Math.floor(totalTime / totalSessions) : 0;
   
   return { totalSessions, totalBreaths, totalTime, avgSessionDuration };
 };
 
-// Add summary statistics section
+// Add summary statistics section with cards
 const addSummarySection = (doc: jsPDF, stats: ReturnType<typeof calculateSessionStats>) => {
   const { totalSessions, totalBreaths, totalTime, avgSessionDuration } = stats;
+  const pageWidth = doc.internal.pageSize.width;
   
-  // SUMMARY BLOCK - Create white card effect
+  // Create white rounded card for stats
   doc.setFillColor(255, 255, 255);
-  doc.roundedRect(15, 85, 180, 60, 5, 5, "F");
+  doc.roundedRect(20, 130, pageWidth - 40, 70, 10, 10, "F");
   
-  // Draw stat boxes
-  drawStatBox(doc, 25, 95, "TOTAL SESSIONS", totalSessions.toString());
-  drawStatBox(doc, 115, 95, "TOTAL BREATHS", totalBreaths.toString());
-  drawStatBox(doc, 25, 125, "TOTAL TIME", formatTime(totalTime));
-  drawStatBox(doc, 115, 125, "AVERAGE DURATION", formatTime(Math.round(avgSessionDuration)));
-};
-
-// Helper to draw a statistics box
-const drawStatBox = (doc: jsPDF, x: number, y: number, title: string, value: string) => {
-  doc.setFillColor(248, 250, 252);
-  doc.roundedRect(x, y, 80, 20, 3, 3, "F");
+  // Add subtle shadow effect
+  doc.setFillColor(230, 230, 230, 0.3);
+  doc.roundedRect(22, 132, pageWidth - 40, 70, 10, 10, "F");
   
-  doc.setFontSize(9);
-  doc.setTextColor(100, 100, 100);
-  doc.text(title, x + 40, y + 7, { align: "center" });
+  // Define columns for stats display
+  const statColumns = 3;
+  const columnWidth = (pageWidth - 60) / statColumns;
   
-  doc.setFontSize(14);
-  doc.setTextColor(41, 82, 156);
-  doc.text(value, x + 40, y + 16, { align: "center" });
-};
-
-// Add progress visual section
-const addProgressVisual = (doc: jsPDF, sessions: BreathSession[]) => {
-  if (sessions.length <= 1) return;
+  // Stats - Total Sessions
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(32);
+  doc.setTextColor(29, 53, 87);
+  doc.text(totalSessions.toString(), 45, 155, { align: "center" });
   
-  doc.setFillColor(255, 255, 255);
-  doc.roundedRect(15, 155, 180, 70, 5, 5, "F");
-  doc.setFontSize(14);
-  doc.setTextColor(41, 82, 156);
-  doc.text("Your Breathing Journey", 105, 170, { align: "center" });
+  doc.setFontSize(12);
+  doc.setTextColor(69, 123, 157);
+  doc.text("Total", 45, 165, { align: "center" });
+  doc.text("Sessions", 45, 172, { align: "center" });
   
-  // Get last 5 sessions for visualization
-  const recentSessions = sessions.slice(0, Math.min(5, sessions.length)).reverse();
+  // Stats - Total Breaths
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(32);
+  doc.setTextColor(29, 53, 87);
+  doc.text(totalBreaths.toString(), pageWidth / 2, 155, { align: "center" });
   
-  // Draw simple bar chart of session durations
-  const barWidth = 25;
-  const maxHeight = 40;
-  const startX = 40;
-  const startY = 210;
-  const gap = 10;
-  const maxDuration = Math.max(...recentSessions.map(s => s.totalDuration));
+  doc.setFontSize(12);
+  doc.setTextColor(69, 123, 157);
+  doc.text("Total", pageWidth / 2, 165, { align: "center" });
+  doc.text("Breaths", pageWidth / 2, 172, { align: "center" });
   
-  recentSessions.forEach((session, index) => {
-    const barHeight = (session.totalDuration / maxDuration) * maxHeight;
-    const x = startX + (index * (barWidth + gap));
+  // Stats - Average Duration
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(32);
+  doc.setTextColor(29, 53, 87);
+  doc.text(formatTime(avgSessionDuration), pageWidth - 45, 155, { align: "center" });
+  
+  doc.setFontSize(12);
+  doc.setTextColor(69, 123, 157);
+  doc.text("Average", pageWidth - 45, 165, { align: "center" });
+  doc.text("Duration", pageWidth - 45, 172, { align: "center" });
+  
+  // Add circular progress chart
+  if (sessions.length > 0) {
+    const chartCenterX = pageWidth - 50;
+    const chartCenterY = 185;
+    const chartRadius = 15;
     
-    // Draw bar
-    doc.setFillColor(41, 82, 156, 0.7 - (index * 0.1));
-    doc.roundedRect(x, startY - barHeight, barWidth, barHeight, 2, 2, "F");
+    // Draw circular progress background
+    doc.setDrawColor(168, 218, 220, 0.5); // #A8DADC with transparency
+    doc.setFillColor(168, 218, 220, 0.2);
+    doc.circle(chartCenterX, chartCenterY, chartRadius, "FD");
     
-    // Draw date label
-    doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.text(format(new Date(session.date), "MMM d"), x + (barWidth / 2), startY + 8, { align: "center" });
-  });
+    // Draw progress arc (3/4 circle for visual effect)
+    doc.setDrawColor(0, 180, 216); // #00B4D8 bright aqua
+    doc.setFillColor(0, 180, 216, 0.5);
+    doc.setLineWidth(3);
+    
+    // Draw arc (simplified - just a visual indicator)
+    const startAngle = 0;
+    const endAngle = Math.PI * 1.5; // 3/4 of a circle
+    
+    doc.arc(chartCenterX, chartCenterY, chartRadius, startAngle, endAngle, "FD");
+    
+    // Add text inside circle
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(29, 53, 87);
+    doc.text(formatTimeDisplay(totalTime), chartCenterX, chartCenterY, { align: "center" });
+  }
 };
 
 // Add sessions table
 const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
-  doc.setFillColor(255, 255, 255);
-  doc.roundedRect(15, 235, 180, 0, 5, 5, "F"); // Height adjusted by autoTable
+  if (sessions.length === 0) return 220;
   
-  doc.setFontSize(14);
-  doc.setTextColor(41, 82, 156);
-  doc.text("Session Details", 105, 245, { align: "center" });
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(29, 53, 87);
+  doc.text("Session Details", doc.internal.pageSize.width / 2, 220, { align: "center" });
   
   const tableColumns = [
-    "Date", "Time", "Breath Pattern", "Repetitions", "Breaths", "Duration"
+    "Date", "Time", "Inhale / Hold / Exhale", "Repetitions", "Duration"
   ];
   
   const tableData = sessions.map((session) => {
@@ -179,57 +242,77 @@ const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
     return [
       format(date, "MMM d, yyyy"),
       format(date, "h:mm a"),
-      `${4}s-${session.holdDuration}s-${4}s`, // Assuming standard inhale/exhale of 4s
+      `${session.inhaleDuration || 4}s / ${session.holdDuration}s / ${session.exhaleDuration || 4}s`,
       session.repetitions.toString(),
-      session.breathCount.toString(),
       formatTime(session.totalDuration),
     ];
   });
   
   autoTable(doc, {
-    startY: 255,
+    startY: 230,
     head: [tableColumns],
     body: tableData,
-    theme: "grid",
     headStyles: { 
-      fillColor: [63, 131, 193],
+      fillColor: [69, 123, 157],
       textColor: [255, 255, 255],
-      fontSize: 10,
+      fontSize: 12,
       fontStyle: "bold",
+      halign: "center",
     },
     styles: {
-      overflow: "linebreak",
-      cellWidth: "auto",
-      fontSize: 9,
+      fontSize: 11,
+      cellPadding: 5,
+      overflow: "ellipsize",
+      halign: "center",
+      valign: "middle",
+      lineColor: [168, 218, 220],
     },
-    columnStyles: {
-      0: { cellWidth: 25 },
-      1: { cellWidth: 20 },
-      2: { cellWidth: 30 },
-      3: { cellWidth: 25 },
-      4: { cellWidth: 20 },
-      5: { cellWidth: 20 },
+    alternateRowStyles: {
+      fillColor: [248, 250, 252],
     },
+    tableLineColor: [168, 218, 220],
+    tableLineWidth: 0.5,
   });
   
-  return (doc as any).lastAutoTable.finalY || 270;
+  return (doc as any).lastAutoTable.finalY || 250;
+};
+
+// Add reflection or notes section
+const addReflectionSection = (doc: jsPDF, finalY: number) => {
+  // In this initial version, we'll just add a motivational quote
+  // In a future version, we could integrate actual user notes
+  
+  const pageWidth = doc.internal.pageSize.width;
+  const reflectionY = finalY + 30;
+  
+  doc.setFillColor(255, 255, 255, 0.8);
+  doc.roundedRect(30, reflectionY, pageWidth - 60, 40, 5, 5, "F");
+  
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(13);
+  doc.setTextColor(29, 53, 87, 0.8);
+  doc.text("Thank you for taking the time to breathe.", pageWidth / 2, reflectionY + 20, { align: "center" });
 };
 
 // Add footer section
-const addFooter = (doc: jsPDF, finalY: number) => {
+const addFooter = (doc: jsPDF) => {
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
+  
   // Inspirational quote
-  doc.setFillColor(248, 250, 252, 0.7);
-  doc.roundedRect(30, finalY + 15, 150, 25, 5, 5, "F");
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(12);
+  doc.setTextColor(29, 53, 87, 0.8);
+  doc.text("Your breath is your superpower. Keep going.", pageWidth / 2, pageHeight - 35, { align: "center" });
   
-  doc.setFontSize(11);
-  doc.setTextColor(41, 82, 156);
-  doc.text("Your breath is your superpower. Keep going.", 105, finalY + 25, { align: "center" });
-  
-  doc.setFontSize(8);
-  doc.setTextColor(150, 150, 150);
-  doc.text("Created with OXIA Breathing App • oxia.breathe", 105, finalY + 35, { align: "center" });
+  // App info
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(69, 123, 157, 0.8);
+  doc.text("Created with OXIA Breathing App • oxia.breathe", pageWidth / 2, pageHeight - 25, { align: "center" });
 };
 
+// Main PDF generation function
 export const generatePDF = ({ sessions, dateRange, exportType }: GeneratePDFParams): PDFOutput => {
   try {
     // Initialize PDF document
@@ -247,14 +330,14 @@ export const generatePDF = ({ sessions, dateRange, exportType }: GeneratePDFPara
     // Add summary statistics section
     addSummarySection(doc, stats);
     
-    // Add progress visual
-    addProgressVisual(doc, filteredSessions);
-    
     // Add sessions table and get final Y position
     const finalY = addSessionsTable(doc, filteredSessions);
     
+    // Add reflection section
+    addReflectionSection(doc, finalY);
+    
     // Add footer
-    addFooter(doc, finalY);
+    addFooter(doc);
     
     // Generate PDF output
     const pdfOutput = doc.output("blob");
