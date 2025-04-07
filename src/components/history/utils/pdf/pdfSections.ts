@@ -5,8 +5,9 @@ import { BreathSession } from "@/types/breath";
 import { formatTime, formatTimeDisplay } from "../formatTime";
 import { prepareSessionTableData } from "./pdfDataUtils";
 import { SessionStats } from "./types";
+import { PDFStyling } from "./pdfStyles";
 
-// Add summary statistics section with cards
+// Add summary statistics section with improved grouped info cards
 export const addSummarySection = (
   doc: jsPDF, 
   stats: SessionStats,
@@ -15,109 +16,114 @@ export const addSummarySection = (
   const { totalSessions, totalBreaths, totalTime, avgSessionDuration } = stats;
   const pageWidth = doc.internal.pageSize.width;
   
-  // Create white rounded card for stats
-  doc.setFillColor(255, 255, 255);
-  doc.roundedRect(20, 130, pageWidth - 40, 70, 10, 10, "F");
+  // Create a unified container for all stat cards with soft shadow
+  doc.setFillColor(255, 255, 255, 0.95);
+  doc.roundedRect(20, 130, pageWidth - 40, 90, 8, 8, "F");
   
   // Add subtle shadow effect
-  doc.setFillColor(230, 230, 230, 0.3);
-  doc.roundedRect(22, 132, pageWidth - 40, 70, 10, 10, "F");
+  doc.setFillColor(220, 220, 220, 0.2);
+  doc.roundedRect(22, 132, pageWidth - 40, 90, 8, 8, "F");
+  
+  // Add section title
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.setTextColor(PDFStyling.colors.primary);
+  doc.text("Your Breathing Journey", pageWidth / 2, 145, { align: "center" });
+  
+  // Add decorative accent line
+  doc.setDrawColor(...PDFStyling.colors.accent);
+  doc.setLineWidth(0.5);
+  doc.line(pageWidth / 2 - 40, 150, pageWidth / 2 + 40, 150);
   
   // Define columns for stats display
   const statColumns = 3;
   const columnWidth = (pageWidth - 60) / statColumns;
   
+  // Add background accent blocks for each stat to group them visually
+  for (let i = 0; i < 3; i++) {
+    const xPos = 30 + (i * columnWidth);
+    doc.setFillColor(...PDFStyling.colors.lightAccent, 0.2);
+    doc.roundedRect(xPos, 160, columnWidth - 10, 50, 5, 5, "F");
+  }
+  
   // Stats - Total Sessions
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(32);
-  doc.setTextColor(29, 53, 87);
-  doc.text(totalSessions.toString(), 45, 155, { align: "center" });
+  doc.setFontSize(28);
+  doc.setTextColor(PDFStyling.colors.primary);
+  doc.text(totalSessions.toString(), 45, 180, { align: "center" });
   
   doc.setFontSize(12);
-  doc.setTextColor(69, 123, 157);
-  doc.text("Total", 45, 165, { align: "center" });
-  doc.text("Sessions", 45, 172, { align: "center" });
+  doc.setTextColor(PDFStyling.colors.secondary);
+  doc.text("Total", 45, 195, { align: "center" });
+  doc.text("Sessions", 45, 205, { align: "center" });
   
   // Stats - Total Breaths
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(32);
-  doc.setTextColor(29, 53, 87);
-  doc.text(totalBreaths.toString(), pageWidth / 2, 155, { align: "center" });
+  doc.setFontSize(28);
+  doc.setTextColor(PDFStyling.colors.primary);
+  doc.text(totalBreaths.toString(), pageWidth / 2, 180, { align: "center" });
   
   doc.setFontSize(12);
-  doc.setTextColor(69, 123, 157);
-  doc.text("Total", pageWidth / 2, 165, { align: "center" });
-  doc.text("Breaths", pageWidth / 2, 172, { align: "center" });
+  doc.setTextColor(PDFStyling.colors.secondary);
+  doc.text("Total", pageWidth / 2, 195, { align: "center" });
+  doc.text("Breaths", pageWidth / 2, 205, { align: "center" });
   
   // Stats - Average Duration
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(32);
-  doc.setTextColor(29, 53, 87);
-  doc.text(formatTime(avgSessionDuration), pageWidth - 45, 155, { align: "center" });
+  doc.setFontSize(28);
+  doc.setTextColor(PDFStyling.colors.primary);
+  doc.text(formatTime(avgSessionDuration), pageWidth - 45, 180, { align: "center" });
   
   doc.setFontSize(12);
-  doc.setTextColor(69, 123, 157);
-  doc.text("Average", pageWidth - 45, 165, { align: "center" });
-  doc.text("Duration", pageWidth - 45, 172, { align: "center" });
+  doc.setTextColor(PDFStyling.colors.secondary);
+  doc.text("Average", pageWidth - 45, 195, { align: "center" });
+  doc.text("Duration", pageWidth - 45, 205, { align: "center" });
   
-  // Add circular progress chart
+  // Display total time
   if (filteredSessions.length > 0) {
-    const chartCenterX = pageWidth - 50;
-    const chartCenterY = 185;
-    const chartRadius = 15;
+    // Create a soft box for total time
+    doc.setFillColor(...PDFStyling.colors.accent, 0.2);
+    doc.roundedRect(pageWidth / 2 - 50, 215, 100, 30, 5, 5, "F");
     
-    // Draw circular progress background
-    doc.setDrawColor(168, 218, 220, 0.5); // #A8DADC with transparency
-    doc.setFillColor(168, 218, 220, 0.2);
-    doc.circle(chartCenterX, chartCenterY, chartRadius, "FD");
-    
-    // Draw progress arc (3/4 circle for visual effect)
-    doc.setDrawColor(0, 180, 216); // #00B4D8 bright aqua
-    doc.setFillColor(0, 180, 216, 0.5);
-    doc.setLineWidth(3);
-    
-    // Draw a series of small segments to approximate an arc
-    const startAngle = 0; 
-    const endAngle = 270; // 3/4 of a circle in degrees
-    
-    // Draw a series of small segments to approximate an arc
-    for (let angle = startAngle; angle <= endAngle; angle += 10) {
-      const radians = (angle * Math.PI) / 180;
-      const x = chartCenterX + chartRadius * Math.cos(radians);
-      const y = chartCenterY + chartRadius * Math.sin(radians);
-      
-      doc.circle(x, y, 1, "F");
-    }
-    
-    // Add text inside circle
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(29, 53, 87);
-    doc.text(formatTimeDisplay(totalTime), chartCenterX, chartCenterY, { align: "center" });
+    doc.setFontSize(12);
+    doc.setTextColor(PDFStyling.colors.secondary);
+    doc.text("Total Practice Time", pageWidth / 2, 225, { align: "center" });
+    
+    doc.setFontSize(16);
+    doc.setTextColor(PDFStyling.colors.primary);
+    doc.text(formatTimeDisplay(totalTime), pageWidth / 2, 238, { align: "center" });
   }
 };
 
-// Add sessions table
+// Add sessions table - consolidated as one single table
 export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
-  if (sessions.length === 0) return 220;
+  if (sessions.length === 0) return 260;
   
-  doc.setFontSize(16);
+  // Section header with improved styling
+  doc.setFillColor(...PDFStyling.colors.primary, 0.1);
+  doc.roundedRect(20, 250, doc.internal.pageSize.width - 40, 30, 5, 5, "F");
+  
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(29, 53, 87);
-  doc.text("Session Details", doc.internal.pageSize.width / 2, 220, { align: "center" });
+  doc.setFontSize(16);
+  doc.setTextColor(PDFStyling.colors.primary);
+  doc.text("Session Details", doc.internal.pageSize.width / 2, 270, { align: "center" });
   
+  // Prepare data for a single table
   const { tableColumns, tableData } = prepareSessionTableData(sessions);
   
+  // Create a single table with all sessions
   autoTable(doc, {
-    startY: 230,
+    startY: 285,
     head: [tableColumns],
     body: tableData,
     headStyles: { 
-      fillColor: [69, 123, 157],
+      fillColor: [...PDFStyling.colors.primary],
       textColor: [255, 255, 255],
       fontSize: 12,
       fontStyle: "bold",
       halign: "center",
+      cellPadding: {top: 8, right: 5, bottom: 8, left: 5},
     },
     styles: {
       fontSize: 11,
@@ -125,14 +131,25 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
       overflow: "ellipsize",
       halign: "center",
       valign: "middle",
-      lineColor: [168, 218, 220],
+      lineColor: [...PDFStyling.colors.lightAccent],
+      lineWidth: 0.1,
     },
     alternateRowStyles: {
-      fillColor: [248, 250, 252],
+      fillColor: [250, 252, 255],
     },
-    tableLineColor: [168, 218, 220],
-    tableLineWidth: 0.5,
+    tableLineColor: [...PDFStyling.colors.accent],
+    tableLineWidth: 0.2,
+    // Set horizontal lines only between rows for cleaner look
+    showHead: 'firstPage',
+    didDrawPage: function(data) {
+      // Optional: Add a light header on subsequent pages if table spans multiple pages
+      if (data.pageCount > 1 && data.cursor.y === data.settings.margin.top) {
+        doc.setFontSize(10);
+        doc.setTextColor(...PDFStyling.colors.secondary);
+        doc.text("Session Details (continued)", doc.internal.pageSize.width / 2, 20, { align: "center" });
+      }
+    }
   });
   
-  return (doc as any).lastAutoTable.finalY || 250;
+  return (doc as any).lastAutoTable.finalY || 300;
 };

@@ -32,10 +32,10 @@ export const calculateSessionStats = (sessions: BreathSession[]): SessionStats =
   return { totalSessions, totalBreaths, totalTime, avgSessionDuration };
 };
 
-// Prepare table data for the sessions
+// Prepare table data for the sessions - ensuring one consolidated table
 export const prepareSessionTableData = (sessions: BreathSession[]) => {
   const tableColumns = [
-    "Date", "Time", "Inhale / Hold / Exhale", "Repetitions", "Duration"
+    "Date", "Time", "Breathing Pattern (seconds)", "Repetitions", "Duration"
   ];
   
   const tableData = sessions.map((session) => {
@@ -43,6 +43,7 @@ export const prepareSessionTableData = (sessions: BreathSession[]) => {
     // Use default values for inhale/exhale if not available in the session data
     const inhaleDuration = 4; // Default value
     const exhaleDuration = 4; // Default value
+    
     return [
       format(date, "MMM d, yyyy"),
       format(date, "h:mm a"),
