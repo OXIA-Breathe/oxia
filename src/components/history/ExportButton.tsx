@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Download, FileText, Mail } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -48,15 +47,12 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
   const generatePDF = () => {
     const doc = new jsPDF();
     
-    // Add OXIA logo
     const imgData = "/lovable-uploads/2537215b-9aaa-455a-9557-b82a0a16a948.png";
     doc.addImage(imgData, "PNG", 15, 10, 60, 25);
     
-    // Title
     doc.setFontSize(20);
     doc.text("Breathing Session History", 15, 50);
     
-    // Filter sessions based on date range if custom is selected
     let filteredSessions = sessions;
     if (exportType === "custom" && dateRange.from && dateRange.to) {
       const fromDate = dateRange.from.setHours(0, 0, 0, 0);
@@ -68,13 +64,11 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
       });
     }
     
-    // Calculate summary statistics
     const totalSessions = filteredSessions.length;
     const totalBreaths = filteredSessions.reduce((acc, s) => acc + s.breathCount, 0);
     const totalTime = filteredSessions.reduce((acc, s) => acc + s.totalDuration, 0);
     const avgSessionDuration = totalSessions ? totalTime / totalSessions : 0;
     
-    // Add summary section
     doc.setFontSize(14);
     doc.text("Summary", 15, 60);
     doc.setFontSize(12);
@@ -91,7 +85,6 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
       );
     }
     
-    // Add sessions table
     const tableData = filteredSessions.map((session) => [
       format(new Date(session.date), "MMM d, yyyy h:mm a"),
       session.repetitions.toString(),
@@ -108,7 +101,6 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
       headStyles: { fillColor: [123, 104, 238] },
     });
     
-    // Save the PDF
     const pdfOutput = doc.output("blob");
     const fileName = "OXIA-Breathing-Sessions.pdf";
     
@@ -120,7 +112,6 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
   const handleExport = () => {
     const { blob, fileName } = generatePDF();
     
-    // Save to device by default
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -138,15 +129,12 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
     const { blob, fileName } = generatePDF();
     
     if (method === "email") {
-      // Open email client with attachment (this is just a demo as browsers can't attach files to mailto links)
       toast({
         title: "Email option selected",
         description: "This would integrate with an email sending service in a production app.",
       });
       
-      // In a real app, we would use a server endpoint to send the email with the attachment
     } else if (method === "device") {
-      // Save to device
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -284,7 +272,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
                 )}
               </div>
               
-              <DialogFooter>
+              <DialogFooter className="flex gap-2">
                 <Button variant="outline" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
