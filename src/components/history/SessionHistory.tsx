@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { BreathSession } from "@/types/breath";
+import ExportButton from "./ExportButton";
 
 const SessionHistory = () => {
   const { sessions, addSession } = useBreath();
@@ -85,8 +86,9 @@ const SessionHistory = () => {
 
   return (
     <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-xl">Session History</CardTitle>
+        <ExportButton sessions={displaySessions} />
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[500px] rounded-md">

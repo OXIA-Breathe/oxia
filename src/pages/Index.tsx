@@ -2,7 +2,7 @@
 import MainLayout from "@/components/layout/MainLayout";
 import BreathingExercise from "@/components/breathing/BreathingExercise";
 import { Link } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 
@@ -15,9 +15,9 @@ const Index = () => {
         <div className="container py-6 px-6 flex flex-col h-full">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
-            <div className="invisible">
-              {/* Empty div to maintain spacing */}
-            </div>
+            <Link to="/history" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
+              <History className="h-4 w-4" />
+            </Link>
             <Link to="/profile" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
               <User className="h-4 w-4" />
             </Link>
