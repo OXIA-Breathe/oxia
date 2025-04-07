@@ -14,7 +14,7 @@ const Index = () => {
       <div className="h-full">
         <div className="container py-6 px-6 flex flex-col h-full">
           {/* Header */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-6">
             <Link to="/history" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
               <History className="h-4 w-4" />
             </Link>
@@ -24,11 +24,11 @@ const Index = () => {
           </div>
           
           {/* Logo */}
-          <div className="mb-6 text-center">
+          <div className="flex justify-center mb-4">
             <img 
               src="/lovable-uploads/02559a6e-7abf-4346-846d-bbd138722420.png" 
               alt="OXIA Logo" 
-              className="mx-auto w-full max-w-[240px]" 
+              className="h-16 w-auto object-contain" 
             />
           </div>
           
