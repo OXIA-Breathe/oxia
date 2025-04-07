@@ -27,10 +27,6 @@ export const generatePDF = ({ sessions, dateRange, exportType }: GeneratePDFPara
     format: "a4"
   });
   
-  // Add font
-  doc.addFont("Nunito", "Nunito", "normal");
-  doc.setFont("Nunito");
-  
   // Set background with gradient (approximate using rectangles with different opacities)
   for (let i = 0; i < 20; i++) {
     const alpha = 0.02 + (i * 0.005);

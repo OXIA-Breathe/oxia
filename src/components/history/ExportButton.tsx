@@ -26,51 +26,78 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
   const [showShareOptions, setShowShareOptions] = useState(false);
 
   const handleExport = () => {
-    const result = generatePDF({
-      sessions,
-      dateRange,
-      exportType
-    });
-    
-    setShowShareOptions(true);
-    
-    return result;
+    try {
+      console.log("Generating PDF...");
+      const result = generatePDF({
+        sessions,
+        dateRange,
+        exportType
+      });
+      
+      console.log("PDF generated successfully");
+      setShowShareOptions(true);
+      
+      return result;
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Error generating PDF",
+        description: "There was a problem creating your report. Please try again.",
+        variant: "destructive"
+      });
+      return null;
+    }
   };
 
   const handleShare = (method: "email" | "device" | "drive") => {
-    const { blob, fileName } = generatePDF({
-      sessions,
-      dateRange,
-      exportType
-    });
-    
-    if (method === "email") {
-      toast({
-        title: "Email option selected",
-        description: "This would integrate with an email sending service in a production app.",
+    try {
+      const result = generatePDF({
+        sessions,
+        dateRange,
+        exportType
       });
       
-    } else if (method === "device") {
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = fileName;
-      link.click();
-      URL.revokeObjectURL(url);
+      if (!result) {
+        throw new Error("Failed to generate PDF");
+      }
       
+      const { blob, fileName } = result;
+      
+      if (method === "email") {
+        toast({
+          title: "Email option selected",
+          description: "This would integrate with an email sending service in a production app.",
+        });
+        
+      } else if (method === "device") {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        toast({
+          title: "Saved to device",
+          description: "Your breathing session report has been saved to your device.",
+        });
+      } else if (method === "drive") {
+        toast({
+          title: "Google Drive option selected",
+          description: "This would integrate with Google Drive API in a production app.",
+        });
+      }
+      
+      setShowShareOptions(false);
+      setOpen(false);
+    } catch (error) {
+      console.error("Error sharing PDF:", error);
       toast({
-        title: "Saved to device",
-        description: "Your breathing session report has been saved to your device.",
-      });
-    } else if (method === "drive") {
-      toast({
-        title: "Google Drive option selected",
-        description: "This would integrate with Google Drive API in a production app.",
+        title: "Error sharing PDF",
+        description: "There was a problem sharing your report. Please try again.",
+        variant: "destructive"
       });
     }
-    
-    setShowShareOptions(false);
-    setOpen(false);
   };
 
   return (
