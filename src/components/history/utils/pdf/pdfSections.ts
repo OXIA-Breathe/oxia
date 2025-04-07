@@ -4,11 +4,12 @@ import autoTable from "jspdf-autotable";
 import { BreathSession } from "@/types/breath";
 import { formatTime, formatTimeDisplay } from "../formatTime";
 import { prepareSessionTableData } from "./pdfDataUtils";
+import { SessionStats } from "./types";
 
 // Add summary statistics section with cards
 export const addSummarySection = (
   doc: jsPDF, 
-  stats: ReturnType<typeof import("./pdfDataUtils").calculateSessionStats>, 
+  stats: SessionStats,
   filteredSessions: BreathSession[]
 ) => {
   const { totalSessions, totalBreaths, totalTime, avgSessionDuration } = stats;

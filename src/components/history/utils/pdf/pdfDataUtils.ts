@@ -2,6 +2,7 @@
 import { BreathSession } from "@/types/breath";
 import { format } from "date-fns";
 import { formatTime } from "../formatTime";
+import { SessionStats } from "./types";
 
 // Filter sessions based on date range if needed
 export const filterSessionsByDateRange = (
@@ -22,7 +23,7 @@ export const filterSessionsByDateRange = (
 };
 
 // Calculate summary statistics
-export const calculateSessionStats = (sessions: BreathSession[]) => {
+export const calculateSessionStats = (sessions: BreathSession[]): SessionStats => {
   const totalSessions = sessions.length;
   const totalBreaths = sessions.reduce((acc, s) => acc + s.breathCount, 0);
   const totalTime = sessions.reduce((acc, s) => acc + s.totalDuration, 0);

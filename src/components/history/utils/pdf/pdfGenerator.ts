@@ -1,24 +1,11 @@
 
 import { jsPDF } from "jspdf";
 import "jspdf/dist/polyfills.es.js";
-import { BreathSession } from "@/types/breath";
-import { initializePDF, addHeader, addFooter, addReflectionSection } from "./pdfStyles";
+import { GeneratePDFParams, PDFOutput } from "./types";
+import { initializePDF } from "./pdfBase";
+import { addHeader, addFooter, addReflectionSection } from "./pdfLayout";
 import { filterSessionsByDateRange, calculateSessionStats } from "./pdfDataUtils";
 import { addSummarySection, addSessionsTable } from "./pdfSections";
-
-interface GeneratePDFParams {
-  sessions: BreathSession[];
-  dateRange: {
-    from: Date | undefined;
-    to: Date | undefined;
-  };
-  exportType: "full" | "custom";
-}
-
-interface PDFOutput {
-  blob: Blob;
-  fileName: string;
-}
 
 // Main PDF generation function
 export const generatePDF = ({ sessions, dateRange, exportType }: GeneratePDFParams): PDFOutput => {
