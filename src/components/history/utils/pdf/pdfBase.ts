@@ -1,6 +1,6 @@
 
 import { jsPDF } from "jspdf";
-import { PDFStyling } from "./pdfStyles";
+import { PDFStyling, withAlpha } from "./pdfStyles";
 
 // Initialize PDF document with improved gradient background
 export const initializePDF = (): jsPDF => {
@@ -16,7 +16,7 @@ export const initializePDF = (): jsPDF => {
   const pageHeight = doc.internal.pageSize.height;
   
   // First layer - light blue base for calm feeling
-  doc.setFillColor(...PDFStyling.colors.background); // Very light blue base
+  doc.setFillColor(PDFStyling.colors.background[0], PDFStyling.colors.background[1], PDFStyling.colors.background[2]); // Very light blue base
   doc.rect(0, 0, pageWidth, pageHeight, "F");
   
   // Add soft gradient effect with multiple rectangles of varying opacity
@@ -27,11 +27,13 @@ export const initializePDF = (): jsPDF => {
     
     // Top part - lighter
     if (i < 30) {
-      doc.setFillColor(...PDFStyling.colors.lightAccent, alpha); 
+      const color = withAlpha(PDFStyling.colors.lightAccent, alpha);
+      doc.setFillColor(color[0], color[1], color[2], color[3]); 
     } 
     // Bottom part - slightly deeper
     else {
-      doc.setFillColor(...PDFStyling.colors.accent, alpha);
+      const color = withAlpha(PDFStyling.colors.accent, alpha);
+      doc.setFillColor(color[0], color[1], color[2], color[3]);
     }
     
     doc.rect(0, y, pageWidth, height, "F");
@@ -48,9 +50,12 @@ export const initializePDF = (): jsPDF => {
 const addWavePattern = (doc: jsPDF, yPosition: number, isTopWave: boolean) => {
   const pageWidth = doc.internal.pageSize.width;
   
-  doc.setDrawColor(...PDFStyling.colors.accent, 0.3);
+  const accentWithAlpha = withAlpha(PDFStyling.colors.accent, 0.3);
+  doc.setDrawColor(accentWithAlpha[0], accentWithAlpha[1], accentWithAlpha[2], accentWithAlpha[3]);
   doc.setLineWidth(0.3);
-  doc.setFillColor(...PDFStyling.colors.accent, 0.1);
+  
+  const fillColor = withAlpha(PDFStyling.colors.accent, 0.1);
+  doc.setFillColor(fillColor[0], fillColor[1], fillColor[2], fillColor[3]);
   
   // Create multiple wave layers for depth
   for (let layer = 0; layer < 3; layer++) {
@@ -82,7 +87,9 @@ const addWavePattern = (doc: jsPDF, yPosition: number, isTopWave: boolean) => {
     }
     
     // Draw the path
-    doc.setFillColor(...PDFStyling.colors.accent, 0.05 + (layer * 0.03));
+    const layerAlpha = 0.05 + (layer * 0.03);
+    const layerFillColor = withAlpha(PDFStyling.colors.accent, layerAlpha);
+    doc.setFillColor(layerFillColor[0], layerFillColor[1], layerFillColor[2], layerFillColor[3]);
     
     // Since jsPDF doesn't have native path drawing, we'll approximate
     doc.moveTo(path[0][0], path[0][1]);

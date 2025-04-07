@@ -5,7 +5,7 @@ import { BreathSession } from "@/types/breath";
 import { formatTime, formatTimeDisplay } from "../formatTime";
 import { prepareSessionTableData } from "./pdfDataUtils";
 import { SessionStats } from "./types";
-import { PDFStyling } from "./pdfStyles";
+import { PDFStyling, withAlpha } from "./pdfStyles";
 
 // Add summary statistics section with improved grouped info cards
 export const addSummarySection = (
@@ -27,11 +27,11 @@ export const addSummarySection = (
   // Add section title
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
-  doc.setTextColor(PDFStyling.colors.primary);
+  doc.setTextColor(PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]);
   doc.text("Your Breathing Journey", pageWidth / 2, 145, { align: "center" });
   
   // Add decorative accent line
-  doc.setDrawColor(...PDFStyling.colors.accent);
+  doc.setDrawColor(PDFStyling.colors.accent[0], PDFStyling.colors.accent[1], PDFStyling.colors.accent[2]);
   doc.setLineWidth(0.5);
   doc.line(pageWidth / 2 - 40, 150, pageWidth / 2 + 40, 150);
   
@@ -42,56 +42,58 @@ export const addSummarySection = (
   // Add background accent blocks for each stat to group them visually
   for (let i = 0; i < 3; i++) {
     const xPos = 30 + (i * columnWidth);
-    doc.setFillColor(...PDFStyling.colors.lightAccent, 0.2);
+    const lightAccentWithAlpha = withAlpha(PDFStyling.colors.lightAccent, 0.2);
+    doc.setFillColor(lightAccentWithAlpha[0], lightAccentWithAlpha[1], lightAccentWithAlpha[2], lightAccentWithAlpha[3]);
     doc.roundedRect(xPos, 160, columnWidth - 10, 50, 5, 5, "F");
   }
   
   // Stats - Total Sessions
   doc.setFont("helvetica", "bold");
   doc.setFontSize(28);
-  doc.setTextColor(PDFStyling.colors.primary);
+  doc.setTextColor(PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]);
   doc.text(totalSessions.toString(), 45, 180, { align: "center" });
   
   doc.setFontSize(12);
-  doc.setTextColor(PDFStyling.colors.secondary);
+  doc.setTextColor(PDFStyling.colors.secondary[0], PDFStyling.colors.secondary[1], PDFStyling.colors.secondary[2]);
   doc.text("Total", 45, 195, { align: "center" });
   doc.text("Sessions", 45, 205, { align: "center" });
   
   // Stats - Total Breaths
   doc.setFont("helvetica", "bold");
   doc.setFontSize(28);
-  doc.setTextColor(PDFStyling.colors.primary);
+  doc.setTextColor(PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]);
   doc.text(totalBreaths.toString(), pageWidth / 2, 180, { align: "center" });
   
   doc.setFontSize(12);
-  doc.setTextColor(PDFStyling.colors.secondary);
+  doc.setTextColor(PDFStyling.colors.secondary[0], PDFStyling.colors.secondary[1], PDFStyling.colors.secondary[2]);
   doc.text("Total", pageWidth / 2, 195, { align: "center" });
   doc.text("Breaths", pageWidth / 2, 205, { align: "center" });
   
   // Stats - Average Duration
   doc.setFont("helvetica", "bold");
   doc.setFontSize(28);
-  doc.setTextColor(PDFStyling.colors.primary);
+  doc.setTextColor(PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]);
   doc.text(formatTime(avgSessionDuration), pageWidth - 45, 180, { align: "center" });
   
   doc.setFontSize(12);
-  doc.setTextColor(PDFStyling.colors.secondary);
+  doc.setTextColor(PDFStyling.colors.secondary[0], PDFStyling.colors.secondary[1], PDFStyling.colors.secondary[2]);
   doc.text("Average", pageWidth - 45, 195, { align: "center" });
   doc.text("Duration", pageWidth - 45, 205, { align: "center" });
   
   // Display total time
   if (filteredSessions.length > 0) {
     // Create a soft box for total time
-    doc.setFillColor(...PDFStyling.colors.accent, 0.2);
+    const accentWithAlpha = withAlpha(PDFStyling.colors.accent, 0.2);
+    doc.setFillColor(accentWithAlpha[0], accentWithAlpha[1], accentWithAlpha[2], accentWithAlpha[3]);
     doc.roundedRect(pageWidth / 2 - 50, 215, 100, 30, 5, 5, "F");
     
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.setTextColor(PDFStyling.colors.secondary);
+    doc.setTextColor(PDFStyling.colors.secondary[0], PDFStyling.colors.secondary[1], PDFStyling.colors.secondary[2]);
     doc.text("Total Practice Time", pageWidth / 2, 225, { align: "center" });
     
     doc.setFontSize(16);
-    doc.setTextColor(PDFStyling.colors.primary);
+    doc.setTextColor(PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]);
     doc.text(formatTimeDisplay(totalTime), pageWidth / 2, 238, { align: "center" });
   }
 };
@@ -101,12 +103,13 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
   if (sessions.length === 0) return 260;
   
   // Section header with improved styling
-  doc.setFillColor(...PDFStyling.colors.primary, 0.1);
+  const primaryWithAlpha = withAlpha(PDFStyling.colors.primary, 0.1);
+  doc.setFillColor(primaryWithAlpha[0], primaryWithAlpha[1], primaryWithAlpha[2], primaryWithAlpha[3]);
   doc.roundedRect(20, 250, doc.internal.pageSize.width - 40, 30, 5, 5, "F");
   
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
-  doc.setTextColor(PDFStyling.colors.primary);
+  doc.setTextColor(PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]);
   doc.text("Session Details", doc.internal.pageSize.width / 2, 270, { align: "center" });
   
   // Prepare data for a single table
@@ -118,7 +121,7 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
     head: [tableColumns],
     body: tableData,
     headStyles: { 
-      fillColor: [...PDFStyling.colors.primary],
+      fillColor: [PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]],
       textColor: [255, 255, 255],
       fontSize: 12,
       fontStyle: "bold",
@@ -131,21 +134,22 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
       overflow: "ellipsize",
       halign: "center",
       valign: "middle",
-      lineColor: [...PDFStyling.colors.lightAccent],
+      lineColor: [PDFStyling.colors.lightAccent[0], PDFStyling.colors.lightAccent[1], PDFStyling.colors.lightAccent[2]],
       lineWidth: 0.1,
     },
     alternateRowStyles: {
       fillColor: [250, 252, 255],
     },
-    tableLineColor: [...PDFStyling.colors.accent],
+    tableLineColor: [PDFStyling.colors.accent[0], PDFStyling.colors.accent[1], PDFStyling.colors.accent[2]],
     tableLineWidth: 0.2,
     // Set horizontal lines only between rows for cleaner look
     showHead: 'firstPage',
-    didDrawPage: function(data) {
+    didDrawPage: function(data: any) {
       // Optional: Add a light header on subsequent pages if table spans multiple pages
-      if (data.pageCount > 1 && data.cursor.y === data.settings.margin.top) {
+      if (data.pageNumber > 1 && data.cursor.y === data.settings.margin.top) {
         doc.setFontSize(10);
-        doc.setTextColor(...PDFStyling.colors.secondary);
+        const secondaryWithAlpha = withAlpha(PDFStyling.colors.secondary, 1);
+        doc.setTextColor(secondaryWithAlpha[0], secondaryWithAlpha[1], secondaryWithAlpha[2]);
         doc.text("Session Details (continued)", doc.internal.pageSize.width / 2, 20, { align: "center" });
       }
     }
