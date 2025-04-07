@@ -28,7 +28,7 @@ const Index = () => {
             <img 
               src="/lovable-uploads/2537215b-9aaa-455a-9557-b82a0a16a948.png" 
               alt="OXIA Logo" 
-              className="mx-auto h-12 w-auto" 
+              className="mx-auto w-full max-w-[240px]" 
             />
           </div>
           
