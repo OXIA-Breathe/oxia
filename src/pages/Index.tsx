@@ -26,7 +26,7 @@ const Index = () => {
           {/* Logo */}
           <div className="mb-6 text-center">
             <img 
-              src="/lovable-uploads/2537215b-9aaa-455a-9557-b82a0a16a948.png" 
+              src="/lovable-uploads/02559a6e-7abf-4346-846d-bbd138722420.png" 
               alt="OXIA Logo" 
               className="mx-auto w-full max-w-[240px]" 
             />
