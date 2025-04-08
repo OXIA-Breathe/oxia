@@ -5,7 +5,7 @@ import { BreathSession } from "@/types/breath";
 import { formatTime, formatTimeDisplay } from "../formatTime";
 import { prepareSessionTableData } from "./pdfDataUtils";
 import { SessionStats } from "./types";
-import { PDFStyling, setFillColor, setTextColor, setDrawColor } from "./pdfStyles";
+import { PDFStyling, setFillColor, setTextColor, setDrawColor, drawRoundedRect } from "./pdfStyles";
 
 // Add summary statistics section with card layout as shown in mockup
 export const addSummarySection = (
@@ -15,160 +15,127 @@ export const addSummarySection = (
 ) => {
   const { totalSessions, totalBreaths, totalTime, avgSessionDuration } = stats;
   const pageWidth = doc.internal.pageSize.width;
+  const cardWidth = 80;
+  const cardHeight = 80;
+  const cardSpacing = 10;
   
-  // Create main container card for all stats - white rounded card as shown in mockup
-  setFillColor(doc, PDFStyling.colors.white);
-  doc.roundedRect(30, 170, pageWidth - 60, 70, 10, 10, "F");
+  // Create 2x2 grid of stat cards
+  const startX = (pageWidth - ((cardWidth * 2) + cardSpacing)) / 2;
+  const startY = 160;
   
-  // Add subtle shadow effect
-  setFillColor(doc, [220, 220, 220], 0.2);
-  doc.roundedRect(32, 172, pageWidth - 60, 70, 10, 10, "F");
+  // Card 1: Total Sessions
+  drawRoundedRect(doc, startX, startY, cardWidth, cardHeight, 8);
   
-  // Define column widths for 3-column layout as in mockup
-  const statColumns = 3;
-  const columnWidth = (pageWidth - 80) / statColumns;
-  
-  // Stats - Total Sessions
   doc.setFont("helvetica", "bold");
   doc.setFontSize(32);
   setTextColor(doc, PDFStyling.colors.primary);
-  doc.text(totalSessions.toString(), 50, 210, { align: "center" });
+  doc.text(totalSessions.toString(), startX + (cardWidth / 2), startY + 35, { align: "center" });
   
   doc.setFontSize(12);
   setTextColor(doc, PDFStyling.colors.secondary);
-  doc.text("Total", 50, 225, { align: "center" });
-  doc.text("Sessions", 50, 235, { align: "center" });
+  doc.text("Total", startX + (cardWidth / 2), startY + 55, { align: "center" });
+  doc.text("Sessions", startX + (cardWidth / 2), startY + 65, { align: "center" });
   
-  // Stats - Total Breaths
+  // Card 2: Total Breaths
+  drawRoundedRect(doc, startX + cardWidth + cardSpacing, startY, cardWidth, cardHeight, 8);
+  
   doc.setFont("helvetica", "bold");
   doc.setFontSize(32);
   setTextColor(doc, PDFStyling.colors.primary);
-  doc.text(totalBreaths.toString(), pageWidth / 2, 210, { align: "center" });
+  doc.text(totalBreaths.toString(), startX + cardWidth + cardSpacing + (cardWidth / 2), startY + 35, { align: "center" });
   
   doc.setFontSize(12);
   setTextColor(doc, PDFStyling.colors.secondary);
-  doc.text("Total", pageWidth / 2, 225, { align: "center" });
-  doc.text("Breaths", pageWidth / 2, 235, { align: "center" });
+  doc.text("Total", startX + cardWidth + cardSpacing + (cardWidth / 2), startY + 55, { align: "center" });
+  doc.text("Breaths", startX + cardWidth + cardSpacing + (cardWidth / 2), startY + 65, { align: "center" });
   
-  // Stats - Average Duration
+  // Card 3: Total Time
+  drawRoundedRect(doc, startX, startY + cardHeight + cardSpacing, cardWidth, cardHeight, 8);
+  
   doc.setFont("helvetica", "bold");
   doc.setFontSize(32);
   setTextColor(doc, PDFStyling.colors.primary);
-  doc.text(formatTime(avgSessionDuration), pageWidth - 50, 210, { align: "center" });
+  doc.text(formatTime(totalTime), startX + (cardWidth / 2), startY + cardHeight + cardSpacing + 35, { align: "center" });
   
   doc.setFontSize(12);
   setTextColor(doc, PDFStyling.colors.secondary);
-  doc.text("Average", pageWidth - 50, 225, { align: "center" });
-  doc.text("Duration", pageWidth - 50, 235, { align: "center" });
+  doc.text("Total", startX + (cardWidth / 2), startY + cardHeight + cardSpacing + 55, { align: "center" });
+  doc.text("Duration", startX + (cardWidth / 2), startY + cardHeight + cardSpacing + 65, { align: "center" });
   
-  // Add circular progress chart if there's enough sessions (right side of stats card)
-  if (filteredSessions.length > 2) {
-    const centerX = pageWidth - 50;
-    const centerY = 205;
-    const radius = 20;
-    
-    // Draw progress circle background
-    setDrawColor(doc, PDFStyling.colors.accent, 0.3);
-    setFillColor(doc, PDFStyling.colors.accent, 0.1);
-    doc.circle(centerX, centerY, radius, "FD");
-    
-    // Draw progress arc (about 75% complete)
-    const progress = 0.75; // This would be calculated based on actual data
-    doc.setLineWidth(4);
-    setDrawColor(doc, PDFStyling.colors.secondary);
-    
-    // Draw arc manually since jsPDF doesn't have native arc support
-    const startAngle = -90 * (Math.PI / 180); // Start from top
-    const endAngle = startAngle + (progress * 2 * Math.PI);
-    
-    // Add center text (simplified version)
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    setTextColor(doc, PDFStyling.colors.primary);
-    
-    // In a full implementation, we would calculate real progress metrics
-    doc.text("2 min", centerX, centerY - 3, { align: "center" });
-    doc.text("17 sec", centerX, centerY + 5, { align: "center" });
-  }
+  // Card 4: Average Duration
+  drawRoundedRect(doc, startX + cardWidth + cardSpacing, startY + cardHeight + cardSpacing, cardWidth, cardHeight, 8);
+  
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(32);
+  setTextColor(doc, PDFStyling.colors.primary);
+  doc.text(formatTime(avgSessionDuration), startX + cardWidth + cardSpacing + (cardWidth / 2), startY + cardHeight + cardSpacing + 35, { align: "center" });
+  
+  doc.setFontSize(12);
+  setTextColor(doc, PDFStyling.colors.secondary);
+  doc.text("Average", startX + cardWidth + cardSpacing + (cardWidth / 2), startY + cardHeight + cardSpacing + 55, { align: "center" });
+  doc.text("Duration", startX + cardWidth + cardSpacing + (cardWidth / 2), startY + cardHeight + cardSpacing + 65, { align: "center" });
 };
 
-// Add sessions table - consolidated as one single table as in mockup
+// Add sessions table - one single consolidated table as requested
 export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
-  if (sessions.length === 0) return 260;
+  if (sessions.length === 0) return 340;
   
-  // Table headers based on mockup
-  const tableY = 260;
+  // Position table after the stat cards
+  const tableY = 340;
   
-  // Headers
+  // Add section title for sessions
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
+  doc.setFontSize(18);
   setTextColor(doc, PDFStyling.colors.primary);
+  doc.text("Session Details", doc.internal.pageSize.width / 2, tableY - 10, { align: "center" });
   
-  // Header cells
-  doc.text("Date", 40, tableY);
-  doc.text("Time", 105, tableY);
-  doc.text("Inhale / Hold / Exhale", 155, tableY);
-  doc.text("Repetitions", 200, tableY);
-  doc.text("Duration", 250, tableY);
-  
-  // Light separator line under headers
-  setDrawColor(doc, PDFStyling.colors.tableBorder);
-  doc.setLineWidth(0.5);
-  doc.line(30, tableY + 5, doc.internal.pageSize.width - 30, tableY + 5);
-  
-  // Create a single table with all sessions similar to mockup
+  // Create a single table with all sessions
   const { tableColumns, tableData } = prepareSessionTableData(sessions);
   
-  // Use autotable for the body with clean styling
+  // Use autotable for clean styling
   autoTable(doc, {
-    startY: tableY + 10,
-    head: [], // We've already drawn custom headers
+    startY: tableY,
+    head: [["Date", "Time", "Breathing Pattern", "Reps", "Duration"]], // Single header row
     body: tableData,
-    theme: 'plain',
+    theme: 'grid',
     styles: {
       fontSize: 11,
       cellPadding: 5,
       overflow: "ellipsize",
       valign: "middle",
       lineWidth: 0.1,
+      lineColor: [PDFStyling.colors.tableBorder[0], PDFStyling.colors.tableBorder[1], PDFStyling.colors.tableBorder[2]],
+      textColor: [PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]]
     },
     columnStyles: {
-      0: { cellWidth: 65 }, // Date
-      1: { cellWidth: 50 }, // Time
+      0: { cellWidth: 35 }, // Date
+      1: { cellWidth: 30 }, // Time
       2: { cellWidth: 65 }, // Breath Pattern
       3: { cellWidth: 20, halign: 'center' }, // Repetitions
       4: { cellWidth: 30, halign: 'center' }, // Duration
     },
+    headStyles: {
+      fillColor: [PDFStyling.colors.tableHeader[0], PDFStyling.colors.tableHeader[1], PDFStyling.colors.tableHeader[2]],
+      textColor: [PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]],
+      fontStyle: 'bold',
+    },
     alternateRowStyles: {
       fillColor: [PDFStyling.colors.tableStripe[0], PDFStyling.colors.tableStripe[1], PDFStyling.colors.tableStripe[2]]
     },
-    tableLineColor: [PDFStyling.colors.tableBorder[0], PDFStyling.colors.tableBorder[1], PDFStyling.colors.tableBorder[2]],
-    tableLineWidth: 0.2,
-    // Set only horizontal lines between rows for cleaner look like in mockup
-    showHead: false,
+    margin: { left: 20, right: 20 }, // Ensure table is centered
+    didParseCell: function(data) {
+      // Custom styling for cells
+    },
     didDrawPage: function(data) {
-      // If table spans multiple pages, add header on new pages
+      // Only add header on first page - don't duplicate
       if (data.pageNumber > 1) {
-        const currentY = data.settings.margin.top;
-        
+        // If we're on a new page, only add the column headers
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
+        doc.setFontSize(11);
         setTextColor(doc, PDFStyling.colors.primary);
-        
-        // Column headers on additional pages
-        doc.text("Date", 40, currentY - 5);
-        doc.text("Time", 105, currentY - 5);
-        doc.text("Inhale / Hold / Exhale", 155, currentY - 5);
-        doc.text("Repetitions", 200, currentY - 5);
-        doc.text("Duration", 250, currentY - 5);
-        
-        // Separator line
-        setDrawColor(doc, PDFStyling.colors.tableBorder);
-        doc.setLineWidth(0.5);
-        doc.line(30, currentY, doc.internal.pageSize.width - 30, currentY);
       }
     }
   });
   
-  return (doc as any).lastAutoTable.finalY || 300;
+  return (doc as any).lastAutoTable.finalY || 350;
 };
