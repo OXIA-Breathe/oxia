@@ -3,17 +3,17 @@ import { jsPDF } from "jspdf";
 import "jspdf/dist/polyfills.es.js";
 import { GeneratePDFParams, PDFOutput } from "./types";
 import { initializePDF } from "./pdfBase";
-import { addHeader, addFooter, addReflectionSection } from "./pdfLayout";
+import { addHeader, addFooter } from "./pdfLayout";
 import { filterSessionsByDateRange, calculateSessionStats } from "./pdfDataUtils";
 import { addSummarySection, addSessionsTable } from "./pdfSections";
 
 // Main PDF generation function
 export const generatePDF = ({ sessions, dateRange, exportType }: GeneratePDFParams): PDFOutput => {
   try {
-    // Initialize PDF document
+    // Initialize PDF document with mockup-style background
     const doc = initializePDF();
     
-    // Add header section
+    // Add header section with logo and title
     addHeader(doc, dateRange, exportType);
     
     // Filter sessions based on date range if needed
@@ -22,16 +22,13 @@ export const generatePDF = ({ sessions, dateRange, exportType }: GeneratePDFPara
     // Calculate summary statistics
     const stats = calculateSessionStats(filteredSessions);
     
-    // Add summary statistics section
+    // Add summary statistics section in card layout
     addSummarySection(doc, stats, filteredSessions);
     
-    // Add sessions table and get final Y position
+    // Add sessions table in mockup style
     const finalY = addSessionsTable(doc, filteredSessions);
     
-    // Add reflection section
-    addReflectionSection(doc, finalY);
-    
-    // Add footer
+    // Add footer with thank you message
     addFooter(doc);
     
     // Generate PDF output
