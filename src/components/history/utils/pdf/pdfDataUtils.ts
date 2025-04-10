@@ -32,26 +32,37 @@ export const calculateSessionStats = (sessions: BreathSession[]): SessionStats =
   return { totalSessions, totalBreaths, totalTime, avgSessionDuration };
 };
 
-// Prepare table data for the sessions - ensuring one consolidated table
+// Prepare table data for the sessions - updated to match HTML layout
 export const prepareSessionTableData = (sessions: BreathSession[]) => {
-  const tableColumns = [
-    "Date", "Time", "Breathing Pattern (seconds)", "Repetitions", "Duration"
-  ];
+  // Default values for inhale/exhale since they're not stored but needed for the report
+  const inhaleDuration = 4; // Default value
+  const exhaleDuration = 4; // Default value
   
   const tableData = sessions.map((session) => {
     const date = new Date(session.date);
-    // Use default values for inhale/exhale if not available in the session data
-    const inhaleDuration = 4; // Default value
-    const exhaleDuration = 4; // Default value
     
     return [
-      format(date, "MMM d, yyyy"),
-      format(date, "h:mm a"),
-      `${inhaleDuration}s / ${session.holdDuration}s / ${exhaleDuration}s`,
-      session.repetitions.toString(),
-      formatTime(session.totalDuration),
+      format(date, "MMMM d, yyyy h:mm a"), // Combined date/time column
+      `${inhaleDuration} sec`,              // Inhale column
+      `${session.holdDuration} sec`,        // Hold column
+      `${exhaleDuration} sec`,              // Exhale column
+      formatTimeDisplay(session.totalDuration),  // Total time column
     ];
   });
   
-  return { tableColumns, tableData };
+  return { tableData };
+};
+
+// Format time in a more readable way for display
+export const formatTimeDisplay = (timeInSeconds: number): string => {
+  const minutes = Math.floor(timeInSeconds / 60);
+  const seconds = timeInSeconds % 60;
+  
+  if (minutes === 0) {
+    return `${seconds} sec`;
+  } else if (seconds === 0) {
+    return `${minutes} min`;
+  }
+  
+  return `${minutes} min ${seconds} sec`;
 };

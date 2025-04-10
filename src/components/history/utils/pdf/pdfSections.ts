@@ -7,7 +7,7 @@ import { prepareSessionTableData } from "./pdfDataUtils";
 import { SessionStats } from "./types";
 import { PDFStyling, setFillColor, setTextColor, setDrawColor, drawRoundedRect } from "./pdfStyles";
 
-// Add summary statistics section with card layout as shown in mockup
+// Add summary statistics section with card layout as shown in the HTML mockup
 export const addSummarySection = (
   doc: jsPDF, 
   stats: SessionStats,
@@ -15,127 +15,100 @@ export const addSummarySection = (
 ) => {
   const { totalSessions, totalBreaths, totalTime, avgSessionDuration } = stats;
   const pageWidth = doc.internal.pageSize.width;
-  const cardWidth = 80;
-  const cardHeight = 80;
-  const cardSpacing = 10;
+  const margin = 25;
+  const innerWidth = pageWidth - (margin * 2);
   
-  // Create 2x2 grid of stat cards
-  const startX = (pageWidth - ((cardWidth * 2) + cardSpacing)) / 2;
-  const startY = 160;
+  // Starting position after the header
+  const startY = 60;
   
-  // Card 1: Total Sessions
-  drawRoundedRect(doc, startX, startY, cardWidth, cardHeight, 8);
+  // 2x2 grid layout for stat boxes
+  const boxWidth = innerWidth / 2 - 5; // 5mm gap between boxes
+  const boxHeight = 30;
   
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(32);
-  setTextColor(doc, PDFStyling.colors.primary);
-  doc.text(totalSessions.toString(), startX + (cardWidth / 2), startY + 35, { align: "center" });
+  // Box styling
+  const boxBgColor = PDFStyling.colors.lightBackground;
   
-  doc.setFontSize(12);
+  // Box 1: Total Sessions
+  drawStatBox(doc, margin, startY, boxWidth, boxHeight, "Total Sessions", totalSessions.toString(), boxBgColor);
+  
+  // Box 2: Total Breaths
+  drawStatBox(doc, margin + boxWidth + 10, startY, boxWidth, boxHeight, "Total Breaths", totalBreaths.toString(), boxBgColor);
+  
+  // Box 3: Total Time
+  drawStatBox(doc, margin, startY + boxHeight + 10, boxWidth, boxHeight, "Total Time", formatTimeDisplay(totalTime), boxBgColor);
+  
+  // Box 4: Average Duration
+  drawStatBox(doc, margin + boxWidth + 10, startY + boxHeight + 10, boxWidth, boxHeight, "Avg Duration", formatTimeDisplay(avgSessionDuration), boxBgColor);
+};
+
+// Helper function to draw stat box with title and value
+const drawStatBox = (doc: jsPDF, x: number, y: number, width: number, height: number, title: string, value: string, bgColor: readonly [number, number, number]) => {
+  // Draw box background
+  setFillColor(doc, bgColor);
+  doc.roundedRect(x, y, width, height, 3, 3, "F");
+  
+  // Draw title
+  doc.setFont(PDFStyling.fonts.small.family, "normal");
+  doc.setFontSize(PDFStyling.fonts.small.size);
   setTextColor(doc, PDFStyling.colors.secondary);
-  doc.text("Total", startX + (cardWidth / 2), startY + 55, { align: "center" });
-  doc.text("Sessions", startX + (cardWidth / 2), startY + 65, { align: "center" });
+  doc.text(title, x + width/2, y + 10, { align: "center" });
   
-  // Card 2: Total Breaths
-  drawRoundedRect(doc, startX + cardWidth + cardSpacing, startY, cardWidth, cardHeight, 8);
-  
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(32);
+  // Draw value
+  doc.setFont(PDFStyling.fonts.body.family, "bold");
+  doc.setFontSize(PDFStyling.fonts.body.size + 2);
   setTextColor(doc, PDFStyling.colors.primary);
-  doc.text(totalBreaths.toString(), startX + cardWidth + cardSpacing + (cardWidth / 2), startY + 35, { align: "center" });
-  
-  doc.setFontSize(12);
-  setTextColor(doc, PDFStyling.colors.secondary);
-  doc.text("Total", startX + cardWidth + cardSpacing + (cardWidth / 2), startY + 55, { align: "center" });
-  doc.text("Breaths", startX + cardWidth + cardSpacing + (cardWidth / 2), startY + 65, { align: "center" });
-  
-  // Card 3: Total Time
-  drawRoundedRect(doc, startX, startY + cardHeight + cardSpacing, cardWidth, cardHeight, 8);
-  
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(32);
-  setTextColor(doc, PDFStyling.colors.primary);
-  doc.text(formatTime(totalTime), startX + (cardWidth / 2), startY + cardHeight + cardSpacing + 35, { align: "center" });
-  
-  doc.setFontSize(12);
-  setTextColor(doc, PDFStyling.colors.secondary);
-  doc.text("Total", startX + (cardWidth / 2), startY + cardHeight + cardSpacing + 55, { align: "center" });
-  doc.text("Duration", startX + (cardWidth / 2), startY + cardHeight + cardSpacing + 65, { align: "center" });
-  
-  // Card 4: Average Duration
-  drawRoundedRect(doc, startX + cardWidth + cardSpacing, startY + cardHeight + cardSpacing, cardWidth, cardHeight, 8);
-  
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(32);
-  setTextColor(doc, PDFStyling.colors.primary);
-  doc.text(formatTime(avgSessionDuration), startX + cardWidth + cardSpacing + (cardWidth / 2), startY + cardHeight + cardSpacing + 35, { align: "center" });
-  
-  doc.setFontSize(12);
-  setTextColor(doc, PDFStyling.colors.secondary);
-  doc.text("Average", startX + cardWidth + cardSpacing + (cardWidth / 2), startY + cardHeight + cardSpacing + 55, { align: "center" });
-  doc.text("Duration", startX + cardWidth + cardSpacing + (cardWidth / 2), startY + cardHeight + cardSpacing + 65, { align: "center" });
+  doc.text(value, x + width/2, y + 20, { align: "center" });
 };
 
 // Add sessions table - one single consolidated table as requested
 export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
-  if (sessions.length === 0) return 340;
+  if (sessions.length === 0) return 150;
   
-  // Position table after the stat cards
-  const tableY = 340;
+  const margin = 25;
+  // Position table after the stat boxes
+  const tableY = 140;
   
   // Add section title for sessions
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
+  doc.setFontSize(16);
   setTextColor(doc, PDFStyling.colors.primary);
-  doc.text("Session Details", doc.internal.pageSize.width / 2, tableY - 10, { align: "center" });
+  doc.text("Session Details", margin, tableY - 10);
   
-  // Create a single table with all sessions
-  const { tableColumns, tableData } = prepareSessionTableData(sessions);
+  // Create a single table with all sessions - updated to match HTML layout
+  const { tableData } = prepareSessionTableData(sessions);
   
   // Use autotable for clean styling
   autoTable(doc, {
     startY: tableY,
-    head: [["Date", "Time", "Breathing Pattern", "Reps", "Duration"]], // Single header row
+    head: [["Date / Time", "Inhale", "Hold", "Exhale", "Total Time"]], // Updated headers
     body: tableData,
     theme: 'grid',
     styles: {
       fontSize: 11,
-      cellPadding: 5,
+      cellPadding: 8,
       overflow: "ellipsize",
       valign: "middle",
       lineWidth: 0.1,
-      lineColor: [PDFStyling.colors.tableBorder[0], PDFStyling.colors.tableBorder[1], PDFStyling.colors.tableBorder[2]],
-      textColor: [PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]]
+      lineColor: [220, 220, 220],
+      textColor: [29, 53, 87] // OXIA brand primary color
     },
     columnStyles: {
-      0: { cellWidth: 35 }, // Date
-      1: { cellWidth: 30 }, // Time
-      2: { cellWidth: 65 }, // Breath Pattern
-      3: { cellWidth: 20, halign: 'center' }, // Repetitions
-      4: { cellWidth: 30, halign: 'center' }, // Duration
+      0: { cellWidth: 45 }, // Date/Time
+      1: { cellWidth: 30, halign: 'center' }, // Inhale
+      2: { cellWidth: 30, halign: 'center' }, // Hold
+      3: { cellWidth: 30, halign: 'center' }, // Exhale
+      4: { cellWidth: 40, halign: 'center' }, // Total Time
     },
     headStyles: {
-      fillColor: [PDFStyling.colors.tableHeader[0], PDFStyling.colors.tableHeader[1], PDFStyling.colors.tableHeader[2]],
-      textColor: [PDFStyling.colors.primary[0], PDFStyling.colors.primary[1], PDFStyling.colors.primary[2]],
+      fillColor: [240, 246, 252], // Light blue for table headers
+      textColor: [29, 53, 87], // OXIA brand primary color
       fontStyle: 'bold',
     },
     alternateRowStyles: {
-      fillColor: [PDFStyling.colors.tableStripe[0], PDFStyling.colors.tableStripe[1], PDFStyling.colors.tableStripe[2]]
+      fillColor: [248, 250, 252]
     },
-    margin: { left: 20, right: 20 }, // Ensure table is centered
-    didParseCell: function(data) {
-      // Custom styling for cells
-    },
-    didDrawPage: function(data) {
-      // Only add header on first page - don't duplicate
-      if (data.pageNumber > 1) {
-        // If we're on a new page, only add the column headers
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        setTextColor(doc, PDFStyling.colors.primary);
-      }
-    }
+    margin: { left: margin, right: margin },
   });
   
-  return (doc as any).lastAutoTable.finalY || 350;
+  return (doc as any).lastAutoTable.finalY || 150;
 };
