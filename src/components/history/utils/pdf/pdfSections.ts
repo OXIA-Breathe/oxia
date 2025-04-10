@@ -15,58 +15,58 @@ export const addSummarySection = (
 ) => {
   const { totalSessions, totalBreaths, totalTime, avgSessionDuration } = stats;
   const pageWidth = doc.internal.pageSize.width;
-  const margin = 25;
+  const margin = 30;
   const innerWidth = pageWidth - (margin * 2);
   
   // Starting position after the header
   const startY = 60;
   
   // 2x2 grid layout for stat boxes
-  const boxWidth = innerWidth / 2 - 5; // 5mm gap between boxes
-  const boxHeight = 30;
+  const boxWidth = innerWidth / 2 - 6; // 6mm gap between boxes
+  const boxHeight = 40;
   
   // Box styling
   const boxBgColor = PDFStyling.colors.lightBackground;
   
-  // Box 1: Total Sessions
+  // Box 1: Total Sessions - Top Left
   drawStatBox(doc, margin, startY, boxWidth, boxHeight, "Total Sessions", totalSessions.toString(), boxBgColor);
   
-  // Box 2: Total Breaths
-  drawStatBox(doc, margin + boxWidth + 10, startY, boxWidth, boxHeight, "Total Breaths", totalBreaths.toString(), boxBgColor);
+  // Box 2: Total Breaths - Top Right
+  drawStatBox(doc, margin + boxWidth + 12, startY, boxWidth, boxHeight, "Total Breaths", totalBreaths.toString(), boxBgColor);
   
-  // Box 3: Total Time
-  drawStatBox(doc, margin, startY + boxHeight + 10, boxWidth, boxHeight, "Total Time", formatTimeDisplay(totalTime), boxBgColor);
+  // Box 3: Total Time - Bottom Left
+  drawStatBox(doc, margin, startY + boxHeight + 12, boxWidth, boxHeight, "Total Time", formatTimeDisplay(totalTime), boxBgColor);
   
-  // Box 4: Average Duration
-  drawStatBox(doc, margin + boxWidth + 10, startY + boxHeight + 10, boxWidth, boxHeight, "Avg Duration", formatTimeDisplay(avgSessionDuration), boxBgColor);
+  // Box 4: Average Duration - Bottom Right
+  drawStatBox(doc, margin + boxWidth + 12, startY + boxHeight + 12, boxWidth, boxHeight, "Avg Duration", formatTimeDisplay(avgSessionDuration), boxBgColor);
 };
 
 // Helper function to draw stat box with title and value
 const drawStatBox = (doc: jsPDF, x: number, y: number, width: number, height: number, title: string, value: string, bgColor: readonly [number, number, number]) => {
   // Draw box background
   setFillColor(doc, bgColor);
-  doc.roundedRect(x, y, width, height, 3, 3, "F");
+  doc.roundedRect(x, y, width, height, 8, 8, "F");
   
-  // Draw title
-  doc.setFont(PDFStyling.fonts.small.family, "normal");
-  doc.setFontSize(PDFStyling.fonts.small.size);
-  setTextColor(doc, PDFStyling.colors.secondary);
-  doc.text(title, x + width/2, y + 10, { align: "center" });
-  
-  // Draw value
-  doc.setFont(PDFStyling.fonts.body.family, "bold");
-  doc.setFontSize(PDFStyling.fonts.body.size + 2);
+  // Draw title at the top and centered
+  doc.setFont(PDFStyling.fonts.body.family, "normal");
+  doc.setFontSize(PDFStyling.fonts.small.size + 2);
   setTextColor(doc, PDFStyling.colors.primary);
-  doc.text(value, x + width/2, y + 20, { align: "center" });
+  doc.text(title, x + width/2, y + 12, { align: "center" });
+  
+  // Draw value below the title, centered and larger
+  doc.setFont(PDFStyling.fonts.body.family, "bold");
+  doc.setFontSize(PDFStyling.fonts.body.size + 4);
+  setTextColor(doc, PDFStyling.colors.primary);
+  doc.text(value, x + width/2, y + 28, { align: "center" });
 };
 
 // Add sessions table - one single consolidated table as requested
 export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
   if (sessions.length === 0) return 150;
   
-  const margin = 25;
+  const margin = 30;
   // Position table after the stat boxes
-  const tableY = 140;
+  const tableY = 170;
   
   // Add section title for sessions
   doc.setFont("helvetica", "bold");
@@ -80,17 +80,17 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
   // Use autotable for clean styling
   autoTable(doc, {
     startY: tableY,
-    head: [["Date / Time", "Inhale", "Hold", "Exhale", "Total Time"]], // Updated headers
+    head: [["Date / Time", "Inhale", "Hold", "Exhale", "Total Time"]], 
     body: tableData,
     theme: 'grid',
     styles: {
       fontSize: 11,
-      cellPadding: 8,
+      cellPadding: 12,
       overflow: "ellipsize",
       valign: "middle",
       lineWidth: 0.1,
       lineColor: [220, 220, 220],
-      textColor: [29, 53, 87] // OXIA brand primary color
+      textColor: [29, 53, 87]
     },
     columnStyles: {
       0: { cellWidth: 45 }, // Date/Time
@@ -100,9 +100,10 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
       4: { cellWidth: 40, halign: 'center' }, // Total Time
     },
     headStyles: {
-      fillColor: [240, 246, 252], // Light blue for table headers
-      textColor: [29, 53, 87], // OXIA brand primary color
+      fillColor: [239, 242, 249], // Light blue for table headers to match the stat boxes
+      textColor: [29, 53, 87],
       fontStyle: 'bold',
+      halign: 'center',
     },
     alternateRowStyles: {
       fillColor: [248, 250, 252]

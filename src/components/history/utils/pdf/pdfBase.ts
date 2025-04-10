@@ -11,12 +11,12 @@ export const initializePDF = (): jsPDF => {
     format: "a4"
   });
   
-  // Set up white background
+  // Set up background
   const pageWidth = doc.internal.pageSize.width;
   const pageHeight = doc.internal.pageSize.height;
   
-  // White background to match the HTML/CSS layout
-  setFillColor(doc, PDFStyling.colors.white);
+  // Light blue background to match the HTML/CSS layout
+  setFillColor(doc, PDFStyling.colors.background);
   doc.rect(0, 0, pageWidth, pageHeight, "F");
   
   // Add report container with rounded corners
@@ -24,19 +24,15 @@ export const initializePDF = (): jsPDF => {
   const containerWidth = pageWidth - (margin * 2);
   const containerHeight = pageHeight - (margin * 2);
   
-  // Create container with white background and shadow
+  // Create container with white background
   addReportContainer(doc, margin, margin, containerWidth, containerHeight);
   
   return doc;
 };
 
-// Helper function to add report container with shadow and rounded corners
+// Helper function to add report container with rounded corners
 const addReportContainer = (doc: jsPDF, x: number, y: number, width: number, height: number) => {
-  // Draw subtle shadow
-  setFillColor(doc, [240, 240, 240]);
-  doc.roundedRect(x + 1, y + 1, width, height, 4, 4, "F");
-  
-  // Draw white container
+  // Draw white container with rounded corners
   setFillColor(doc, PDFStyling.colors.white);
-  doc.roundedRect(x, y, width, height, 4, 4, "F");
+  doc.roundedRect(x, y, width, height, 10, 10, "F");
 };

@@ -20,7 +20,7 @@ export const PDFStyling = {
   fonts: {
     header: {
       family: "helvetica",
-      size: 20,
+      size: 22,
       style: "bold"
     },
     subheader: {
@@ -42,15 +42,15 @@ export const PDFStyling = {
   
   // Spacing and layout
   spacing: {
-    margin: 25,  // Increased margin to match HTML layout
-    padding: 12,
+    margin: 30,
+    padding: 15,
     borderRadius: 8
   },
 
   // Card styles for stat blocks
   cards: {
-    shadow: 2,
-    borderRadius: 6,
+    shadow: 0,
+    borderRadius: 8,
     padding: 15
   }
 };
@@ -76,10 +76,6 @@ export const setTextColor = (doc: any, color: readonly [number, number, number],
 
 // Helper for drawing rounded rectangle with shadow
 export const drawRoundedRect = (doc: any, x: number, y: number, width: number, height: number, radius: number, fill: boolean = true) => {
-  // Draw subtle shadow
-  setFillColor(doc, [230, 230, 230]);
-  doc.roundedRect(x + 1, y + 1, width, height, radius, radius, "F");
-  
   // Draw main rectangle
   setFillColor(doc, PDFStyling.colors.white);
   doc.roundedRect(x, y, width, height, radius, radius, fill ? "F" : "S");
