@@ -1,4 +1,3 @@
-
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { BreathSession } from "@/types/breath";
@@ -65,7 +64,6 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
   if (sessions.length === 0) return 150;
   
   const margin = 30;
-  // Position table after the stat boxes
   const tableY = 170;
   
   // Add section title for sessions
@@ -74,10 +72,9 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
   setTextColor(doc, PDFStyling.colors.primary);
   doc.text("Session Details", margin, tableY - 10);
   
-  // Create a single table with all sessions - updated to match HTML layout
   const { tableData } = prepareSessionTableData(sessions);
   
-  // Use autotable for clean styling
+  // Update autotable configuration with reduced padding
   autoTable(doc, {
     startY: tableY,
     head: [["Date / Time", "Inhale", "Hold", "Exhale", "Total Time"]], 
@@ -85,7 +82,7 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
     theme: 'grid',
     styles: {
       fontSize: 11,
-      cellPadding: 12,
+      cellPadding: 4, // Reduced from 12 to 4
       overflow: "ellipsize",
       valign: "middle",
       lineWidth: 0.1,
