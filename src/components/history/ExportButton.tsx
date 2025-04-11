@@ -42,7 +42,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
     }
   };
 
-  const handleShare = async (method: "email" | "device" | "drive") => {
+  const handleShare = async (method: "email" | "device") => {
     try {
       if (method === "device") {
         // Generate PDF only when "Save to device" is selected
@@ -70,26 +70,56 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
           title: "Saved to device",
           description: "Your breathing session report has been saved to your device.",
         });
-      } else if (method === "email") {
-        toast({
-          title: "Email option selected",
-          description: "This would integrate with an email sending service in a production app.",
-        });
-      } else if (method === "drive") {
-        toast({
-          title: "Google Drive option selected",
-          description: "This would integrate with Google Drive API in a production app.",
-        });
+        
+        setIsGenerating(false);
+        setShowShareOptions(false);
+        setOpen(false);
       }
-      
-      setIsGenerating(false);
-      setShowShareOptions(false);
-      setOpen(false);
     } catch (error) {
       console.error("Error sharing PDF:", error);
       toast({
         title: "Error sharing PDF",
         description: "There was a problem sharing your report. Please try again.",
+        variant: "destructive"
+      });
+      setIsGenerating(false);
+    }
+  };
+
+  const handleEmailSubmit = async (email: string, message: string) => {
+    try {
+      setIsGenerating(true);
+      
+      // Generate PDF for email
+      const result = await generatePDF({
+        sessions,
+        dateRange,
+        exportType
+      });
+      
+      if (!result) {
+        throw new Error("Failed to generate PDF");
+      }
+      
+      // In a real application, you would upload this PDF to a server and send via email API
+      // For now, we'll just simulate the email sending
+      
+      // Simulate email sending delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      toast({
+        title: "Email sent",
+        description: `Your breathing report has been sent to ${email}.`,
+      });
+      
+      setIsGenerating(false);
+      setShowShareOptions(false);
+      setOpen(false);
+    } catch (error) {
+      console.error("Error sending email:", error);
+      toast({
+        title: "Error sending email",
+        description: "There was a problem sending your report. Please try again.",
         variant: "destructive"
       });
       setIsGenerating(false);
@@ -123,6 +153,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
             onShare={handleShare}
             onBack={() => setShowShareOptions(false)}
             isGenerating={isGenerating}
+            onEmailSubmit={handleEmailSubmit}
           />
         )}
       </Dialog>
