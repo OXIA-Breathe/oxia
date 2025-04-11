@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   DialogContent,
@@ -31,8 +31,9 @@ interface ExportDialogProps {
       to: Date | undefined;
     }>
   >;
-  onExport: () => void;
+  onExport: () => Promise<any>;
   onCancel: () => void;
+  isGenerating: boolean;
 }
 
 const ExportDialog = ({
@@ -42,6 +43,7 @@ const ExportDialog = ({
   setDateRange,
   onExport,
   onCancel,
+  isGenerating,
 }: ExportDialogProps) => {
   return (
     <DialogContent className="sm:max-w-[425px]">
@@ -57,12 +59,14 @@ const ExportDialog = ({
           <Button
             variant={exportType === "full" ? "default" : "outline"}
             onClick={() => setExportType("full")}
+            disabled={isGenerating}
           >
             Full History
           </Button>
           <Button
             variant={exportType === "custom" ? "default" : "outline"}
             onClick={() => setExportType("custom")}
+            disabled={isGenerating}
           >
             Custom Range
           </Button>
@@ -84,6 +88,7 @@ const ExportDialog = ({
                         "w-full justify-start text-left font-normal",
                         !dateRange.from && "text-muted-foreground"
                       )}
+                      disabled={isGenerating}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {dateRange.from ? (
@@ -119,6 +124,7 @@ const ExportDialog = ({
                         "w-full justify-start text-left font-normal",
                         !dateRange.to && "text-muted-foreground"
                       )}
+                      disabled={isGenerating}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {dateRange.to ? (
@@ -146,14 +152,21 @@ const ExportDialog = ({
       </div>
       
       <DialogFooter className="flex gap-2">
-        <Button variant="outline" onClick={onCancel}>
+        <Button variant="outline" onClick={onCancel} disabled={isGenerating}>
           Cancel
         </Button>
         <Button 
           onClick={onExport}
-          disabled={exportType === "custom" && (!dateRange.from || !dateRange.to)}
+          disabled={isGenerating || (exportType === "custom" && (!dateRange.from || !dateRange.to))}
         >
-          Export
+          {isGenerating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            "Export"
+          )}
         </Button>
       </DialogFooter>
     </DialogContent>

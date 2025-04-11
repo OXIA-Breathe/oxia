@@ -24,17 +24,22 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
     to: undefined,
   });
   const [showShareOptions, setShowShareOptions] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [pdfResult, setPdfResult] = useState<{ blob: Blob; fileName: string } | null>(null);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     try {
+      setIsGenerating(true);
       console.log("Generating PDF...");
-      const result = generatePDF({
+      
+      const result = await generatePDF({
         sessions,
         dateRange,
         exportType
       });
       
       console.log("PDF generated successfully");
+      setPdfResult(result);
       setShowShareOptions(true);
       
       return result;
@@ -46,12 +51,15 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
         variant: "destructive"
       });
       return null;
+    } finally {
+      setIsGenerating(false);
     }
   };
 
-  const handleShare = (method: "email" | "device" | "drive") => {
+  const handleShare = async (method: "email" | "device" | "drive") => {
     try {
-      const result = generatePDF({
+      // Use cached result if available, otherwise generate new PDF
+      const result = pdfResult || await generatePDF({
         sessions,
         dateRange,
         exportType
@@ -90,6 +98,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
       
       setShowShareOptions(false);
       setOpen(false);
+      setPdfResult(null); // Clear cached result
     } catch (error) {
       console.error("Error sharing PDF:", error);
       toast({
@@ -120,6 +129,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
             setDateRange={setDateRange}
             onExport={handleExport}
             onCancel={() => setOpen(false)}
+            isGenerating={isGenerating}
           />
         ) : (
           <ShareDialog
