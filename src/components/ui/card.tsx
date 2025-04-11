@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -76,4 +77,28 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+// Adding StatsCard for the breathing app stats display
+const StatsCard = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & {
+    label: string;
+    value: string | number;
+    fullWidth?: boolean;
+  }
+>(({ className, label, value, fullWidth = false, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 flex flex-col items-center justify-center text-center transition-all",
+      fullWidth ? "w-full" : "flex-1",
+      className
+    )}
+    {...props}
+  >
+    <p className="text-sm font-semibold text-gray-500 mb-1 font-nunito">{label}</p>
+    <p className="text-2xl font-bold text-gray-800 font-nunito">{value}</p>
+  </div>
+))
+StatsCard.displayName = "StatsCard"
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, StatsCard }

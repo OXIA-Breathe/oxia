@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import BreathingCircle from "./BreathingCircle";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { StatsCard } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Play, Pause, RotateCcw } from "lucide-react";
 
@@ -167,17 +167,28 @@ const BreathingExercise = () => {
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
-      <Card className="p-4 text-center">
-        <p className="text-lg">
-          <span className="font-semibold">Repetitions:</span> {currentRepetition}/{settings.repetitions}
-        </p>
-        <p className="text-lg">
-          <span className="font-semibold">Breaths taken:</span> {breathCount}
-        </p>
-        <p className="text-lg">
-          <span className="font-semibold">Time elapsed:</span> {formatTime(timeElapsed)}
-        </p>
-      </Card>
+      <div className="w-full max-w-md">
+        <div className="flex flex-col space-y-3 w-full">
+          {/* Two cards side by side for repetitions and breaths */}
+          <div className="flex flex-row space-x-3 w-full min-[400px]:flex-row max-[399px]:flex-col max-[399px]:space-x-0 max-[399px]:space-y-3">
+            <StatsCard
+              label="Reps"
+              value={`${currentRepetition}/${settings.repetitions}`}
+            />
+            <StatsCard
+              label="Breaths"
+              value={breathCount}
+            />
+          </div>
+          
+          {/* Full width card for time elapsed */}
+          <StatsCard
+            label="Time elapsed"
+            value={formatTime(timeElapsed)}
+            fullWidth
+          />
+        </div>
+      </div>
       
       <div className="flex items-center justify-center my-8">
         <BreathingCircle 
