@@ -7,7 +7,7 @@ export const createPdfStyles = (): HTMLStyleElement => {
       font-family: 'Nunito', sans-serif;
       margin: 0;
       padding: 0;
-      background: linear-gradient(to bottom, #A8DADC, #F7F9FA);
+      background: linear-gradient(to bottom, #77A9E8, #e0edf5);
       color: #1D3557;
     }
     .report-container {
@@ -43,7 +43,7 @@ export const createPdfStyles = (): HTMLStyleElement => {
       margin-bottom: 40px;
     }
     .summary-box {
-      background: #E0F4F2;
+      background: #e0edf5;
       border-radius: 16px;
       padding: 20px;
       text-align: center;
