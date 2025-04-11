@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
@@ -45,7 +44,6 @@ const BreathingExercise = () => {
     if (phase === "idle") {
       toggleExercise();
     } else {
-      // If session is already active, clicking the circle will toggle pause/play
       toggleExercise();
     }
   };
@@ -92,10 +90,8 @@ const BreathingExercise = () => {
       breathCount,
     };
     
-    // Add to local context (for non-logged in users)
     addSession(newSession);
     
-    // If user is logged in, also save to Supabase
     if (user) {
       saveSessionToSupabase(newSession);
     }
@@ -169,19 +165,19 @@ const BreathingExercise = () => {
     <div className="flex flex-col items-center justify-center space-y-8">
       <div className="w-full max-w-md">
         <div className="flex flex-col space-y-3 w-full">
-          {/* Two cards side by side for repetitions and breaths */}
-          <div className="flex flex-row space-x-3 w-full min-[400px]:flex-row max-[399px]:flex-col max-[399px]:space-x-0 max-[399px]:space-y-3">
+          <div className="flex flex-row space-x-3 w-full">
             <StatsCard
               label="Reps"
               value={`${currentRepetition}/${settings.repetitions}`}
+              className="flex-1"
             />
             <StatsCard
               label="Breaths"
               value={breathCount}
+              className="flex-1"
             />
           </div>
           
-          {/* Full width card for time elapsed */}
           <StatsCard
             label="Time elapsed"
             value={formatTime(timeElapsed)}
