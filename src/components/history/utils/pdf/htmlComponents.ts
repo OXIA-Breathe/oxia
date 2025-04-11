@@ -31,7 +31,7 @@ export const createHeader = (): { logoDiv: HTMLDivElement, subtitle: HTMLDivElem
   title.textContent = "Breathing Session Report";
   
   const logoImg = document.createElement("img");
-  logoImg.src = "/lovable-uploads/c62adcd0-64ab-41d2-80d2-cb543b464602.png";
+  logoImg.src = "/lovable-uploads/e5ed9dd5-4566-4dea-bba3-30fe6009fd4f.png";
   logoImg.alt = "OXIA Logo";
   
   logoDiv.appendChild(title);
