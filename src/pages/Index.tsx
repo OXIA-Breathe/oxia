@@ -26,7 +26,7 @@ const Index = () => {
           {/* Logo */}
           <div className="flex justify-center mb-4">
             <img 
-              src="/lovable-uploads/02559a6e-7abf-4346-846d-bbd138722420.png" 
+              src="/lovable-uploads/6d9cc0f0-addd-45b1-abab-238892b91dbf.png" 
               alt="OXIA Logo" 
               className="h-16 w-auto object-contain" 
             />
