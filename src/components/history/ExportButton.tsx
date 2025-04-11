@@ -25,59 +25,40 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
   });
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [pdfResult, setPdfResult] = useState<{ blob: Blob; fileName: string } | null>(null);
 
   const handleExport = async () => {
     try {
-      setIsGenerating(true);
-      console.log("Generating PDF...");
-      
-      const result = await generatePDF({
-        sessions,
-        dateRange,
-        exportType
-      });
-      
-      console.log("PDF generated successfully");
-      setPdfResult(result);
+      // No longer generating PDF here, just proceed to share options
       setShowShareOptions(true);
-      
-      return result;
+      return true;
     } catch (error) {
-      console.error("Error generating PDF:", error);
+      console.error("Error:", error);
       toast({
-        title: "Error generating PDF",
-        description: "There was a problem creating your report. Please try again.",
+        title: "Error",
+        description: "There was a problem. Please try again.",
         variant: "destructive"
       });
-      return null;
-    } finally {
-      setIsGenerating(false);
+      return false;
     }
   };
 
   const handleShare = async (method: "email" | "device" | "drive") => {
     try {
-      // Use cached result if available, otherwise generate new PDF
-      const result = pdfResult || await generatePDF({
-        sessions,
-        dateRange,
-        exportType
-      });
-      
-      if (!result) {
-        throw new Error("Failed to generate PDF");
-      }
-      
-      const { blob, fileName } = result;
-      
-      if (method === "email") {
-        toast({
-          title: "Email option selected",
-          description: "This would integrate with an email sending service in a production app.",
+      if (method === "device") {
+        // Generate PDF only when "Save to device" is selected
+        setIsGenerating(true);
+        
+        const result = await generatePDF({
+          sessions,
+          dateRange,
+          exportType
         });
         
-      } else if (method === "device") {
+        if (!result) {
+          throw new Error("Failed to generate PDF");
+        }
+        
+        const { blob, fileName } = result;
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -89,6 +70,11 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
           title: "Saved to device",
           description: "Your breathing session report has been saved to your device.",
         });
+      } else if (method === "email") {
+        toast({
+          title: "Email option selected",
+          description: "This would integrate with an email sending service in a production app.",
+        });
       } else if (method === "drive") {
         toast({
           title: "Google Drive option selected",
@@ -96,9 +82,9 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
         });
       }
       
+      setIsGenerating(false);
       setShowShareOptions(false);
       setOpen(false);
-      setPdfResult(null); // Clear cached result
     } catch (error) {
       console.error("Error sharing PDF:", error);
       toast({
@@ -106,6 +92,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
         description: "There was a problem sharing your report. Please try again.",
         variant: "destructive"
       });
+      setIsGenerating(false);
     }
   };
 
@@ -135,6 +122,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
           <ShareDialog
             onShare={handleShare}
             onBack={() => setShowShareOptions(false)}
+            isGenerating={isGenerating}
           />
         )}
       </Dialog>
