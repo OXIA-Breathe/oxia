@@ -6,11 +6,60 @@ import { User, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 
+// Define CSS for breathing circle animations
+const breathingCircleStyles = `
+  .breathing-circle {
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    background-color: rgba(59, 130, 246, 0.3);
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .breathing-circle.inhale {
+    animation: breatheIn var(--breathe-in-duration, 4s) ease-in;
+  }
+  
+  .breathing-circle.exhale {
+    animation: breatheOut var(--breathe-out-duration, 6s) ease-out;
+  }
+  
+  .breathing-circle.hold {
+    animation: none;
+    transform: scale(1.5);
+  }
+  
+  .breathing-circle.inhale-paused {
+    transform: scale(1.5);
+  }
+  
+  .breathing-circle.exhale-paused {
+    transform: scale(1);
+  }
+  
+  .breathing-circle.hold-paused {
+    transform: scale(1.5);
+  }
+  
+  @keyframes breatheIn {
+    from { transform: scale(1); }
+    to { transform: scale(1.5); }
+  }
+  
+  @keyframes breatheOut {
+    from { transform: scale(1.5); }
+    to { transform: scale(1); }
+  }
+`;
+
 const Index = () => {
   const { user } = useAuth();
 
   return (
     <MainLayout fullHeight>
+      <style>{breathingCircleStyles}</style>
       <div className="h-full">
         <div className="container py-6 px-6 flex flex-col h-full">
           {/* Header */}

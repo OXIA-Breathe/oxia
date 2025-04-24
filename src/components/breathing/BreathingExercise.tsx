@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
@@ -20,6 +21,9 @@ const BreathingExercise = () => {
   const [breathCount, setBreathCount] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  
+  // New state to track the remaining time in the current phase when paused
+  const [phaseTimeRemaining, setPhaseTimeRemaining] = useState<number | null>(null);
 
   const resetExercise = () => {
     setPhase("idle");
@@ -28,24 +32,31 @@ const BreathingExercise = () => {
     setBreathCount(0);
     setTimeElapsed(0);
     setSessionStartTime(null);
+    setPhaseTimeRemaining(null);
   };
 
   const toggleExercise = () => {
     if (!isActive) {
       setIsActive(true);
-      setSessionStartTime(Date.now());
-      setPhase("inhale");
+      if (sessionStartTime === null) {
+        setSessionStartTime(Date.now());
+      }
+      // If resuming from pause, phase should already be set
+      if (phase === "idle") {
+        setPhase("inhale");
+        setPhaseTimeRemaining(null);
+      }
     } else {
       setIsActive(false);
+      // When pausing, store the current time remaining in the phase
+      if (phaseTimeRemaining === null && phase !== "idle") {
+        setPhaseTimeRemaining(timeRemaining);
+      }
     }
   };
 
   const handleCircleClick = () => {
-    if (phase === "idle") {
-      toggleExercise();
-    } else {
-      toggleExercise();
-    }
+    toggleExercise();
   };
 
   const saveSessionToSupabase = async (sessionData) => {
@@ -104,6 +115,7 @@ const BreathingExercise = () => {
     resetExercise();
   }, [addSession, breathCount, sessionStartTime, settings, toast, user]);
 
+  // Track elapsed time only when active
   useEffect(() => {
     let timer: number;
     
@@ -118,42 +130,74 @@ const BreathingExercise = () => {
     };
   }, [isActive]);
 
+  // States for the breathing animation tracking
+  const [duration, setDuration] = useState(settings.inhaleDuration);
+  const [timeRemaining, setTimeRemaining] = useState(duration);
+
+  // Reset timeRemaining when phase or duration changes
+  useEffect(() => {
+    if (phase === "inhale") {
+      setDuration(settings.inhaleDuration);
+    } else if (phase === "hold") {
+      setDuration(settings.holdDuration);
+    } else if (phase === "exhale") {
+      setDuration(settings.exhaleDuration);
+    }
+    
+    // Use stored phaseTimeRemaining if available, otherwise use full duration
+    if (phaseTimeRemaining !== null && phase !== "idle") {
+      setTimeRemaining(phaseTimeRemaining);
+      setPhaseTimeRemaining(null); // Reset the stored value after using it
+    } else if (phase !== "idle") {
+      setTimeRemaining(
+        phase === "inhale" 
+          ? settings.inhaleDuration 
+          : phase === "exhale" 
+          ? settings.exhaleDuration 
+          : settings.holdDuration
+      );
+    }
+  }, [phase, settings, phaseTimeRemaining]);
+
+  // Handle phase transitions
   useEffect(() => {
     let phaseTimer: number;
     
-    if (isActive) {
-      switch (phase) {
-        case "inhale":
-          phaseTimer = window.setTimeout(() => {
-            setPhase("hold");
-          }, settings.inhaleDuration * 1000);
-          break;
-        
-        case "hold":
-          phaseTimer = window.setTimeout(() => {
-            setPhase("exhale");
-          }, settings.holdDuration * 1000);
-          break;
-        
-        case "exhale":
-          phaseTimer = window.setTimeout(() => {
-            setBreathCount((prev) => prev + 1);
-            setCurrentRepetition((prev) => prev + 1);
+    if (isActive && phase !== "idle" && timeRemaining > 0) {
+      phaseTimer = window.setInterval(() => {
+        setTimeRemaining((prev) => {
+          const newValue = Math.max(0, prev - 0.1);
+          if (newValue <= 0) {
+            clearInterval(phaseTimer);
             
-            if (currentRepetition + 1 >= settings.repetitions) {
-              completeSession();
-            } else {
-              setPhase("inhale");
+            // Transition to next phase
+            if (phase === "inhale") {
+              setPhase("hold");
+            } else if (phase === "hold") {
+              setPhase("exhale");
+            } else if (phase === "exhale") {
+              setBreathCount((prev) => prev + 1);
+              setCurrentRepetition((prev) => {
+                const newRep = prev + 1;
+                if (newRep >= settings.repetitions) {
+                  completeSession();
+                  return 0;
+                } else {
+                  setPhase("inhale");
+                  return newRep;
+                }
+              });
             }
-          }, settings.exhaleDuration * 1000);
-          break;
-      }
+          }
+          return newValue;
+        });
+      }, 100);
     }
     
     return () => {
       if (phaseTimer) clearTimeout(phaseTimer);
     };
-  }, [isActive, phase, currentRepetition, settings, completeSession]);
+  }, [isActive, phase, timeRemaining, currentRepetition, settings.repetitions, completeSession]);
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -188,15 +232,11 @@ const BreathingExercise = () => {
       
       <div className="flex items-center justify-center my-8">
         <BreathingCircle 
-          phase={phase} 
-          duration={
-            phase === "inhale" 
-              ? settings.inhaleDuration 
-              : phase === "exhale" 
-              ? settings.exhaleDuration 
-              : settings.holdDuration
-          }
+          phase={isActive ? phase : "idle"} 
+          duration={duration}
+          timeRemaining={timeRemaining}
           onCircleClick={handleCircleClick}
+          isPaused={!isActive && phase !== "idle"}
         />
       </div>
       
@@ -208,7 +248,7 @@ const BreathingExercise = () => {
           className="flex items-center space-x-2"
         >
           {isActive ? <Pause size={20} /> : <Play size={20} />}
-          <span>{isActive ? "Pause" : "Start"}</span>
+          <span>{isActive ? "Pause" : phase === "idle" ? "Start" : "Resume"}</span>
         </Button>
         
         <Button 
