@@ -21,7 +21,7 @@ const BreathingCircle = ({
   onCircleClick,
   isPaused = false
 }: BreathingCircleProps) => {
-  const circleRef = useRef<HTMLDivElement>(null);
+  const innerCircleRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
   const sizeClasses = {
@@ -31,77 +31,68 @@ const BreathingCircle = ({
   };
 
   useEffect(() => {
-    if (circleRef.current) {
-      const scale = phase === "idle" || isPaused ? 1 : null;
-      
-      if (scale !== null) {
-        // Set static scale when idle or paused
-        circleRef.current.style.transform = `scale(${scale})`;
-        // Remove animation classes to pause the animation
-        circleRef.current.classList.remove('inhale', 'exhale', 'hold');
-        if (isPaused) {
-          // Add the paused class to retain the visual state but stop animation
-          circleRef.current.classList.add(`${phase}-paused`);
-        }
+    if (innerCircleRef.current) {
+      if (phase === "idle" || isPaused) {
+        // When idle or paused, set static scale
+        const scale = phase === "idle" ? 0.3 : (phase === "inhale" || phase === "hold" ? 1 : 0.3);
+        innerCircleRef.current.style.transform = `scale(${scale})`;
+        innerCircleRef.current.style.transition = "transform 0.3s ease";
       } else {
-        // Restore animation classes when active
-        circleRef.current.style.removeProperty('transform');
-        // Add the appropriate animation class based on current phase
-        circleRef.current.style.setProperty("--breathe-in-duration", `${duration}s`);
-        circleRef.current.style.setProperty("--breathe-out-duration", `${duration}s`);
-        circleRef.current.style.setProperty("--breathe-hold-duration", `${duration}s`);
-        // Set animation progress based on remaining time
+        // Calculate progress based on remaining time
         const progress = 1 - (timeRemaining / duration);
-        circleRef.current.style.setProperty("--animation-progress", `${progress}`);
+        let targetScale = 0.3;
+        
+        if (phase === "inhale") {
+          // Scale from 0.3 to 1.0 during inhale
+          targetScale = 0.3 + (0.7 * progress);
+        } else if (phase === "hold") {
+          // Stay at 1.0 during hold
+          targetScale = 1.0;
+        } else if (phase === "exhale") {
+          // Scale from 1.0 to 0.3 during exhale
+          targetScale = 1.0 - (0.7 * progress);
+        }
+        
+        innerCircleRef.current.style.transform = `scale(${targetScale})`;
+        innerCircleRef.current.style.transition = "transform 0.1s ease-in-out";
       }
     }
-  }, [phase, duration, isPaused, timeRemaining]);
+  }, [phase, timeRemaining, duration, isPaused]);
   
   return (
     <div className="relative flex flex-col items-center justify-center">
+      {/* Outer Ring - Fixed transparent border */}
       <div 
-        ref={circleRef}
-        className={`breathing-circle ${sizeClasses[size]} ${!isPaused && phase !== "idle" ? phase : ""} backdrop-blur-md bg-opacity-50 shadow-lg relative z-10 cursor-pointer`}
+        className={`${sizeClasses[size]} relative cursor-pointer`}
         onClick={onCircleClick}
       >
-        <div className="text-center flex flex-col items-center justify-center">
-          {phase === "idle" ? (
-            <>
-              <span className="text-2xl font-bold text-white">
-                Breathe
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="text-2xl font-bold text-white">
-                {isPaused ? "Paused" : phase.charAt(0).toUpperCase() + phase.slice(1)}
-              </span>
-              <span className="text-xl text-white mt-1">
-                {Math.max(0, Math.ceil(timeRemaining))}
-              </span>
-            </>
-          )}
+        <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-30"></div>
+        
+        {/* Inner Ring - Animated breathing circle */}
+        <div 
+          ref={innerCircleRef}
+          className="absolute inset-0 breathing-circle backdrop-blur-md bg-opacity-50 shadow-lg flex items-center justify-center"
+          style={{ transformOrigin: 'center' }}
+        >
+          <div className="text-center flex flex-col items-center justify-center">
+            {phase === "idle" ? (
+              <>
+                <span className="text-2xl font-bold text-white">
+                  Breathe
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-2xl font-bold text-white">
+                  {isPaused ? "Paused" : phase.charAt(0).toUpperCase() + phase.slice(1)}
+                </span>
+                <span className="text-xl text-white mt-1">
+                  {Math.max(0, Math.ceil(timeRemaining))}
+                </span>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      
-      {/* Circle outline */}
-      <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-20 z-0 flex items-center justify-center">
-        {/* Create a semi-circle progress indicator */}
-        <svg className="absolute inset-0 rotate-270" viewBox="0 0 100 100">
-          <circle
-            cx="50"
-            cy="50"
-            r="48"
-            fill="none"
-            stroke="white"
-            strokeWidth="4"
-            strokeOpacity="0.4"
-            strokeDasharray="301"
-            strokeDashoffset="75"
-            strokeLinecap="round"
-            transform="rotate(-90 50 50)"
-          />
-        </svg>
       </div>
     </div>
   );

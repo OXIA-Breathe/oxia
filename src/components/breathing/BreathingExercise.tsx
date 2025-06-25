@@ -37,10 +37,13 @@ const BreathingExercise = () => {
 
   const toggleExercise = () => {
     if (!isActive) {
-      setIsActive(true);
+      // Starting or resuming - set session start time if not already set
       if (sessionStartTime === null) {
         setSessionStartTime(Date.now());
       }
+      
+      setIsActive(true);
+      
       // If resuming from pause, phase should already be set
       if (phase === "idle") {
         setPhase("inhale");
@@ -115,7 +118,7 @@ const BreathingExercise = () => {
     resetExercise();
   }, [addSession, breathCount, sessionStartTime, settings, toast, user]);
 
-  // Track elapsed time only when active
+  // Track elapsed time only when active - synchronized with phase timer
   useEffect(() => {
     let timer: number;
     
@@ -159,7 +162,7 @@ const BreathingExercise = () => {
     }
   }, [phase, settings, phaseTimeRemaining]);
 
-  // Handle phase transitions
+  // Handle phase transitions - synchronized timer updates
   useEffect(() => {
     let phaseTimer: number;
     
