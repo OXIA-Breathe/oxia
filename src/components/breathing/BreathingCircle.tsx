@@ -75,8 +75,8 @@ const BreathingCircle = ({
           className="absolute inset-0 m-auto rounded-full flex items-center justify-center"
           style={{ 
             transformOrigin: 'center',
-            width: '80%',
-            height: '80%',
+            width: '100%',
+            height: '100%',
             backgroundColor: 'rgba(59, 130, 246, 0.3)',
             backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%)',
             backdropFilter: 'blur(8px)'
