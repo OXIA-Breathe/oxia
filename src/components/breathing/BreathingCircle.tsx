@@ -34,23 +34,23 @@ const BreathingCircle = ({
     if (innerCircleRef.current) {
       if (phase === "idle" || isPaused) {
         // When idle or paused, set static scale
-        const scale = phase === "idle" ? 0.3 : (phase === "inhale" || phase === "hold" ? 1 : 0.3);
+        const scale = phase === "idle" ? 0.5 : (phase === "inhale" || phase === "hold" ? 1 : 0.5);
         innerCircleRef.current.style.transform = `scale(${scale})`;
         innerCircleRef.current.style.transition = "transform 0.3s ease";
       } else {
         // Calculate progress based on remaining time
         const progress = 1 - (timeRemaining / duration);
-        let targetScale = 0.3;
+        let targetScale = 0.5;
         
         if (phase === "inhale") {
-          // Scale from 0.3 to 1.0 during inhale
-          targetScale = 0.3 + (0.7 * progress);
+          // Scale from 0.5 to 1.0 during inhale (50% to 100%)
+          targetScale = 0.5 + (0.5 * progress);
         } else if (phase === "hold") {
           // Stay at 1.0 during hold
           targetScale = 1.0;
         } else if (phase === "exhale") {
-          // Scale from 1.0 to 0.3 during exhale
-          targetScale = 1.0 - (0.7 * progress);
+          // Scale from 1.0 to 0.5 during exhale
+          targetScale = 1.0 - (0.5 * progress);
         }
         
         innerCircleRef.current.style.transform = `scale(${targetScale})`;
@@ -66,27 +66,35 @@ const BreathingCircle = ({
         className={`${sizeClasses[size]} relative cursor-pointer`}
         onClick={onCircleClick}
       >
+        {/* Outer ring border */}
         <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-30"></div>
         
         {/* Inner Ring - Animated breathing circle */}
         <div 
           ref={innerCircleRef}
-          className="absolute inset-0 breathing-circle backdrop-blur-md bg-opacity-50 shadow-lg flex items-center justify-center"
-          style={{ transformOrigin: 'center' }}
+          className="absolute inset-0 m-auto rounded-full flex items-center justify-center"
+          style={{ 
+            transformOrigin: 'center',
+            width: '80%',
+            height: '80%',
+            backgroundColor: 'rgba(59, 130, 246, 0.3)',
+            backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%)',
+            backdropFilter: 'blur(8px)'
+          }}
         >
           <div className="text-center flex flex-col items-center justify-center">
             {phase === "idle" ? (
               <>
-                <span className="text-2xl font-bold text-white">
+                <span className="text-xl font-bold text-white">
                   Breathe
                 </span>
               </>
             ) : (
               <>
-                <span className="text-2xl font-bold text-white">
+                <span className="text-lg font-bold text-white">
                   {isPaused ? "Paused" : phase.charAt(0).toUpperCase() + phase.slice(1)}
                 </span>
-                <span className="text-xl text-white mt-1">
+                <span className="text-base text-white mt-1">
                   {Math.max(0, Math.ceil(timeRemaining))}
                 </span>
               </>
