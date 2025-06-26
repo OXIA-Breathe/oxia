@@ -15,7 +15,7 @@ const ConsistencyPage = () => {
   return (
     <MainLayout>
       <div className="container py-12 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-8 text-center">Your Consistency</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center">My Progress</h1>
         
         {isLoading ? (
           <div className="flex justify-center">

@@ -30,7 +30,7 @@ const App = () => (
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/consistency" element={<ConsistencyPage />} />
+              <Route path="/progress" element={<ConsistencyPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -134,7 +134,7 @@ const ExportButton = ({ sessions }: ExportButtonProps) => {
         onClick={() => setOpen(true)}
       >
         <FileText className="h-4 w-4" />
-        Export as PDF
+        Export
       </Button>
       
       <Dialog open={open} onOpenChange={setOpen}>

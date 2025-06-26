@@ -14,7 +14,7 @@ const Navbar = () => {
       <div className="flex justify-around items-center max-w-screen-xl mx-auto">
         <NavItem path="/" label="Home" icon={<Home size={20} />} isActive={isActive("/")} />
         <NavItem path="/history" label="Report" icon={<BarChart2 size={20} />} isActive={isActive("/history")} />
-        <NavItem path="/consistency" label="Progress" icon={<BarChart2 size={20} />} isActive={isActive("/consistency")} />
+        <NavItem path="/progress" label="Progress" icon={<BarChart2 size={20} />} isActive={isActive("/progress")} />
         <NavItem path="/settings" label="Settings" icon={<Settings size={20} />} isActive={isActive("/settings")} />
       </div>
     </div>

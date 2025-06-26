@@ -32,11 +32,11 @@ const HistoryPage = () => {
           </CardHeader>
           <CardContent className="text-center">
             <p className="text-muted-foreground mb-4">
-              Your session history has been moved to the Calendar page for better organization.
+              Your session history has been moved to the Progress page for better organization.
             </p>
             <Button asChild>
-              <Link to="/consistency">
-                Go to Calendar Page
+              <Link to="/progress">
+                Go to Progress Page
               </Link>
             </Button>
           </CardContent>
