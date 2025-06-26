@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BreathProvider } from "./context/BreathContext";
 import { AuthProvider } from "./context/AuthContext";
 import Index from "./pages/Index";
-import HistoryPage from "./pages/HistoryPage";
+import LearnPage from "./pages/LearnPage";
 import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -26,7 +26,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/learn" element={<LearnPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/profile" element={<ProfilePage />} />
