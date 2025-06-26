@@ -1,8 +1,11 @@
 
 import MainLayout from "@/components/layout/MainLayout";
-import SessionHistory from "@/components/history/SessionHistory";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const HistoryPage = () => {
   const { user, isLoading } = useAuth();
@@ -19,7 +22,25 @@ const HistoryPage = () => {
         <p className="text-center text-muted-foreground mb-8">
           View and export your breathing sessions
         </p>
-        <SessionHistory />
+        
+        <Card className="w-full max-w-3xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-xl text-center flex items-center justify-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Session History Moved
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-4">
+              Your session history has been moved to the Calendar page for better organization.
+            </p>
+            <Button asChild>
+              <Link to="/consistency">
+                Go to Calendar Page
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </MainLayout>
   );
