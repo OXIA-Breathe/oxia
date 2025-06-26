@@ -15,7 +15,7 @@ const Index = () => {
         <div className="container py-6 px-6 flex flex-col h-full">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
-            <Link to="/history" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
+            <Link to="/progress" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
               <History className="h-4 w-4" />
             </Link>
             <Link to="/profile" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
@@ -41,7 +41,7 @@ const Index = () => {
           <div className="mt-auto pb-20">
             {user && (
               <div className="mt-4 text-center hidden">
-                <Link to="/consistency">
+                <Link to="/progress">
                   <Button variant="outline" className="bg-white/10 text-white border-white/20 flex items-center gap-2 w-full justify-center">
                     Track Your Consistency
                   </Button>
