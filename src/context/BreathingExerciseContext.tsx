@@ -20,7 +20,13 @@ export const BreathingExerciseProvider = ({ children }: { children: ReactNode })
 
   const [currentExercise, setCurrentExercise] = useState<BreathingExercise | null>(() => {
     const savedCurrent = localStorage.getItem("currentBreathingExercise");
-    return savedCurrent ? JSON.parse(savedCurrent) : null;
+    if (savedCurrent) {
+      return JSON.parse(savedCurrent);
+    }
+    // If no saved exercise, use the first one from the exercises list
+    const availableExercises = localStorage.getItem("breathingExercises");
+    const exercisesList = availableExercises ? JSON.parse(availableExercises) : defaultBreathingExercises;
+    return exercisesList[0] || null;
   });
 
   useEffect(() => {
@@ -40,7 +46,9 @@ export const BreathingExerciseProvider = ({ children }: { children: ReactNode })
   const deleteExercise = (id: string) => {
     setExercises((prev) => prev.filter((exercise) => exercise.id !== id));
     if (currentExercise?.id === id) {
-      setCurrentExercise(null);
+      // If deleting current exercise, fallback to first available exercise
+      const remainingExercises = exercises.filter((exercise) => exercise.id !== id);
+      setCurrentExercise(remainingExercises[0] || null);
     }
   };
 

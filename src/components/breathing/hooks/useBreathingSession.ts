@@ -13,14 +13,17 @@ export const useBreathingSession = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Use current exercise or fallback to default values
+  // Use current exercise or fallback to Box Breathing default
   const exerciseSettings = currentExercise || {
-    title: "Default Breathing",
+    id: "box-breathing",
+    title: "Box Breathing",
+    description: "Calm and focus",
     inhaleDuration: 4,
     firstHoldDuration: 4,
     exhaleDuration: 4,
     secondHoldDuration: 4,
-    repetitions: 5,
+    repetitions: 20,
+    isCustom: false,
   };
 
   const [phase, setPhase] = useState<"inhale" | "exhale" | "hold1" | "hold2" | "idle">("idle");
