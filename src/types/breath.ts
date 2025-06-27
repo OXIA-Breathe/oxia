@@ -8,10 +8,3 @@ export interface BreathSession {
   breathCount: number;
   exerciseTitle?: string;
 }
-
-export interface BreathSettings {
-  inhaleDuration: number;
-  exhaleDuration: number;
-  holdDuration: number;
-  repetitions: number;
-}
