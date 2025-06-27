@@ -48,7 +48,7 @@ export const useBreathingSession = () => {
     }
   };
 
-  const completeSession = useCallback(() => {
+  const completeSession = useCallback((finalBreathCount: number) => {
     const sessionEndTime = Date.now();
     const totalDuration = sessionStartTime ? Math.floor((sessionEndTime - sessionStartTime) / 1000) : 0;
     
@@ -58,7 +58,7 @@ export const useBreathingSession = () => {
       repetitions: settings.repetitions,
       holdDuration: settings.holdDuration,
       totalDuration,
-      breathCount,
+      breathCount: finalBreathCount,
     };
     
     addSession(newSession);
@@ -69,11 +69,11 @@ export const useBreathingSession = () => {
     
     toast({
       title: "Session completed!",
-      description: `You completed ${breathCount} breaths in ${totalDuration} seconds.`,
+      description: `You completed ${finalBreathCount} breaths in ${totalDuration} seconds.`,
     });
     
     resetExercise();
-  }, [addSession, breathCount, sessionStartTime, settings, toast, user]);
+  }, [addSession, sessionStartTime, settings, toast, user]);
 
   const resetExercise = () => {
     setPhase("idle");
@@ -110,16 +110,24 @@ export const useBreathingSession = () => {
 
   const handlePhaseComplete = useCallback((nextPhase: "inhale" | "exhale" | "hold") => {
     if (nextPhase === "inhale") {
-      setBreathCount((prev) => prev + 1);
-      setCurrentRepetition((prev) => {
-        const newRep = prev + 1;
-        if (newRep >= settings.repetitions) {
-          completeSession();
-          return 0;
-        } else {
-          setPhase("inhale");
-          return newRep;
-        }
+      // Increment breath count first
+      setBreathCount((prevBreathCount) => {
+        const newBreathCount = prevBreathCount + 1;
+        
+        // Then handle repetition logic
+        setCurrentRepetition((prevRep) => {
+          const newRep = prevRep + 1;
+          if (newRep >= settings.repetitions) {
+            // Complete session with the updated breath count
+            completeSession(newBreathCount);
+            return 0;
+          } else {
+            setPhase("inhale");
+            return newRep;
+          }
+        });
+        
+        return newBreathCount;
       });
     } else {
       setPhase(nextPhase);
