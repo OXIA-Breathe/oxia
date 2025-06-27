@@ -24,8 +24,9 @@ export const useBreathingTimer = ({
   setPhaseTimeRemaining
 }: UseBreathingTimerProps) => {
   const [duration, setDuration] = useState(exerciseSettings.inhaleDuration);
-  const [timeRemaining, setTimeRemaining] = useState(duration);
+  const [timeRemaining, setTimeRemaining] = useState(exerciseSettings.inhaleDuration);
 
+  // Update duration and timeRemaining when phase changes
   useEffect(() => {
     let phaseDuration = 0;
     
@@ -48,6 +49,7 @@ export const useBreathingTimer = ({
     
     setDuration(phaseDuration);
     
+    // If we have a saved phase time remaining, use it, otherwise start fresh
     if (phaseTimeRemaining !== null && phase !== "idle") {
       setTimeRemaining(phaseTimeRemaining);
       setPhaseTimeRemaining(null);
@@ -56,6 +58,7 @@ export const useBreathingTimer = ({
     }
   }, [phase, exerciseSettings, phaseTimeRemaining, setPhaseTimeRemaining]);
 
+  // Main timer effect
   useEffect(() => {
     let phaseTimer: number;
     
@@ -63,6 +66,7 @@ export const useBreathingTimer = ({
       phaseTimer = window.setInterval(() => {
         setTimeRemaining((prev) => {
           const newValue = Math.max(0, prev - 0.1);
+          
           if (newValue <= 0) {
             clearInterval(phaseTimer);
             
@@ -77,13 +81,16 @@ export const useBreathingTimer = ({
               onPhaseComplete("inhale");
             }
           }
+          
           return newValue;
         });
       }, 100);
     }
     
     return () => {
-      if (phaseTimer) clearTimeout(phaseTimer);
+      if (phaseTimer) {
+        clearInterval(phaseTimer);
+      }
     };
   }, [isActive, phase, timeRemaining, onPhaseComplete, exerciseSettings]);
 
