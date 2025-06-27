@@ -14,20 +14,23 @@ const BreathingExercise = () => {
     breathCount,
     timeElapsed,
     phaseTimeRemaining,
+    exerciseSettings,
     setTimeElapsed,
     setPhaseTimeRemaining,
     resetExercise,
     toggleExercise,
     handlePhaseComplete,
-    settings
   } = useBreathingSession();
 
   const { duration, timeRemaining } = useBreathingTimer({
     isActive,
     phase,
-    inhaleDuration: settings.inhaleDuration,
-    exhaleDuration: settings.exhaleDuration,
-    holdDuration: settings.holdDuration,
+    exerciseSettings: {
+      inhaleDuration: exerciseSettings.inhaleDuration,
+      exhaleDuration: exerciseSettings.exhaleDuration,
+      firstHoldDuration: exerciseSettings.firstHoldDuration,
+      secondHoldDuration: exerciseSettings.secondHoldDuration,
+    },
     onPhaseComplete: handlePhaseComplete,
     phaseTimeRemaining,
     setPhaseTimeRemaining
@@ -48,9 +51,18 @@ const BreathingExercise = () => {
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
+      {/* Exercise Title */}
+      {exerciseSettings.title && (
+        <div className="text-center mb-4">
+          <h2 className="text-xl font-semibold text-white">
+            {exerciseSettings.title}
+          </h2>
+        </div>
+      )}
+      
       <BreathingStats
         currentRepetition={currentRepetition}
-        totalRepetitions={settings.repetitions}
+        totalRepetitions={exerciseSettings.repetitions}
         breathCount={breathCount}
         timeElapsed={timeElapsed}
       />

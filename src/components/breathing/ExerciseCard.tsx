@@ -1,0 +1,84 @@
+
+import { Trash2, Info, Lungs } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { BreathingExercise } from "@/types/breathingExercise";
+
+interface ExerciseCardProps {
+  exercise: BreathingExercise;
+  onSelect: (exercise: BreathingExercise) => void;
+  onDelete: (id: string) => void;
+}
+
+const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
+  const getBreathingPattern = () => {
+    if (exercise.secondHoldDuration > 0) {
+      return `${exercise.inhaleDuration}-${exercise.firstHoldDuration}-${exercise.exhaleDuration}-${exercise.secondHoldDuration}`;
+    } else {
+      return `${exercise.inhaleDuration}-${exercise.firstHoldDuration}-${exercise.exhaleDuration}`;
+    }
+  };
+
+  const handleCardClick = () => {
+    onSelect(exercise);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete(exercise.id);
+  };
+
+  return (
+    <Card 
+      className="p-4 cursor-pointer hover:shadow-md transition-shadow bg-white/90 backdrop-blur-sm"
+      onClick={handleCardClick}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4 flex-1">
+          <div className="flex-shrink-0">
+            <Lungs className="h-8 w-8 text-breath" />
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold text-gray-800 truncate">
+              {exercise.title}
+            </h3>
+            {exercise.description && (
+              <p className="text-sm text-gray-600 mt-1">
+                {exercise.description}
+              </p>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2 flex-shrink-0">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Info className="h-4 w-4 text-gray-500" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Breathing pattern: {getBreathingPattern()}</p>
+              <p>Repetitions: {exercise.repetitions}</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          {exercise.isCustom && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
+              onClick={handleDeleteClick}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+export default ExerciseCard;

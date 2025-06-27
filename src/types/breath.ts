@@ -6,6 +6,7 @@ export interface BreathSession {
   holdDuration: number;
   totalDuration: number;
   breathCount: number;
+  exerciseTitle?: string;
 }
 
 export interface BreathSettings {

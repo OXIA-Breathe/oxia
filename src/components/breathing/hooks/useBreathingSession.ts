@@ -2,16 +2,28 @@
 import { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
+import { useBreathingExercise } from "@/context/BreathingExerciseContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
 export const useBreathingSession = () => {
-  const { settings, addSession } = useBreath();
+  const { addSession } = useBreath();
+  const { currentExercise } = useBreathingExercise();
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const [phase, setPhase] = useState<"inhale" | "exhale" | "hold" | "idle">("idle");
+  // Use current exercise or fallback to default values
+  const exerciseSettings = currentExercise || {
+    title: "Default Breathing",
+    inhaleDuration: 4,
+    firstHoldDuration: 4,
+    exhaleDuration: 4,
+    secondHoldDuration: 4,
+    repetitions: 5,
+  };
+
+  const [phase, setPhase] = useState<"inhale" | "exhale" | "hold1" | "hold2" | "idle">("idle");
   const [isActive, setIsActive] = useState(false);
   const [currentRepetition, setCurrentRepetition] = useState(0);
   const [breathCount, setBreathCount] = useState(0);
@@ -55,10 +67,11 @@ export const useBreathingSession = () => {
     const newSession = {
       id: uuidv4(),
       date: new Date().toISOString(),
-      repetitions: settings.repetitions,
-      holdDuration: settings.holdDuration,
+      repetitions: exerciseSettings.repetitions,
+      holdDuration: exerciseSettings.firstHoldDuration,
       totalDuration,
       breathCount: finalBreathCount,
+      exerciseTitle: exerciseSettings.title || "Breathing Exercise",
     };
     
     addSession(newSession);
@@ -73,7 +86,7 @@ export const useBreathingSession = () => {
     });
     
     resetExercise();
-  }, [addSession, sessionStartTime, settings, toast, user]);
+  }, [addSession, sessionStartTime, exerciseSettings, toast, user]);
 
   const resetExercise = () => {
     setPhase("idle");
@@ -87,38 +100,29 @@ export const useBreathingSession = () => {
 
   const toggleExercise = () => {
     if (!isActive) {
-      // Starting or resuming - set session start time if not already set
       if (sessionStartTime === null) {
         setSessionStartTime(Date.now());
       }
       
       setIsActive(true);
       
-      // If resuming from pause, phase should already be set
       if (phase === "idle") {
         setPhase("inhale");
         setPhaseTimeRemaining(null);
       }
     } else {
       setIsActive(false);
-      // When pausing, store the current time remaining in the phase
-      if (phaseTimeRemaining === null && phase !== "idle") {
-        // This will be set by the parent component
-      }
     }
   };
 
-  const handlePhaseComplete = useCallback((nextPhase: "inhale" | "exhale" | "hold") => {
+  const handlePhaseComplete = useCallback((nextPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
     if (nextPhase === "inhale") {
-      // Increment breath count first
       setBreathCount((prevBreathCount) => {
         const newBreathCount = prevBreathCount + 1;
         
-        // Then handle repetition logic
         setCurrentRepetition((prevRep) => {
           const newRep = prevRep + 1;
-          if (newRep >= settings.repetitions) {
-            // Complete session with the updated breath count
+          if (newRep >= exerciseSettings.repetitions) {
             completeSession(newBreathCount);
             return 0;
           } else {
@@ -132,7 +136,7 @@ export const useBreathingSession = () => {
     } else {
       setPhase(nextPhase);
     }
-  }, [settings.repetitions, completeSession]);
+  }, [exerciseSettings.repetitions, completeSession]);
 
   return {
     phase,
@@ -142,11 +146,11 @@ export const useBreathingSession = () => {
     timeElapsed,
     sessionStartTime,
     phaseTimeRemaining,
+    exerciseSettings,
     setTimeElapsed,
     setPhaseTimeRemaining,
     resetExercise,
     toggleExercise,
     handlePhaseComplete,
-    settings
   };
 };

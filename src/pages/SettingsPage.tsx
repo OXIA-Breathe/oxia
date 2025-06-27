@@ -1,6 +1,5 @@
 
 import MainLayout from "@/components/layout/MainLayout";
-import SettingsForm from "@/components/settings/SettingsForm";
 import NotificationSettings from "@/components/settings/NotificationSettings";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
@@ -18,9 +17,6 @@ const SettingsPage = () => {
       <div className="container py-12 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8 text-center">Settings</h1>
         <div className="flex flex-col items-center space-y-6">
-          <div className="bg-white rounded-lg shadow-md p-6 w-full text-gray-800">
-            <SettingsForm />
-          </div>
           {user && (
             <div className="bg-white rounded-lg shadow-md p-6 w-full text-gray-800">
               <NotificationSettings />

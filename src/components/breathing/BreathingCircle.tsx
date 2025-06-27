@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface BreathingCircleProps {
-  phase: "inhale" | "exhale" | "hold" | "idle";
+  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
   duration: number;
   timeRemaining: number;
   size?: "sm" | "md" | "lg";
@@ -30,26 +30,35 @@ const BreathingCircle = ({
     lg: "w-64 h-64",
   };
 
+  const getPhaseDisplayName = () => {
+    switch (phase) {
+      case "hold1":
+      case "hold2":
+        return "Hold";
+      case "inhale":
+        return "Inhale";
+      case "exhale":
+        return "Exhale";
+      default:
+        return "Breathe";
+    }
+  };
+
   useEffect(() => {
     if (innerCircleRef.current) {
       if (phase === "idle" || isPaused) {
-        // When idle or paused, set static scale
-        const scale = phase === "idle" ? 0.5 : (phase === "inhale" || phase === "hold" ? 1 : 0.5);
+        const scale = phase === "idle" ? 0.5 : (phase === "inhale" || phase === "hold1" || phase === "hold2" ? 1 : 0.5);
         innerCircleRef.current.style.transform = `scale(${scale})`;
         innerCircleRef.current.style.transition = "transform 0.3s ease";
       } else {
-        // Calculate progress based on remaining time
         const progress = 1 - (timeRemaining / duration);
         let targetScale = 0.5;
         
         if (phase === "inhale") {
-          // Scale from 0.5 to 1.0 during inhale (50% to 100%)
           targetScale = 0.5 + (0.5 * progress);
-        } else if (phase === "hold") {
-          // Stay at 1.0 during hold
+        } else if (phase === "hold1" || phase === "hold2") {
           targetScale = 1.0;
         } else if (phase === "exhale") {
-          // Scale from 1.0 to 0.5 during exhale
           targetScale = 1.0 - (0.5 * progress);
         }
         
@@ -61,15 +70,12 @@ const BreathingCircle = ({
   
   return (
     <div className="relative flex flex-col items-center justify-center">
-      {/* Outer Ring - Fixed transparent border */}
       <div 
         className={`${sizeClasses[size]} relative cursor-pointer`}
         onClick={onCircleClick}
       >
-        {/* Outer ring border */}
         <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-30"></div>
         
-        {/* Inner Ring - Animated breathing circle */}
         <div 
           ref={innerCircleRef}
           className="absolute inset-0 m-auto rounded-full flex items-center justify-center"
@@ -84,15 +90,13 @@ const BreathingCircle = ({
         >
           <div className="text-center flex flex-col items-center justify-center">
             {phase === "idle" ? (
-              <>
-                <span className="text-xl font-bold text-white">
-                  Breathe
-                </span>
-              </>
+              <span className="text-xl font-bold text-white">
+                Breathe
+              </span>
             ) : (
               <>
                 <span className="text-lg font-bold text-white">
-                  {isPaused ? "Paused" : phase.charAt(0).toUpperCase() + phase.slice(1)}
+                  {isPaused ? "Paused" : getPhaseDisplayName()}
                 </span>
                 <span className="text-base text-white mt-1">
                   {Math.max(0, Math.ceil(timeRemaining))}
