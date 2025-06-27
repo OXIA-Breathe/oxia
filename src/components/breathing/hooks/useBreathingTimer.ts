@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 interface UseBreathingTimerProps {
   isActive: boolean;
@@ -26,28 +26,41 @@ export const useBreathingTimer = ({
   const [duration, setDuration] = useState(exerciseSettings.inhaleDuration);
   const [timeRemaining, setTimeRemaining] = useState(exerciseSettings.inhaleDuration);
 
+  // Memoize the exercise settings to prevent infinite re-renders
+  const memoizedSettings = useMemo(() => ({
+    inhaleDuration: exerciseSettings.inhaleDuration,
+    exhaleDuration: exerciseSettings.exhaleDuration,
+    firstHoldDuration: exerciseSettings.firstHoldDuration,
+    secondHoldDuration: exerciseSettings.secondHoldDuration,
+  }), [
+    exerciseSettings.inhaleDuration,
+    exerciseSettings.exhaleDuration,
+    exerciseSettings.firstHoldDuration,
+    exerciseSettings.secondHoldDuration,
+  ]);
+
   // Update duration and timeRemaining when phase changes
   useEffect(() => {
     let phaseDuration = 0;
     
     switch (phase) {
       case "inhale":
-        phaseDuration = exerciseSettings.inhaleDuration;
+        phaseDuration = memoizedSettings.inhaleDuration;
         break;
       case "hold1":
-        phaseDuration = exerciseSettings.firstHoldDuration;
+        phaseDuration = memoizedSettings.firstHoldDuration;
         break;
       case "exhale":
-        phaseDuration = exerciseSettings.exhaleDuration;
+        phaseDuration = memoizedSettings.exhaleDuration;
         break;
       case "hold2":
-        phaseDuration = exerciseSettings.secondHoldDuration;
+        phaseDuration = memoizedSettings.secondHoldDuration;
         break;
       default:
-        phaseDuration = exerciseSettings.inhaleDuration;
+        phaseDuration = memoizedSettings.inhaleDuration;
     }
     
-    console.log("Phase changed:", { phase, phaseDuration, exerciseSettings });
+    console.log("Phase changed:", { phase, phaseDuration, exerciseSettings: memoizedSettings });
     
     setDuration(phaseDuration);
     
@@ -60,7 +73,7 @@ export const useBreathingTimer = ({
       console.log("Starting fresh phase with duration:", phaseDuration);
       setTimeRemaining(phaseDuration);
     }
-  }, [phase, exerciseSettings, phaseTimeRemaining, setPhaseTimeRemaining]);
+  }, [phase, memoizedSettings, phaseTimeRemaining, setPhaseTimeRemaining]);
 
   // Main timer effect
   useEffect(() => {
@@ -78,11 +91,11 @@ export const useBreathingTimer = ({
             console.log("Phase completed, transitioning from:", phase);
             // Transition to next phase
             if (phase === "inhale") {
-              onPhaseComplete(exerciseSettings.firstHoldDuration > 0 ? "hold1" : "exhale");
+              onPhaseComplete(memoizedSettings.firstHoldDuration > 0 ? "hold1" : "exhale");
             } else if (phase === "hold1") {
               onPhaseComplete("exhale");
             } else if (phase === "exhale") {
-              onPhaseComplete(exerciseSettings.secondHoldDuration > 0 ? "hold2" : "inhale");
+              onPhaseComplete(memoizedSettings.secondHoldDuration > 0 ? "hold2" : "inhale");
             } else if (phase === "hold2") {
               onPhaseComplete("inhale");
             }
@@ -98,7 +111,7 @@ export const useBreathingTimer = ({
         clearInterval(phaseTimer);
       }
     };
-  }, [isActive, phase, timeRemaining, onPhaseComplete, exerciseSettings]);
+  }, [isActive, phase, timeRemaining, onPhaseComplete, memoizedSettings]);
 
   return { duration, timeRemaining };
 };
