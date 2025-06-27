@@ -68,8 +68,6 @@ export const useBreathingTimer = ({
           const newValue = Math.max(0, prev - 0.1);
           
           if (newValue <= 0) {
-            clearInterval(phaseTimer);
-            
             // Transition to next phase
             if (phase === "inhale") {
               onPhaseComplete(exerciseSettings.firstHoldDuration > 0 ? "hold1" : "exhale");

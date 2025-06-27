@@ -34,7 +34,7 @@ const BreathingControls = ({
         variant="outline"
         size="lg"
         className="flex items-center space-x-2 border-red-400 hover:bg-red-100 hover:text-red-600 text-red-500"
-        disabled={!isActive && currentRepetition === 0}
+        disabled={phase === "idle" && currentRepetition === 0}
       >
         <RotateCcw size={20} />
         <span>Reset</span>
