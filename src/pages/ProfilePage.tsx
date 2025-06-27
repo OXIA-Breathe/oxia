@@ -7,9 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import MainLayout from "@/components/layout/MainLayout";
 import ProfileInfo from "@/components/profile/ProfileInfo";
-import ProfileStats from "@/components/profile/ProfileStats";
 import ProfileActions from "@/components/profile/ProfileActions";
 import ProfileBadges from "@/components/profile/ProfileBadges";
+import ProfileStreaks from "@/components/profile/ProfileStreaks";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -17,7 +17,7 @@ const ProfilePage = () => {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
   const [openInfo, setOpenInfo] = useState(true);
-  const [openStats, setOpenStats] = useState(true);
+  const [openStreaks, setOpenStreaks] = useState(true);
   const [openBadges, setOpenBadges] = useState(true);
   
   // If not loading and no user, redirect to auth page
@@ -52,23 +52,23 @@ const ProfilePage = () => {
             </Collapsible>
           </div>
           
-          {/* Breathing Statistics Section */}
+          {/* My Streaks Section */}
           <div className="bg-white rounded-lg shadow-md p-4">
             <Collapsible 
-              open={openStats} 
-              onOpenChange={setOpenStats}
+              open={openStreaks} 
+              onOpenChange={setOpenStreaks}
               className="transition-all duration-200"
             >
               <div className="flex items-center justify-between border-b pb-2 mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">Breathing Statistics</h2>
+                <h2 className="text-xl font-semibold text-gray-800">My Streaks</h2>
                 <CollapsibleTrigger asChild>
                   <button className="rounded-full p-1 hover:bg-accent transition-colors">
-                    {openStats ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {openStreaks ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
                 </CollapsibleTrigger>
               </div>
               <CollapsibleContent className="transition-all duration-300">
-                <ProfileStats />
+                <ProfileStreaks />
               </CollapsibleContent>
             </Collapsible>
           </div>
