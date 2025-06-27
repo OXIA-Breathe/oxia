@@ -1,5 +1,5 @@
 
-import { Home, BarChart2, Calendar, Settings, Book } from "lucide-react";
+import { Home, BarChart2, Calendar, Settings, Book, Wind } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
@@ -14,6 +14,7 @@ const Navbar = () => {
       <div className="flex justify-around items-center max-w-screen-xl mx-auto">
         <NavItem path="/" label="Home" icon={<Home size={20} />} isActive={isActive("/")} />
         <NavItem path="/learn" label="Learn" icon={<Book size={20} />} isActive={isActive("/learn")} />
+        <NavItem path="/breathe" label="Breathe" icon={<Wind size={20} />} isActive={isActive("/breathe")} />
         <NavItem path="/progress" label="Progress" icon={<BarChart2 size={20} />} isActive={isActive("/progress")} />
         <NavItem path="/settings" label="Settings" icon={<Settings size={20} />} isActive={isActive("/settings")} />
       </div>
