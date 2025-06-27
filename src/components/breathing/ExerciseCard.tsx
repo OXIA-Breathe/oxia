@@ -1,5 +1,5 @@
 
-import { Trash2, Info, Lungs } from "lucide-react";
+import { Trash2, Info, Wind } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -37,7 +37,7 @@ const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4 flex-1">
           <div className="flex-shrink-0">
-            <Lungs className="h-8 w-8 text-breath" />
+            <Wind className="h-8 w-8 text-breath" />
           </div>
           
           <div className="flex-1 min-w-0">

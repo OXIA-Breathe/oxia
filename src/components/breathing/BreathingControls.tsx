@@ -4,7 +4,7 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 
 interface BreathingControlsProps {
   isActive: boolean;
-  phase: "inhale" | "exhale" | "hold" | "idle";
+  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
   currentRepetition: number;
   onToggle: () => void;
   onReset: () => void;
