@@ -1,9 +1,7 @@
 
-import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 
 interface StatsData {
@@ -15,7 +13,6 @@ interface StatsData {
 
 const ProfileStats = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
 
   // Fetch user stats
   const { data: stats, isLoading } = useQuery({

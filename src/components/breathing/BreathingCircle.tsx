@@ -1,6 +1,5 @@
 
 import { useState, useEffect, useRef } from "react";
-import { useToast } from "@/components/ui/use-toast";
 
 interface BreathingCircleProps {
   phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
@@ -17,12 +16,10 @@ const BreathingCircle = ({
   duration, 
   timeRemaining,
   size = "lg", 
-  riskLevel = "Minimal",
   onCircleClick,
   isPaused = false
 }: BreathingCircleProps) => {
   const innerCircleRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
   
   const sizeClasses = {
     sm: "w-32 h-32",
