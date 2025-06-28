@@ -5,6 +5,8 @@ import { BreathSession } from "../types/breath";
 interface BreathContextType {
   sessions: BreathSession[];
   addSession: (session: BreathSession) => void;
+  updateSession: (updatedSession: BreathSession) => void;
+  deleteSession: (sessionId: string) => void;
 }
 
 const BreathContext = createContext<BreathContextType | undefined>(undefined);
@@ -23,8 +25,20 @@ export const BreathProvider = ({ children }: { children: ReactNode }) => {
     setSessions((prev) => [session, ...prev]);
   };
 
+  const updateSession = (updatedSession: BreathSession) => {
+    setSessions((prev) => 
+      prev.map(session => 
+        session.id === updatedSession.id ? updatedSession : session
+      )
+    );
+  };
+
+  const deleteSession = (sessionId: string) => {
+    setSessions((prev) => prev.filter(session => session.id !== sessionId));
+  };
+
   return (
-    <BreathContext.Provider value={{ sessions, addSession }}>
+    <BreathContext.Provider value={{ sessions, addSession, updateSession, deleteSession }}>
       {children}
     </BreathContext.Provider>
   );

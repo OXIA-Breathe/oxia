@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BreathSession } from "@/types/breath";
 import { User } from "@supabase/supabase-js";
@@ -8,13 +8,7 @@ export const useSessionData = (user: User | null) => {
   const [isLoading, setIsLoading] = useState(false);
   const [onlineSessions, setOnlineSessions] = useState<BreathSession[]>([]);
 
-  useEffect(() => {
-    if (user) {
-      fetchUserSessions();
-    }
-  }, [user]);
-
-  const fetchUserSessions = async () => {
+  const fetchUserSessions = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -34,7 +28,8 @@ export const useSessionData = (user: User | null) => {
           repetitions: session.repetitions,
           holdDuration: session.hold_duration,
           totalDuration: session.total_duration,
-          breathCount: session.breath_count
+          breathCount: session.breath_count,
+          exerciseTitle: session.exercise_title || undefined
         }));
         
         setOnlineSessions(formattedSessions);
@@ -44,7 +39,13 @@ export const useSessionData = (user: User | null) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
-  return { isLoading, onlineSessions };
+  useEffect(() => {
+    if (user) {
+      fetchUserSessions();
+    }
+  }, [user, fetchUserSessions]);
+
+  return { isLoading, onlineSessions, refreshSessions: fetchUserSessions };
 };

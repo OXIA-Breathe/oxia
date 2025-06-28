@@ -7,14 +7,95 @@ import { History } from "lucide-react";
 import ExportButton from "./ExportButton";
 import { useSessionData } from "./hooks/useSessionData";
 import SessionList from "./SessionList";
+import { BreathSession } from "@/types/breath";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const SessionHistory = () => {
-  const { sessions } = useBreath();
+  const { sessions, updateSession, deleteSession } = useBreath();
   const { user } = useAuth();
-  const { isLoading, onlineSessions } = useSessionData(user);
+  const { toast } = useToast();
+  const { isLoading, onlineSessions, refreshSessions } = useSessionData(user);
   
   // Determine which sessions to display based on user authentication
   const displaySessions = user ? onlineSessions : sessions;
+
+  const handleUpdateSession = async (updatedSession: BreathSession) => {
+    if (user) {
+      // Update in Supabase for authenticated users
+      try {
+        const { error } = await supabase
+          .from("breath_sessions")
+          .update({
+            date: updatedSession.date,
+            breath_count: updatedSession.breathCount,
+            total_duration: updatedSession.totalDuration,
+            exercise_title: updatedSession.exerciseTitle,
+          })
+          .eq("id", updatedSession.id);
+
+        if (error) throw error;
+        
+        // Refresh the sessions from the server
+        refreshSessions();
+        
+        toast({
+          title: "Session updated",
+          description: "Your breathing session has been successfully updated.",
+        });
+      } catch (error) {
+        console.error("Error updating session:", error);
+        toast({
+          title: "Error",
+          description: "Failed to update the session. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      // Update locally for non-authenticated users
+      updateSession(updatedSession);
+      toast({
+        title: "Session updated",
+        description: "Your breathing session has been successfully updated.",
+      });
+    }
+  };
+
+  const handleDeleteSession = async (sessionId: string) => {
+    if (user) {
+      // Delete from Supabase for authenticated users
+      try {
+        const { error } = await supabase
+          .from("breath_sessions")
+          .delete()
+          .eq("id", sessionId);
+
+        if (error) throw error;
+        
+        // Refresh the sessions from the server
+        refreshSessions();
+        
+        toast({
+          title: "Session deleted",
+          description: "Your breathing session has been successfully deleted.",
+        });
+      } catch (error) {
+        console.error("Error deleting session:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete the session. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      // Delete locally for non-authenticated users
+      deleteSession(sessionId);
+      toast({
+        title: "Session deleted",
+        description: "Your breathing session has been successfully deleted.",
+      });
+    }
+  };
   
   if (isLoading) {
     return (
@@ -63,7 +144,11 @@ const SessionHistory = () => {
         <ExportButton sessions={displaySessions} />
       </CardHeader>
       <CardContent>
-        <SessionList sessions={displaySessions} />
+        <SessionList 
+          sessions={displaySessions} 
+          onUpdateSession={handleUpdateSession}
+          onDeleteSession={handleDeleteSession}
+        />
       </CardContent>
     </Card>
   );
