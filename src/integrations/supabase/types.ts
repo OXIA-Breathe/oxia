@@ -14,6 +14,7 @@ export type Database = {
           breath_count: number
           created_at: string
           date: string
+          exercise_title: string | null
           hold_duration: number
           id: string
           repetitions: number
@@ -24,6 +25,7 @@ export type Database = {
           breath_count: number
           created_at?: string
           date?: string
+          exercise_title?: string | null
           hold_duration: number
           id?: string
           repetitions: number
@@ -34,6 +36,7 @@ export type Database = {
           breath_count?: number
           created_at?: string
           date?: string
+          exercise_title?: string | null
           hold_duration?: number
           id?: string
           repetitions?: number
