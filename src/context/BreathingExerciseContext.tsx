@@ -44,12 +44,14 @@ export const BreathingExerciseProvider = ({ children }: { children: ReactNode })
   };
 
   const deleteExercise = (id: string) => {
-    setExercises((prev) => prev.filter((exercise) => exercise.id !== id));
-    if (currentExercise?.id === id) {
+    setExercises((prev) => {
+      const filteredExercises = prev.filter((exercise) => exercise.id !== id);
       // If deleting current exercise, fallback to first available exercise
-      const remainingExercises = exercises.filter((exercise) => exercise.id !== id);
-      setCurrentExercise(remainingExercises[0] || null);
-    }
+      if (currentExercise?.id === id) {
+        setCurrentExercise(filteredExercises[0] || null);
+      }
+      return filteredExercises;
+    });
   };
 
   return (

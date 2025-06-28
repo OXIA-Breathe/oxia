@@ -47,7 +47,8 @@ export const useBreathingSession = () => {
           repetitions: sessionData.repetitions,
           hold_duration: sessionData.holdDuration,
           total_duration: sessionData.totalDuration,
-          breath_count: sessionData.breathCount
+          breath_count: sessionData.breathCount,
+          exercise_title: sessionData.exerciseTitle
         });
         
       if (error) {
@@ -74,7 +75,7 @@ export const useBreathingSession = () => {
       holdDuration: exerciseSettings.firstHoldDuration,
       totalDuration,
       breathCount: finalBreathCount,
-      exerciseTitle: exerciseSettings.title || "Breathing Exercise",
+      exerciseTitle: exerciseSettings.title,
     };
     
     addSession(newSession);

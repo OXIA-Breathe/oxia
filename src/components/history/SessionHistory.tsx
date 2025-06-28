@@ -37,7 +37,7 @@ const SessionHistory = () => {
         if (error) throw error;
         
         // Refresh the sessions from the server
-        refreshSessions();
+        await refreshSessions();
         
         toast({
           title: "Session updated",
@@ -61,19 +61,19 @@ const SessionHistory = () => {
     }
   };
 
-  const handleDeleteSession = async (sessionId: string) => {
+  const handleDeleteSession = async (session: BreathSession) => {
     if (user) {
       // Delete from Supabase for authenticated users
       try {
         const { error } = await supabase
           .from("breath_sessions")
           .delete()
-          .eq("id", sessionId);
+          .eq("id", session.id);
 
         if (error) throw error;
         
         // Refresh the sessions from the server
-        refreshSessions();
+        await refreshSessions();
         
         toast({
           title: "Session deleted",
@@ -89,7 +89,7 @@ const SessionHistory = () => {
       }
     } else {
       // Delete locally for non-authenticated users
-      deleteSession(sessionId);
+      deleteSession(session.id);
       toast({
         title: "Session deleted",
         description: "Your breathing session has been successfully deleted.",

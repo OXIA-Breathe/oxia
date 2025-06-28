@@ -9,7 +9,7 @@ import DeleteConfirmDialog from "./DeleteConfirmDialog";
 interface SessionListProps {
   sessions: BreathSession[];
   onUpdateSession: (updatedSession: BreathSession) => void;
-  onDeleteSession: (sessionId: string) => void;
+  onDeleteSession: (session: BreathSession) => void;
 }
 
 const SessionList = ({ sessions, onUpdateSession, onDeleteSession }: SessionListProps) => {
@@ -29,7 +29,7 @@ const SessionList = ({ sessions, onUpdateSession, onDeleteSession }: SessionList
   };
 
   const handleConfirmDelete = (session: BreathSession) => {
-    onDeleteSession(session.id);
+    onDeleteSession(session);
   };
 
   return (
