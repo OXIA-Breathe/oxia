@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -10,7 +11,7 @@ import ProfileActions from "@/components/profile/ProfileActions";
 import ProfileBadges from "@/components/profile/ProfileBadges";
 import ProfileStreaks from "@/components/profile/ProfileStreaks";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, User, Flame, Award } from "lucide-react";
 
 const ProfilePage = () => {
   const { user, isLoading } = useAuth();
@@ -50,14 +51,17 @@ const ProfilePage = () => {
         
         <div className="space-y-6">
           {/* Profile Information Section */}
-          <div className="bg-white rounded-lg shadow-md p-4">
+          <div className="border-none shadow-md bg-white rounded-lg p-4">
             <Collapsible 
               open={openInfo} 
               onOpenChange={setOpenInfo}
               className="transition-all duration-200"
             >
-              <div className="flex items-center justify-between border-b pb-2 mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">Profile Information</h2>
+              <div className="flex items-center justify-between pb-2 mb-4">
+                <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                  <User className="h-5 w-5 text-breath" />
+                  Profile Information
+                </h2>
                 <CollapsibleTrigger asChild>
                   <button className="rounded-full p-1 hover:bg-accent transition-colors">
                     {openInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -71,14 +75,17 @@ const ProfilePage = () => {
           </div>
           
           {/* My Streaks Section */}
-          <div className="bg-white rounded-lg shadow-md p-4">
+          <div className="border-none shadow-md bg-white rounded-lg p-4">
             <Collapsible 
               open={openStreaks} 
               onOpenChange={setOpenStreaks}
               className="transition-all duration-200"
             >
-              <div className="flex items-center justify-between border-b pb-2 mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">My Streaks</h2>
+              <div className="flex items-center justify-between pb-2 mb-4">
+                <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                  <Flame className="h-5 w-5 text-orange-500" />
+                  My Streaks
+                </h2>
                 <CollapsibleTrigger asChild>
                   <button className="rounded-full p-1 hover:bg-accent transition-colors">
                     {openStreaks ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -87,19 +94,22 @@ const ProfilePage = () => {
               </div>
               <CollapsibleContent className="transition-all duration-300">
                 <ProfileStreaks />
-              </CollapsibleContent>
+              </CollipsibleContent>
             </Collapsible>
           </div>
           
           {/* Achievements and Badges Section */}
-          <div className="bg-white rounded-lg shadow-md p-4">
+          <div className="border-none shadow-md bg-white rounded-lg p-4">
             <Collapsible 
               open={openBadges} 
               onOpenChange={setOpenBadges}
               className="transition-all duration-200"
             >
-              <div className="flex items-center justify-between border-b pb-2 mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">Achievements</h2>
+              <div className="flex items-center justify-between pb-2 mb-4">
+                <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                  <Award className="h-5 w-5 text-yellow-500" />
+                  Achievements
+                </h2>
                 <CollapsibleTrigger asChild>
                   <button className="rounded-full p-1 hover:bg-accent transition-colors">
                     {openBadges ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -113,9 +123,7 @@ const ProfilePage = () => {
           </div>
           
           {/* Account Actions Section (not collapsible) */}
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <ProfileActions />
-          </div>
+          <ProfileActions />
         </div>
       </div>
     </MainLayout>

@@ -5,7 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Trash2 } from "lucide-react";
+import { LogOut, Trash2, Settings } from "lucide-react";
 
 const ProfileActions = () => {
   const { signOut } = useAuth();
@@ -80,12 +79,12 @@ const ProfileActions = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Account Actions</CardTitle>
-        <CardDescription>Manage your account</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col sm:flex-row gap-4">
+    <div className="border-none shadow-md bg-white rounded-lg p-4">
+      <div className="flex items-center gap-2 pb-2 mb-4">
+        <Settings className="h-5 w-5 text-gray-500" />
+        <h2 className="text-xl font-semibold text-gray-800">Account Actions</h2>
+      </div>
+      <div className="flex flex-col sm:flex-row gap-4">
         <Button 
           variant="outline" 
           className="flex items-center gap-2" 
@@ -123,8 +122,8 @@ const ProfileActions = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
