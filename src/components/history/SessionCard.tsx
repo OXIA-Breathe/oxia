@@ -20,10 +20,9 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
           <h3 className="font-medium text-base">
             {session.exerciseTitle || "Breathing Exercise"}
           </h3>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground flex items-center gap-1">
             {format(new Date(session.date), "MMMM d, yyyy")}
-          </p>
-          <p className="text-xs text-muted-foreground">
+            <span>•</span>
             {format(new Date(session.date), "h:mm a")}
           </p>
         </div>
@@ -41,22 +40,20 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
         
         <div className="flex gap-2 justify-end">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => onModify(session)}
-            className="flex items-center gap-1"
+            className="h-8 w-8 p-0 hover:bg-gray-100"
           >
-            <Edit className="h-3 w-3" />
-            Modify
+            <Edit className="h-4 w-4" />
           </Button>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => onDelete(session)}
-            className="flex items-center gap-1 text-red-600 hover:text-red-700"
+            className="h-8 w-8 p-0 hover:bg-gray-100 text-red-600 hover:text-red-700"
           >
-            <Trash2 className="h-3 w-3" />
-            Delete
+            <Trash2 className="h-4 w-4" />
           </Button>
         </div>
       </div>
