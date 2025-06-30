@@ -9,11 +9,13 @@ import SessionList from "./SessionList";
 import { BreathSession } from "@/types/breath";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SessionHistory = () => {
   const { sessions, updateSession, deleteSession } = useBreath();
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { isLoading, onlineSessions, refreshSessions } = useSessionData(user);
   
   // Determine which sessions to display based on user authentication
@@ -37,6 +39,9 @@ const SessionHistory = () => {
         
         // Refresh the sessions from the server
         await refreshSessions();
+        
+        // Invalidate the user stats query to refresh statistics immediately
+        queryClient.invalidateQueries({ queryKey: ["userStats", user.id] });
         
         toast({
           title: "Session updated",
@@ -108,6 +113,9 @@ const SessionHistory = () => {
         
         // Refresh from server immediately and then again after delay to ensure consistency
         await refreshSessions();
+        
+        // Invalidate the user stats query to refresh statistics immediately
+        queryClient.invalidateQueries({ queryKey: ["userStats", user.id] });
         
         setTimeout(async () => {
           console.log("Delayed refresh starting...");
