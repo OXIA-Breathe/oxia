@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Trash2, Settings } from "lucide-react";
+import { LogOut, Trash2 } from "lucide-react";
 
 const ProfileActions = () => {
   const { signOut } = useAuth();
@@ -79,50 +79,44 @@ const ProfileActions = () => {
   };
 
   return (
-    <div className="border-none shadow-md bg-white rounded-lg p-4">
-      <div className="flex items-center gap-2 pb-2 mb-4">
-        <Settings className="h-5 w-5 text-gray-500" />
-        <h2 className="text-xl font-semibold text-gray-800">Account Actions</h2>
-      </div>
-      <div className="flex flex-col sm:flex-row gap-4">
-        <Button 
-          variant="outline" 
-          className="flex items-center gap-2" 
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-        >
-          <LogOut className="w-4 h-4" />
-          <span>{isLoggingOut ? "Logging out..." : "Log Out"}</span>
-        </Button>
-        
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button 
-              variant="destructive" 
-              className="flex items-center gap-2"
-              disabled={isDeleting}
-            >
-              <Trash2 className="w-4 h-4" />
-              <span>{isDeleting ? "Deleting..." : "Delete Account"}</span>
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove all your data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteAccount}>
-                Delete Account
-              </AlertDialogAction>
+    <div className="flex flex-col sm:flex-row gap-4">
+      <Button 
+        variant="outline" 
+        className="flex items-center gap-2" 
+        onClick={handleLogout}
+        disabled={isLoggingOut}
+      >
+        <LogOut className="w-4 h-4" />
+        <span>{isLoggingOut ? "Logging out..." : "Log Out"}</span>
+      </Button>
+      
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button 
+            variant="destructive" 
+            className="flex items-center gap-2"
+            disabled={isDeleting}
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>{isDeleting ? "Deleting..." : "Delete Account"}</span>
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove all your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteAccount}>
+              Delete Account
+            </AlertDialogAction>
             </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

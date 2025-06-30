@@ -10,8 +10,9 @@ import ProfileInfo from "@/components/profile/ProfileInfo";
 import ProfileActions from "@/components/profile/ProfileActions";
 import ProfileBadges from "@/components/profile/ProfileBadges";
 import ProfileStreaks from "@/components/profile/ProfileStreaks";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp, User, Flame, Award } from "lucide-react";
+import { ChevronDown, ChevronUp, User, Flame, Award, Settings } from "lucide-react";
 
 const ProfilePage = () => {
   const { user, isLoading } = useAuth();
@@ -51,79 +52,101 @@ const ProfilePage = () => {
         
         <div className="space-y-6">
           {/* Profile Information Section */}
-          <div className="border-none shadow-md bg-white rounded-lg p-6">
+          <Card className="border-none shadow-md bg-white">
             <Collapsible 
               open={openInfo} 
               onOpenChange={setOpenInfo}
               className="transition-all duration-200"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-800">
-                  <User className="h-5 w-5 text-breath" />
-                  Profile Information
-                </h2>
-                <CollapsibleTrigger asChild>
-                  <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
-                    {openInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                  </button>
-                </CollapsibleTrigger>
-              </div>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5 text-breath" />
+                    <span className="text-gray-800">Profile Information</span>
+                  </CardTitle>
+                  <CollapsibleTrigger asChild>
+                    <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
+                      {openInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
+                  </CollapsibleTrigger>
+                </div>
+              </CardHeader>
               <CollapsibleContent className="transition-all duration-300">
-                <ProfileInfo />
+                <CardContent>
+                  <ProfileInfo />
+                </CardContent>
               </CollapsibleContent>
             </Collapsible>
-          </div>
+          </Card>
           
           {/* My Streaks Section */}
-          <div className="border-none shadow-md bg-white rounded-lg p-6">
+          <Card className="border-none shadow-md bg-white">
             <Collapsible 
               open={openStreaks} 
               onOpenChange={setOpenStreaks}
               className="transition-all duration-200"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-800">
-                  <Flame className="h-5 w-5 text-orange-500" />
-                  My Streaks
-                </h2>
-                <CollapsibleTrigger asChild>
-                  <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
-                    {openStreaks ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                  </button>
-                </CollapsibleTrigger>
-              </div>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Flame className="h-5 w-5 text-orange-500" />
+                    <span className="text-gray-800">My Streaks</span>
+                  </CardTitle>
+                  <CollapsibleTrigger asChild>
+                    <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
+                      {openStreaks ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
+                  </CollapsibleTrigger>
+                </div>
+              </CardHeader>
               <CollapsibleContent className="transition-all duration-300">
-                <ProfileStreaks />
+                <CardContent>
+                  <ProfileStreaks />
+                </CardContent>
               </CollapsibleContent>
             </Collapsible>
-          </div>
+          </Card>
           
           {/* Achievements and Badges Section */}
-          <div className="border-none shadow-md bg-white rounded-lg p-6">
+          <Card className="border-none shadow-md bg-white">
             <Collapsible 
               open={openBadges} 
               onOpenChange={setOpenBadges}
               className="transition-all duration-200"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-800">
-                  <Award className="h-5 w-5 text-yellow-500" />
-                  Achievements
-                </h2>
-                <CollapsibleTrigger asChild>
-                  <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
-                    {openBadges ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                  </button>
-                </CollapsibleTrigger>
-              </div>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5 text-yellow-500" />
+                    <span className="text-gray-800">Achievements</span>
+                  </CardTitle>
+                  <CollapsibleTrigger asChild>
+                    <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
+                      {openBadges ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
+                  </CollapsibleTrigger>
+                </div>
+              </CardHeader>
               <CollapsibleContent className="transition-all duration-300">
-                <ProfileBadges />
+                <CardContent>
+                  <ProfileBadges />
+                </CardContent>
               </CollapsibleContent>
             </Collapsible>
-          </div>
+          </Card>
           
           {/* Account Actions Section (not collapsible) */}
-          <ProfileActions />
+          <Card className="border-none shadow-md bg-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5 text-gray-500" />
+                <span className="text-gray-800">Account Actions</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProfileActions />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </MainLayout>
