@@ -38,7 +38,7 @@ const DeleteConfirmDialog = ({ session, open, onOpenChange, onConfirm }: DeleteC
         <AlertDialogFooter>
           <AlertDialogCancel>No</AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirm} className="bg-red-600 hover:bg-red-700">
-            Yes, Delete
+            Yes
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

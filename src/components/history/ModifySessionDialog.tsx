@@ -35,8 +35,8 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
     exerciseTitle: "",
     date: "",
     time: "",
-    breathCount: 0,
-    totalDuration: 0,
+    breathCount: "",
+    totalDuration: "",
   });
 
   useEffect(() => {
@@ -46,8 +46,8 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
         exerciseTitle: session.exerciseTitle || exercises[0]?.title || "",
         date: format(sessionDate, "yyyy-MM-dd"),
         time: format(sessionDate, "HH:mm"),
-        breathCount: session.breathCount,
-        totalDuration: session.totalDuration,
+        breathCount: session.breathCount.toString(),
+        totalDuration: session.totalDuration.toString(),
       });
     }
   }, [session, exercises]);
@@ -61,8 +61,8 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
       ...session,
       exerciseTitle: formData.exerciseTitle,
       date: combinedDateTime.toISOString(),
-      breathCount: formData.breathCount,
-      totalDuration: formData.totalDuration,
+      breathCount: parseInt(formData.breathCount) || 1,
+      totalDuration: parseInt(formData.totalDuration) || 1,
     };
 
     onSave(updatedSession);
@@ -126,7 +126,8 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
               type="number"
               min="1"
               value={formData.breathCount}
-              onChange={(e) => setFormData(prev => ({ ...prev, breathCount: parseInt(e.target.value) || 0 }))}
+              onChange={(e) => setFormData(prev => ({ ...prev, breathCount: e.target.value }))}
+              onFocus={(e) => e.target.select()}
             />
           </div>
           
@@ -137,12 +138,13 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
               type="number"
               min="1"
               value={formData.totalDuration}
-              onChange={(e) => setFormData(prev => ({ ...prev, totalDuration: parseInt(e.target.value) || 0 }))}
+              onChange={(e) => setFormData(prev => ({ ...prev, totalDuration: e.target.value }))}
+              onFocus={(e) => e.target.select()}
             />
           </div>
         </div>
         
-        <DialogFooter>
+        <DialogFooter className="gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
