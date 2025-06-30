@@ -106,10 +106,9 @@ const SessionHistory = () => {
         console.log("=== DELETE OPERATION END ===");
         console.log("Forcing session refresh...");
         
-        // Clear current sessions immediately for UI responsiveness
-        setOnlineSessions(prev => prev.filter(s => s.id !== session.id));
+        // Refresh from server immediately and then again after delay to ensure consistency
+        await refreshSessions();
         
-        // Then refresh from server to ensure consistency
         setTimeout(async () => {
           console.log("Delayed refresh starting...");
           await refreshSessions();
