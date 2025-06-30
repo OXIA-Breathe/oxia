@@ -1,6 +1,5 @@
-
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useBreath } from "@/context/BreathContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,9 +15,28 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 const ProfilePage = () => {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [openInfo, setOpenInfo] = useState(true);
   const [openStreaks, setOpenStreaks] = useState(true);
   const [openBadges, setOpenBadges] = useState(true);
+  
+  // Store the previous page for back navigation
+  const fromPage = location.state?.from || "/";
+  
+  // Override the default back behavior
+  useEffect(() => {
+    const handleBackButton = () => {
+      navigate(fromPage);
+    };
+    
+    // Update the back button behavior
+    window.history.replaceState({ from: fromPage }, '');
+    
+    return () => {
+      // Cleanup if needed
+    };
+  }, [fromPage, navigate]);
   
   // If not loading and no user, redirect to auth page
   if (!isLoading && !user) {
@@ -27,7 +45,7 @@ const ProfilePage = () => {
   
   return (
     <MainLayout>
-      <div className="container py-12 max-w-4xl">
+      <div className="container py-12 max-w-4xl pt-20">
         <h1 className="text-3xl font-bold mb-8 text-center">My Profile</h1>
         
         <div className="space-y-6">

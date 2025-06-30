@@ -2,7 +2,7 @@
 import MainLayout from "@/components/layout/MainLayout";
 import BreathingExercise from "@/components/breathing/BreathingExercise";
 import { Link } from "react-router-dom";
-import { User, History } from "lucide-react";
+import { History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 
@@ -18,9 +18,8 @@ const Index = () => {
             <Link to="/progress" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
               <History className="h-4 w-4" />
             </Link>
-            <Link to="/profile" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
-              <User className="h-4 w-4" />
-            </Link>
+            {/* Profile icon is now handled by MainLayout */}
+            <div />
           </div>
           
           {/* Logo */}
