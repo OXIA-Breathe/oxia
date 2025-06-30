@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -47,7 +46,7 @@ const ProfilePage = () => {
         <div className="space-y-6">
           {/* Profile Information Section */}
           <Card className="border-none shadow-md bg-white">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5 text-breath" />
                 <span className="text-gray-800">Profile Information</span>
@@ -60,7 +59,7 @@ const ProfilePage = () => {
           
           {/* My Streaks Section */}
           <Card className="border-none shadow-md bg-white">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-2">
                 <Flame className="h-5 w-5 text-orange-500" />
                 <span className="text-gray-800">My Streaks</span>
@@ -73,7 +72,7 @@ const ProfilePage = () => {
           
           {/* Achievements and Badges Section */}
           <Card className="border-none shadow-md bg-white">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-2">
                 <Award className="h-5 w-5 text-yellow-500" />
                 <span className="text-gray-800">Achievements</span>
@@ -86,7 +85,7 @@ const ProfilePage = () => {
           
           {/* Account Actions Section */}
           <Card className="border-none shadow-md bg-white">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5 text-gray-500" />
                 <span className="text-gray-800">Account Actions</span>
