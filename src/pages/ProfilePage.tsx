@@ -51,19 +51,19 @@ const ProfilePage = () => {
         
         <div className="space-y-6">
           {/* Profile Information Section */}
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6">
+          <div className="border-none shadow-md bg-white rounded-lg p-6">
             <Collapsible 
               open={openInfo} 
               onOpenChange={setOpenInfo}
               className="transition-all duration-200"
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
-                  <User className="h-5 w-5 text-white/70" />
+                <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-800">
+                  <User className="h-5 w-5 text-breath" />
                   Profile Information
                 </h2>
                 <CollapsibleTrigger asChild>
-                  <button className="rounded-full p-1 hover:bg-white/10 transition-colors">
+                  <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
                     {openInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
                 </CollapsibleTrigger>
@@ -75,19 +75,19 @@ const ProfilePage = () => {
           </div>
           
           {/* My Streaks Section */}
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6">
+          <div className="border-none shadow-md bg-white rounded-lg p-6">
             <Collapsible 
               open={openStreaks} 
               onOpenChange={setOpenStreaks}
               className="transition-all duration-200"
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
+                <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-800">
                   <Flame className="h-5 w-5 text-orange-500" />
                   My Streaks
                 </h2>
                 <CollapsibleTrigger asChild>
-                  <button className="rounded-full p-1 hover:bg-white/10 transition-colors">
+                  <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
                     {openStreaks ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
                 </CollapsibleTrigger>
@@ -99,19 +99,19 @@ const ProfilePage = () => {
           </div>
           
           {/* Achievements and Badges Section */}
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6">
+          <div className="border-none shadow-md bg-white rounded-lg p-6">
             <Collapsible 
               open={openBadges} 
               onOpenChange={setOpenBadges}
               className="transition-all duration-200"
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold flex items-center gap-2">
+                <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-800">
                   <Award className="h-5 w-5 text-yellow-500" />
                   Achievements
                 </h2>
                 <CollapsibleTrigger asChild>
-                  <button className="rounded-full p-1 hover:bg-white/10 transition-colors">
+                  <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
                     {openBadges ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
                 </CollapsibleTrigger>
