@@ -42,7 +42,7 @@ const ProfilePage = () => {
   return (
     <MainLayout>
       <div className="container py-12 max-w-4xl pt-20">
-        <h1 className="text-3xl font-bold mb-8 text-center">My Profile</h1>
+        <h1 className="text-3xl font-bold mb-6 pb-6 text-center">My Profile</h1>
         
         <div className="space-y-6">
           {/* Profile Information Section */}
