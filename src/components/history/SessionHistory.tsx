@@ -68,6 +68,7 @@ const SessionHistory = () => {
         console.log("Attempting to delete session:", session.id);
         console.log("User ID:", user.id);
         console.log("Current sessions count before delete:", onlineSessions.length);
+        console.log("Sessions before delete:", onlineSessions.map(s => s.id));
         
         // First, let's verify the session exists and belongs to the user
         const { data: existingSession, error: fetchError } = await supabase
@@ -84,25 +85,36 @@ const SessionHistory = () => {
         
         console.log("Session found, proceeding with delete:", existingSession);
         
-        const { error, data } = await supabase
+        // Try a more direct delete approach
+        const { error, data, count } = await supabase
           .from("breath_sessions")
-          .delete()
+          .delete({ count: 'exact' })
           .eq("id", session.id)
-          .eq("user_id", user.id)
-          .select();
+          .eq("user_id", user.id);
+
+        console.log("Delete operation details:", { error, data, count });
 
         if (error) {
           console.error("Supabase delete error:", error);
           throw error;
         }
         
-        console.log("Delete operation response:", data);
-        console.log("Session deleted from Supabase successfully");
-        console.log("=== DELETE OPERATION END ===");
+        console.log("Delete operation completed");
+        console.log("Rows affected by delete:", count);
         
-        // Refresh the sessions from the server to update the UI
-        console.log("Refreshing sessions...");
-        await refreshSessions();
+        // Force a complete refresh with longer delay
+        console.log("=== DELETE OPERATION END ===");
+        console.log("Forcing session refresh...");
+        
+        // Clear current sessions immediately for UI responsiveness
+        setOnlineSessions(prev => prev.filter(s => s.id !== session.id));
+        
+        // Then refresh from server to ensure consistency
+        setTimeout(async () => {
+          console.log("Delayed refresh starting...");
+          await refreshSessions();
+          console.log("Delayed refresh completed");
+        }, 1000);
         
         toast({
           title: "Session deleted",

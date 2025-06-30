@@ -15,11 +15,16 @@ export const useSessionData = (user: User | null) => {
     }
     
     try {
+      console.log("=== FETCH SESSIONS START ===");
       console.log("Fetching sessions for user:", user.id);
       setIsLoading(true);
       
-      // Add a small delay to ensure the delete operation has completed
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Add cache busting with timestamp
+      const timestamp = Date.now();
+      console.log("Cache busting timestamp:", timestamp);
+      
+      // More aggressive delay and cache busting
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       const { data, error, count } = await supabase
         .from("breath_sessions")
@@ -34,6 +39,7 @@ export const useSessionData = (user: User | null) => {
       
       console.log("Raw Supabase response:", { data, count, error });
       console.log("Number of sessions fetched:", data?.length || 0);
+      console.log("Session IDs from database:", data?.map(s => s.id) || []);
       
       if (data) {
         // Convert Supabase data to app format
@@ -52,9 +58,11 @@ export const useSessionData = (user: User | null) => {
         
         console.log("Formatted sessions count:", formattedSessions.length);
         console.log("Formatted sessions IDs:", formattedSessions.map(s => s.id));
+        console.log("=== FETCH SESSIONS END ===");
         setOnlineSessions(formattedSessions);
       } else {
         console.log("No sessions found");
+        console.log("=== FETCH SESSIONS END ===");
         setOnlineSessions([]);
       }
     } catch (error) {
