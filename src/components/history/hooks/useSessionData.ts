@@ -18,9 +18,12 @@ export const useSessionData = (user: User | null) => {
       console.log("Fetching sessions for user:", user.id);
       setIsLoading(true);
       
-      const { data, error } = await supabase
+      // Add a small delay to ensure the delete operation has completed
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const { data, error, count } = await supabase
         .from("breath_sessions")
-        .select("*")
+        .select("*", { count: 'exact' })
         .eq("user_id", user.id)
         .order("date", { ascending: false });
 
@@ -29,21 +32,26 @@ export const useSessionData = (user: User | null) => {
         throw error;
       }
       
-      console.log("Fetched sessions:", data);
+      console.log("Raw Supabase response:", { data, count, error });
+      console.log("Number of sessions fetched:", data?.length || 0);
       
       if (data) {
         // Convert Supabase data to app format
-        const formattedSessions: BreathSession[] = data.map(session => ({
-          id: session.id,
-          date: session.date,
-          repetitions: session.repetitions,
-          holdDuration: session.hold_duration,
-          totalDuration: session.total_duration,
-          breathCount: session.breath_count,
-          exerciseTitle: session.exercise_title || "Breathing Exercise"
-        }));
+        const formattedSessions: BreathSession[] = data.map(session => {
+          console.log("Processing session:", session.id, session.exercise_title);
+          return {
+            id: session.id,
+            date: session.date,
+            repetitions: session.repetitions,
+            holdDuration: session.hold_duration,
+            totalDuration: session.total_duration,
+            breathCount: session.breath_count,
+            exerciseTitle: session.exercise_title || "Breathing Exercise"
+          };
+        });
         
-        console.log("Formatted sessions:", formattedSessions);
+        console.log("Formatted sessions count:", formattedSessions.length);
+        console.log("Formatted sessions IDs:", formattedSessions.map(s => s.id));
         setOnlineSessions(formattedSessions);
       } else {
         console.log("No sessions found");

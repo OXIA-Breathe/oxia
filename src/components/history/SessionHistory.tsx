@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useBreath } from "@/context/BreathContext";
 import { useAuth } from "@/context/AuthContext";
@@ -65,21 +64,44 @@ const SessionHistory = () => {
     if (user) {
       // Delete from Supabase for authenticated users
       try {
+        console.log("=== DELETE OPERATION START ===");
         console.log("Attempting to delete session:", session.id);
+        console.log("User ID:", user.id);
+        console.log("Current sessions count before delete:", onlineSessions.length);
         
-        const { error } = await supabase
+        // First, let's verify the session exists and belongs to the user
+        const { data: existingSession, error: fetchError } = await supabase
+          .from("breath_sessions")
+          .select("*")
+          .eq("id", session.id)
+          .eq("user_id", user.id)
+          .single();
+          
+        if (fetchError) {
+          console.error("Error fetching session before delete:", fetchError);
+          throw new Error("Session not found or access denied");
+        }
+        
+        console.log("Session found, proceeding with delete:", existingSession);
+        
+        const { error, data } = await supabase
           .from("breath_sessions")
           .delete()
-          .eq("id", session.id);
+          .eq("id", session.id)
+          .eq("user_id", user.id)
+          .select();
 
         if (error) {
           console.error("Supabase delete error:", error);
           throw error;
         }
         
+        console.log("Delete operation response:", data);
         console.log("Session deleted from Supabase successfully");
+        console.log("=== DELETE OPERATION END ===");
         
         // Refresh the sessions from the server to update the UI
+        console.log("Refreshing sessions...");
         await refreshSessions();
         
         toast({
