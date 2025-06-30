@@ -19,9 +19,6 @@ interface BadgeItem {
 
 const ProfileBadges = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
-  const [earnedBadge, setEarnedBadge] = useState<BadgeItem | null>(null);
-  const [prevTotalBreaths, setPrevTotalBreaths] = useState<number>(0);
 
   // Define all possible badges
   const badgeDefinitions: Omit<BadgeItem, 'achieved'>[] = [
@@ -99,38 +96,6 @@ const ProfileBadges = () => {
     },
     enabled: !!user
   });
-
-  // Check for newly earned badges
-  useEffect(() => {
-    if (!stats) return;
-    
-    const totalBreaths = stats.totalBreaths;
-    
-    // Only check for new badges if the breath count has increased
-    if (totalBreaths > prevTotalBreaths) {
-      // Find the highest threshold badge that was just earned
-      const newlyEarnedBadge = badgeDefinitions
-        .filter(badge => 
-          badge.threshold <= totalBreaths && // Badge threshold is now met
-          badge.threshold > prevTotalBreaths // Badge threshold wasn't met before
-        )
-        .sort((a, b) => b.threshold - a.threshold)[0]; // Get the highest threshold badge
-      
-      if (newlyEarnedBadge) {
-        setEarnedBadge({...newlyEarnedBadge, achieved: true});
-        
-        // Show achievement toast
-        toast({
-          title: "🎉 Achievement Unlocked!",
-          description: `Congratulations! You've earned the "${newlyEarnedBadge.name}" badge for completing ${newlyEarnedBadge.threshold} breaths!`,
-          duration: 6000,
-        });
-      }
-      
-      // Update the previous breath count
-      setPrevTotalBreaths(totalBreaths);
-    }
-  }, [stats?.totalBreaths, prevTotalBreaths, toast]);
 
   // Prepare badges with achieved status
   const badges: BadgeItem[] = badgeDefinitions.map(badge => ({
