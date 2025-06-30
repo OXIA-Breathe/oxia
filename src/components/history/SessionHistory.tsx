@@ -65,14 +65,21 @@ const SessionHistory = () => {
     if (user) {
       // Delete from Supabase for authenticated users
       try {
+        console.log("Attempting to delete session:", session.id);
+        
         const { error } = await supabase
           .from("breath_sessions")
           .delete()
           .eq("id", session.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Supabase delete error:", error);
+          throw error;
+        }
         
-        // Refresh the sessions from the server
+        console.log("Session deleted from Supabase successfully");
+        
+        // Refresh the sessions from the server to update the UI
         await refreshSessions();
         
         toast({
@@ -89,6 +96,7 @@ const SessionHistory = () => {
       }
     } else {
       // Delete locally for non-authenticated users
+      console.log("Deleting local session:", session.id);
       deleteSession(session.id);
       toast({
         title: "Session deleted",
