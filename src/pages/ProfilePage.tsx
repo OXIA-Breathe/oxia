@@ -1,27 +1,21 @@
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { useBreath } from "@/context/BreathContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import MainLayout from "@/components/layout/MainLayout";
 import ProfileInfo from "@/components/profile/ProfileInfo";
 import ProfileActions from "@/components/profile/ProfileActions";
 import ProfileBadges from "@/components/profile/ProfileBadges";
 import ProfileStreaks from "@/components/profile/ProfileStreaks";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp, User, Flame, Award, Settings } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { User, Flame, Award, Settings } from "lucide-react";
 
 const ProfilePage = () => {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
-  const [openInfo, setOpenInfo] = useState(true);
-  const [openStreaks, setOpenStreaks] = useState(true);
-  const [openBadges, setOpenBadges] = useState(true);
   
   // Store the previous page for back navigation
   const fromPage = location.state?.from || "/";
@@ -53,89 +47,44 @@ const ProfilePage = () => {
         <div className="space-y-6">
           {/* Profile Information Section */}
           <Card className="border-none shadow-md bg-white">
-            <Collapsible 
-              open={openInfo} 
-              onOpenChange={setOpenInfo}
-              className="transition-all duration-200"
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5 text-breath" />
-                    <span className="text-gray-800">Profile Information</span>
-                  </CardTitle>
-                  <CollapsibleTrigger asChild>
-                    <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
-                      {openInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                    </button>
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent className="transition-all duration-300">
-                <CardContent>
-                  <ProfileInfo />
-                </CardContent>
-              </CollapsibleContent>
-            </Collapsible>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5 text-breath" />
+                <span className="text-gray-800">Profile Information</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProfileInfo />
+            </CardContent>
           </Card>
           
           {/* My Streaks Section */}
           <Card className="border-none shadow-md bg-white">
-            <Collapsible 
-              open={openStreaks} 
-              onOpenChange={setOpenStreaks}
-              className="transition-all duration-200"
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Flame className="h-5 w-5 text-orange-500" />
-                    <span className="text-gray-800">My Streaks</span>
-                  </CardTitle>
-                  <CollapsibleTrigger asChild>
-                    <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
-                      {openStreaks ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                    </button>
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent className="transition-all duration-300">
-                <CardContent>
-                  <ProfileStreaks />
-                </CardContent>
-              </CollapsibleContent>
-            </Collapsible>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <Flame className="h-5 w-5 text-orange-500" />
+                <span className="text-gray-800">My Streaks</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProfileStreaks />
+            </CardContent>
           </Card>
           
           {/* Achievements and Badges Section */}
           <Card className="border-none shadow-md bg-white">
-            <Collapsible 
-              open={openBadges} 
-              onOpenChange={setOpenBadges}
-              className="transition-all duration-200"
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Award className="h-5 w-5 text-yellow-500" />
-                    <span className="text-gray-800">Achievements</span>
-                  </CardTitle>
-                  <CollapsibleTrigger asChild>
-                    <button className="rounded-full p-1 hover:bg-gray-100 transition-colors">
-                      {openBadges ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                    </button>
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent className="transition-all duration-300">
-                <CardContent>
-                  <ProfileBadges />
-                </CardContent>
-              </CollapsibleContent>
-            </Collapsible>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-yellow-500" />
+                <span className="text-gray-800">Achievements</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProfileBadges />
+            </CardContent>
           </Card>
           
-          {/* Account Actions Section (not collapsible) */}
+          {/* Account Actions Section */}
           <Card className="border-none shadow-md bg-white">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2">
