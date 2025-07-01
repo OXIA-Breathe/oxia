@@ -2,7 +2,6 @@
 import MainLayout from "@/components/layout/MainLayout";
 import BreathingExercise from "@/components/breathing/BreathingExercise";
 import { Link } from "react-router-dom";
-import { History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 
@@ -13,17 +12,8 @@ const Index = () => {
     <MainLayout fullHeight>
       <div className="h-full">
         <div className="container py-6 px-6 flex flex-col h-full">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <Link to="/progress" className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg">
-              <History className="h-4 w-4" />
-            </Link>
-            {/* Profile icon is now handled by MainLayout */}
-            <div />
-          </div>
-          
           {/* Logo */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-4 mt-16">
             <img 
               src="/lovable-uploads/6d9cc0f0-addd-45b1-abab-238892b91dbf.png" 
               alt="OXIA Logo" 
