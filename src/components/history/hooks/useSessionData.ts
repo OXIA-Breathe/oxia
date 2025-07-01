@@ -3,10 +3,12 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BreathSession } from "@/types/breath";
 import { User } from "@supabase/supabase-js";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useSessionData = (user: User | null) => {
   const [isLoading, setIsLoading] = useState(false);
   const [onlineSessions, setOnlineSessions] = useState<BreathSession[]>([]);
+  const queryClient = useQueryClient();
 
   const fetchUserSessions = useCallback(async () => {
     if (!user) {
@@ -19,16 +21,9 @@ export const useSessionData = (user: User | null) => {
       console.log("Fetching sessions for user:", user.id);
       setIsLoading(true);
       
-      // Add cache busting with timestamp
-      const timestamp = Date.now();
-      console.log("Cache busting timestamp:", timestamp);
-      
-      // More aggressive delay and cache busting
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const { data, error, count } = await supabase
+      const { data, error } = await supabase
         .from("breath_sessions")
-        .select("*", { count: 'exact' })
+        .select("*")
         .eq("user_id", user.id)
         .order("date", { ascending: false });
 
@@ -37,9 +32,8 @@ export const useSessionData = (user: User | null) => {
         throw error;
       }
       
-      console.log("Raw Supabase response:", { data, count, error });
+      console.log("Raw Supabase response:", data);
       console.log("Number of sessions fetched:", data?.length || 0);
-      console.log("Session IDs from database:", data?.map(s => s.id) || []);
       
       if (data) {
         // Convert Supabase data to app format
@@ -57,7 +51,6 @@ export const useSessionData = (user: User | null) => {
         });
         
         console.log("Formatted sessions count:", formattedSessions.length);
-        console.log("Formatted sessions IDs:", formattedSessions.map(s => s.id));
         console.log("=== FETCH SESSIONS END ===");
         setOnlineSessions(formattedSessions);
       } else {
@@ -80,6 +73,21 @@ export const useSessionData = (user: User | null) => {
       setOnlineSessions([]);
     }
   }, [user, fetchUserSessions]);
+
+  // Listen for query invalidation and refetch
+  useEffect(() => {
+    if (user) {
+      const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
+        if (event?.query?.queryKey?.[0] === "breathSessions" && 
+            event?.query?.queryKey?.[1] === user.id &&
+            (event.type === "updated" || event.type === "removed")) {
+          fetchUserSessions();
+        }
+      });
+
+      return unsubscribe;
+    }
+  }, [user, fetchUserSessions, queryClient]);
 
   return { isLoading, onlineSessions, refreshSessions: fetchUserSessions };
 };

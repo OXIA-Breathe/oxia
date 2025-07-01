@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
@@ -41,9 +42,13 @@ const ConsistencyPage = () => {
 
         if (error) throw error;
         
-        // Invalidate queries to refresh data
-        queryClient.invalidateQueries({ queryKey: ["userStats", user.id] });
-        queryClient.invalidateQueries({ queryKey: ["breathSessions", user.id] });
+        // Invalidate and refetch all related queries immediately
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["userStats", user.id] }),
+          queryClient.invalidateQueries({ queryKey: ["breathSessions", user.id] }),
+          queryClient.refetchQueries({ queryKey: ["userStats", user.id] }),
+          queryClient.refetchQueries({ queryKey: ["breathSessions", user.id] })
+        ]);
         
         toast({
           title: "Session added",
