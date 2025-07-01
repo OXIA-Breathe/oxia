@@ -36,7 +36,6 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
     date: "",
     time: "",
     breathCount: "",
-    totalDuration: "",
   });
 
   useEffect(() => {
@@ -47,22 +46,45 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
         date: format(sessionDate, "yyyy-MM-dd"),
         time: format(sessionDate, "HH:mm"),
         breathCount: session.breathCount.toString(),
-        totalDuration: session.totalDuration.toString(),
       });
     }
   }, [session, exercises]);
+
+  // Calculate total duration based on selected exercise and breath count
+  const calculateTotalDuration = (exerciseTitle: string, breathCount: number) => {
+    const selectedExercise = exercises.find(ex => ex.title === exerciseTitle);
+    if (!selectedExercise) return 60; // fallback
+    
+    const singleBreathDuration = 
+      selectedExercise.inhaleDuration + 
+      selectedExercise.firstHoldDuration + 
+      selectedExercise.exhaleDuration + 
+      selectedExercise.secondHoldDuration;
+    
+    return singleBreathDuration * breathCount;
+  };
 
   const handleSave = () => {
     if (!session) return;
 
     const combinedDateTime = new Date(`${formData.date}T${formData.time}`);
+    const breathCount = parseInt(formData.breathCount) || 1;
+    const totalDuration = calculateTotalDuration(formData.exerciseTitle, breathCount);
+    
+    // Calculate average hold duration from the selected exercise
+    const selectedExercise = exercises.find(ex => ex.title === formData.exerciseTitle);
+    const holdDuration = selectedExercise 
+      ? Math.round((selectedExercise.firstHoldDuration + selectedExercise.secondHoldDuration) / 2)
+      : 4; // fallback
     
     const updatedSession: BreathSession = {
       ...session,
       exerciseTitle: formData.exerciseTitle,
       date: combinedDateTime.toISOString(),
-      breathCount: parseInt(formData.breathCount) || 1,
-      totalDuration: parseInt(formData.totalDuration) || 1,
+      breathCount: breathCount,
+      totalDuration: totalDuration,
+      holdDuration: holdDuration,
+      repetitions: breathCount, // Using breathCount as repetitions for consistency
     };
 
     onSave(updatedSession);
@@ -70,6 +92,8 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
   };
 
   if (!session) return null;
+
+  const currentTotalTime = calculateTotalDuration(formData.exerciseTitle, parseInt(formData.breathCount) || 1);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -132,15 +156,10 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
           </div>
           
           <div className="grid gap-2">
-            <Label htmlFor="totalTime">Total Time (seconds)</Label>
-            <Input
-              id="totalTime"
-              type="number"
-              min="1"
-              value={formData.totalDuration}
-              onChange={(e) => setFormData(prev => ({ ...prev, totalDuration: e.target.value }))}
-              onFocus={(e) => e.target.select()}
-            />
+            <Label>Total Time (automatically calculated)</Label>
+            <div className="bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600">
+              {Math.floor(currentTotalTime / 60)}m {currentTotalTime % 60}s
+            </div>
           </div>
         </div>
         
