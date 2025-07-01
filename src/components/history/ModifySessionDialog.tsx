@@ -156,7 +156,7 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
           </div>
           
           <div className="grid gap-2">
-            <Label>Total Time (automatically calculated)</Label>
+            <Label>Total Time</Label>
             <div className="bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600">
               {Math.floor(currentTotalTime / 60)}m {currentTotalTime % 60}s
             </div>
