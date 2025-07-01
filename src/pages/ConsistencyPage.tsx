@@ -2,7 +2,6 @@
 import MainLayout from "@/components/layout/MainLayout";
 import { useAuth } from "@/context/AuthContext";
 import { ActivityCalendar } from "@/components/consistency/ActivityCalendar";
-import { AchievementBadges } from "@/components/consistency/AchievementBadges";
 import { InitializeTracking } from "@/components/consistency/InitializeTracking";
 import SessionHistory from "@/components/history/SessionHistory";
 import { useConsistencyData } from "@/hooks/useConsistencyData";
@@ -28,12 +27,10 @@ const ConsistencyPage = () => {
             <ProgressStats />
             <ActivityCalendar activityDates={activityDates} />
             
-            {/* Session History placed between Activity Calendar and Achievement Badges */}
+            {/* Session History */}
             <div className="md:col-span-2">
               <SessionHistory />
             </div>
-            
-            <AchievementBadges streakData={streakData} />
           </div>
         ) : (
           <div className="text-center">
