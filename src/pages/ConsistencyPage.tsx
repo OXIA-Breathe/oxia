@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
@@ -31,11 +30,11 @@ const ConsistencyPage = () => {
         const { error } = await supabase
           .from("breath_sessions")
           .insert({
-            id: newSession.id,
             user_id: user.id,
             date: newSession.date,
             breath_count: newSession.breathCount,
             total_duration: newSession.totalDuration,
+            hold_duration: newSession.holdDuration,
             exercise_title: newSession.exerciseTitle,
             repetitions: newSession.repetitions,
           });

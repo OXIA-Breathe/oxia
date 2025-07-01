@@ -37,6 +37,7 @@ const AddSessionModal = ({ open, onOpenChange, onSave }: AddSessionModalProps) =
     time: format(new Date(), "HH:mm"),
     breathCount: "10",
     totalDuration: "60",
+    holdDuration: "5",
   });
 
   const handleSave = () => {
@@ -48,6 +49,7 @@ const AddSessionModal = ({ open, onOpenChange, onSave }: AddSessionModalProps) =
       date: combinedDateTime.toISOString(),
       breathCount: parseInt(formData.breathCount) || 1,
       totalDuration: parseInt(formData.totalDuration) || 1,
+      holdDuration: parseInt(formData.holdDuration) || 1,
       repetitions: parseInt(formData.breathCount) || 1, // Using breathCount as repetitions for consistency
     };
 
@@ -60,6 +62,7 @@ const AddSessionModal = ({ open, onOpenChange, onSave }: AddSessionModalProps) =
       time: format(new Date(), "HH:mm"),
       breathCount: "10",
       totalDuration: "60",
+      holdDuration: "5",
     });
     
     onOpenChange(false);
@@ -121,6 +124,18 @@ const AddSessionModal = ({ open, onOpenChange, onSave }: AddSessionModalProps) =
               min="1"
               value={formData.breathCount}
               onChange={(e) => setFormData(prev => ({ ...prev, breathCount: e.target.value }))}
+              onFocus={(e) => e.target.select()}
+            />
+          </div>
+          
+          <div className="grid gap-2">
+            <Label htmlFor="holdDuration">Hold Duration (seconds)</Label>
+            <Input
+              id="holdDuration"
+              type="number"
+              min="1"
+              value={formData.holdDuration}
+              onChange={(e) => setFormData(prev => ({ ...prev, holdDuration: e.target.value }))}
               onFocus={(e) => e.target.select()}
             />
           </div>
