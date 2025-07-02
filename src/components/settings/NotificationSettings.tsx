@@ -2,12 +2,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface NotificationSettingsType {
   enabled: boolean;
@@ -17,87 +18,114 @@ interface NotificationSettingsType {
 const NotificationSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [settings, setSettings] = useState<NotificationSettingsType>({
     enabled: false,
     frequency: 3,
   });
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      fetchNotificationSettings();
-    }
-  }, [user]);
-
-  const fetchNotificationSettings = async () => {
-    try {
-      setLoading(true);
+  // Query to fetch notification settings
+  const { data: fetchedSettings, isLoading, error } = useQuery({
+    queryKey: ["notificationSettings", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      
+      console.log("Fetching notification settings for user:", user.id);
+      
       const { data, error } = await supabase
         .from("notification_settings")
         .select("*")
-        .eq("user_id", user?.id)
+        .eq("user_id", user.id)
         .maybeSingle();
 
-      if (error) throw error;
-      
-      if (data) {
-        setSettings({
-          enabled: data.enabled,
-          frequency: data.frequency,
-        });
+      if (error) {
+        console.error("Error fetching notification settings:", error);
+        throw error;
       }
-    } catch (error) {
-      console.error("Error fetching notification settings:", error);
-      toast({
-        title: "Error",
-        description: "Could not load your notification settings",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      
+      console.log("Fetched notification settings:", data);
+      return data;
+    },
+    enabled: !!user
+  });
 
-  const handleSaveSettings = async () => {
-    if (!user) return;
-    
-    try {
-      setSaving(true);
+  // Update local state when data is fetched
+  useEffect(() => {
+    if (fetchedSettings) {
+      setSettings({
+        enabled: fetchedSettings.enabled,
+        frequency: fetchedSettings.frequency,
+      });
+    }
+  }, [fetchedSettings]);
+
+  // Mutation to save settings
+  const saveSettingsMutation = useMutation({
+    mutationFn: async (newSettings: NotificationSettingsType) => {
+      if (!user) throw new Error("User not authenticated");
+      
+      console.log("Saving notification settings:", newSettings);
+      
       const { error } = await supabase
         .from("notification_settings")
         .update({
-          enabled: settings.enabled,
-          frequency: settings.frequency,
+          enabled: newSettings.enabled,
+          frequency: newSettings.frequency,
           updated_at: new Date().toISOString(),
         })
         .eq("user_id", user.id);
 
-      if (error) throw error;
-
+      if (error) {
+        console.error("Error updating notification settings:", error);
+        throw error;
+      }
+      
+      console.log("Successfully saved notification settings");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notificationSettings", user?.id] });
       toast({
         title: "Settings saved",
         description: "Your notification preferences have been updated",
       });
-    } catch (error) {
-      console.error("Error updating notification settings:", error);
+    },
+    onError: (error) => {
+      console.error("Error saving notification settings:", error);
       toast({
         title: "Error",
         description: "Could not save your notification settings",
         variant: "destructive",
       });
-    } finally {
-      setSaving(false);
     }
+  });
+
+  const handleSaveSettings = () => {
+    saveSettingsMutation.mutate(settings);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Card className="max-w-md w-full mt-6">
         <CardHeader>
           <CardTitle>Notification Settings</CardTitle>
           <CardDescription>Loading your notification preferences...</CardDescription>
         </CardHeader>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="max-w-md w-full mt-6">
+        <CardHeader>
+          <CardTitle>Notification Settings</CardTitle>
+          <CardDescription>Error loading notification settings</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-red-500 text-sm">
+            Failed to load your notification settings. Please try refreshing the page.
+          </p>
+        </CardContent>
       </Card>
     );
   }
@@ -143,10 +171,10 @@ const NotificationSettings = () => {
 
         <Button 
           onClick={handleSaveSettings} 
-          disabled={saving}
+          disabled={saveSettingsMutation.isPending}
           className="w-full"
         >
-          {saving ? "Saving..." : "Save Settings"}
+          {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
         </Button>
       </CardContent>
     </Card>
