@@ -69,15 +69,15 @@ export const createSummarySection = (stats: {
   return summary;
 };
 
-// Create sessions table
+// Create sessions table with updated structure
 export const createSessionsTable = (sessions: BreathSession[]): HTMLTableElement => {
   const table = document.createElement("table");
   
-  // Add table header
+  // Add table header with new column structure
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
   
-  const headers = ["Date / Time", "Inhale", "Hold", "Exhale", "Total Time"];
+  const headers = ["Date / Time", "Breathing Exercise", "Breaths", "Total Time"];
   headers.forEach(headerText => {
     const th = document.createElement("th");
     th.textContent = headerText;
@@ -90,14 +90,10 @@ export const createSessionsTable = (sessions: BreathSession[]): HTMLTableElement
   // Add table body
   const tbody = document.createElement("tbody");
   
-  // Default values for inhale/exhale since they're not stored
-  const inhaleDuration = 4; // Default value
-  const exhaleDuration = 4; // Default value
-  
   if (sessions.length === 0) {
     const emptyRow = document.createElement("tr");
     const emptyCell = document.createElement("td");
-    emptyCell.colSpan = 5;
+    emptyCell.colSpan = 4; // Updated to 4 columns
     emptyCell.textContent = "No sessions available for the selected period.";
     emptyCell.style.textAlign = "center";
     emptyCell.style.padding = "30px";
@@ -111,26 +107,21 @@ export const createSessionsTable = (sessions: BreathSession[]): HTMLTableElement
       const dateCell = document.createElement("td");
       dateCell.textContent = format(new Date(session.date), "MMMM d, yyyy h:mm a");
       
-      // Inhale cell
-      const inhaleCell = document.createElement("td");
-      inhaleCell.textContent = `${inhaleDuration} sec`;
+      // Breathing Exercise cell (replaces Inhale)
+      const exerciseCell = document.createElement("td");
+      exerciseCell.textContent = session.exerciseTitle || "Custom Exercise";
       
-      // Hold cell
-      const holdCell = document.createElement("td");
-      holdCell.textContent = `${session.holdDuration} sec`;
-      
-      // Exhale cell
-      const exhaleCell = document.createElement("td");
-      exhaleCell.textContent = `${exhaleDuration} sec`;
+      // Breaths cell (replaces Hold)
+      const breathsCell = document.createElement("td");
+      breathsCell.textContent = session.breathCount.toString();
       
       // Total time cell
       const totalTimeCell = document.createElement("td");
       totalTimeCell.textContent = formatTimeDisplay(session.totalDuration);
       
       row.appendChild(dateCell);
-      row.appendChild(inhaleCell);
-      row.appendChild(holdCell);
-      row.appendChild(exhaleCell);
+      row.appendChild(exerciseCell);
+      row.appendChild(breathsCell);
       row.appendChild(totalTimeCell);
       
       tbody.appendChild(row);
