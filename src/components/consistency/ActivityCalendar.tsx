@@ -14,18 +14,20 @@ export const ActivityCalendar = ({ activityDates, onDateSelect, selectedDate }: 
   const handleDateSelect = (date: Date | undefined) => {
     if (!date) return;
     
+    // If clicking the same date that's already selected, deselect it
+    if (selectedDate && selectedDate.toDateString() === date.toDateString()) {
+      onDateSelect?.(undefined);
+      return;
+    }
+    
     // Check if the selected date has activity
     const hasActivity = activityDates.some(activityDate => 
       activityDate.toDateString() === date.toDateString()
     );
     
+    // Only allow selection if the date has activity
     if (hasActivity) {
-      // If clicking the same date, deselect it
-      if (selectedDate && selectedDate.toDateString() === date.toDateString()) {
-        onDateSelect?.(undefined);
-      } else {
-        onDateSelect?.(date);
-      }
+      onDateSelect?.(date);
     }
   };
 
