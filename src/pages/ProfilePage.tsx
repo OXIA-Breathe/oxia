@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import MainLayout from "@/components/layout/MainLayout";
 import ProfileInfo from "@/components/profile/ProfileInfo";
 import ProfileActions from "@/components/profile/ProfileActions";

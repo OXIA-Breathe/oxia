@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,7 @@ import ExerciseCard from "@/components/breathing/ExerciseCard";
 import CreateExerciseModal from "@/components/breathing/CreateExerciseModal";
 import { Button } from "@/components/ui/button";
 import { useBreathingExercise } from "@/context/BreathingExerciseContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const BreathePage = () => {
   const navigate = useNavigate();
