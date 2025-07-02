@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -80,19 +79,13 @@ const ProgressStats = () => {
   };
 
   const formatAverageDuration = (totalSeconds: number, sessionCount: number) => {
-    if (sessionCount === 0) return "0 min";
+    if (sessionCount === 0) return "0m 0s";
     
     const averageSeconds = Math.round(totalSeconds / sessionCount);
     const minutes = Math.floor(averageSeconds / 60);
     const seconds = averageSeconds % 60;
     
-    if (minutes === 0) {
-      return `${seconds} sec`;
-    } else if (seconds === 0) {
-      return `${minutes} min`;
-    }
-    
-    return `${minutes} min ${seconds} sec`;
+    return `${minutes}m ${seconds}s`;
   };
 
   if (isLoading) {
@@ -129,7 +122,7 @@ const ProgressStats = () => {
             <div className="text-2xl font-bold text-blue-600 mb-1">
               {stats?.totalTime && stats?.totalSessions 
                 ? formatAverageDuration(stats.totalTime, stats.totalSessions)
-                : "0 min"
+                : "0m 0s"
               }
             </div>
             <div className="text-sm text-gray-600">Avg. Duration</div>
