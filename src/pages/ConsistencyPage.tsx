@@ -4,9 +4,7 @@ import { Plus } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import { useAuth } from "@/context/AuthContext";
 import { ActivityCalendar } from "@/components/consistency/ActivityCalendar";
-import { InitializeTracking } from "@/components/consistency/InitializeTracking";
 import SessionHistory from "@/components/history/SessionHistory";
-import { useConsistencyData } from "@/hooks/useConsistencyData";
 import ProgressStats from "@/components/profile/ProgressStats";
 import { Button } from "@/components/ui/button";
 import AddSessionModal from "@/components/history/AddSessionModal";
@@ -15,15 +13,42 @@ import { useBreath } from "@/context/BreathContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const ConsistencyPage = () => {
   const { user } = useAuth();
   const { addSession } = useBreath();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { streakData, setStreakData, activityDates, isLoading } = useConsistencyData();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<Date | undefined>(undefined);
+
+  // Fetch activity dates from breath sessions
+  const { data: activityDates = [], isLoading } = useQuery({
+    queryKey: ["activityDates", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      
+      const { data: sessionsData, error } = await supabase
+        .from("breath_sessions")
+        .select("date")
+        .eq("user_id", user.id);
+        
+      if (error) throw error;
+      
+      // Get unique dates from breath sessions
+      const uniqueDates = [...new Set(
+        sessionsData?.map(session => {
+          const sessionDate = new Date(session.date);
+          // Reset time to get just the date part
+          return new Date(sessionDate.getFullYear(), sessionDate.getMonth(), sessionDate.getDate());
+        }) || []
+      )];
+      
+      return uniqueDates;
+    },
+    enabled: !!user
+  });
 
   const handleAddSession = async (newSession: BreathSession) => {
     if (user) {
@@ -47,8 +72,10 @@ const ConsistencyPage = () => {
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["userStats", user.id] }),
           queryClient.invalidateQueries({ queryKey: ["breathSessions", user.id] }),
+          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] }),
           queryClient.refetchQueries({ queryKey: ["userStats", user.id] }),
-          queryClient.refetchQueries({ queryKey: ["breathSessions", user.id] })
+          queryClient.refetchQueries({ queryKey: ["breathSessions", user.id] }),
+          queryClient.refetchQueries({ queryKey: ["activityDates", user.id] })
         ]);
         
         toast({
@@ -80,11 +107,15 @@ const ConsistencyPage = () => {
         
         {isLoading ? (
           <div className="flex justify-center">
-            <p>Loading your consistency data...</p>
+            <p>Loading your progress data...</p>
           </div>
-        ) : user && !streakData ? (
-          <InitializeTracking onInitialized={setStreakData} />
-        ) : streakData ? (
+        ) : !user ? (
+          <div className="text-center">
+            <p className="text-muted-foreground">
+              Please log in to view your progress data
+            </p>
+          </div>
+        ) : (
           <div className="grid gap-6 md:grid-cols-2">
             <ProgressStats />
             <ActivityCalendar 
@@ -97,12 +128,6 @@ const ConsistencyPage = () => {
             <div className="md:col-span-2">
               <SessionHistory selectedDate={selectedCalendarDate} />
             </div>
-          </div>
-        ) : (
-          <div className="text-center">
-            <p className="text-muted-foreground">
-              Please log in to view your consistency data
-            </p>
           </div>
         )}
 
