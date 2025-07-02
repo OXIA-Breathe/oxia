@@ -23,7 +23,7 @@ const ConsistencyPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<Date | undefined>(undefined);
 
-  // Fetch activity dates from breath sessions
+  // Fetch activity dates from breath sessions - using same query key pattern
   const { data: activityDates = [], isLoading } = useQuery({
     queryKey: ["activityDates", user?.id],
     queryFn: async () => {
@@ -68,14 +68,11 @@ const ConsistencyPage = () => {
 
         if (error) throw error;
         
-        // Invalidate and refetch all related queries immediately
+        // Invalidate all related queries immediately to ensure consistent data
         await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["userStats", user.id] }),
           queryClient.invalidateQueries({ queryKey: ["breathSessions", user.id] }),
-          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] }),
-          queryClient.refetchQueries({ queryKey: ["userStats", user.id] }),
-          queryClient.refetchQueries({ queryKey: ["breathSessions", user.id] }),
-          queryClient.refetchQueries({ queryKey: ["activityDates", user.id] })
+          queryClient.invalidateQueries({ queryKey: ["userStats", user.id] }),
+          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] })
         ]);
         
         toast({

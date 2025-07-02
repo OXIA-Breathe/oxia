@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import { useBreath } from "@/context/BreathContext";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
-import { useSessionData } from "./hooks/useSessionData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useSessionOperations } from "./hooks/useSessionOperations";
 import SessionList from "./SessionList";
 import SessionHistoryHeader from "./SessionHistoryHeader";
@@ -17,8 +18,57 @@ interface SessionHistoryProps {
 const SessionHistory = ({ selectedDate }: SessionHistoryProps) => {
   const { sessions } = useBreath();
   const { user } = useAuth();
-  const { isLoading, onlineSessions, refreshSessions } = useSessionData(user);
   
+  // Use React Query for consistent data fetching
+  const { data: onlineSessions = [], isLoading, refetch } = useQuery({
+    queryKey: ["breathSessions", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      
+      console.log("=== FETCH SESSIONS START ===");
+      console.log("Fetching sessions for user:", user.id);
+      
+      const { data, error } = await supabase
+        .from("breath_sessions")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("date", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching sessions:", error);
+        throw error;
+      }
+      
+      console.log("Raw Supabase response:", data);
+      console.log("Number of sessions fetched:", data?.length || 0);
+      
+      if (data) {
+        // Convert Supabase data to app format
+        const formattedSessions: BreathSession[] = data.map(session => {
+          console.log("Processing session:", session.id, session.exercise_title);
+          return {
+            id: session.id,
+            date: session.date,
+            repetitions: session.repetitions,
+            holdDuration: session.hold_duration,
+            totalDuration: session.total_duration,
+            breathCount: session.breath_count,
+            exerciseTitle: session.exercise_title || "Breathing Exercise"
+          };
+        });
+        
+        console.log("Formatted sessions count:", formattedSessions.length);
+        console.log("=== FETCH SESSIONS END ===");
+        return formattedSessions;
+      } else {
+        console.log("No sessions found");
+        console.log("=== FETCH SESSIONS END ===");
+        return [];
+      }
+    },
+    enabled: !!user
+  });
+
   // Determine which sessions to display based on user authentication
   const allSessions = user ? onlineSessions : sessions;
 
@@ -33,7 +83,7 @@ const SessionHistory = ({ selectedDate }: SessionHistoryProps) => {
   }, [allSessions, selectedDate]);
 
   const { handleUpdateSession, handleDeleteSession } = useSessionOperations(
-    refreshSessions,
+    refetch,
     onlineSessions
   );
   
