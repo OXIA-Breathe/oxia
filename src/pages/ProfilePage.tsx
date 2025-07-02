@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -40,8 +41,8 @@ const ProfilePage = () => {
   
   return (
     <MainLayout>
-      <div className="container py-12 max-w-4xl pt-20">
-        <h1 className="text-3xl font-bold mb-6 pb-6 text-center">My Profile</h1>
+      <div className="container py-8 max-w-4xl pt-16">
+        <h1 className="text-3xl font-bold mb-8 text-center">My Profile</h1>
         
         <div className="space-y-6">
           {/* Profile Information Section */}
