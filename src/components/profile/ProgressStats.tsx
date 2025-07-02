@@ -53,29 +53,21 @@ const ProgressStats = () => {
   });
 
   const formatTime = (seconds: number) => {
-    if (seconds < 60) {
-      // Less than 1 minute, round to nearest minute
-      const roundedMinutes = seconds >= 30 ? 1 : 0;
-      return roundedMinutes === 0 ? "0 min" : "1 min";
-    }
+    if (seconds === 0) return "0m 0s";
     
     const totalMinutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     
     if (totalMinutes < 60) {
-      // Less than 1 hour, round minutes based on seconds
-      const roundedMinutes = remainingSeconds >= 30 ? totalMinutes + 1 : totalMinutes;
-      return `${roundedMinutes} min`;
+      // Less than 1 hour, show minutes and seconds
+      return `${totalMinutes}m ${remainingSeconds}s`;
     }
     
-    // 1 hour or more - round to nearest hour based on total minutes
-    const totalHours = Math.floor(totalMinutes / 60);
-    const remainingMinutesAfterHours = totalMinutes % 60;
+    // 1 hour or more, show hours and minutes only
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
     
-    // Round to next hour if remaining minutes >= 30
-    const roundedHours = remainingMinutesAfterHours >= 30 ? totalHours + 1 : totalHours;
-    
-    return `${roundedHours} hr`;
+    return `${hours}h ${minutes}m`;
   };
 
   const formatAverageDuration = (totalSeconds: number, sessionCount: number) => {
@@ -137,7 +129,7 @@ const ProgressStats = () => {
           
           <div className="text-center p-4 bg-purple-50 rounded-lg">
             <div className="text-2xl font-bold text-purple-600 mb-1">
-              {stats?.totalTime ? formatTime(stats.totalTime) : "0 min"}
+              {stats?.totalTime ? formatTime(stats.totalTime) : "0m 0s"}
             </div>
             <div className="text-sm text-gray-600">Total Time</div>
           </div>
