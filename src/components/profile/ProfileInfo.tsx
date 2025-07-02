@@ -93,17 +93,19 @@ const ProfileInfo = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-      <Avatar className="w-24 h-24 border">
-        <AvatarImage src={profile?.avatar_url || ""} />
-        <AvatarFallback className="text-2xl">
-          {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
+    <div className="flex flex-col md:flex-row gap-6 items-start">
+      <div className="flex justify-center w-full md:w-auto">
+        <Avatar className="w-24 h-24 border">
+          <AvatarImage src={profile?.avatar_url || ""} />
+          <AvatarFallback className="text-2xl">
+            {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      </div>
       
       <div className="space-y-4 flex-1">
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground mb-1">Display Name</h3>
+          <h3 className="text-sm font-medium text-muted-foreground mb-1">Name</h3>
           {isEditing ? (
             <div className="flex items-center gap-2">
               <Input 
