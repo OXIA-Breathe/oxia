@@ -1,56 +1,18 @@
+
 import { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
 import { useBreathingExercise } from "@/context/BreathingExerciseContext";
 import { useAuth } from "@/context/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Award, BookOpen, TrendingUp, Zap, Trophy } from "lucide-react";
+import { useSessionPersistence } from "./useSessionPersistence";
 
 export const useBreathingSession = () => {
   const { addSession } = useBreath();
   const { currentExercise } = useBreathingExercise();
   const { user } = useAuth();
   const { toast } = useToast();
-
-  // Define all possible badges
-  const badgeDefinitions = [
-    {
-      id: "breaths-25",
-      name: "Breathing Beginner",
-      description: "Complete 25 total breaths",
-      icon: BookOpen,
-      threshold: 25
-    },
-    {
-      id: "breaths-50",
-      name: "Consistent Breather",
-      description: "Complete 50 total breaths",
-      icon: Zap,
-      threshold: 50
-    },
-    {
-      id: "breaths-100",
-      name: "Breathing Enthusiast",
-      description: "Complete 100 total breaths",
-      icon: TrendingUp,
-      threshold: 100
-    },
-    {
-      id: "breaths-250",
-      name: "Breathing Expert",
-      description: "Complete 250 total breaths",
-      icon: Award,
-      threshold: 250
-    },
-    {
-      id: "breaths-500",
-      name: "Breathing Master",
-      description: "Complete 500 total breaths",
-      icon: Trophy,
-      threshold: 500
-    }
-  ];
+  const { saveSessionToSupabase } = useSessionPersistence();
 
   // Use current exercise or fallback to Box Breathing default
   const exerciseSettings = currentExercise || {
@@ -72,166 +34,6 @@ export const useBreathingSession = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [phaseTimeRemaining, setPhaseTimeRemaining] = useState<number | null>(null);
-
-  const checkForNewAchievements = async (newTotalBreaths: number) => {
-    if (!user) return;
-
-    try {
-      // Get current total breaths from database to compare
-      const { data, error } = await supabase
-        .from("breath_sessions")
-        .select("breath_count")
-        .eq("user_id", user.id);
-        
-      if (error) throw error;
-      
-      const previousTotalBreaths = data ? data.reduce((sum, session) => sum + session.breath_count, 0) : 0;
-      
-      // Find newly earned badges
-      const newlyEarnedBadge = badgeDefinitions
-        .filter(badge => 
-          badge.threshold <= newTotalBreaths && // Badge threshold is now met
-          badge.threshold > previousTotalBreaths // Badge threshold wasn't met before
-        )
-        .sort((a, b) => b.threshold - a.threshold)[0]; // Get the highest threshold badge
-        
-      if (newlyEarnedBadge) {
-        // Show achievement toast
-        toast({
-          title: "🎉 Achievement Unlocked!",
-          description: `Congratulations! You've earned the "${newlyEarnedBadge.name}" badge for completing ${newlyEarnedBadge.threshold} breaths!`,
-          duration: 6000,
-        });
-      }
-    } catch (err) {
-      console.error("Error checking achievements:", err);
-    }
-  };
-
-  const updateBreathStreak = async (userId: string) => {
-    try {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-      
-      // Update daily activity to mark breath session completion
-      const { error: activityError } = await supabase
-        .from("daily_activity")
-        .upsert({
-          user_id: userId,
-          date: today,
-          completed_breath_session: true,
-          logged_in: true // Also mark as logged in
-        }, {
-          onConflict: 'user_id,date'
-        });
-        
-      if (activityError) {
-        console.error("Error updating daily activity:", activityError);
-        return;
-      }
-
-      // Get the user's streak data
-      const { data: streakData, error: streakError } = await supabase
-        .from("user_streaks")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle();
-        
-      if (streakError && streakError.code !== 'PGRST116') {
-        console.error("Error fetching streak data:", streakError);
-        return;
-      }
-
-      const lastBreathDate = streakData?.last_breath_session_date;
-      const currentStreak = streakData?.current_breath_streak || 0;
-      const longestStreak = streakData?.longest_breath_streak || 0;
-      
-      let newCurrentStreak = 1;
-      
-      if (lastBreathDate) {
-        const lastDate = new Date(lastBreathDate);
-        const todayDate = new Date(today);
-        const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
-        
-        if (daysDiff === 0) {
-          // Same day - keep current streak
-          newCurrentStreak = currentStreak;
-        } else if (daysDiff === 1) {
-          // Consecutive day - increment streak
-          newCurrentStreak = currentStreak + 1;
-        } else {
-          // Streak broken - reset to 1
-          newCurrentStreak = 1;
-        }
-      }
-      
-      const newLongestStreak = Math.max(longestStreak, newCurrentStreak);
-      
-      // Update streak data
-      const { error: updateError } = await supabase
-        .from("user_streaks")
-        .upsert({
-          user_id: userId,
-          last_breath_session_date: today,
-          current_breath_streak: newCurrentStreak,
-          longest_breath_streak: newLongestStreak,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        });
-        
-      if (updateError) {
-        console.error("Error updating breath streak:", updateError);
-      }
-      
-    } catch (error) {
-      console.error("Error updating breath streak:", error);
-    }
-  };
-
-  const saveSessionToSupabase = async (sessionData: any) => {
-    if (!user) return;
-    
-    try {
-      const { error } = await supabase
-        .from("breath_sessions")
-        .insert({
-          id: sessionData.id,
-          user_id: user.id,
-          date: sessionData.date,
-          repetitions: sessionData.repetitions,
-          hold_duration: sessionData.holdDuration,
-          total_duration: sessionData.totalDuration,
-          breath_count: sessionData.breathCount,
-          exercise_title: sessionData.exerciseTitle
-        });
-        
-      if (error) {
-        console.error("Error saving session to Supabase:", error);
-        toast({
-          title: "Error saving session",
-          description: "Your session was saved locally but not to your account.",
-          variant: "destructive"
-        });
-      } else {
-        // Update breath streak after successfully saving the session
-        await updateBreathStreak(user.id);
-        
-        // Check for achievements after successfully saving the session
-        // Calculate new total breaths including this session
-        const { data: allSessions } = await supabase
-          .from("breath_sessions")
-          .select("breath_count")
-          .eq("user_id", user.id);
-          
-        if (allSessions) {
-          const newTotalBreaths = allSessions.reduce((sum, session) => sum + session.breath_count, 0);
-          await checkForNewAchievements(newTotalBreaths);
-        }
-      }
-    } catch (err) {
-      console.error("Exception saving session:", err);
-    }
-  };
 
   const completeSession = useCallback((finalBreathCount: number) => {
     const sessionEndTime = Date.now();
@@ -259,7 +61,7 @@ export const useBreathingSession = () => {
     });
     
     resetExercise();
-  }, [addSession, sessionStartTime, exerciseSettings, toast, user]);
+  }, [addSession, sessionStartTime, exerciseSettings, toast, user, saveSessionToSupabase]);
 
   const resetExercise = () => {
     setPhase("idle");
