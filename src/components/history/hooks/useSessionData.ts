@@ -3,12 +3,10 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BreathSession } from "@/types/breath";
 import { User } from "@supabase/supabase-js";
-import { useQueryClient } from "@tanstack/react-query";
 
 export const useSessionData = (user: User | null) => {
   const [isLoading, setIsLoading] = useState(false);
   const [onlineSessions, setOnlineSessions] = useState<BreathSession[]>([]);
-  const queryClient = useQueryClient();
 
   const fetchUserSessions = useCallback(async () => {
     if (!user) {
@@ -74,20 +72,7 @@ export const useSessionData = (user: User | null) => {
     }
   }, [user, fetchUserSessions]);
 
-  // Listen for query invalidation and refetch
-  useEffect(() => {
-    if (user) {
-      const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
-        if (event?.query?.queryKey?.[0] === "breathSessions" && 
-            event?.query?.queryKey?.[1] === user.id &&
-            (event.type === "updated" || event.type === "removed")) {
-          fetchUserSessions();
-        }
-      });
-
-      return unsubscribe;
-    }
-  }, [user, fetchUserSessions, queryClient]);
+  // Removed the problematic query cache subscription that was causing infinite loops
 
   return { isLoading, onlineSessions, refreshSessions: fetchUserSessions };
 };
