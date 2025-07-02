@@ -1,10 +1,11 @@
+
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { BreathSession } from "@/types/breath";
-import { formatTime, formatTimeDisplay } from "../formatTime";
-import { prepareSessionTableData } from "./pdfDataUtils";
+import { formatTimeDisplay } from "./pdfDataUtils";
 import { SessionStats } from "./types";
 import { PDFStyling, setFillColor, setTextColor, setDrawColor, drawRoundedRect } from "./pdfStyles";
+import { format } from "date-fns";
 
 // Add summary statistics section with card layout as shown in the HTML mockup
 export const addSummarySection = (
@@ -59,7 +60,7 @@ const drawStatBox = (doc: jsPDF, x: number, y: number, width: number, height: nu
   doc.text(value, x + width/2, y + 28, { align: "center" });
 };
 
-// Add sessions table - one single consolidated table as requested
+// Add sessions table - updated to match the new structure
 export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
   if (sessions.length === 0) return 150;
   
@@ -72,17 +73,27 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
   setTextColor(doc, PDFStyling.colors.primary);
   doc.text("Session Details", margin, tableY - 10);
   
-  const { tableData } = prepareSessionTableData(sessions);
+  // Prepare table data with new structure
+  const tableData = sessions.map((session) => {
+    const date = new Date(session.date);
+    
+    return [
+      format(date, "MMMM d, yyyy h:mm a"), // Date/Time column
+      session.exerciseTitle || "Custom Exercise", // Breathing Exercise column
+      session.breathCount.toString(), // Breaths column
+      formatTimeDisplay(session.totalDuration), // Total time column
+    ];
+  });
   
-  // Update autotable configuration with reduced padding
+  // Update autotable configuration with new column structure
   autoTable(doc, {
     startY: tableY,
-    head: [["Date / Time", "Inhale", "Hold", "Exhale", "Total Time"]], 
+    head: [["Date / Time", "Breathing Exercise", "Breaths", "Total Time"]], 
     body: tableData,
     theme: 'grid',
     styles: {
       fontSize: 11,
-      cellPadding: 4, // Reduced from 12 to 4
+      cellPadding: 4,
       overflow: "ellipsize",
       valign: "middle",
       lineWidth: 0.1,
@@ -91,10 +102,9 @@ export const addSessionsTable = (doc: jsPDF, sessions: BreathSession[]) => {
     },
     columnStyles: {
       0: { cellWidth: 45 }, // Date/Time
-      1: { cellWidth: 30, halign: 'center' }, // Inhale
-      2: { cellWidth: 30, halign: 'center' }, // Hold
-      3: { cellWidth: 30, halign: 'center' }, // Exhale
-      4: { cellWidth: 40, halign: 'center' }, // Total Time
+      1: { cellWidth: 50, halign: 'left' }, // Breathing Exercise
+      2: { cellWidth: 30, halign: 'center' }, // Breaths
+      3: { cellWidth: 40, halign: 'center' }, // Total Time
     },
     headStyles: {
       fillColor: [239, 242, 249], // Light blue for table headers to match the stat boxes
