@@ -79,6 +79,22 @@ const ProgressStats = () => {
     return `${roundedHours} hr`;
   };
 
+  const formatAverageDuration = (totalSeconds: number, sessionCount: number) => {
+    if (sessionCount === 0) return "0 min";
+    
+    const averageSeconds = Math.round(totalSeconds / sessionCount);
+    const minutes = Math.floor(averageSeconds / 60);
+    const seconds = averageSeconds % 60;
+    
+    if (minutes === 0) {
+      return `${seconds} sec`;
+    } else if (seconds === 0) {
+      return `${minutes} min`;
+    }
+    
+    return `${minutes} min ${seconds} sec`;
+  };
+
   if (isLoading) {
     return (
       <Card className="border-none shadow-md bg-white">
@@ -111,9 +127,12 @@ const ProgressStats = () => {
           
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <div className="text-2xl font-bold text-blue-600 mb-1">
-              {stats?.totalRepetitions || 0}
+              {stats?.totalTime && stats?.totalSessions 
+                ? formatAverageDuration(stats.totalTime, stats.totalSessions)
+                : "0 min"
+              }
             </div>
-            <div className="text-sm text-gray-600">Total Repetitions</div>
+            <div className="text-sm text-gray-600">Avg. Duration</div>
           </div>
           
           <div className="text-center p-4 bg-green-50 rounded-lg">
