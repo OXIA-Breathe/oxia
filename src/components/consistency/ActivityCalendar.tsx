@@ -12,7 +12,10 @@ interface ActivityCalendarProps {
 
 export const ActivityCalendar = ({ activityDates, onDateSelect, selectedDate }: ActivityCalendarProps) => {
   const handleDateSelect = (date: Date | undefined) => {
-    if (!date) return;
+    if (!date) {
+      onDateSelect?.(undefined);
+      return;
+    }
     
     // If clicking the same date that's already selected, deselect it
     if (selectedDate && selectedDate.toDateString() === date.toDateString()) {
