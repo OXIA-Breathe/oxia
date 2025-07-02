@@ -8,8 +8,6 @@ import { useAuth } from "@/context/AuthContext";
 const Index = () => {
   const { user, isLoading } = useAuth();
 
-  console.log("Index page - User:", user?.id, "Loading:", isLoading);
-
   return (
     <MainLayout fullHeight>
       <div className="h-full">
@@ -24,7 +22,6 @@ const Index = () => {
                 console.error("Logo failed to load:", e);
                 e.currentTarget.style.display = 'none';
               }}
-              onLoad={() => console.log("Logo loaded successfully")}
             />
           </div>
           

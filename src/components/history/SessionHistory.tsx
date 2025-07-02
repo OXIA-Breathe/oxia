@@ -25,9 +25,6 @@ const SessionHistory = ({ selectedDate }: SessionHistoryProps) => {
     queryFn: async () => {
       if (!user) return [];
       
-      console.log("=== FETCH SESSIONS START ===");
-      console.log("Fetching sessions for user:", user.id);
-      
       const { data, error } = await supabase
         .from("breath_sessions")
         .select("*")
@@ -39,30 +36,20 @@ const SessionHistory = ({ selectedDate }: SessionHistoryProps) => {
         throw error;
       }
       
-      console.log("Raw Supabase response:", data);
-      console.log("Number of sessions fetched:", data?.length || 0);
-      
       if (data) {
         // Convert Supabase data to app format
-        const formattedSessions: BreathSession[] = data.map(session => {
-          console.log("Processing session:", session.id, session.exercise_title);
-          return {
-            id: session.id,
-            date: session.date,
-            repetitions: session.repetitions,
-            holdDuration: session.hold_duration,
-            totalDuration: session.total_duration,
-            breathCount: session.breath_count,
-            exerciseTitle: session.exercise_title || "Breathing Exercise"
-          };
-        });
+        const formattedSessions: BreathSession[] = data.map(session => ({
+          id: session.id,
+          date: session.date,
+          repetitions: session.repetitions,
+          holdDuration: session.hold_duration,
+          totalDuration: session.total_duration,
+          breathCount: session.breath_count,
+          exerciseTitle: session.exercise_title || "Breathing Exercise"
+        }));
         
-        console.log("Formatted sessions count:", formattedSessions.length);
-        console.log("=== FETCH SESSIONS END ===");
         return formattedSessions;
       } else {
-        console.log("No sessions found");
-        console.log("=== FETCH SESSIONS END ===");
         return [];
       }
     },

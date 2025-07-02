@@ -60,17 +60,13 @@ export const useBreathingTimer = ({
         phaseDuration = memoizedSettings.inhaleDuration;
     }
     
-    console.log("Phase changed:", { phase, phaseDuration, exerciseSettings: memoizedSettings });
-    
     setDuration(phaseDuration);
     
     // If we have a saved phase time remaining, use it, otherwise start fresh
     if (phaseTimeRemaining !== null && phase !== "idle") {
-      console.log("Using saved phase time:", phaseTimeRemaining);
       setTimeRemaining(phaseTimeRemaining);
       setPhaseTimeRemaining(null);
     } else if (phase !== "idle") {
-      console.log("Starting fresh phase with duration:", phaseDuration);
       setTimeRemaining(phaseDuration);
     }
   }, [phase, memoizedSettings, phaseTimeRemaining, setPhaseTimeRemaining]);
@@ -79,16 +75,12 @@ export const useBreathingTimer = ({
   useEffect(() => {
     let phaseTimer: number;
     
-    console.log("Timer effect:", { isActive, phase, timeRemaining });
-    
     if (isActive && phase !== "idle" && timeRemaining > 0) {
-      console.log("Starting timer for phase:", phase);
       phaseTimer = window.setInterval(() => {
         setTimeRemaining((prev) => {
           const newValue = Math.max(0, prev - 0.1);
           
           if (newValue <= 0) {
-            console.log("Phase completed, transitioning from:", phase);
             // Transition to next phase
             if (phase === "inhale") {
               onPhaseComplete(memoizedSettings.firstHoldDuration > 0 ? "hold1" : "exhale");

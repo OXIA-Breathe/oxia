@@ -1,10 +1,9 @@
-
 import { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
 import { useBreathingExercise } from "@/context/BreathingExerciseContext";
 import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useSessionPersistence } from "./useSessionPersistence";
 
 export const useBreathingSession = () => {
