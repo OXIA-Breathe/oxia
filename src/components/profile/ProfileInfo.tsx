@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Edit, Mail } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import AvatarPhotoModal from "./AvatarPhotoModal";
 
 interface Profile {
   id: string;
@@ -21,6 +21,7 @@ const ProfileInfo = () => {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState("");
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
 
   // Fetch profile data
   const { data: profile, isLoading } = useQuery({
@@ -49,13 +50,13 @@ const ProfileInfo = () => {
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
-    mutationFn: async (newName: string) => {
+    mutationFn: async (updates: { display_name?: string; avatar_url?: string }) => {
       if (!user) throw new Error("No user logged in");
       
       const { error } = await supabase
         .from("profiles")
         .update({ 
-          display_name: newName,
+          ...updates,
           updated_at: new Date().toISOString()
         })
         .eq("id", user.id);
@@ -80,7 +81,7 @@ const ProfileInfo = () => {
   });
 
   const handleSave = () => {
-    updateProfileMutation.mutate(displayName);
+    updateProfileMutation.mutate({ display_name: displayName });
   };
 
   const handleCancel = () => {
@@ -88,60 +89,78 @@ const ProfileInfo = () => {
     setIsEditing(false);
   };
 
+  const handlePhotoSelected = (photoUrl: string) => {
+    updateProfileMutation.mutate({ avatar_url: photoUrl });
+  };
+
   if (isLoading) {
     return <div className="text-center p-4">Loading profile...</div>;
   }
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 items-start">
-      <div className="flex justify-center w-full md:w-auto">
-        <Avatar className="w-24 h-24 border">
-          <AvatarImage src={profile?.avatar_url || ""} />
-          <AvatarFallback className="text-2xl">
-            {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </div>
-      
-      <div className="space-y-4 flex-1">
-        <div>
-          <h3 className="text-sm font-medium text-muted-foreground mb-1">Name</h3>
-          {isEditing ? (
-            <div className="flex items-center gap-2">
-              <Input 
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Enter your name"
-                className="max-w-md"
-              />
-              <div className="space-x-2">
-                <Button size="sm" onClick={handleSave} disabled={updateProfileMutation.isPending}>
-                  Save
-                </Button>
-                <Button size="sm" variant="outline" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <p className="text-lg font-medium text-gray-800">{profile?.display_name || "No name set"}</p>
-              <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} title="Edit name">
-                <Edit size={16} />
-              </Button>
-            </div>
-          )}
+    <>
+      <div className="flex flex-col md:flex-row gap-6 items-start">
+        <div className="flex justify-center w-full md:w-auto">
+          <div 
+            className="cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => setShowPhotoModal(true)}
+            title="Click to change photo"
+          >
+            <Avatar className="w-24 h-24 border">
+              <AvatarImage src={profile?.avatar_url || ""} />
+              <AvatarFallback className="text-2xl">
+                {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
         </div>
         
-        <div>
-          <h3 className="text-sm font-medium text-muted-foreground mb-1">Email</h3>
-          <div className="flex items-center gap-2">
-            <Mail className="w-4 h-4 text-muted-foreground" />
-            <p className="text-gray-800">{user?.email}</p>
+        <div className="space-y-4 flex-1">
+          <div>
+            <h3 className="text-sm font-medium text-muted-foreground mb-1">Name</h3>
+            {isEditing ? (
+              <div className="flex items-center gap-2">
+                <Input 
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="max-w-md"
+                />
+                <div className="space-x-2">
+                  <Button size="sm" onClick={handleSave} disabled={updateProfileMutation.isPending}>
+                    Save
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <p className="text-lg font-medium text-gray-800">{profile?.display_name || "No name set"}</p>
+                <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} title="Edit name">
+                  <Edit size={16} />
+                </Button>
+              </div>
+            )}
+          </div>
+          
+          <div>
+            <h3 className="text-sm font-medium text-muted-foreground mb-1">Email</h3>
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-muted-foreground" />
+              <p className="text-gray-800">{user?.email}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <AvatarPhotoModal
+        isOpen={showPhotoModal}
+        onClose={() => setShowPhotoModal(false)}
+        onPhotoSelected={handlePhotoSelected}
+      />
+    </>
   );
 };
 
