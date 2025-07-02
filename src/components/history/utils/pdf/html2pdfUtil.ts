@@ -7,7 +7,6 @@ export const html2pdfPromise = (element: HTMLElement, options: any): Promise<Blo
     html2pdf()
       .set(options)
       .from(element)
-      .save()
       .outputPdf('blob')
       .then((blob: Blob) => {
         resolve(blob);
