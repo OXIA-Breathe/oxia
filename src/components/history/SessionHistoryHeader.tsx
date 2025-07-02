@@ -16,11 +16,6 @@ const SessionHistoryHeader = ({ selectedDate, displaySessions }: SessionHistoryH
         <CardTitle className="flex items-center gap-2">
           <History className="h-5 w-5 text-breath" />
           <span className="text-gray-800">My Sessions</span>
-          {selectedDate && (
-            <span className="text-sm font-normal text-muted-foreground">
-              - {selectedDate.toLocaleDateString()}
-            </span>
-          )}
         </CardTitle>
         <CardDescription className="text-gray-600">
           {selectedDate 
@@ -28,6 +23,11 @@ const SessionHistoryHeader = ({ selectedDate, displaySessions }: SessionHistoryH
             : "View and export your breathing sessions"
           }
         </CardDescription>
+        {selectedDate && (
+          <div className="text-sm text-muted-foreground mt-1">
+            {selectedDate.toLocaleDateString()}
+          </div>
+        )}
       </div>
       <ExportButton sessions={displaySessions} />
     </CardHeader>
