@@ -23,29 +23,33 @@ export const useConsistencyData = () => {
           .from("user_streaks")
           .select("*")
           .eq("user_id", user.id)
-          .maybeSingle(); // Use maybeSingle instead of single to avoid errors when no data exists
+          .maybeSingle();
         
         if (streakError && streakError.code !== 'PGRST116') {
-          // Only throw if it's not the "no rows returned" error
           throw streakError;
         }
         
-        // Fetch user daily activity
-        const { data: activityData, error: activityError } = await supabase
-          .from("daily_activity")
-          .select("*")
-          .eq("user_id", user.id)
-          .order("date", { ascending: false });
+        // Fetch breath sessions to get actual activity dates
+        const { data: sessionsData, error: sessionsError } = await supabase
+          .from("breath_sessions")
+          .select("date")
+          .eq("user_id", user.id);
           
-        if (activityError) throw activityError;
+        if (sessionsError) throw sessionsError;
         
-        // Convert activity dates to Date objects for the calendar
-        const dates = activityData
-          ?.filter(day => day.completed_breath_session)
-          .map(day => new Date(day.date)) || [];
+        // Get unique dates from breath sessions
+        const uniqueDates = [...new Set(
+          sessionsData?.map(session => {
+            const sessionDate = new Date(session.date);
+            // Reset time to get just the date part
+            return new Date(sessionDate.getFullYear(), sessionDate.getMonth(), sessionDate.getDate());
+          }) || []
+        )];
+        
+        console.log("Activity dates from breath sessions:", uniqueDates);
         
         setStreakData(streakData);
-        setActivityDates(dates);
+        setActivityDates(uniqueDates);
       } catch (error) {
         console.error("Error fetching consistency data:", error);
         toast({

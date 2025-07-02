@@ -1,13 +1,34 @@
 
+import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 interface ActivityCalendarProps {
   activityDates: Date[];
+  onDateSelect?: (date: Date | undefined) => void;
+  selectedDate?: Date;
 }
 
-export const ActivityCalendar = ({ activityDates }: ActivityCalendarProps) => {
+export const ActivityCalendar = ({ activityDates, onDateSelect, selectedDate }: ActivityCalendarProps) => {
+  const handleDateSelect = (date: Date | undefined) => {
+    if (!date) return;
+    
+    // Check if the selected date has activity
+    const hasActivity = activityDates.some(activityDate => 
+      activityDate.toDateString() === date.toDateString()
+    );
+    
+    if (hasActivity) {
+      // If clicking the same date, deselect it
+      if (selectedDate && selectedDate.toDateString() === date.toDateString()) {
+        onDateSelect?.(undefined);
+      } else {
+        onDateSelect?.(date);
+      }
+    }
+  };
+
   return (
     <Card className="border-none shadow-md bg-white">
       <CardHeader className="pb-2">
@@ -16,23 +37,34 @@ export const ActivityCalendar = ({ activityDates }: ActivityCalendarProps) => {
           <span className="text-gray-800">Activity Calendar</span>
         </CardTitle>
         <CardDescription className="text-gray-600">
-          Days with breathing sessions are highlighted
+          Click on highlighted days to filter sessions
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Calendar
-          mode="multiple"
-          selected={activityDates}
+          mode="single"
+          selected={selectedDate}
+          onSelect={handleDateSelect}
           className="rounded-md"
           disabled={date => date > new Date()}
+          modifiers={{
+            hasActivity: activityDates
+          }}
+          modifiersClassNames={{
+            hasActivity: "bg-breath/20 text-breath font-semibold hover:bg-breath/30 cursor-pointer",
+            selected: "bg-breath text-white hover:bg-breath-dark hover:text-white"
+          }}
           classNames={{
-            day_selected: "bg-breath text-white hover:bg-breath-dark hover:text-white p-3",
-            day_today: "bg-accent text-accent-foreground",
-            day: "rounded-full transition-colors p-2 mx-0.5"
+            day_today: "bg-accent text-accent-foreground border border-accent-foreground/20",
+            day: "rounded-full transition-colors p-2 mx-0.5 hover:bg-accent/50",
+            day_disabled: "text-muted-foreground opacity-30 cursor-not-allowed"
           }}
         />
         <p className="text-sm text-gray-600 mt-4">
-          Highlighted days show your completed breathing sessions
+          {selectedDate 
+            ? `Showing sessions for ${selectedDate.toLocaleDateString()}`
+            : "Highlighted days show your completed breathing sessions. Click to filter."
+          }
         </p>
       </CardContent>
     </Card>

@@ -23,6 +23,7 @@ const ConsistencyPage = () => {
   const queryClient = useQueryClient();
   const { streakData, setStreakData, activityDates, isLoading } = useConsistencyData();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<Date | undefined>(undefined);
 
   const handleAddSession = async (newSession: BreathSession) => {
     if (user) {
@@ -86,11 +87,15 @@ const ConsistencyPage = () => {
         ) : streakData ? (
           <div className="grid gap-6 md:grid-cols-2">
             <ProgressStats />
-            <ActivityCalendar activityDates={activityDates} />
+            <ActivityCalendar 
+              activityDates={activityDates} 
+              onDateSelect={setSelectedCalendarDate}
+              selectedDate={selectedCalendarDate}
+            />
             
             {/* Session History */}
             <div className="md:col-span-2">
-              <SessionHistory />
+              <SessionHistory selectedDate={selectedCalendarDate} />
             </div>
           </div>
         ) : (

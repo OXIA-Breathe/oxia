@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useBreath } from "@/context/BreathContext";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -11,7 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
-const SessionHistory = () => {
+interface SessionHistoryProps {
+  selectedDate?: Date;
+}
+
+const SessionHistory = ({ selectedDate }: SessionHistoryProps) => {
   const { sessions, updateSession, deleteSession } = useBreath();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -19,7 +23,17 @@ const SessionHistory = () => {
   const { isLoading, onlineSessions, refreshSessions } = useSessionData(user);
   
   // Determine which sessions to display based on user authentication
-  const displaySessions = user ? onlineSessions : sessions;
+  const allSessions = user ? onlineSessions : sessions;
+
+  // Filter sessions by selected date
+  const displaySessions = useMemo(() => {
+    if (!selectedDate) return allSessions;
+    
+    return allSessions.filter(session => {
+      const sessionDate = new Date(session.date);
+      return sessionDate.toDateString() === selectedDate.toDateString();
+    });
+  }, [allSessions, selectedDate]);
 
   const handleUpdateSession = async (updatedSession: BreathSession) => {
     if (user) {
@@ -159,7 +173,7 @@ const SessionHistory = () => {
     );
   }
 
-  if (displaySessions.length === 0) {
+  if (allSessions.length === 0) {
     return (
       <Card className="w-full max-w-3xl mx-auto border-none shadow-md bg-white">
         <CardHeader className="pb-2">
@@ -185,19 +199,33 @@ const SessionHistory = () => {
           <CardTitle className="flex items-center gap-2">
             <History className="h-5 w-5 text-breath" />
             <span className="text-gray-800">My Sessions</span>
+            {selectedDate && (
+              <span className="text-sm font-normal text-muted-foreground">
+                - {selectedDate.toLocaleDateString()}
+              </span>
+            )}
           </CardTitle>
           <CardDescription className="text-gray-600">
-            View and export your breathing sessions
+            {selectedDate 
+              ? `Showing ${displaySessions.length} session${displaySessions.length !== 1 ? 's' : ''} for selected date`
+              : "View and export your breathing sessions"
+            }
           </CardDescription>
         </div>
         <ExportButton sessions={displaySessions} />
       </CardHeader>
       <CardContent>
-        <SessionList 
-          sessions={displaySessions} 
-          onUpdateSession={handleUpdateSession}
-          onDeleteSession={handleDeleteSession}
-        />
+        {displaySessions.length === 0 && selectedDate ? (
+          <div className="text-center p-8 text-muted-foreground">
+            No breathing sessions found for {selectedDate.toLocaleDateString()}.
+          </div>
+        ) : (
+          <SessionList 
+            sessions={displaySessions} 
+            onUpdateSession={handleUpdateSession}
+            onDeleteSession={handleDeleteSession}
+          />
+        )}
       </CardContent>
     </Card>
   );
