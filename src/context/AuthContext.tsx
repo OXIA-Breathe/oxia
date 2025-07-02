@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,51 +22,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log("=== AUTH CONTEXT INITIALIZATION ===");
+    
     // Set up the auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log("Auth state change:", event, session?.user?.id);
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
         
-        // Update streak data when user logs in
+        // Update streak data when user logs in - deferred to avoid auth listener deadlocks
         if (event === 'SIGNED_IN' && session?.user) {
-          // Defer Supabase calls to avoid auth listener deadlocks
           setTimeout(() => {
+            console.log("Updating login streak for user:", session.user.id);
             updateUserLoginStreak(session.user.id);
-          }, 0);
+          }, 100); // Small delay to avoid blocking
         }
       }
     );
 
     // Then check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session check:", session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
-      
-      // Update streak data for existing session (daily check)
-      if (session?.user) {
-        updateUserLoginStreak(session.user.id);
-      }
     });
-
-    // Set up daily check for logged-in users
-    const dailyCheck = setInterval(() => {
-      if (user) {
-        updateUserLoginStreak(user.id);
-      }
-    }, 60 * 60 * 1000); // Check every hour
 
     return () => {
       subscription.unsubscribe();
-      clearInterval(dailyCheck);
     };
-  }, [user]);
+  }, []);
 
   const updateUserLoginStreak = async (userId: string) => {
     try {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      console.log("Starting login streak update for:", userId);
+      const today = new Date().toISOString().split('T')[0];
       
       // Check if we already processed today's login
       const { data: activityData, error: activityError } = await supabase
@@ -82,6 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // If we already processed today, skip
       if (activityData) {
+        console.log("Already processed login for today");
         return;
       }
       
@@ -124,13 +118,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
         
         if (daysDiff === 0) {
-          // Same day - keep current streak
           newCurrentStreak = currentStreak;
         } else if (daysDiff === 1) {
-          // Consecutive day - increment streak
           newCurrentStreak = currentStreak + 1;
         } else {
-          // Streak broken - reset to 1
           newCurrentStreak = 1;
         }
       }
@@ -152,6 +143,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
       if (updateStreakError) {
         console.error("Error updating login streak:", updateStreakError);
+      } else {
+        console.log("Successfully updated login streak");
       }
       
     } catch (error) {
@@ -161,9 +154,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
+      console.log("Attempting sign in for:", email);
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
     } catch (error: any) {
+      console.error("Sign in error:", error);
       toast({
         title: "Error signing in",
         description: error.message || "An unexpected error occurred",
@@ -175,13 +170,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signUp({ email, password });
+      console.log("Attempting sign up for:", email);
+      const { error } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`
+        }
+      });
       if (error) throw error;
       toast({
         title: "Account created",
         description: "Check your email for the confirmation link",
       });
     } catch (error: any) {
+      console.error("Sign up error:", error);
       toast({
         title: "Error creating account",
         description: error.message || "An unexpected error occurred",
@@ -193,9 +196,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
+      console.log("Attempting sign out");
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
     } catch (error: any) {
+      console.error("Sign out error:", error);
       toast({
         title: "Error signing out",
         description: error.message || "An unexpected error occurred",
@@ -203,6 +208,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     }
   };
+
+  console.log("AuthContext render - User:", user?.id, "Loading:", isLoading);
 
   return (
     <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut }}>

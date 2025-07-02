@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,19 +24,31 @@ const ProfileInfo = () => {
   const [displayName, setDisplayName] = useState("");
   const [showPhotoModal, setShowPhotoModal] = useState(false);
 
+  console.log("ProfileInfo - User:", user?.id);
+
   // Fetch profile data
-  const { data: profile, isLoading } = useQuery({
+  const { data: profile, isLoading, error } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
-      if (!user) return null;
+      if (!user) {
+        console.log("No user, skipping profile fetch");
+        return null;
+      }
+      
+      console.log("Fetching profile for user:", user.id);
       
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching profile:", error);
+        throw error;
+      }
+      
+      console.log("Profile data:", data);
       return data as Profile;
     },
     enabled: !!user
@@ -53,6 +66,8 @@ const ProfileInfo = () => {
     mutationFn: async (updates: { display_name?: string; avatar_url?: string }) => {
       if (!user) throw new Error("No user logged in");
       
+      console.log("Updating profile with:", updates);
+      
       const { error } = await supabase
         .from("profiles")
         .update({ 
@@ -61,7 +76,10 @@ const ProfileInfo = () => {
         })
         .eq("id", user.id);
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating profile:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
@@ -72,6 +90,7 @@ const ProfileInfo = () => {
       setIsEditing(false);
     },
     onError: (error) => {
+      console.error("Profile update error:", error);
       toast({
         title: "Error updating profile",
         description: error.message || "An error occurred while updating your profile",
@@ -95,6 +114,14 @@ const ProfileInfo = () => {
 
   if (isLoading) {
     return <div className="text-center p-4">Loading profile...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center p-4">
+        <p className="text-red-500">Error loading profile: {error.message}</p>
+      </div>
+    );
   }
 
   return (

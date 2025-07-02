@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 
 const Index = () => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+
+  console.log("Index page - User:", user?.id, "Loading:", isLoading);
 
   return (
     <MainLayout fullHeight>
@@ -18,6 +20,11 @@ const Index = () => {
               src="/lovable-uploads/6d9cc0f0-addd-45b1-abab-238892b91dbf.png" 
               alt="OXIA Logo" 
               className="h-16 w-auto object-contain" 
+              onError={(e) => {
+                console.error("Logo failed to load:", e);
+                e.currentTarget.style.display = 'none';
+              }}
+              onLoad={() => console.log("Logo loaded successfully")}
             />
           </div>
           
@@ -26,7 +33,7 @@ const Index = () => {
             <BreathingExercise />
           </div>
           
-          {/* Bottom Controls - Removed sensor attached section */}
+          {/* Bottom Controls */}
           <div className="mt-auto pb-20">
             {user && (
               <div className="mt-4 text-center hidden">
