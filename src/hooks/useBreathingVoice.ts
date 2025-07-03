@@ -16,7 +16,6 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
   });
   
   const lastPhaseRef = useRef<string>('');
-  const hasAnnouncedPhase = useRef<boolean>(false);
 
   useEffect(() => {
     // Only speak if the exercise is active and phase has changed
@@ -24,15 +23,9 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
       return;
     }
 
-    // Check if this is a new phase
+    // Check if this is a new phase and announce immediately
     if (phase !== lastPhaseRef.current) {
       lastPhaseRef.current = phase;
-      hasAnnouncedPhase.current = false;
-    }
-
-    // Announce phase immediately when it starts (not announced yet)
-    if (!hasAnnouncedPhase.current) {
-      hasAnnouncedPhase.current = true;
       
       let voicePrompt = '';
       switch (phase) {
@@ -49,6 +42,7 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
       }
 
       if (voicePrompt) {
+        // Speak immediately when phase changes
         speak(voicePrompt);
       }
     }
@@ -59,7 +53,6 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
     if (!isActive && lastPhaseRef.current !== '') {
       stop();
       lastPhaseRef.current = '';
-      hasAnnouncedPhase.current = false;
     }
   }, [isActive, stop]);
 
