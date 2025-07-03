@@ -37,10 +37,7 @@ const BreathingExercise = () => {
     setPhaseTimeRemaining
   });
 
-  useElapsedTimer({ 
-    isActive, 
-    setTimeElapsed 
-  });
+  useElapsedTimer({ isActive, setTimeElapsed });
 
   // Add voice guidance with caching
   const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice } = useBreathingVoice({
@@ -90,7 +87,7 @@ const BreathingExercise = () => {
       
       <div className="flex items-center justify-center my-8">
         <BreathingCircle 
-          phase={phase} 
+          phase={isActive ? phase : "idle"} 
           duration={duration}
           timeRemaining={timeRemaining}
           onCircleClick={handleCircleClick}

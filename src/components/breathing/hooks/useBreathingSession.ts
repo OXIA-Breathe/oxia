@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
@@ -75,16 +74,15 @@ export const useBreathingSession = () => {
 
   const toggleExercise = () => {
     if (!isActive) {
-      if (phase === "idle") {
+      if (sessionStartTime === null) {
         setSessionStartTime(Date.now());
+      }
+      
+      setIsActive(true);
+      
+      if (phase === "idle") {
         setPhase("inhale");
-        setIsActive(true);
         setPhaseTimeRemaining(null);
-      } else {
-        setIsActive(true);
-        if (sessionStartTime === null) {
-          setSessionStartTime(Date.now());
-        }
       }
     } else {
       setIsActive(false);

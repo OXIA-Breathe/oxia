@@ -1,116 +1,121 @@
 
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface BreathingCircleProps {
   phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
   duration: number;
   timeRemaining: number;
-  onCircleClick: () => void;
+  size?: "sm" | "md" | "lg";
+  riskLevel?: "Minimal" | "Low" | "Moderate" | "High";
+  onCircleClick?: () => void;
   isPaused?: boolean;
 }
 
 const BreathingCircle = ({ 
   phase, 
   duration, 
-  timeRemaining, 
-  onCircleClick, 
+  timeRemaining,
+  size = "lg", 
+  onCircleClick,
   isPaused = false
 }: BreathingCircleProps) => {
-  const [animationKey, setAnimationKey] = useState(0);
+  const innerCircleRef = useRef<HTMLDivElement>(null);
+  
+  const sizeClasses = {
+    sm: "w-32 h-32",
+    md: "w-48 h-48",
+    lg: "w-64 h-64",
+  };
 
+  const getPhaseDisplayName = () => {
+    switch (phase) {
+      case "hold1":
+      case "hold2":
+        return "Hold";
+      case "inhale":
+        return "Inhale";
+      case "exhale":
+        return "Exhale";
+      default:
+        return "Breathe";
+    }
+  };
+
+  // Handle circle animation based on phase and time
   useEffect(() => {
-    if (phase !== "idle" && !isPaused) {
-      setAnimationKey(prev => prev + 1);
-    }
-  }, [phase, isPaused]);
-
-  const getOuterCircleClasses = () => {
-    return "w-64 h-64 rounded-full border-4 border-white/30 flex items-center justify-center cursor-pointer relative shadow-2xl bg-transparent";
-  };
-
-  const getInnerCircleClasses = () => {
-    const baseClasses = "absolute rounded-full flex items-center justify-center transition-all duration-300";
+    console.log("BreathingCircle animation update:", { phase, timeRemaining, duration, isPaused });
     
-    if (phase === "idle") {
-      return `${baseClasses} w-32 h-32 bg-gradient-to-br from-breath-light to-breath`;
+    if (innerCircleRef.current) {
+      if (phase === "idle" || isPaused) {
+        const scale = phase === "idle" ? 0.5 : (phase === "inhale" || phase === "hold1" ? 1 : 0.5);
+        innerCircleRef.current.style.transform = `scale(${scale})`;
+        innerCircleRef.current.style.transition = "transform 0.3s ease";
+      } else if (duration > 0 && timeRemaining >= 0) {
+        // Calculate progress (0 to 1) - how much of the phase has completed
+        const progress = Math.max(0, Math.min(1, (duration - timeRemaining) / duration));
+        let targetScale = 0.5;
+        
+        console.log("Animation progress:", { phase, progress, targetScale: targetScale });
+        
+        if (phase === "inhale") {
+          // Scale from 0.5 to 1.0 during inhale
+          targetScale = 0.5 + (0.5 * progress);
+        } else if (phase === "hold1") {
+          // Stay at 1.0 during first hold (after inhale)
+          targetScale = 1.0;
+        } else if (phase === "exhale") {
+          // Scale from 1.0 to 0.5 during exhale
+          targetScale = 1.0 - (0.5 * progress);
+        } else if (phase === "hold2") {
+          // Stay at 0.5 during second hold (after exhale)
+          targetScale = 0.5;
+        }
+        
+        console.log("Final targetScale:", targetScale);
+        
+        innerCircleRef.current.style.transform = `scale(${targetScale})`;
+        innerCircleRef.current.style.transition = "transform 0.1s ease-in-out";
+      }
     }
-
-    if (isPaused) {
-      return `${baseClasses} w-32 h-32 bg-gradient-to-br from-gray-400 to-gray-600`;
-    }
-
-    const phaseStyles = {
-      inhale: "bg-gradient-to-br from-green-400 to-blue-500",
-      exhale: "bg-gradient-to-br from-purple-400 to-pink-500", 
-      hold1: "bg-gradient-to-br from-yellow-400 to-orange-500",
-      hold2: "bg-gradient-to-br from-yellow-400 to-orange-500"
-    };
-
-    return `${baseClasses} w-32 h-32 ${phaseStyles[phase]}`;
-  };
-
-  const getInnerCircleAnimationStyle = () => {
-    if (phase === "idle" || isPaused) return {};
-
-    const animationDuration = `${duration}s`;
-    
-    return {
-      '--breathe-in-duration': phase === 'inhale' ? animationDuration : '4s',
-      '--breathe-out-duration': phase === 'exhale' ? animationDuration : '4s',
-      '--breathe-hold-duration': (phase === 'hold1' || phase === 'hold2') ? animationDuration : '4s',
-      animation: phase === 'inhale' ? `breathe-in ${animationDuration} ease-in-out forwards` :
-               phase === 'exhale' ? `breathe-out ${animationDuration} ease-in-out forwards` :
-               (phase === 'hold1' || phase === 'hold2') ? `breathe-hold ${animationDuration} ease-in-out infinite` : 'none'
-    } as React.CSSProperties;
-  };
-
-  const getDisplayText = () => {
-    if (phase === "idle") {
-      return (
-        <div className="text-center">
-          <div className="text-lg font-semibold text-white">Breathe</div>
-        </div>
-      );
-    }
-
-    if (isPaused) {
-      return (
-        <div className="text-center">
-          <div className="text-lg font-semibold text-white">Paused</div>
-        </div>
-      );
-    }
-
-    const phaseLabels = {
-      inhale: "Breathe In",
-      exhale: "Breathe Out", 
-      hold1: "Hold",
-      hold2: "Hold"
-    };
-
-    return (
-      <div className="text-center">
-        <div className="text-lg font-semibold text-white mb-1">
-          {phaseLabels[phase]}
-        </div>
-        <div className="text-sm text-white/80">
-          {Math.ceil(timeRemaining)}s
-        </div>
-      </div>
-    );
-  };
-
+  }, [phase, timeRemaining, duration, isPaused]);
+  
   return (
-    <div 
-      className={getOuterCircleClasses()} 
-      onClick={onCircleClick}
-    >
+    <div className="relative flex flex-col items-center justify-center">
       <div 
-        key={animationKey}
-        className={getInnerCircleClasses()}
-        style={getInnerCircleAnimationStyle()}
+        className={`${sizeClasses[size]} relative cursor-pointer`}
+        onClick={onCircleClick}
       >
-        {getDisplayText()}
+        <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-30"></div>
+        
+        <div 
+          ref={innerCircleRef}
+          className="absolute inset-0 m-auto rounded-full flex items-center justify-center"
+          style={{ 
+            transformOrigin: 'center',
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(59, 130, 246, 0.3)',
+            backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%)',
+            backdropFilter: 'blur(8px)'
+          }}
+        >
+          <div className="text-center flex flex-col items-center justify-center">
+            {phase === "idle" ? (
+              <span className="text-xl font-bold text-white">
+                Breathe
+              </span>
+            ) : (
+              <>
+                <span className="text-lg font-bold text-white">
+                  {isPaused ? "Paused" : getPhaseDisplayName()}
+                </span>
+                <span className="text-base text-white mt-1">
+                  {Math.max(0, Math.ceil(timeRemaining))}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
