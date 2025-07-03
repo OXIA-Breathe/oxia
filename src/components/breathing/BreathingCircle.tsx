@@ -2,12 +2,11 @@
 import { useEffect, useState } from "react";
 
 interface BreathingCircleProps {
-  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle" | "countdown";
+  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
   duration: number;
   timeRemaining: number;
   onCircleClick: () => void;
   isPaused?: boolean;
-  countdownValue?: number;
 }
 
 const BreathingCircle = ({ 
@@ -15,8 +14,7 @@ const BreathingCircle = ({
   duration, 
   timeRemaining, 
   onCircleClick, 
-  isPaused = false,
-  countdownValue = 0
+  isPaused = false
 }: BreathingCircleProps) => {
   const [animationKey, setAnimationKey] = useState(0);
 
@@ -28,10 +26,6 @@ const BreathingCircle = ({
 
   const getCircleClasses = () => {
     const baseClasses = "w-64 h-64 rounded-full border-4 border-white/30 flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl";
-    
-    if (phase === "countdown") {
-      return `${baseClasses} bg-gradient-to-br from-yellow-400 to-orange-500 animate-pulse`;
-    }
     
     if (phase === "idle") {
       return `${baseClasses} bg-gradient-to-br from-breath-light to-breath hover:from-breath to-breath-dark`;
@@ -52,7 +46,7 @@ const BreathingCircle = ({
   };
 
   const getAnimationStyle = () => {
-    if (phase === "idle" || phase === "countdown" || isPaused) return {};
+    if (phase === "idle" || isPaused) return {};
 
     const animationDuration = `${duration}s`;
     
@@ -67,19 +61,6 @@ const BreathingCircle = ({
   };
 
   const getDisplayText = () => {
-    if (phase === "countdown") {
-      return (
-        <div className="text-center">
-          <div className="text-6xl font-bold text-white mb-2">
-            {countdownValue}
-          </div>
-          <div className="text-lg text-white/80">
-            Get Ready
-          </div>
-        </div>
-      );
-    }
-    
     if (phase === "idle") {
       return (
         <div className="text-center">

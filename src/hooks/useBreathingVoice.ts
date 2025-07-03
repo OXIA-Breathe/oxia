@@ -1,9 +1,10 @@
+
 import { useEffect, useRef } from 'react';
 import { useTextToSpeech } from './useTextToSpeech';
 import { useVoiceCache } from './useVoiceCache';
 
 interface UseBreathingVoiceProps {
-  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle" | "countdown";
+  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
   isActive: boolean;
   exerciseTitle?: string;
 }
@@ -25,7 +26,7 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
 
   useEffect(() => {
     // Only speak if the exercise is active and phase has changed
-    if (!isActive || !isSupported || phase === 'idle' || phase === 'countdown' || !isReady) {
+    if (!isActive || !isSupported || phase === 'idle' || !isReady) {
       return;
     }
 

@@ -18,7 +18,7 @@ export const useVoiceCache = (options: UseVoiceCacheOptions = {}) => {
   const [isReady, setIsReady] = useState(false);
   const cacheRef = useRef<Map<string, VoiceCacheEntry>>(new Map());
 
-  const prompts = ['Breathe in', 'Hold', 'Breathe out', 'Ready', '3', '2', '1'];
+  const prompts = ['Breathe in', 'Hold', 'Breathe out'];
 
   const preGenerateVoices = async () => {
     if (!options.useElevenLabs) {

@@ -16,7 +16,6 @@ const BreathingExercise = () => {
     timeElapsed,
     phaseTimeRemaining,
     exerciseSettings,
-    countdownValue,
     setTimeElapsed,
     setPhaseTimeRemaining,
     resetExercise,
@@ -25,7 +24,7 @@ const BreathingExercise = () => {
   } = useBreathingSession();
 
   const { duration, timeRemaining } = useBreathingTimer({
-    isActive: isActive && phase !== "countdown",
+    isActive,
     phase,
     exerciseSettings: {
       inhaleDuration: exerciseSettings.inhaleDuration,
@@ -39,14 +38,14 @@ const BreathingExercise = () => {
   });
 
   useElapsedTimer({ 
-    isActive: isActive && phase !== "countdown", 
+    isActive, 
     setTimeElapsed 
   });
 
   // Add voice guidance with caching
   const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice } = useBreathingVoice({
-    phase: phase === "countdown" ? "idle" : phase,
-    isActive: isActive && phase !== "countdown",
+    phase,
+    isActive,
     exerciseTitle: exerciseSettings.title
   });
 
@@ -55,7 +54,7 @@ const BreathingExercise = () => {
   };
 
   const handleToggle = () => {
-    if (isActive && phaseTimeRemaining === null && phase !== "idle" && phase !== "countdown") {
+    if (isActive && phaseTimeRemaining === null && phase !== "idle") {
       setPhaseTimeRemaining(timeRemaining);
     }
     toggleExercise();
@@ -95,8 +94,7 @@ const BreathingExercise = () => {
           duration={duration}
           timeRemaining={timeRemaining}
           onCircleClick={handleCircleClick}
-          isPaused={!isActive && phase !== "idle" && phase !== "countdown"}
-          countdownValue={countdownValue}
+          isPaused={!isActive && phase !== "idle"}
         />
       </div>
       
