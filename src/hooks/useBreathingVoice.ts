@@ -1,6 +1,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useTextToSpeech } from './useTextToSpeech';
+import { useVoiceCache } from './useVoiceCache';
 
 interface UseBreathingVoiceProps {
   phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
@@ -9,17 +10,23 @@ interface UseBreathingVoiceProps {
 }
 
 export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathingVoiceProps) => {
-  const { speak, stop, isSupported, isElevenLabsAvailable } = useTextToSpeech({
-    voice: 'Aria', // Calming female voice for breathing exercises
+  const { speak, stop, isSupported } = useTextToSpeech({
+    voice: 'Aria',
     volume: 0.8,
-    useElevenLabs: true // Enable ElevenLabs by default
+    useElevenLabs: true
+  });
+
+  const { isLoading, isReady, playVoice, stopAllVoices } = useVoiceCache({
+    voice: 'Aria',
+    volume: 0.8,
+    useElevenLabs: true
   });
   
   const lastPhaseRef = useRef<string>('');
 
   useEffect(() => {
     // Only speak if the exercise is active and phase has changed
-    if (!isActive || !isSupported || phase === 'idle') {
+    if (!isActive || !isSupported || phase === 'idle' || !isReady) {
       return;
     }
 
@@ -42,23 +49,32 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
       }
 
       if (voicePrompt) {
-        // Speak immediately when phase changes
-        speak(voicePrompt);
+        // Try to play cached voice first, fallback to real-time generation
+        const played = playVoice(voicePrompt);
+        if (!played) {
+          // Fallback to real-time generation if cache failed
+          speak(voicePrompt);
+        }
       }
     }
-  }, [phase, isActive, speak, isSupported]);
+  }, [phase, isActive, speak, isSupported, isReady, playVoice]);
 
   // Clean up when exercise stops
   useEffect(() => {
     if (!isActive && lastPhaseRef.current !== '') {
+      stopAllVoices();
       stop();
       lastPhaseRef.current = '';
     }
-  }, [isActive, stop]);
+  }, [isActive, stop, stopAllVoices]);
 
   return {
     isVoiceSupported: isSupported,
-    isElevenLabsAvailable,
-    stopVoice: stop
+    isVoiceReady: isReady,
+    isVoiceLoading: isLoading,
+    stopVoice: () => {
+      stopAllVoices();
+      stop();
+    }
   };
 };

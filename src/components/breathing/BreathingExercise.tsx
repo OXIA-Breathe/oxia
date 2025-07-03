@@ -39,8 +39,8 @@ const BreathingExercise = () => {
 
   useElapsedTimer({ isActive, setTimeElapsed });
 
-  // Add voice guidance
-  const { isVoiceSupported, isElevenLabsAvailable, stopVoice } = useBreathingVoice({
+  // Add voice guidance with caching
+  const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice } = useBreathingVoice({
     phase,
     isActive,
     exerciseTitle: exerciseSettings.title
@@ -70,6 +70,11 @@ const BreathingExercise = () => {
           <h2 className="text-xl font-semibold text-white">
             {exerciseSettings.title}
           </h2>
+          {isVoiceLoading && (
+            <p className="text-sm text-gray-300 mt-1">
+              Preparing voice guidance...
+            </p>
+          )}
         </div>
       )}
       
