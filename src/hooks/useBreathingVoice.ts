@@ -9,10 +9,10 @@ interface UseBreathingVoiceProps {
 }
 
 export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathingVoiceProps) => {
-  const { speak, stop, isSupported } = useTextToSpeech({
-    rate: 0.9,
-    pitch: 1.1,
-    volume: 0.7
+  const { speak, stop, isSupported, isElevenLabsAvailable } = useTextToSpeech({
+    voice: 'Aria', // Calming female voice for breathing exercises
+    volume: 0.8,
+    useElevenLabs: true // Enable ElevenLabs by default
   });
   
   const lastPhaseRef = useRef<string>('');
@@ -69,6 +69,7 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
 
   return {
     isVoiceSupported: isSupported,
+    isElevenLabsAvailable,
     stopVoice: stop
   };
 };
