@@ -24,15 +24,19 @@ const BreathingCircle = ({
     }
   }, [phase, isPaused]);
 
-  const getCircleClasses = () => {
-    const baseClasses = "w-64 h-64 rounded-full border-4 border-white/30 flex items-center justify-center cursor-pointer transition-all duration-300 shadow-2xl";
+  const getOuterCircleClasses = () => {
+    return "w-64 h-64 rounded-full border-4 border-white/30 flex items-center justify-center cursor-pointer relative shadow-2xl bg-transparent";
+  };
+
+  const getInnerCircleClasses = () => {
+    const baseClasses = "absolute rounded-full flex items-center justify-center transition-all duration-300";
     
     if (phase === "idle") {
-      return `${baseClasses} bg-gradient-to-br from-breath-light to-breath hover:from-breath to-breath-dark`;
+      return `${baseClasses} w-32 h-32 bg-gradient-to-br from-breath-light to-breath`;
     }
 
     if (isPaused) {
-      return `${baseClasses} bg-gradient-to-br from-gray-400 to-gray-600`;
+      return `${baseClasses} w-32 h-32 bg-gradient-to-br from-gray-400 to-gray-600`;
     }
 
     const phaseStyles = {
@@ -42,10 +46,10 @@ const BreathingCircle = ({
       hold2: "bg-gradient-to-br from-yellow-400 to-orange-500"
     };
 
-    return `${baseClasses} ${phaseStyles[phase]}`;
+    return `${baseClasses} w-32 h-32 ${phaseStyles[phase]}`;
   };
 
-  const getAnimationStyle = () => {
+  const getInnerCircleAnimationStyle = () => {
     if (phase === "idle" || isPaused) return {};
 
     const animationDuration = `${duration}s`;
@@ -64,8 +68,7 @@ const BreathingCircle = ({
     if (phase === "idle") {
       return (
         <div className="text-center">
-          <div className="text-2xl font-semibold text-white mb-2">Ready to Begin</div>
-          <div className="text-sm text-white/80">Tap to start</div>
+          <div className="text-lg font-semibold text-white">Breathe</div>
         </div>
       );
     }
@@ -73,8 +76,7 @@ const BreathingCircle = ({
     if (isPaused) {
       return (
         <div className="text-center">
-          <div className="text-2xl font-semibold text-white mb-2">Paused</div>
-          <div className="text-sm text-white/80">Tap to resume</div>
+          <div className="text-lg font-semibold text-white">Paused</div>
         </div>
       );
     }
@@ -88,10 +90,10 @@ const BreathingCircle = ({
 
     return (
       <div className="text-center">
-        <div className="text-2xl font-semibold text-white mb-2">
+        <div className="text-lg font-semibold text-white mb-1">
           {phaseLabels[phase]}
         </div>
-        <div className="text-lg text-white/80">
+        <div className="text-sm text-white/80">
           {Math.ceil(timeRemaining)}s
         </div>
       </div>
@@ -100,12 +102,16 @@ const BreathingCircle = ({
 
   return (
     <div 
-      key={animationKey}
-      className={getCircleClasses()} 
-      style={getAnimationStyle()}
+      className={getOuterCircleClasses()} 
       onClick={onCircleClick}
     >
-      {getDisplayText()}
+      <div 
+        key={animationKey}
+        className={getInnerCircleClasses()}
+        style={getInnerCircleAnimationStyle()}
+      >
+        {getDisplayText()}
+      </div>
     </div>
   );
 };
