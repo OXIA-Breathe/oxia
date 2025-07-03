@@ -16,36 +16,41 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
   });
   
   const lastPhaseRef = useRef<string>('');
+  const hasAnnouncedPhase = useRef<boolean>(false);
 
   useEffect(() => {
     // Only speak if the exercise is active and phase has changed
-    if (!isActive || !isSupported || phase === 'idle' || phase === lastPhaseRef.current) {
+    if (!isActive || !isSupported || phase === 'idle') {
       return;
     }
 
-    // Update the last phase
-    lastPhaseRef.current = phase;
-
-    // Map phases to voice prompts
-    let voicePrompt = '';
-    switch (phase) {
-      case 'inhale':
-        voicePrompt = 'Breathe in';
-        break;
-      case 'hold1':
-      case 'hold2':
-        voicePrompt = 'Hold';
-        break;
-      case 'exhale':
-        voicePrompt = 'Breathe out';
-        break;
+    // Check if this is a new phase
+    if (phase !== lastPhaseRef.current) {
+      lastPhaseRef.current = phase;
+      hasAnnouncedPhase.current = false;
     }
 
-    if (voicePrompt) {
-      // Small delay to ensure smooth transition
-      setTimeout(() => {
+    // Announce phase immediately when it starts (not announced yet)
+    if (!hasAnnouncedPhase.current) {
+      hasAnnouncedPhase.current = true;
+      
+      let voicePrompt = '';
+      switch (phase) {
+        case 'inhale':
+          voicePrompt = 'Breathe in';
+          break;
+        case 'hold1':
+        case 'hold2':
+          voicePrompt = 'Hold';
+          break;
+        case 'exhale':
+          voicePrompt = 'Breathe out';
+          break;
+      }
+
+      if (voicePrompt) {
         speak(voicePrompt);
-      }, 100);
+      }
     }
   }, [phase, isActive, speak, isSupported]);
 
@@ -54,18 +59,9 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
     if (!isActive && lastPhaseRef.current !== '') {
       stop();
       lastPhaseRef.current = '';
+      hasAnnouncedPhase.current = false;
     }
   }, [isActive, stop]);
-
-  // Reset when exercise starts
-  useEffect(() => {
-    if (isActive && phase === 'inhale' && lastPhaseRef.current === '') {
-      // Welcome message when starting
-      setTimeout(() => {
-        speak(`Starting ${exerciseTitle || 'breathing exercise'}`);
-      }, 500);
-    }
-  }, [isActive, phase, exerciseTitle, speak]);
 
   return {
     isVoiceSupported: isSupported,
