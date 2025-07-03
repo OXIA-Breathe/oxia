@@ -5,6 +5,7 @@ import BreathingControls from "./BreathingControls";
 import { useBreathingSession } from "./hooks/useBreathingSession";
 import { useBreathingTimer } from "./hooks/useBreathingTimer";
 import { useElapsedTimer } from "./hooks/useElapsedTimer";
+import { useBreathingVoice } from "@/hooks/useBreathingVoice";
 
 const BreathingExercise = () => {
   const {
@@ -38,6 +39,13 @@ const BreathingExercise = () => {
 
   useElapsedTimer({ isActive, setTimeElapsed });
 
+  // Add voice guidance
+  const { isVoiceSupported, stopVoice } = useBreathingVoice({
+    phase,
+    isActive,
+    exerciseTitle: exerciseSettings.title
+  });
+
   const handleCircleClick = () => {
     toggleExercise();
   };
@@ -49,6 +57,11 @@ const BreathingExercise = () => {
     toggleExercise();
   };
 
+  const handleReset = () => {
+    stopVoice(); // Stop any ongoing voice prompts
+    resetExercise();
+  };
+
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
       {/* Exercise Title */}
@@ -57,6 +70,11 @@ const BreathingExercise = () => {
           <h2 className="text-xl font-semibold text-white">
             {exerciseSettings.title}
           </h2>
+          {!isVoiceSupported && (
+            <p className="text-xs text-white/60 mt-1">
+              Voice guidance not available in this browser
+            </p>
+          )}
         </div>
       )}
       
@@ -82,7 +100,7 @@ const BreathingExercise = () => {
         phase={phase}
         currentRepetition={currentRepetition}
         onToggle={handleToggle}
-        onReset={resetExercise}
+        onReset={handleReset}
       />
     </div>
   );
