@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
@@ -26,13 +27,14 @@ export const useBreathingSession = () => {
     isCustom: false,
   };
 
-  const [phase, setPhase] = useState<"inhale" | "exhale" | "hold1" | "hold2" | "idle">("idle");
+  const [phase, setPhase] = useState<"inhale" | "exhale" | "hold1" | "hold2" | "idle" | "countdown">("idle");
   const [isActive, setIsActive] = useState(false);
   const [currentRepetition, setCurrentRepetition] = useState(0);
   const [breathCount, setBreathCount] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [phaseTimeRemaining, setPhaseTimeRemaining] = useState<number | null>(null);
+  const [countdownValue, setCountdownValue] = useState(3);
 
   const completeSession = useCallback((finalBreathCount: number) => {
     const sessionEndTime = Date.now();
@@ -70,19 +72,37 @@ export const useBreathingSession = () => {
     setTimeElapsed(0);
     setSessionStartTime(null);
     setPhaseTimeRemaining(null);
+    setCountdownValue(3);
+  };
+
+  const startCountdown = () => {
+    setPhase("countdown");
+    setIsActive(true);
+    setCountdownValue(3);
+    
+    const countdownInterval = setInterval(() => {
+      setCountdownValue((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval);
+          setSessionStartTime(Date.now());
+          setPhase("inhale");
+          setPhaseTimeRemaining(null);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   const toggleExercise = () => {
     if (!isActive) {
-      if (sessionStartTime === null) {
-        setSessionStartTime(Date.now());
-      }
-      
-      setIsActive(true);
-      
       if (phase === "idle") {
-        setPhase("inhale");
-        setPhaseTimeRemaining(null);
+        startCountdown();
+      } else {
+        setIsActive(true);
+        if (sessionStartTime === null) {
+          setSessionStartTime(Date.now());
+        }
       }
     } else {
       setIsActive(false);
@@ -121,6 +141,7 @@ export const useBreathingSession = () => {
     sessionStartTime,
     phaseTimeRemaining,
     exerciseSettings,
+    countdownValue,
     setTimeElapsed,
     setPhaseTimeRemaining,
     resetExercise,

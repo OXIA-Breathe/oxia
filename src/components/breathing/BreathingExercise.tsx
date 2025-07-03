@@ -16,6 +16,7 @@ const BreathingExercise = () => {
     timeElapsed,
     phaseTimeRemaining,
     exerciseSettings,
+    countdownValue,
     setTimeElapsed,
     setPhaseTimeRemaining,
     resetExercise,
@@ -24,7 +25,7 @@ const BreathingExercise = () => {
   } = useBreathingSession();
 
   const { duration, timeRemaining } = useBreathingTimer({
-    isActive,
+    isActive: isActive && phase !== "countdown",
     phase,
     exerciseSettings: {
       inhaleDuration: exerciseSettings.inhaleDuration,
@@ -37,12 +38,15 @@ const BreathingExercise = () => {
     setPhaseTimeRemaining
   });
 
-  useElapsedTimer({ isActive, setTimeElapsed });
+  useElapsedTimer({ 
+    isActive: isActive && phase !== "countdown", 
+    setTimeElapsed 
+  });
 
   // Add voice guidance with caching
   const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice } = useBreathingVoice({
-    phase,
-    isActive,
+    phase: phase === "countdown" ? "idle" : phase,
+    isActive: isActive && phase !== "countdown",
     exerciseTitle: exerciseSettings.title
   });
 
@@ -51,7 +55,7 @@ const BreathingExercise = () => {
   };
 
   const handleToggle = () => {
-    if (isActive && phaseTimeRemaining === null && phase !== "idle") {
+    if (isActive && phaseTimeRemaining === null && phase !== "idle" && phase !== "countdown") {
       setPhaseTimeRemaining(timeRemaining);
     }
     toggleExercise();
@@ -87,11 +91,12 @@ const BreathingExercise = () => {
       
       <div className="flex items-center justify-center my-8">
         <BreathingCircle 
-          phase={isActive ? phase : "idle"} 
+          phase={phase} 
           duration={duration}
           timeRemaining={timeRemaining}
           onCircleClick={handleCircleClick}
-          isPaused={!isActive && phase !== "idle"}
+          isPaused={!isActive && phase !== "idle" && phase !== "countdown"}
+          countdownValue={countdownValue}
         />
       </div>
       
