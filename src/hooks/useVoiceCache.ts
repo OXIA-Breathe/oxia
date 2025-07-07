@@ -31,9 +31,11 @@ export const useVoiceCache = (options: UseVoiceCacheOptions = {}) => {
       setIsLoading(true);
       const cache = new Map<string, VoiceCacheEntry>();
 
-      // Generate all voice prompts in parallel
-      const promises = prompts.map(async (text) => {
+      // Generate voice prompts sequentially to avoid concurrent request limits
+      for (const text of prompts) {
         try {
+          console.log(`Generating voice for: "${text}"`);
+          
           const { data, error } = await supabase.functions.invoke('text-to-speech', {
             body: { 
               text, 
@@ -42,7 +44,13 @@ export const useVoiceCache = (options: UseVoiceCacheOptions = {}) => {
           });
 
           if (error || !data?.audioData) {
-            throw error || new Error('No audio data received');
+            console.error(`Failed to generate voice for "${text}":`, error);
+            // Create fallback entry
+            cache.set(text, {
+              audio: new Audio(), // Empty audio as fallback
+              isLoaded: false
+            });
+            continue;
           }
 
           // Create audio from base64 data
@@ -67,6 +75,8 @@ export const useVoiceCache = (options: UseVoiceCacheOptions = {}) => {
             isLoaded: true
           });
 
+          console.log(`Successfully cached voice for: "${text}"`);
+
         } catch (error) {
           console.error(`Failed to generate voice for "${text}":`, error);
           // Create fallback entry
@@ -75,9 +85,11 @@ export const useVoiceCache = (options: UseVoiceCacheOptions = {}) => {
             isLoaded: false
           });
         }
-      });
 
-      await Promise.all(promises);
+        // Add a small delay between requests to be respectful to the API
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+
       cacheRef.current = cache;
       setIsReady(true);
 
