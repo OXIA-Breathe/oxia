@@ -50,7 +50,6 @@ const BreathingExercise = () => {
     onPhaseComplete: handlePhaseComplete,
     phaseTimeRemaining,
     setPhaseTimeRemaining,
-    onVoicePrompt: handleVoicePrompt
   });
 
   useElapsedTimer({ isActive, setTimeElapsed });
