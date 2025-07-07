@@ -1,4 +1,3 @@
-
 import BreathingCircle from "./BreathingCircle";
 import BreathingStats from "./BreathingStats";
 import BreathingControls from "./BreathingControls";
@@ -23,6 +22,20 @@ const BreathingExercise = () => {
     handlePhaseComplete,
   } = useBreathingSession();
 
+  // Add voice guidance with caching
+  const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice, triggerVoicePrompt } = useBreathingVoice({
+    phase,
+    isActive,
+    exerciseTitle: exerciseSettings.title
+  });
+
+  // Handle phase start for voice prompts
+  const handlePhaseStart = useCallback((newPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
+    if (isActive && triggerVoicePrompt) {
+      triggerVoicePrompt(newPhase);
+    }
+  }, [isActive, triggerVoicePrompt]);
+
   const { duration, timeRemaining } = useBreathingTimer({
     isActive,
     phase,
@@ -34,17 +47,11 @@ const BreathingExercise = () => {
     },
     onPhaseComplete: handlePhaseComplete,
     phaseTimeRemaining,
-    setPhaseTimeRemaining
+    setPhaseTimeRemaining,
+    onPhaseStart: handlePhaseStart
   });
 
   useElapsedTimer({ isActive, setTimeElapsed });
-
-  // Add voice guidance with caching
-  const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice } = useBreathingVoice({
-    phase,
-    isActive,
-    exerciseTitle: exerciseSettings.title
-  });
 
   const handleCircleClick = () => {
     toggleExercise();

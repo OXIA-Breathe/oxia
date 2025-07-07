@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 interface UseBreathingTimerProps {
   isActive: boolean;
@@ -13,6 +13,7 @@ interface UseBreathingTimerProps {
   onPhaseComplete: (nextPhase: "inhale" | "exhale" | "hold1" | "hold2") => void;
   phaseTimeRemaining: number | null;
   setPhaseTimeRemaining: (time: number | null) => void;
+  onPhaseStart?: (phase: "inhale" | "exhale" | "hold1" | "hold2") => void;
 }
 
 export const useBreathingTimer = ({
@@ -21,7 +22,8 @@ export const useBreathingTimer = ({
   exerciseSettings,
   onPhaseComplete,
   phaseTimeRemaining,
-  setPhaseTimeRemaining
+  setPhaseTimeRemaining,
+  onPhaseStart
 }: UseBreathingTimerProps) => {
   const [duration, setDuration] = useState(exerciseSettings.inhaleDuration);
   const [timeRemaining, setTimeRemaining] = useState(exerciseSettings.inhaleDuration);
@@ -38,6 +40,14 @@ export const useBreathingTimer = ({
     exerciseSettings.firstHoldDuration,
     exerciseSettings.secondHoldDuration,
   ]);
+
+  // Trigger voice prompt when phase starts
+  const triggerPhaseStart = useCallback((newPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
+    if (onPhaseStart) {
+      // Use setTimeout to ensure this happens on the next tick
+      setTimeout(() => onPhaseStart(newPhase), 0);
+    }
+  }, [onPhaseStart]);
 
   // Update duration and timeRemaining when phase changes
   useEffect(() => {
@@ -68,8 +78,10 @@ export const useBreathingTimer = ({
       setPhaseTimeRemaining(null);
     } else if (phase !== "idle") {
       setTimeRemaining(phaseDuration);
+      // Trigger voice prompt immediately when new phase starts
+      triggerPhaseStart(phase);
     }
-  }, [phase, memoizedSettings, phaseTimeRemaining, setPhaseTimeRemaining]);
+  }, [phase, memoizedSettings, phaseTimeRemaining, setPhaseTimeRemaining, triggerPhaseStart]);
 
   // Main timer effect
   useEffect(() => {
@@ -81,16 +93,26 @@ export const useBreathingTimer = ({
           const newValue = Math.max(0, prev - 0.1);
           
           if (newValue <= 0) {
-            // Transition to next phase
+            let nextPhase: "inhale" | "exhale" | "hold1" | "hold2";
+            
+            // Determine next phase
             if (phase === "inhale") {
-              onPhaseComplete(memoizedSettings.firstHoldDuration > 0 ? "hold1" : "exhale");
+              nextPhase = memoizedSettings.firstHoldDuration > 0 ? "hold1" : "exhale";
             } else if (phase === "hold1") {
-              onPhaseComplete("exhale");
+              nextPhase = "exhale";
             } else if (phase === "exhale") {
-              onPhaseComplete(memoizedSettings.secondHoldDuration > 0 ? "hold2" : "inhale");
+              nextPhase = memoizedSettings.secondHoldDuration > 0 ? "hold2" : "inhale";
             } else if (phase === "hold2") {
-              onPhaseComplete("inhale");
+              nextPhase = "inhale";
+            } else {
+              nextPhase = "inhale";
             }
+            
+            // Trigger voice prompt immediately before phase transition
+            triggerPhaseStart(nextPhase);
+            
+            // Then trigger the phase change
+            setTimeout(() => onPhaseComplete(nextPhase), 0);
           }
           
           return newValue;
@@ -103,7 +125,7 @@ export const useBreathingTimer = ({
         clearInterval(phaseTimer);
       }
     };
-  }, [isActive, phase, timeRemaining, onPhaseComplete, memoizedSettings]);
+  }, [isActive, phase, timeRemaining, onPhaseComplete, memoizedSettings, triggerPhaseStart]);
 
   return { duration, timeRemaining };
 };
