@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 
 interface UseBreathingTimerProps {
   isActive: boolean;
@@ -27,6 +27,8 @@ export const useBreathingTimer = ({
 }: UseBreathingTimerProps) => {
   const [duration, setDuration] = useState(exerciseSettings.inhaleDuration);
   const [timeRemaining, setTimeRemaining] = useState(exerciseSettings.inhaleDuration);
+  const timerRef = useRef<number | null>(null);
+  const lastPhaseRef = useRef<string>('');
 
   // Memoize the exercise settings to prevent infinite re-renders
   const memoizedSettings = useMemo(() => ({
@@ -43,6 +45,8 @@ export const useBreathingTimer = ({
 
   // Update duration and timeRemaining when phase changes
   useEffect(() => {
+    console.log(`Phase changed to: ${phase}`);
+    
     let phaseDuration = 0;
     
     switch (phase) {
@@ -62,16 +66,28 @@ export const useBreathingTimer = ({
         phaseDuration = memoizedSettings.inhaleDuration;
     }
     
+    console.log(`Setting phase duration: ${phaseDuration} for phase: ${phase}`);
     setDuration(phaseDuration);
+    
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
     
     // If we have a saved phase time remaining, use it, otherwise start fresh
     if (phaseTimeRemaining !== null && phase !== "idle") {
+      console.log(`Resuming with saved time: ${phaseTimeRemaining}`);
       setTimeRemaining(phaseTimeRemaining);
       setPhaseTimeRemaining(null);
     } else if (phase !== "idle") {
+      console.log(`Starting fresh with duration: ${phaseDuration}`);
       setTimeRemaining(phaseDuration);
-      // Trigger voice prompt immediately when new phase starts
-      if (onVoicePrompt) {
+      
+      // Trigger voice prompt when new phase starts (only once per phase)
+      if (onVoicePrompt && lastPhaseRef.current !== phase) {
+        console.log(`Triggering voice for new phase: ${phase}`);
+        lastPhaseRef.current = phase;
         onVoicePrompt(phase);
       }
     }
@@ -79,14 +95,23 @@ export const useBreathingTimer = ({
 
   // Main timer effect
   useEffect(() => {
-    let phaseTimer: number;
+    // Clear existing timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
     
     if (isActive && phase !== "idle" && timeRemaining > 0) {
-      phaseTimer = window.setInterval(() => {
+      console.log(`Starting timer for phase: ${phase}, timeRemaining: ${timeRemaining}`);
+      
+      timerRef.current = window.setInterval(() => {
         setTimeRemaining((prev) => {
           const newValue = Math.max(0, prev - 0.1);
+          console.log(`Timer tick - Phase: ${phase}, Time remaining: ${newValue.toFixed(1)}`);
           
           if (newValue <= 0) {
+            console.log(`Phase ${phase} completed, determining next phase`);
+            
             let nextPhase: "inhale" | "exhale" | "hold1" | "hold2";
             
             // Determine next phase
@@ -102,7 +127,7 @@ export const useBreathingTimer = ({
               nextPhase = "inhale";
             }
             
-            // Only trigger phase change, voice will be handled by phase change effect
+            console.log(`Moving to next phase: ${nextPhase}`);
             setTimeout(() => onPhaseComplete(nextPhase), 0);
           }
           
@@ -112,11 +137,19 @@ export const useBreathingTimer = ({
     }
     
     return () => {
-      if (phaseTimer) {
-        clearInterval(phaseTimer);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     };
   }, [isActive, phase, timeRemaining, onPhaseComplete, memoizedSettings]);
+
+  // Reset phase tracking when exercise stops
+  useEffect(() => {
+    if (!isActive) {
+      lastPhaseRef.current = '';
+    }
+  }, [isActive]);
 
   return { duration, timeRemaining };
 };
