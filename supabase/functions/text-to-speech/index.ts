@@ -15,12 +15,15 @@ serve(async (req) => {
   try {
     const { text, voice = "Aria" } = await req.json();
     
+    console.log('TTS Request:', { text, voice });
+    
     if (!text) {
       throw new Error('Text is required');
     }
 
     const elevenlabsApiKey = Deno.env.get('ELEVENLABS_API_KEY');
     if (!elevenlabsApiKey) {
+      console.error('ElevenLabs API key not found');
       throw new Error('ElevenLabs API key not configured');
     }
 
@@ -34,6 +37,7 @@ serve(async (req) => {
     };
 
     const voiceId = voiceIds[voice] || voiceIds["Aria"];
+    console.log('Using voice ID:', voiceId);
 
     // Call ElevenLabs TTS API
     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
@@ -55,10 +59,16 @@ serve(async (req) => {
       }),
     });
 
+    console.log('ElevenLabs response status:', response.status);
+
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('ElevenLabs API error:', errorText);
-      throw new Error(`ElevenLabs API error: ${response.status}`);
+      console.error('ElevenLabs API error:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText
+      });
+      throw new Error(`ElevenLabs API error: ${response.status} - ${errorText}`);
     }
 
     // Get audio data and convert to base64
@@ -66,6 +76,8 @@ serve(async (req) => {
     const base64Audio = btoa(
       String.fromCharCode(...new Uint8Array(audioBuffer))
     );
+
+    console.log('Successfully generated TTS audio, size:', audioBuffer.byteLength);
 
     return new Response(
       JSON.stringify({ 
@@ -80,7 +92,10 @@ serve(async (req) => {
   } catch (error) {
     console.error('Text-to-speech error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack 
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
