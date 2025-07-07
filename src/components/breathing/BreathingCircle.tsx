@@ -20,6 +20,7 @@ const BreathingCircle = ({
   isPaused = false
 }: BreathingCircleProps) => {
   const innerCircleRef = useRef<HTMLDivElement>(null);
+  const lastProgressRef = useRef<number>(-1);
   
   const sizeClasses = {
     sm: "w-32 h-32",
@@ -43,19 +44,23 @@ const BreathingCircle = ({
 
   // Handle circle animation based on phase and time
   useEffect(() => {
-    console.log("BreathingCircle animation update:", { phase, timeRemaining, duration, isPaused });
-    
     if (innerCircleRef.current) {
       if (phase === "idle" || isPaused) {
         const scale = phase === "idle" ? 0.5 : (phase === "inhale" || phase === "hold1" ? 1 : 0.5);
         innerCircleRef.current.style.transform = `scale(${scale})`;
         innerCircleRef.current.style.transition = "transform 0.3s ease";
+        lastProgressRef.current = -1; // Reset progress tracking
       } else if (duration > 0 && timeRemaining >= 0) {
         // Calculate progress (0 to 1) - how much of the phase has completed
         const progress = Math.max(0, Math.min(1, (duration - timeRemaining) / duration));
-        let targetScale = 0.5;
         
-        console.log("Animation progress:", { phase, progress, targetScale: targetScale });
+        // Only update if progress has changed significantly (reduce excessive updates)
+        if (Math.abs(progress - lastProgressRef.current) < 0.05 && lastProgressRef.current >= 0) {
+          return;
+        }
+        
+        lastProgressRef.current = progress;
+        let targetScale = 0.5;
         
         if (phase === "inhale") {
           // Scale from 0.5 to 1.0 during inhale
@@ -70,8 +75,6 @@ const BreathingCircle = ({
           // Stay at 0.5 during second hold (after exhale)
           targetScale = 0.5;
         }
-        
-        console.log("Final targetScale:", targetScale);
         
         innerCircleRef.current.style.transform = `scale(${targetScale})`;
         innerCircleRef.current.style.transition = "transform 0.1s ease-in-out";

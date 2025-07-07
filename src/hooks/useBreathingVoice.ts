@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTextToSpeech } from './useTextToSpeech';
 import { useVoiceCache } from './useVoiceCache';
 
@@ -7,7 +7,6 @@ interface UseBreathingVoiceProps {
   phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
   isActive: boolean;
   exerciseTitle?: string;
-  onPhaseStart?: (phase: "inhale" | "exhale" | "hold1" | "hold2") => void;
 }
 
 export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathingVoiceProps) => {
@@ -24,19 +23,21 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
   });
   
   const lastPhaseRef = useRef<string>('');
-  const voiceTimeoutRef = useRef<number | null>(null);
+  const isPlayingRef = useRef<boolean>(false);
 
   // Create a precise voice trigger function
-  const triggerVoicePrompt = useCallback((currentPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
-    if (!isActive || !isSupported || !isReady) {
+  const triggerVoicePrompt = (currentPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
+    if (!isActive || !isSupported || !isReady || isPlayingRef.current) {
       return;
     }
 
-    // Clear any pending voice prompts
-    if (voiceTimeoutRef.current) {
-      clearTimeout(voiceTimeoutRef.current);
-      voiceTimeoutRef.current = null;
+    // Prevent duplicate voice prompts
+    if (currentPhase === lastPhaseRef.current) {
+      return;
     }
+
+    lastPhaseRef.current = currentPhase;
+    isPlayingRef.current = true;
 
     let voicePrompt = '';
     switch (currentPhase) {
@@ -53,63 +54,43 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
     }
 
     if (voicePrompt) {
+      console.log(`Triggering voice prompt: ${voicePrompt} for phase: ${currentPhase}`);
+      
       // Try to play cached voice first, fallback to real-time generation
       const played = playVoice(voicePrompt);
       if (!played) {
         // Fallback to real-time generation if cache failed
         speak(voicePrompt);
       }
-    }
-  }, [isActive, isSupported, isReady, playVoice, speak]);
 
-  // Handle immediate voice prompts when phase changes
-  useEffect(() => {
-    // Only speak if the exercise is active and phase has changed
-    if (!isActive || phase === 'idle' || phase === lastPhaseRef.current) {
-      return;
+      // Reset playing flag after a short delay
+      setTimeout(() => {
+        isPlayingRef.current = false;
+      }, 500);
     }
-
-    lastPhaseRef.current = phase;
-    
-    // Trigger voice prompt immediately with no delay
-    triggerVoicePrompt(phase);
-  }, [phase, isActive, triggerVoicePrompt]);
+  };
 
   // Clean up when exercise stops
   useEffect(() => {
     if (!isActive && lastPhaseRef.current !== '') {
-      // Clear any pending voice prompts
-      if (voiceTimeoutRef.current) {
-        clearTimeout(voiceTimeoutRef.current);
-        voiceTimeoutRef.current = null;
-      }
-      
+      console.log('Cleaning up voice guidance - exercise stopped');
       stopAllVoices();
       stop();
       lastPhaseRef.current = '';
+      isPlayingRef.current = false;
     }
   }, [isActive, stop, stopAllVoices]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (voiceTimeoutRef.current) {
-        clearTimeout(voiceTimeoutRef.current);
-      }
-    };
-  }, []);
 
   return {
     isVoiceSupported: isSupported,
     isVoiceReady: isReady,
     isVoiceLoading: isLoading,
     stopVoice: () => {
-      if (voiceTimeoutRef.current) {
-        clearTimeout(voiceTimeoutRef.current);
-        voiceTimeoutRef.current = null;
-      }
+      console.log('Stopping all voice guidance');
       stopAllVoices();
       stop();
+      lastPhaseRef.current = '';
+      isPlayingRef.current = false;
     },
     triggerVoicePrompt
   };

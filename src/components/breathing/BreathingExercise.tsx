@@ -31,8 +31,8 @@ const BreathingExercise = () => {
     exerciseTitle: exerciseSettings.title
   });
 
-  // Handle phase start for voice prompts
-  const handlePhaseStart = useCallback((newPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
+  // Create a stable voice prompt callback
+  const handleVoicePrompt = useCallback((newPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
     if (isActive && triggerVoicePrompt) {
       triggerVoicePrompt(newPhase);
     }
@@ -50,7 +50,7 @@ const BreathingExercise = () => {
     onPhaseComplete: handlePhaseComplete,
     phaseTimeRemaining,
     setPhaseTimeRemaining,
-    onPhaseStart: handlePhaseStart
+    onVoicePrompt: handleVoicePrompt
   });
 
   useElapsedTimer({ isActive, setTimeElapsed });
