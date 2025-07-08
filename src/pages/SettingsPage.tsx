@@ -16,7 +16,7 @@ const SettingsPage = () => {
     },
     voiceGuidance: {
       enabled: true,
-      selected: 'aria',
+      selected: 'kristo',
     },
     breathingVoices: {
       enabled: false,

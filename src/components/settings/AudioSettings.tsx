@@ -43,10 +43,8 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
   ];
 
   const voiceGuidanceOptions = [
-    { id: 'aria', name: 'Aria (Female)', gender: 'female' },
-    { id: 'sarah', name: 'Sarah (Female)', gender: 'female' },
-    { id: 'daniel', name: 'Daniel (Male)', gender: 'male' },
-    { id: 'liam', name: 'Liam (Male)', gender: 'male' },
+    { id: 'kristo', name: 'Kristo (Male)', gender: 'male' },
+    { id: 'angelika', name: 'Angelika (Female)', gender: 'female' },
   ];
 
   const breathingVoicesOptions = [
