@@ -1,7 +1,6 @@
 
 import { useEffect, useRef } from 'react';
-import { useTextToSpeech } from './useTextToSpeech';
-import { useVoiceCache } from './useVoiceCache';
+import { useStaticAudio } from './useStaticAudio';
 
 interface UseBreathingVoiceProps {
   phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
@@ -10,16 +9,8 @@ interface UseBreathingVoiceProps {
 }
 
 export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathingVoiceProps) => {
-  const { speak, stop, isSupported } = useTextToSpeech({
-    voice: 'Aria',
-    volume: 0.8,
-    useElevenLabs: true
-  });
-
-  const { isLoading, isReady, playVoice, stopAllVoices } = useVoiceCache({
-    voice: 'Aria',
-    volume: 0.8,
-    useElevenLabs: true
+  const { isLoading, isReady, playAudio, stopAllAudio } = useStaticAudio({
+    volume: 0.8
   });
   
   const lastPhaseRef = useRef<string>('');
@@ -27,7 +18,7 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
 
   // Create a precise voice trigger function
   const triggerVoicePrompt = (currentPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
-    if (!isActive || !isSupported || !isReady || isPlayingRef.current) {
+    if (!isActive || !isReady || isPlayingRef.current) {
       return;
     }
 
@@ -54,13 +45,11 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
     }
 
     if (voicePrompt) {
-      console.log(`Triggering voice prompt: ${voicePrompt} for phase: ${currentPhase}`);
+      console.log(`Playing audio prompt: ${voicePrompt} for phase: ${currentPhase}`);
       
-      // Try to play cached voice first, fallback to real-time generation
-      const played = playVoice(voicePrompt);
+      const played = playAudio(voicePrompt);
       if (!played) {
-        // Fallback to real-time generation if cache failed
-        speak(voicePrompt);
+        console.warn(`Failed to play audio for: ${voicePrompt}`);
       }
 
       // Reset playing flag after a short delay
@@ -74,21 +63,19 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
   useEffect(() => {
     if (!isActive && lastPhaseRef.current !== '') {
       console.log('Cleaning up voice guidance - exercise stopped');
-      stopAllVoices();
-      stop();
+      stopAllAudio();
       lastPhaseRef.current = '';
       isPlayingRef.current = false;
     }
-  }, [isActive, stop, stopAllVoices]);
+  }, [isActive, stopAllAudio]);
 
   return {
-    isVoiceSupported: isSupported,
+    isVoiceSupported: true, // Always supported with static files
     isVoiceReady: isReady,
     isVoiceLoading: isLoading,
     stopVoice: () => {
       console.log('Stopping all voice guidance');
-      stopAllVoices();
-      stop();
+      stopAllAudio();
       lastPhaseRef.current = '';
       isPlayingRef.current = false;
     },
