@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -105,40 +105,24 @@ const NotificationSettings = () => {
 
   if (isLoading) {
     return (
-      <Card className="max-w-md w-full mt-6">
-        <CardHeader>
-          <CardTitle>Notification Settings</CardTitle>
-          <CardDescription>Loading your notification preferences...</CardDescription>
-        </CardHeader>
-      </Card>
+      <div className="w-full">
+        <p className="text-center text-gray-800">Loading your notification preferences...</p>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Card className="max-w-md w-full mt-6">
-        <CardHeader>
-          <CardTitle>Notification Settings</CardTitle>
-          <CardDescription>Error loading notification settings</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-red-500 text-sm">
-            Failed to load your notification settings. Please try refreshing the page.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="w-full">
+        <p className="text-red-500 text-sm">
+          Failed to load your notification settings. Please try refreshing the page.
+        </p>
+      </div>
     );
   }
 
   return (
-    <Card className="max-w-md w-full mt-6">
-      <CardHeader>
-        <CardTitle>Notification Settings</CardTitle>
-        <CardDescription>
-          Configure how often you'd like to receive breathing reminders
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="space-y-6">
         <div className="flex items-center justify-between">
           <Label htmlFor="notifications-enabled" className="flex flex-col space-y-1">
             <span>Enable Notifications</span>
@@ -176,8 +160,7 @@ const NotificationSettings = () => {
         >
           {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
         </Button>
-      </CardContent>
-    </Card>
+    </div>
   );
 };
 

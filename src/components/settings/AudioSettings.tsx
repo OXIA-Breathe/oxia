@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -73,14 +73,7 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Volume2 className="h-5 w-5" />
-          Audio Settings
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="space-y-6">
         {/* Background Music */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
@@ -206,8 +199,7 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
             </Collapsible>
           )}
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 };
 
