@@ -6,13 +6,22 @@ import { useToast } from "@/hooks/use-toast";
 
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import NotificationCard from "./NotificationCard";
+import AddNotificationCard from "./AddNotificationCard";
+import NotificationModal from "./NotificationModal";
 
 interface NotificationSettingsType {
   enabled: boolean;
   frequency: number;
+}
+
+interface NotificationSchedule {
+  id: string;
+  title: string;
+  time: string;
+  days: number[];
 }
 
 const NotificationSettings = () => {
@@ -23,6 +32,8 @@ const NotificationSettings = () => {
     enabled: false,
     frequency: 3,
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingNotification, setEditingNotification] = useState<NotificationSchedule | undefined>();
 
   // Query to fetch notification settings
   const { data: fetchedSettings, isLoading, error } = useQuery({
@@ -58,6 +69,28 @@ const NotificationSettings = () => {
       });
     }
   }, [fetchedSettings]);
+
+  // Query to fetch notification schedules
+  const { data: schedules, isLoading: schedulesLoading } = useQuery({
+    queryKey: ["notificationSchedules", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      
+      const { data, error } = await supabase
+        .from("notification_schedules")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("time");
+
+      if (error) {
+        console.error("Error fetching notification schedules:", error);
+        throw error;
+      }
+      
+      return data || [];
+    },
+    enabled: !!user && settings.enabled
+  });
 
   // Mutation to save settings
   const saveSettingsMutation = useMutation({
@@ -99,8 +132,99 @@ const NotificationSettings = () => {
     }
   });
 
+  // Mutation to save/update notification schedule
+  const saveScheduleMutation = useMutation({
+    mutationFn: async (schedule: Omit<NotificationSchedule, 'id'> & { id?: string }) => {
+      if (!user) throw new Error("User not authenticated");
+      
+      if (schedule.id) {
+        // Update existing
+        const { error } = await supabase
+          .from("notification_schedules")
+          .update({
+            title: schedule.title,
+            time: schedule.time,
+            days: schedule.days,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", schedule.id);
+        if (error) throw error;
+      } else {
+        // Create new
+        const { error } = await supabase
+          .from("notification_schedules")
+          .insert({
+            user_id: user.id,
+            title: schedule.title,
+            time: schedule.time,
+            days: schedule.days,
+          });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notificationSchedules", user?.id] });
+      toast({
+        title: "Notification saved",
+        description: "Your notification schedule has been updated",
+      });
+    },
+    onError: (error) => {
+      console.error("Error saving notification schedule:", error);
+      toast({
+        title: "Error",
+        description: "Could not save your notification schedule",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Mutation to delete notification schedule
+  const deleteScheduleMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("notification_schedules")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notificationSchedules", user?.id] });
+      toast({
+        title: "Notification deleted",
+        description: "Your notification schedule has been removed",
+      });
+    },
+    onError: (error) => {
+      console.error("Error deleting notification schedule:", error);
+      toast({
+        title: "Error",
+        description: "Could not delete your notification schedule",
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleSaveSettings = () => {
     saveSettingsMutation.mutate(settings);
+  };
+
+  const handleEditNotification = (notification: NotificationSchedule) => {
+    setEditingNotification(notification);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteNotification = (id: string) => {
+    deleteScheduleMutation.mutate(id);
+  };
+
+  const handleSaveNotification = (notification: Omit<NotificationSchedule, 'id'> & { id?: string }) => {
+    saveScheduleMutation.mutate(notification);
+  };
+
+  const handleAddNotification = () => {
+    setEditingNotification(undefined);
+    setIsModalOpen(true);
   };
 
   if (isLoading) {
@@ -138,18 +262,27 @@ const NotificationSettings = () => {
         </div>
 
         {settings.enabled && (
-          <div className="space-y-2">
-            <Label>
-              Frequency: {settings.frequency} {settings.frequency === 1 ? "reminder" : "reminders"} per day
-            </Label>
-            <Slider
-              min={1}
-              max={10}
-              step={1}
-              value={[settings.frequency]}
-              onValueChange={(value) => setSettings({ ...settings, frequency: value[0] })}
-              className="py-4"
-            />
+          <div className="space-y-4">
+            {schedulesLoading ? (
+              <p className="text-center text-gray-600">Loading your notification schedules...</p>
+            ) : (
+              <>
+                {schedules && schedules.length > 0 && (
+                  <div className="space-y-3">
+                    {schedules.map((schedule) => (
+                      <NotificationCard
+                        key={schedule.id}
+                        notification={schedule}
+                        onEdit={handleEditNotification}
+                        onDelete={handleDeleteNotification}
+                      />
+                    ))}
+                  </div>
+                )}
+                
+                <AddNotificationCard onClick={handleAddNotification} />
+              </>
+            )}
           </div>
         )}
 
@@ -160,6 +293,13 @@ const NotificationSettings = () => {
         >
           {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
         </Button>
+
+        <NotificationModal
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          notification={editingNotification}
+          onSave={handleSaveNotification}
+        />
     </div>
   );
 };
