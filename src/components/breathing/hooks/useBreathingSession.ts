@@ -27,7 +27,7 @@ export const useBreathingSession = () => {
     isCustom: false,
   };
 
-  const [phase, setPhase] = useState<"inhale" | "exhale" | "hold1" | "hold2" | "idle">("idle");
+  const [phase, setPhase] = useState<"inhale" | "exhale" | "hold1" | "hold2" | "idle" | "countdown">("idle");
   const [isActive, setIsActive] = useState(false);
   const [currentRepetition, setCurrentRepetition] = useState(0);
   const [breathCount, setBreathCount] = useState(0);
@@ -75,14 +75,11 @@ export const useBreathingSession = () => {
 
   const toggleExercise = () => {
     if (!isActive) {
-      if (sessionStartTime === null) {
-        setSessionStartTime(Date.now());
-      }
-      
       setIsActive(true);
       
       if (phase === "idle") {
-        setPhase("inhale");
+        // Start with countdown, don't set session start time yet
+        setPhase("countdown");
         setPhaseTimeRemaining(null);
       }
     } else {
@@ -90,8 +87,14 @@ export const useBreathingSession = () => {
     }
   };
 
-  const handlePhaseComplete = useCallback((nextPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
-    if (nextPhase === "inhale") {
+  const handlePhaseComplete = useCallback((nextPhase: "inhale" | "exhale" | "hold1" | "hold2" | "countdown") => {
+    if (nextPhase === "countdown") {
+      // Countdown complete, start the actual exercise
+      if (sessionStartTime === null) {
+        setSessionStartTime(Date.now());
+      }
+      setPhase("inhale");
+    } else if (nextPhase === "inhale") {
       setBreathCount((prevBreathCount) => {
         const newBreathCount = prevBreathCount + 1;
         
@@ -111,7 +114,7 @@ export const useBreathingSession = () => {
     } else {
       setPhase(nextPhase);
     }
-  }, [exerciseSettings.repetitions, completeSession]);
+  }, [exerciseSettings.repetitions, completeSession, sessionStartTime]);
 
   return {
     phase,

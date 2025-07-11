@@ -3,14 +3,14 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 
 interface UseBreathingTimerProps {
   isActive: boolean;
-  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
+  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle" | "countdown";
   exerciseSettings: {
     inhaleDuration: number;
     exhaleDuration: number;
     firstHoldDuration: number;
     secondHoldDuration: number;
   };
-  onPhaseComplete: (nextPhase: "inhale" | "exhale" | "hold1" | "hold2") => void;
+  onPhaseComplete: (nextPhase: "inhale" | "exhale" | "hold1" | "hold2" | "countdown") => void;
   phaseTimeRemaining: number | null;
   setPhaseTimeRemaining: (time: number | null) => void;
 }
@@ -52,6 +52,9 @@ export const useBreathingTimer = ({
     let phaseDuration = 0;
     
     switch (phase) {
+      case "countdown":
+        phaseDuration = 3; // 3 seconds countdown
+        break;
       case "inhale":
         phaseDuration = memoizedSettings.inhaleDuration;
         break;
@@ -107,10 +110,12 @@ export const useBreathingTimer = ({
               timerRef.current = null;
             }
             
-            let nextPhase: "inhale" | "exhale" | "hold1" | "hold2";
+            let nextPhase: "inhale" | "exhale" | "hold1" | "hold2" | "countdown";
             
             // Determine next phase
-            if (phase === "inhale") {
+            if (phase === "countdown") {
+              nextPhase = "countdown"; // Signal to start the actual exercise
+            } else if (phase === "inhale") {
               nextPhase = memoizedSettings.firstHoldDuration > 0 ? "hold1" : "exhale";
             } else if (phase === "hold1") {
               nextPhase = "exhale";

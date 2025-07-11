@@ -8,3 +8,5 @@ export interface BreathSession {
   breathCount: number;
   exerciseTitle?: string;
 }
+
+export type BreathingPhase = "inhale" | "exhale" | "hold1" | "hold2" | "idle" | "countdown";

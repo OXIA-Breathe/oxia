@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 
 interface BreathingCircleProps {
-  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle";
+  phase: "inhale" | "exhale" | "hold1" | "hold2" | "idle" | "countdown";
   duration: number;
   timeRemaining: number;
   size?: "sm" | "md" | "lg";
@@ -29,6 +29,8 @@ const BreathingCircle = ({
 
   const getPhaseDisplayName = () => {
     switch (phase) {
+      case "countdown":
+        return "Breathe in";
       case "hold1":
       case "hold2":
         return "Hold";
@@ -47,8 +49,15 @@ const BreathingCircle = ({
 
     console.log(`Circle animation - Phase: ${phase}, Duration: ${duration}, TimeRemaining: ${timeRemaining}, isPaused: ${isPaused}`);
     
-    if (phase === "idle" || isPaused) {
-      const scale = phase === "idle" ? 0.5 : (phase === "inhale" || phase === "hold1" ? 1 : 0.5);
+    if (phase === "idle" || phase === "countdown" || isPaused) {
+      let scale = 0.5;
+      if (phase === "idle" || phase === "countdown") {
+        scale = 0.5; // Keep at small size during countdown
+      } else if (phase === "inhale" || phase === "hold1") {
+        scale = 1;
+      } else {
+        scale = 0.5;
+      }
       innerCircleRef.current.style.transform = `scale(${scale})`;
       innerCircleRef.current.style.transition = "transform 0.3s ease";
       return;

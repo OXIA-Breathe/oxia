@@ -26,7 +26,7 @@ const BreathingExercise = () => {
 
   // Add voice guidance with static audio files
   const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice, triggerVoicePrompt } = useBreathingVoice({
-    phase,
+    phase: phase as "inhale" | "exhale" | "hold1" | "hold2",
     isActive,
     exerciseTitle: exerciseSettings.title
   });
@@ -52,7 +52,7 @@ const BreathingExercise = () => {
     setPhaseTimeRemaining,
   });
 
-  useElapsedTimer({ isActive, setTimeElapsed });
+  useElapsedTimer({ isActive, phase, setTimeElapsed });
 
   const handleCircleClick = () => {
     toggleExercise();
