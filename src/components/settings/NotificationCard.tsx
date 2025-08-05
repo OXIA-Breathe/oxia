@@ -59,7 +59,9 @@ const NotificationCard = ({ notification, onEdit, onDelete }: NotificationCardPr
           
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-gray-800 truncate">
-              {notification.title}
+              {notification.title.length > 8 
+                ? `${notification.title.slice(0, 5)}...` 
+                : notification.title}
             </h3>
             <p className="text-sm text-gray-600 mt-1">
               {getDaysText()}
