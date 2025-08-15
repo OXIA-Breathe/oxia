@@ -2,8 +2,8 @@
 import { Trash2, Info, Wind } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { BreathingExercise } from "@/types/breathingExercise";
+import { useNavigate } from "react-router-dom";
 
 interface ExerciseCardProps {
   exercise: BreathingExercise;
@@ -12,6 +12,7 @@ interface ExerciseCardProps {
 }
 
 const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
+  const navigate = useNavigate();
   const getBreathingPattern = () => {
     if (exercise.secondHoldDuration > 0) {
       return `${exercise.inhaleDuration}-${exercise.firstHoldDuration}-${exercise.exhaleDuration}-${exercise.secondHoldDuration}`;
@@ -27,6 +28,11 @@ const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onDelete(exercise.id);
+  };
+
+  const handleInfoClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/breathe/${exercise.id}`);
   };
 
   return (
@@ -53,17 +59,14 @@ const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
         </div>
         
         <div className="flex items-center space-x-2 flex-shrink-0">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <Info className="h-4 w-4 text-gray-500" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Breathing pattern: {getBreathingPattern()}</p>
-              <p>Repetitions: {exercise.repetitions}</p>
-            </TooltipContent>
-          </Tooltip>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 w-8 p-0"
+            onClick={handleInfoClick}
+          >
+            <Info className="h-4 w-4 text-gray-500" />
+          </Button>
           
           {exercise.isCustom && (
             <Button 

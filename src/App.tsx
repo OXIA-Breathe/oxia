@@ -14,6 +14,7 @@ import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import ConsistencyPage from "./pages/ConsistencyPage";
 import BreathePage from "./pages/BreathePage";
+import ExerciseDetailsPage from "./pages/ExerciseDetailsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/learn" element={<LearnPage />} />
                 <Route path="/breathe" element={<BreathePage />} />
+                <Route path="/breathe/:id" element={<ExerciseDetailsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
