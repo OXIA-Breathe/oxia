@@ -124,7 +124,7 @@ const ExerciseDetailsPage = () => {
             </div>
             
             <p className="text-sm text-gray-600 leading-relaxed mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+              {exercise.parametersNote || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."}
             </p>
             
             <div className="space-y-4">

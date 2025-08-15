@@ -15,6 +15,7 @@ export interface BreathingExercise {
   commonMistakes?: string[];
   safetyNote?: string;
   stepByStepInstructions?: string[];
+  parametersNote?: string;
 }
 
 export const defaultBreathingExercises: BreathingExercise[] = [
@@ -40,6 +41,15 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Lifting shoulders (chest breathing)",
       "Rushing counts; uneven box"
     ],
+    parametersNote: "A typical box breathing session can range from one to five minutes for beginners, with experienced practitioners potentially extending sessions to 10-20 minutes or longer. Consistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.",
+    stepByStepInstructions: [
+      "Sit or stand tall; relax jaw/shoulders.",
+      "Inhale through the nose for 4.",
+      "Hold gently for 4 (no strain).",
+      "Exhale softly for 4 (nose or lips).",
+      "Hold again for 4.",
+      "Repeat, keeping the box smooth and unhurried."
+    ],
     safetyNote: "Shorten holds or stop if you feel dizzy or uncomfortable. Follow clinician guidance if you have cardiopulmonary conditions."
   },
   {
@@ -56,6 +66,15 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     whenToUse: ["Before sleep", "During anxiety", "To calm the mind"],
     howItHelps: "The extended exhale activates the parasympathetic nervous system, promoting relaxation and reducing stress.",
     commonMistakes: ["Holding breath too forcefully", "Not fully exhaling", "Rushing the sequence"],
+    parametersNote: "Often practiced as 4 cycles at bedtime; increase gradually as comfort grows. Keep breath gentle and unforced.",
+    stepByStepInstructions: [
+      "Sit comfortably with your back straight.",
+      "Inhale quietly through your nose for 4.",
+      "Hold your breath for 7.",
+      "Exhale completely through your mouth for 8.",
+      "This completes one cycle.",
+      "Repeat for 4 cycles total."
+    ],
     safetyNote: "Stop if you feel lightheaded. Practice on an empty stomach for best results."
   },
 ];
