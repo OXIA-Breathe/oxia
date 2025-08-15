@@ -10,7 +10,7 @@ import { formatTimeDisplay } from "@/components/history/utils/formatTime";
 const ExerciseDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { exercises, setCurrentExercise } = useBreathingExercise();
+  const { exercises, setCurrentExercise, updateExercise } = useBreathingExercise();
   const [repetitions, setRepetitions] = useState(20);
 
   const exercise = exercises.find(ex => ex.id === id);
@@ -34,6 +34,10 @@ const ExerciseDetailsPage = () => {
     const updatedExercise = { ...exercise, repetitions };
     setCurrentExercise(updatedExercise);
     navigate("/");
+  };
+
+  const handleSaveRepetitions = () => {
+    updateExercise(exercise.id, { repetitions });
   };
 
   const calculateTotalTime = () => {
@@ -181,7 +185,7 @@ const ExerciseDetailsPage = () => {
           )}
 
           {/* Start Practice Button */}
-          <div className="text-center pt-4">
+          <div className="text-center pt-4 space-y-3">
             <Button
               onClick={handleStartPractice}
               className="bg-breath hover:bg-breath/90 text-white px-8 py-3 text-lg font-semibold"
@@ -189,6 +193,16 @@ const ExerciseDetailsPage = () => {
             >
               Start this practice
             </Button>
+            <div>
+              <Button
+                onClick={handleSaveRepetitions}
+                variant="outline"
+                size="lg"
+                className="px-8 py-3 text-lg font-semibold"
+              >
+                Save
+              </Button>
+            </div>
           </div>
         </div>
       </div>

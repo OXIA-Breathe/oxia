@@ -7,6 +7,7 @@ interface BreathingExerciseContextType {
   currentExercise: BreathingExercise | null;
   addExercise: (exercise: BreathingExercise) => void;
   deleteExercise: (id: string) => void;
+  updateExercise: (id: string, updates: Partial<BreathingExercise>) => void;
   setCurrentExercise: (exercise: BreathingExercise) => void;
 }
 
@@ -97,12 +98,26 @@ export const BreathingExerciseProvider = ({ children }: { children: ReactNode })
     });
   };
 
+  const updateExercise = (id: string, updates: Partial<BreathingExercise>) => {
+    setExercises((prev) => 
+      prev.map((exercise) => 
+        exercise.id === id ? { ...exercise, ...updates } : exercise
+      )
+    );
+    
+    // If updating current exercise, update it too
+    if (currentExercise?.id === id) {
+      setCurrentExercise({ ...currentExercise, ...updates });
+    }
+  };
+
   return (
     <BreathingExerciseContext.Provider value={{
       exercises,
       currentExercise,
       addExercise,
       deleteExercise,
+      updateExercise,
       setCurrentExercise,
     }}>
       {children}
