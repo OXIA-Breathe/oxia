@@ -77,4 +77,36 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     ],
     safetyNote: "Stop if you feel lightheaded. Practice on an empty stomach for best results."
   },
+  {
+    id: "pursed-lip",
+    title: "Pursed Lip Breathing",
+    description: "Relaxation and focus",
+    inhaleDuration: 3,
+    firstHoldDuration: 1,
+    exhaleDuration: 6,
+    secondHoldDuration: 0,
+    repetitions: 6,
+    isCustom: false,
+    detailedDescription: "Slow nasal inhale, then a long, easy exhale through gently pursed lips. Calms the breath, reduces tension, and eases shortness of breath.",
+    whenToUse: [
+      "Feeling tense, anxious, or short of breath",
+      "During or after exertion (e.g., stairs, brisk walk)", 
+      "Cool-down after other practices; moments of overwhelm"
+    ],
+    howItHelps: "Lengthens the exhale, that helps the nervous system settle (parasympathetic shift). Creates a gentle back-pressure in the airways and with that it can reduce air trapping and breathlessness. Lowers breathing rate, can improve perceived ease of breathing and focus.",
+    commonMistakes: [
+      "Blowing too hard (creates tension)",
+      "Inhaling through the mouth",
+      "Exhale too short; cheeks puffing; shoulders lifted"
+    ],
+    parametersNote: "Pursed lip breathing should be practiced 3-4 times a day for about 10 minutes each time, ideally when you are not short of breath. It's a technique to help relieve shortness of breath and can be incorporated into your routine when you feel comfortable. When experiencing shortness of breath, you can use pursed lip breathing as needed to help regulate your breath and find relief.",
+    stepByStepInstructions: [
+      "Sit or stand tall; relax jaw/shoulders.",
+      "Inhale quietly through the nose for 2–3 seconds.",
+      "Purse lips softly (as if to whistle).",
+      "Exhale slowly and steadily for 4–6 seconds; don't force.",
+      "Keep belly soft; avoid puffing cheeks. Repeat."
+    ],
+    safetyNote: "Stop if dizzy, light-headed, chest pain, or worsening breathlessness. If you have a lung/heart condition, follow your clinician's guidance."
+  },
 ];
