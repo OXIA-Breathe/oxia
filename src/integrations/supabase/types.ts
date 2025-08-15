@@ -50,6 +50,66 @@ export type Database = {
         }
         Relationships: []
       }
+      breathing_exercises: {
+        Row: {
+          common_mistakes: string[] | null
+          created_at: string
+          description: string | null
+          detailed_description: string | null
+          exhale_duration: number
+          first_hold_duration: number
+          how_it_helps: string | null
+          id: string
+          inhale_duration: number
+          is_custom: boolean
+          repetitions: number
+          safety_note: string | null
+          second_hold_duration: number
+          slug: string
+          title: string
+          updated_at: string
+          when_to_use: string[] | null
+        }
+        Insert: {
+          common_mistakes?: string[] | null
+          created_at?: string
+          description?: string | null
+          detailed_description?: string | null
+          exhale_duration: number
+          first_hold_duration: number
+          how_it_helps?: string | null
+          id?: string
+          inhale_duration: number
+          is_custom?: boolean
+          repetitions: number
+          safety_note?: string | null
+          second_hold_duration: number
+          slug: string
+          title: string
+          updated_at?: string
+          when_to_use?: string[] | null
+        }
+        Update: {
+          common_mistakes?: string[] | null
+          created_at?: string
+          description?: string | null
+          detailed_description?: string | null
+          exhale_duration?: number
+          first_hold_duration?: number
+          how_it_helps?: string | null
+          id?: string
+          inhale_duration?: number
+          is_custom?: boolean
+          repetitions?: number
+          safety_note?: string | null
+          second_hold_duration?: number
+          slug?: string
+          title?: string
+          updated_at?: string
+          when_to_use?: string[] | null
+        }
+        Relationships: []
+      }
       daily_activity: {
         Row: {
           completed_breath_session: boolean
