@@ -66,6 +66,7 @@ export type Database = {
           safety_note: string | null
           second_hold_duration: number
           slug: string
+          step_by_step_instructions: string[] | null
           title: string
           updated_at: string
           when_to_use: string[] | null
@@ -85,6 +86,7 @@ export type Database = {
           safety_note?: string | null
           second_hold_duration: number
           slug: string
+          step_by_step_instructions?: string[] | null
           title: string
           updated_at?: string
           when_to_use?: string[] | null
@@ -104,6 +106,7 @@ export type Database = {
           safety_note?: string | null
           second_hold_duration?: number
           slug?: string
+          step_by_step_instructions?: string[] | null
           title?: string
           updated_at?: string
           when_to_use?: string[] | null

@@ -14,6 +14,7 @@ export interface BreathingExercise {
   howItHelps?: string;
   commonMistakes?: string[];
   safetyNote?: string;
+  stepByStepInstructions?: string[];
 }
 
 export const defaultBreathingExercises: BreathingExercise[] = [

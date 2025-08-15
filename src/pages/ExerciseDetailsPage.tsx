@@ -71,9 +71,34 @@ const ExerciseDetailsPage = () => {
           {/* Description Card */}
           <Card className="p-6 bg-white/90 backdrop-blur-sm">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Description</h3>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="text-gray-700 leading-relaxed mb-6">
               {exercise.detailedDescription || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."}
             </p>
+            
+            <h4 className="text-base font-semibold text-gray-800 mb-3">How to do it (step-by-step)</h4>
+            <ol className="space-y-1">
+              {exercise.stepByStepInstructions ? exercise.stepByStepInstructions.map((step, index) => (
+                <li key={index} className="flex items-start">
+                  <span className="text-breath mr-3 font-medium">{index + 1}.</span>
+                  <span className="text-gray-700">{step}</span>
+                </li>
+              )) : (
+                <>
+                  <li className="flex items-start">
+                    <span className="text-breath mr-3 font-medium">1.</span>
+                    <span className="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-breath mr-3 font-medium">2.</span>
+                    <span className="text-gray-700">Sed do eiusmod tempor incididunt ut labore.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-breath mr-3 font-medium">3.</span>
+                    <span className="text-gray-700">Ut enim ad minim veniam, quis nostrud.</span>
+                  </li>
+                </>
+              )}
+            </ol>
           </Card>
 
           {/* Breathing Parameters Card */}
