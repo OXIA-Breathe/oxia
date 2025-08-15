@@ -137,6 +137,64 @@ const ExerciseDetailsPage = () => {
             </div>
           </Card>
 
+          {/* Exercise Information Card */}
+          <Card className="p-6 bg-white/90 backdrop-blur-sm">
+            <div className="space-y-6">
+              {/* When to use */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">When to use:</h3>
+                <ul className="space-y-1">
+                  <li className="flex items-start">
+                    <span className="text-breath mr-2">•</span>
+                    <span className="text-gray-700">Pre-meeting, public speaking, exam prep</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-breath mr-2">•</span>
+                    <span className="text-gray-700">Stress spikes, jitters, overthinking</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-breath mr-2">•</span>
+                    <span className="text-gray-700">Quick reset to clarity</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* How it helps */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">How it helps</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Even, box-shaped cadence reduces breathing rate and promotes a parasympathetic shift. Brief holds improve CO₂ tolerance and create a sense of control under pressure.
+                </p>
+              </div>
+
+              {/* Common mistakes */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">Common mistakes</h3>
+                <ul className="space-y-1">
+                  <li className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    <span className="text-gray-700">Forcing the holds / throat tension</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    <span className="text-gray-700">Lifting shoulders (chest breathing)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-red-500 mr-2">•</span>
+                    <span className="text-gray-700">Rushing counts; uneven box</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Safety note */}
+              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800">
+                  <strong>Safety note:</strong> Shorten holds or stop if you feel dizzy or uncomfortable. Follow clinician guidance if you have cardiopulmonary conditions.
+                </p>
+              </div>
+            </div>
+          </Card>
+
           {/* When to use */}
           {exercise.whenToUse && (
             <Card className="p-6 bg-white/90 backdrop-blur-sm">
