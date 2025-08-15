@@ -42,19 +42,8 @@ const ExerciseDetailsPage = () => {
 
   return (
     <MainLayout>
-      <div className="container py-8 max-w-4xl">
-        {/* Header with back button */}
-        <div className="flex items-center mb-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate("/breathe")}
-            className="text-white hover:bg-white/10 mr-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        </div>
+      <div className="container py-8 max-w-4xl pt-16">
+        {/* Header removed - using MainLayout back button */}
 
         {/* Exercise Details */}
         <div className="space-y-6">
