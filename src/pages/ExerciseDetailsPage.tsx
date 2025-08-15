@@ -11,9 +11,9 @@ const ExerciseDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { exercises, setCurrentExercise, updateExercise } = useBreathingExercise();
-  const [repetitions, setRepetitions] = useState(20);
-
+  
   const exercise = exercises.find(ex => ex.id === id);
+  const [repetitions, setRepetitions] = useState(exercise?.repetitions || 20);
 
   if (!exercise) {
     return (
@@ -72,7 +72,7 @@ const ExerciseDetailsPage = () => {
           <Card className="p-6 bg-white/90 backdrop-blur-sm">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Description</h3>
             <p className="text-gray-700 leading-relaxed">
-              Inhale, hold, exhale, hold — each for the same count. A steady, structured rhythm that calms the nervous system and restores focus.
+              {exercise.detailedDescription || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."}
             </p>
           </Card>
 
@@ -99,7 +99,7 @@ const ExerciseDetailsPage = () => {
             </div>
             
             <p className="text-sm text-gray-600 leading-relaxed mb-6">
-              A typical box breathing session can range from one to five minutes for beginners, with experienced practitioners potentially extending sessions to 10-20 minutes or longer. Consistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
             </p>
             
             <div className="space-y-4">
@@ -144,18 +144,27 @@ const ExerciseDetailsPage = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">When to use:</h3>
                 <ul className="space-y-1">
-                  <li className="flex items-start">
-                    <span className="text-breath mr-2">•</span>
-                    <span className="text-gray-700">Pre-meeting, public speaking, exam prep</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-breath mr-2">•</span>
-                    <span className="text-gray-700">Stress spikes, jitters, overthinking</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-breath mr-2">•</span>
-                    <span className="text-gray-700">Quick reset to clarity</span>
-                  </li>
+                  {exercise.whenToUse ? exercise.whenToUse.map((use, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-breath mr-2">•</span>
+                      <span className="text-gray-700">{use}</span>
+                    </li>
+                  )) : (
+                    <>
+                      <li className="flex items-start">
+                        <span className="text-breath mr-2">•</span>
+                        <span className="text-gray-700">Lorem ipsum dolor sit amet</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-breath mr-2">•</span>
+                        <span className="text-gray-700">Consectetur adipiscing elit</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-breath mr-2">•</span>
+                        <span className="text-gray-700">Sed do eiusmod tempor</span>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
 
@@ -163,7 +172,7 @@ const ExerciseDetailsPage = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">How it helps</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  Even, box-shaped cadence reduces breathing rate and promotes a parasympathetic shift. Brief holds improve CO₂ tolerance and create a sense of control under pressure.
+                  {exercise.howItHelps || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."}
                 </p>
               </div>
 
@@ -171,76 +180,39 @@ const ExerciseDetailsPage = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">Common mistakes</h3>
                 <ul className="space-y-1">
-                  <li className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    <span className="text-gray-700">Forcing the holds / throat tension</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    <span className="text-gray-700">Lifting shoulders (chest breathing)</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    <span className="text-gray-700">Rushing counts; uneven box</span>
-                  </li>
+                  {exercise.commonMistakes ? exercise.commonMistakes.map((mistake, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-red-500 mr-2">•</span>
+                      <span className="text-gray-700">{mistake}</span>
+                    </li>
+                  )) : (
+                    <>
+                      <li className="flex items-start">
+                        <span className="text-red-500 mr-2">•</span>
+                        <span className="text-gray-700">Lorem ipsum dolor sit amet</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-red-500 mr-2">•</span>
+                        <span className="text-gray-700">Consectetur adipiscing elit</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-red-500 mr-2">•</span>
+                        <span className="text-gray-700">Sed do eiusmod tempor</span>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
 
               {/* Safety note */}
               <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-sm text-yellow-800">
-                  <strong>Safety note:</strong> Shorten holds or stop if you feel dizzy or uncomfortable. Follow clinician guidance if you have cardiopulmonary conditions.
+                  <strong>Safety note:</strong> {exercise.safetyNote || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."}
                 </p>
               </div>
             </div>
           </Card>
 
-          {/* When to use */}
-          {exercise.whenToUse && (
-            <Card className="p-6 bg-white/90 backdrop-blur-sm">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">When to use</h3>
-              <ul className="space-y-2">
-                {exercise.whenToUse.map((use, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-breath mr-2">•</span>
-                    <span className="text-gray-700">{use}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          )}
-
-          {/* How it helps */}
-          {exercise.howItHelps && (
-            <Card className="p-6 bg-white/90 backdrop-blur-sm">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">How it helps</h3>
-              <p className="text-gray-700 leading-relaxed">{exercise.howItHelps}</p>
-            </Card>
-          )}
-
-          {/* Common mistakes */}
-          {exercise.commonMistakes && (
-            <Card className="p-6 bg-white/90 backdrop-blur-sm">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Common mistakes</h3>
-              <ul className="space-y-2">
-                {exercise.commonMistakes.map((mistake, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-red-500 mr-2">•</span>
-                    <span className="text-gray-700">{mistake}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          )}
-
-          {/* Safety note */}
-          {exercise.safetyNote && (
-            <Card className="p-4 bg-yellow-50 border-yellow-200">
-              <p className="text-sm text-yellow-800">
-                <strong>Safety note:</strong> {exercise.safetyNote}
-              </p>
-            </Card>
-          )}
 
           {/* Start Practice Button */}
           <div className="text-center pt-4 space-y-3">
