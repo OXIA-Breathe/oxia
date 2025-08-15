@@ -16,22 +16,29 @@ const BreathingExerciseContext = createContext<BreathingExerciseContextType | un
 export const BreathingExerciseProvider = ({ children }: { children: ReactNode }) => {
   const [exercises, setExercises] = useState<BreathingExercise[]>(() => {
     try {
+      const currentVersion = "1.1"; // Increment when defaults change
+      const savedVersion = localStorage.getItem("breathingExercisesVersion");
       const savedExercises = localStorage.getItem("breathingExercises");
       
-      if (savedExercises) {
-        const parsedExercises = JSON.parse(savedExercises);
-        
-        // Ensure we always have the default exercises, even if localStorage is corrupted
-        const exerciseIds = parsedExercises.map((ex: BreathingExercise) => ex.id);
-        const missingDefaults = defaultBreathingExercises.filter(
-          defaultEx => !exerciseIds.includes(defaultEx.id)
-        );
-        
-        const finalExercises = [...parsedExercises, ...missingDefaults];
-        return finalExercises;
-      } else {
+      // If version mismatch or no saved data, use fresh defaults
+      if (savedVersion !== currentVersion || !savedExercises) {
+        localStorage.setItem("breathingExercisesVersion", currentVersion);
         return defaultBreathingExercises;
       }
+      
+      const parsedExercises = JSON.parse(savedExercises);
+      
+      // Merge saved custom exercises with updated defaults
+      const customExercises = parsedExercises.filter((ex: BreathingExercise) => ex.isCustom);
+      const updatedDefaults = defaultBreathingExercises.map(defaultEx => {
+        const savedEx = parsedExercises.find((ex: BreathingExercise) => ex.id === defaultEx.id);
+        // Keep custom repetitions if user modified them, but use all other updated data
+        return savedEx && !savedEx.isCustom 
+          ? { ...defaultEx, repetitions: savedEx.repetitions }
+          : defaultEx;
+      });
+      
+      return [...updatedDefaults, ...customExercises];
     } catch (error) {
       console.error("Error loading breathing exercises from localStorage:", error);
       return defaultBreathingExercises;
