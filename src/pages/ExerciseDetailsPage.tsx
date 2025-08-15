@@ -64,7 +64,7 @@ const ExerciseDetailsPage = () => {
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold text-white">{exercise.title}</h1>
             <p className="text-lg text-white/80 max-w-2xl mx-auto">
-              {exercise.detailedDescription || exercise.description}
+              {exercise.description}
             </p>
           </div>
 
