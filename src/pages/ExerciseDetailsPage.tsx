@@ -1,14 +1,17 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import MainLayout from "@/components/layout/MainLayout";
 import { useBreathingExercise } from "@/context/BreathingExerciseContext";
+import { formatTimeDisplay } from "@/components/history/utils/formatTime";
 
 const ExerciseDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { exercises, setCurrentExercise } = useBreathingExercise();
+  const [repetitions, setRepetitions] = useState(20);
 
   const exercise = exercises.find(ex => ex.id === id);
 
@@ -28,8 +31,14 @@ const ExerciseDetailsPage = () => {
   }
 
   const handleStartPractice = () => {
-    setCurrentExercise(exercise);
+    const updatedExercise = { ...exercise, repetitions };
+    setCurrentExercise(updatedExercise);
     navigate("/");
+  };
+
+  const calculateTotalTime = () => {
+    const cycleTime = exercise.inhaleDuration + exercise.firstHoldDuration + exercise.exhaleDuration + exercise.secondHoldDuration;
+    return cycleTime * repetitions;
   };
 
   const getBreathingPattern = () => {
@@ -66,7 +75,7 @@ const ExerciseDetailsPage = () => {
           {/* Breathing Parameters Card */}
           <Card className="p-6 bg-white/90 backdrop-blur-sm">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Breathing Parameters</h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="text-center">
                 <p className="text-sm text-gray-600 mb-1">Inhale</p>
                 <p className="text-xl font-bold text-gray-800">{exercise.inhaleDuration}s</p>
@@ -83,9 +92,43 @@ const ExerciseDetailsPage = () => {
                 <p className="text-sm text-gray-600 mb-1">Hold 2</p>
                 <p className="text-xl font-bold text-gray-800">{exercise.secondHoldDuration}s</p>
               </div>
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-1">Repetitions</p>
-                <p className="text-xl font-bold text-gray-800">{exercise.repetitions}</p>
+            </div>
+            
+            <p className="text-sm text-gray-600 leading-relaxed mb-6">
+              A typical box breathing session can range from one to five minutes for beginners, with experienced practitioners potentially extending sessions to 10-20 minutes or longer. Consistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.
+            </p>
+            
+            <div className="space-y-4">
+              <h4 className="text-base font-semibold text-gray-800">How long would you like to breathe?</h4>
+              
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setRepetitions(Math.max(1, repetitions - 1))}
+                    className="h-8 w-8"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <div className="text-center min-w-[80px]">
+                    <p className="text-sm text-gray-600">Repetitions</p>
+                    <p className="text-xl font-bold text-gray-800">{repetitions}</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setRepetitions(repetitions + 1)}
+                    className="h-8 w-8"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <div className="ml-6">
+                  <p className="text-sm text-gray-600">Approximate total time</p>
+                  <p className="text-lg font-semibold text-gray-800">{formatTimeDisplay(calculateTotalTime())}</p>
+                </div>
               </div>
             </div>
           </Card>
