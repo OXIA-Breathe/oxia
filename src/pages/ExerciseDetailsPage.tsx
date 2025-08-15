@@ -188,7 +188,7 @@ const ExerciseDetailsPage = () => {
           <div className="text-center pt-4 space-y-3">
             <Button
               onClick={handleStartPractice}
-              className="bg-breath hover:bg-breath/90 text-white px-8 py-3 text-lg font-semibold"
+              className="bg-breath hover:bg-breath/90 text-white px-8 py-3 text-lg font-semibold w-64"
               size="lg"
             >
               Start this practice
@@ -198,7 +198,7 @@ const ExerciseDetailsPage = () => {
                 onClick={handleSaveRepetitions}
                 variant="outline"
                 size="lg"
-                className="px-8 py-3 text-lg font-semibold text-foreground"
+                className="px-8 py-3 text-lg font-semibold text-foreground w-64"
               >
                 Save
               </Button>
