@@ -55,6 +55,14 @@ const ExerciseDetailsPage = () => {
             </p>
           </div>
 
+          {/* Description Card */}
+          <Card className="p-6 bg-white/90 backdrop-blur-sm">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Description</h3>
+            <p className="text-gray-700 leading-relaxed">
+              Inhale, hold, exhale, hold — each for the same count. A steady, structured rhythm that calms the nervous system and restores focus.
+            </p>
+          </Card>
+
           {/* Breathing Parameters Card */}
           <Card className="p-6 bg-white/90 backdrop-blur-sm">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Breathing Parameters</h3>
