@@ -198,7 +198,7 @@ const ExerciseDetailsPage = () => {
                 onClick={handleSaveRepetitions}
                 variant="outline"
                 size="lg"
-                className="px-8 py-3 text-lg font-semibold"
+                className="px-8 py-3 text-lg font-semibold text-foreground"
               >
                 Save
               </Button>
