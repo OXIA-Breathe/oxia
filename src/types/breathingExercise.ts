@@ -176,4 +176,38 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     ],
     safetyNote: "Generally safe. If you feel dizzy or uncomfortable, return to natural breathing or pause. Follow clinician guidance if you have medical concerns."
   },
+  {
+    id: "lions-breath",
+    title: "Lion's Breath",
+    description: "Energizes the body",
+    inhaleDuration: 3,
+    firstHoldDuration: 0,
+    exhaleDuration: 2,
+    secondHoldDuration: 0,
+    repetitions: 5,
+    isCustom: false,
+    detailedDescription: "A tension-releasing breath with a bold, open-mouth exhale and tongue extended. Releases jaw/face tightness, energizes the body, and resets mental fatigue.",
+    whenToUse: [
+      "Mid-day slump, screen fatigue, creative block",
+      "After periods of clenching teeth, jaw tightness, or over-focus", 
+      "As a short 'reset' before returning to calm practices"
+    ],
+    howItHelps: "Actively relaxes jaw, tongue, and facial muscles → reduces 'clench' and stress load. The forceful 'haaa' longer exhale encourages parasympathetic settling after the burst. Stimulates awareness and energizes when feeling dull or mentally stuck. Can support vocal ease and expression by reducing throat/jaw tension.",
+    commonMistakes: [
+      "Forcing or squeezing in the throat/neck (keep the channel open)",
+      "Jaw locking or clenching during the exhale (allow it to release)",
+      "Overdoing the number of rounds → dizziness or dryness in the throat"
+    ],
+    parametersNote: "Lion's breath, a type of pranayama (yogic breathing), is generally recommended for a few minutes at a time, with 5-10 repetitions per session. Practitioners often follow this with a few minutes of normal, deep breathing. It's best to start with a few rounds and gradually work up to a comfortable duration, avoiding overexertion",
+    stepByStepInstructions: [
+      "Sit tall (kneeling or cross-legged) or stand; relax shoulders/neck.",
+      "Inhale through the nose for 3–4 s; feel ribs expand.",
+      "Exhale forcefully through the mouth with a 'haaa' sound:",
+      "  • Mouth wide, tongue extended toward chin.",
+      "  • Eyes can look up between the brows (optional).",
+      "Let the face return to neutral. Pause 1–2 easy nasal breaths.",
+      "Repeat for 5–8 rounds, then finish with a few calm nasal breaths."
+    ],
+    safetyNote: "Skip or reduce intensity if you have throat irritation, jaw/TMJ pain, recent dental work, or if dizziness appears. If you have cardiopulmonary conditions or are pregnant, avoid forceful breaths and follow clinician guidance."
+  },
 ];
