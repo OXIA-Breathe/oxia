@@ -109,4 +109,37 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     ],
     safetyNote: "Stop if dizzy, light-headed, chest pain, or worsening breathlessness. If you have a lung/heart condition, follow your clinician's guidance."
   },
+  {
+    id: "diaphragmatic-breathing",
+    title: "Diaphragmatic (Belly) Breathing",
+    description: "Reduces sympathetic arousal",
+    inhaleDuration: 4,
+    firstHoldDuration: 1,
+    exhaleDuration: 5,
+    secondHoldDuration: 0,
+    repetitions: 10,
+    isCustom: false,
+    detailedDescription: "Slow, gentle nasal breathing that expands the belly and lower ribs on the inhale and softens on the exhale. Trains your primary breathing muscle (the diaphragm) for calmer, more efficient breath.",
+    whenToUse: [
+      "Any time you feel tense or 'breathing high in the chest'",
+      "Pre-sleep wind-down, post-stress reset, or as a baseline daily practice", 
+      "Helpful for anxiety, digestive tension, or voice prep"
+    ],
+    howItHelps: "Encourages lower, slower breathing → reduces sympathetic arousal, supports calm focus. Improves diaphragm mechanics, reduces shallow chest breathing and shoulder tension. Can enhance oxygen–CO₂ balance and perceived breathing ease over time.",
+    commonMistakes: [
+      "Lifting shoulders / breathing high into the chest",
+      "Forcing the belly out or sucking it in (keep it easy)",
+      "Noisy mouth breathing; rushing the exhale"
+    ],
+    parametersNote: "For optimal benefit, diaphragmatic breathing is recommended for 10-20 minutes daily, practiced in several short sessions or one longer session. Beginners may start with shorter durations, such as 5-10 minutes, several times a day, gradually increasing the time as they become more comfortable.",
+    stepByStepInstructions: [
+      "Sit or lie comfortably; relax jaw/shoulders. Place one hand on the belly, one on the upper chest.",
+      "Inhale through the nose for 4–5 s: feel the belly and lower ribs expand outward into your hand. Upper chest stays relatively quiet.",
+      "Optional gentle hold for 0–1 s (no strain).",
+      "Exhale slowly for 5–6 s; feel belly soften back toward the spine.",
+      "Keep the breath quiet and smooth; repeat 6–10 cycles.",
+      "Mindful Practice: Focus on the sensation of your stomach rising and falling as you breathe, keeping your chest relatively still."
+    ],
+    safetyNote: "If you feel dizzy or uncomfortable, pause and return to normal breathing. If you have medical concerns, follow your clinician's guidance."
+  },
 ];
