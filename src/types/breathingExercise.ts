@@ -142,4 +142,38 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     ],
     safetyNote: "If you feel dizzy or uncomfortable, pause and return to normal breathing. If you have medical concerns, follow your clinician's guidance."
   },
+  {
+    id: "breathe-focus",
+    title: "Breath Focus Technique",
+    description: "Clarity and focus",
+    inhaleDuration: 4,
+    firstHoldDuration: 0,
+    exhaleDuration: 6,
+    secondHoldDuration: 0,
+    repetitions: 10,
+    isCustom: false,
+    detailedDescription: "A mindful practice of gently placing attention on the breath—often paired with anchor words (e.g., 'in… out…') or imagery—to cultivate calm, clarity, and steady focus.",
+    whenToUse: [
+      "Before deep work or study; during stress or overwhelm",
+      "As a daily centering practice (2–10 min)", 
+      "Any time you want clarity without a strict breathing pattern"
+    ],
+    howItHelps: "Trains attentional control: noticing the breath, returning softly when the mind wanders. Engages the parasympathetic response (especially with a slightly longer exhale). Builds non-reactivity to thoughts and sensations; supports emotional regulation.",
+    commonMistakes: [
+      "Forcing the breath or 'doing it right'",
+      "Trying to push thoughts away (just notice and return).",
+      "Mouth breathing noisily; shoulders tense."
+    ],
+    parametersNote: "For breath focus techniques, a good starting point is 5-10 minutes a day. You can gradually increase the duration to 20 minutes or longer as you become more comfortable and find it beneficial. It's also recommended to practice it several times a day if possible.",
+    stepByStepInstructions: [
+      "Sit tall or lie comfortably; relax jaw/shoulders.",
+      "Notice the natural breath (temperature at the nostrils, belly/ rib movement).",
+      "Choose an anchor: words ('in… out…', 'calm… clear…'), a count (1–4), or imagery (wave/tide).",
+      "Inhale gently; silently repeat your anchor (e.g., 'in… calm').",
+      "Exhale slowly; repeat the pair (e.g., 'out… clear').",
+      "When the mind wanders, notice–name–return (e.g., 'thinking… back to breath').",
+      "Continue for the set cycles or time; finish with one longer, easy exhale."
+    ],
+    safetyNote: "Generally safe. If you feel dizzy or uncomfortable, return to natural breathing or pause. Follow clinician guidance if you have medical concerns."
+  },
 ];
