@@ -210,4 +210,38 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     ],
     safetyNote: "Skip or reduce intensity if you have throat irritation, jaw/TMJ pain, recent dental work, or if dizziness appears. If you have cardiopulmonary conditions or are pregnant, avoid forceful breaths and follow clinician guidance."
   },
+  {
+    id: "alternate-nostril",
+    title: "Alternate Nostril Breathing",
+    description: "Balance and calming nervous system",
+    inhaleDuration: 4,
+    firstHoldDuration: 0,
+    exhaleDuration: 4,
+    secondHoldDuration: 0,
+    repetitions: 12,
+    isCustom: false,
+    detailedDescription: "A balancing breath: inhale through one nostril, exhale through the other, then switch. Calms the nervous system, steadies attention, and balances left–right activation.",
+    whenToUse: [
+      "Pre-focus ritual (study, creative work)",
+      "Transition moments (between tasks, before sleep wind-down)", 
+      "After stimulating breathwork to re-center"
+    ],
+    howItHelps: "Encourages coherent, even breathing → reduces stress arousal and promotes calm focus. The alternating flow may help balance hemispheric activity and attention. Slows respiratory rate; can reduce perceived anxiety and mental 'noise.'",
+    commonMistakes: [
+      "Forcing the pace or holds; creating throat/jaw tension",
+      "Pressing too hard on the nose; noisy breathing",
+      "Losing the sequence (use mental cues: 'Left-in, Right-out, Right-in, Left-out')"
+    ],
+    parametersNote: "--",
+    stepByStepInstructions: [
+      "Sit tall, relax jaw/shoulders. Form a gentle nasal seal with your right hand (Vishnu mudra): index & middle finger folded, thumb closes the right nostril; ring finger closes the left.",
+      "Close right nostril with the thumb. Inhale left for 4.",
+      "Switch: close left, exhale right for 4–6.",
+      "Inhale right for 4.",
+      "Switch: close right, exhale left for 4–6.",
+      "That's one full cycle. Continue 6–8 cycles, keeping the breath quiet and even.",
+      "Continue this breathing pattern for up to 5 minutes."
+    ],
+    safetyNote: "Skip or modify if you have acute nasal congestion, sinus infection, or discomfort. Avoid long holds if pregnant or with cardiopulmonary issues; follow clinician guidance. Stop if dizzy or light-headed."
+  },
 ];
