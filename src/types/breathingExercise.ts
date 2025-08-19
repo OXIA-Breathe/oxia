@@ -252,4 +252,37 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     ],
     safetyNote: "Skip or modify if you have acute nasal congestion, sinus infection, or discomfort. Avoid long holds if pregnant or with cardiopulmonary issues; follow clinician guidance. Stop if dizzy or light-headed."
   },
+  {
+    id: "equal-breathing",
+    title: "Equal Breathing (Sama Vritti)",
+    description: "Clarity and attention",
+    inhaleDuration: 5,
+    firstHoldDuration: 0,
+    exhaleDuration: 5,
+    secondHoldDuration: 0,
+    repetitions: 12,
+    isCustom: false,
+    detailedDescription: "A smooth, even rhythm where the inhale and exhale are the same length. Balances the nervous system, steadies attention, and promotes calm clarity.",
+    whenToUse: [
+      "Centering before work, calls, or study",
+      "Transition moments (after stress, between tasks)",
+      "Any time you want calm focus without breath holds"
+    ],
+    howItHelps: "The 1:1 cadence stabilizes breathing rate and supports a parasympathetic shift. Smooth, even breaths reduce \"air hunger\" and settle reactivity. Builds awareness of breath mechanics without strain; great as a daily baseline.",
+    commonMistakes: [
+      "Forcing the breath or speeding up at the end of the count",
+      "Breathing high into the chest; let the lower ribs/belly move",
+      "Mouth breathing or noisy exhale (aim for quiet nasal flow)"
+    ],
+    safetyNote: "Generally safe. If you feel dizzy or uncomfortable, reduce the count (e.g., from 6–6 to 4–4) or pause and return to natural breathing.",
+    stepByStepInstructions: [
+      "Sit or stand tall; relax jaw/shoulders.",
+      "Inhale through the nose for your chosen count (e.g., 5).",
+      "Exhale through the nose for the same count (e.g., 5).",
+      "Keep the breath quiet, smooth, and effortless.",
+      "Continue for 8–12 cycles; finish with one easy, slightly longer exhale."
+    ],
+    parametersNote: "The recommended time for practicing Equal Breathing (Sama Vritti) is generally 5 to 10 minutes, but it can be adjusted based on individual needs and comfort levels. Beginners may start with shorter durations, like 2-3 minutes, and gradually increase the time as they become more comfortable. It's also beneficial to practice this technique for a few minutes before other practices like yoga asana or meditation.",
+    parameterSuggestion: "Begin with 4–4 if you're new; progress to 5–5 or 6–6 as it feels natural. If you feel agitated, try slightly longer exhales for a few rounds (e.g., 4–5 or 5–6), then return to equal. Practise 2–5 minutes daily to make it your default calm rhythm."
+  },
 ];
