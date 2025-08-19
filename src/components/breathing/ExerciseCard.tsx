@@ -21,6 +21,11 @@ const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
     }
   };
 
+  const getDisplayTitle = () => {
+    // Remove parentheses and their content for cleaner display
+    return exercise.title.replace(/\s*\([^)]*\)/g, '').trim();
+  };
+
   const handleCardClick = () => {
     onSelect(exercise);
   };
@@ -48,7 +53,7 @@ const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
           
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-gray-800 truncate">
-              {exercise.title}
+              {getDisplayTitle()}
             </h3>
             {exercise.description && (
               <p className="text-sm text-gray-600 mt-1">
