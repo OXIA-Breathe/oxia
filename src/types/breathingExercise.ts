@@ -232,7 +232,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Pressing too hard on the nose; noisy breathing",
       "Losing the sequence (use mental cues: 'Left-in, Right-out, Right-in, Left-out')"
     ],
-    parametersNote: "--",
+    parametersNote: "Alternate nostril breathing, also known as Nadi Shodhana, can be practiced for varying lengths of time depending on individual needs and comfort levels. A good starting point is 3-5 minutes, but it can be extended to 5-10 minutes or longer as you become more comfortable with the technique. Some practitioners find it beneficial to do 3-5 rounds, while others may prefer a set number of breaths on each side.",
     stepByStepInstructions: [
       "Sit tall, relax jaw/shoulders. Form a gentle nasal seal with your right hand (Vishnu mudra): index & middle finger folded, thumb closes the right nostril; ring finger closes the left.",
       "Close right nostril with the thumb. Inhale left for 4.",
