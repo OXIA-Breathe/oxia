@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import MainLayout from "@/components/layout/MainLayout";
 import { useBreathingExercise } from "@/context/BreathingExerciseContext";
 import { formatTimeDisplay } from "@/components/history/utils/formatTime";
+import { ParametersModal } from "@/components/breathing/ParametersModal";
 
 const ExerciseDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -103,7 +104,15 @@ const ExerciseDetailsPage = () => {
 
           {/* Breathing Parameters Card */}
           <Card className="p-6 bg-white/90 backdrop-blur-sm">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Breathing Parameters</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Breathing Parameters</h3>
+              <ParametersModal 
+                exercise={exercise} 
+                onSave={(parameters) => {
+                  updateExercise(exercise.id, parameters);
+                }}
+              />
+            </div>
             <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="text-center">
                 <p className="text-sm text-gray-600 mb-1">Inhale</p>

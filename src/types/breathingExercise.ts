@@ -16,6 +16,7 @@ export interface BreathingExercise {
   safetyNote?: string;
   stepByStepInstructions?: string[];
   parametersNote?: string;
+  parameterSuggestion?: string;
 }
 
 export const defaultBreathingExercises: BreathingExercise[] = [
@@ -42,6 +43,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Rushing counts; uneven box"
     ],
     parametersNote: "A typical box breathing session can range from one to five minutes for beginners, with experienced practitioners potentially extending sessions to 10-20 minutes or longer. Consistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.",
+    parameterSuggestion: "For beginners: Try 3-4 seconds for each phase. For experienced: 4-6 seconds works well for deeper relaxation.",
     stepByStepInstructions: [
       "Sit or stand tall; relax jaw/shoulders.",
       "Inhale through the nose for 4.",
@@ -67,6 +69,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     howItHelps: "The extended exhale activates the parasympathetic nervous system, promoting relaxation and reducing stress.",
     commonMistakes: ["Holding breath too forcefully", "Not fully exhaling", "Rushing the sequence"],
     parametersNote: "Often practiced as 4 cycles at bedtime; increase gradually as comfort grows. Keep breath gentle and unforced.",
+    parameterSuggestion: "Classic 4-7-8 pattern is most effective. Beginners can try 3-5-6 if the full pattern feels too intense.",
     stepByStepInstructions: [
       "Sit comfortably with your back straight.",
       "Inhale quietly through your nose for 4.",
@@ -100,6 +103,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Exhale too short; cheeks puffing; shoulders lifted"
     ],
     parametersNote: "Pursed lip breathing should be practiced 3-4 times a day for about 10 minutes each time, ideally when you are not short of breath. It's a technique to help relieve shortness of breath and can be incorporated into your routine when you feel comfortable. When experiencing shortness of breath, you can use pursed lip breathing as needed to help regulate your breath and find relief.",
+    parameterSuggestion: "A 2:4 ratio (2s inhale, 4s exhale) is gentle for beginners. Advanced practitioners can try 3:6 or 4:8.",
     stepByStepInstructions: [
       "Sit or stand tall; relax jaw/shoulders.",
       "Inhale quietly through the nose for 2–3 seconds.",
@@ -132,6 +136,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Noisy mouth breathing; rushing the exhale"
     ],
     parametersNote: "For optimal benefit, diaphragmatic breathing is recommended for 10-20 minutes daily, practiced in several short sessions or one longer session. Beginners may start with shorter durations, such as 5-10 minutes, several times a day, gradually increasing the time as they become more comfortable.",
+    parameterSuggestion: "Start with 4:5 pattern (4s inhale, 5s exhale). As comfort increases, try 5:6 or 6:8 for deeper relaxation.",
     stepByStepInstructions: [
       "Sit or lie comfortably; relax jaw/shoulders. Place one hand on the belly, one on the upper chest.",
       "Inhale through the nose for 4–5 s: feel the belly and lower ribs expand outward into your hand. Upper chest stays relatively quiet.",
@@ -165,6 +170,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Mouth breathing noisily; shoulders tense."
     ],
     parametersNote: "For breath focus techniques, a good starting point is 5-10 minutes a day. You can gradually increase the duration to 20 minutes or longer as you become more comfortable and find it beneficial. It's also recommended to practice it several times a day if possible.",
+    parameterSuggestion: "A gentle 4:6 ratio (4s inhale, 6s exhale) helps maintain focus. Adjust timing to match your natural rhythm.",
     stepByStepInstructions: [
       "Sit tall or lie comfortably; relax jaw/shoulders.",
       "Notice the natural breath (temperature at the nostrils, belly/ rib movement).",
@@ -199,6 +205,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Overdoing the number of rounds → dizziness or dryness in the throat"
     ],
     parametersNote: "Lion's breath, a type of pranayama (yogic breathing), is generally recommended for a few minutes at a time, with 5-10 repetitions per session. Practitioners often follow this with a few minutes of normal, deep breathing. It's best to start with a few rounds and gradually work up to a comfortable duration, avoiding overexertion",
+    parameterSuggestion: "Keep it energizing: 3s inhale, 2s forceful exhale works well. Avoid longer timing to prevent strain.",
     stepByStepInstructions: [
       "Sit tall (kneeling or cross-legged) or stand; relax shoulders/neck.",
       "Inhale through the nose for 3–4 s; feel ribs expand.",
@@ -233,6 +240,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Losing the sequence (use mental cues: 'Left-in, Right-out, Right-in, Left-out')"
     ],
     parametersNote: "Alternate nostril breathing, also known as Nadi Shodhana, can be practiced for varying lengths of time depending on individual needs and comfort levels. A good starting point is 3-5 minutes, but it can be extended to 5-10 minutes or longer as you become more comfortable with the technique. Some practitioners find it beneficial to do 3-5 rounds, while others may prefer a set number of breaths on each side.",
+    parameterSuggestion: "Equal timing works best: 4:4 (4s inhale, 4s exhale) creates balance. Beginners can start with 3:3.",
     stepByStepInstructions: [
       "Sit tall, relax jaw/shoulders. Form a gentle nasal seal with your right hand (Vishnu mudra): index & middle finger folded, thumb closes the right nostril; ring finger closes the left.",
       "Close right nostril with the thumb. Inhale left for 4.",
