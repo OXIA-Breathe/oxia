@@ -319,4 +319,37 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     parametersNote: "Sitali (or Sheetali) Pranayama, the cooling breath, can be practiced for a few minutes to 10-15 minutes daily. Beginners may start with 5-10 minutes, gradually increasing the duration as they become comfortable. It's particularly beneficial during the hottest part of the day (around midday) or after physical activity to help cool down. ",
     parameterSuggestion: "Start with 4–6 rounds, build to 10+ as comfortable. For stronger calming, extend the exhale to 7–8 s. If the mouth gets dry, pause briefly and swallow; keep the pull gentle, not slurping."
   },
+  {
+    id: "bee-breath",
+    title: "Bee Breath (Bhramari)",
+    description: "Quiets mental noise and eases facial tension",
+    inhaleDuration: 4,
+    firstHoldDuration: 0,
+    exhaleDuration: 6,
+    secondHoldDuration: 0,
+    repetitions: 10,
+    isCustom: false,
+    detailedDescription: "A gentle nasal inhale followed by a soft humming exhale (\"mmm…\") with closed lips. The vibration soothes the nervous system, quiets mental noise, and eases facial/jaw tension.",
+    whenToUse: [
+      "Evening wind-down or post-stress reset",
+      "Moments of overthinking, screen fatigue, or jaw/face tightness",
+      "Before meditation or deep work to center attention"
+    ],
+    howItHelps: "The humming vibration provides a calming sensory focus and may stimulate vagal tone. Long, steady exhale promotes a parasympathetic shift (rest-and-digest). Can reduce perceived anxiety, irritability, and mental chatter; supports focus and sleep wind-down.",
+    commonMistakes: [
+      "Forcing the hum (throat tension or loud buzzing)",
+      "Mouth open (keep lips closed, nasal breathing only)",
+      "Shoulders lifting; cheeks puffing"
+    ],
+    safetyNote: "Skip or be very gentle if you have ear infection, acute sinus issues, recent dental work, or throat irritation. Stop if dizzy, light-headed, or uncomfortable. If you have medical concerns, follow clinician guidance.",
+    stepByStepInstructions: [
+      "Sit tall; relax jaw/shoulders. Lightly touch tongue to the roof of the mouth (optional).",
+      "Inhale quietly through the nose for ~4 s.",
+      "With lips closed and jaw soft, exhale while humming \"mmm…\" for 6–8 s. Keep the sound gentle and steady.",
+      "Feel the vibration around lips, cheeks, and sinuses; keep throat relaxed.",
+      "Repeat 6–10 cycles; finish with 1–2 easy nasal breaths."
+    ],
+    parametersNote: "Bhramari Pranayama, or Bee Breath, can be practiced at any time of the day, but it's particularly beneficial when done in the morning or evening. A good starting point is 5-10 minutes, gradually increasing to 15-20 minutes as you become more comfortable. It can be incorporated into your daily routine or practiced before meditation or sleep according to yoga and wellness websites.",
+    parameterSuggestion: "Start with 4–6 rounds, build to 10+ as comfortable. Keep the hum quiet and effortless—aim for smoothness, not loudness. If you feel agitated, lengthen the exhale (up to 8 s)."
+  },
 ];
