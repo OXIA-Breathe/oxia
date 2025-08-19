@@ -37,7 +37,7 @@ const BreathePage = () => {
           </p>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-4 pb-20">
           {exercises.map((exercise) => (
             <ExerciseCard
               key={exercise.id}
