@@ -285,4 +285,38 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     parametersNote: "The recommended time for practicing Equal Breathing (Sama Vritti) is generally 5 to 10 minutes, but it can be adjusted based on individual needs and comfort levels. Beginners may start with shorter durations, like 2-3 minutes, and gradually increase the time as they become more comfortable. It's also beneficial to practice this technique for a few minutes before other practices like yoga asana or meditation.",
     parameterSuggestion: "Begin with 4–4 if you're new; progress to 5–5 or 6–6 as it feels natural. If you feel agitated, try slightly longer exhales for a few rounds (e.g., 4–5 or 5–6), then return to equal. Practise 2–5 minutes daily to make it your default calm rhythm."
   },
+  {
+    id: "sitali-breath",
+    title: "Sitali (Cooling) Breath",
+    description: "Reduces feelings of anger, restlessness",
+    inhaleDuration: 4,
+    firstHoldDuration: 0,
+    exhaleDuration: 6,
+    secondHoldDuration: 0,
+    repetitions: 10,
+    isCustom: false,
+    detailedDescription: "A cooling breath that draws air over a rolled tongue (or gently through the teeth), then exhales through the nose. Soothes heat, irritability, and mental agitation.",
+    whenToUse: [
+      "Hot weather, post-exercise cool-down, or after a heated moment",
+      "Emotional heat: frustration, irritability, anger",
+      "Afternoon settle, pre-sleep wind-down (keep the exhale soft and long)"
+    ],
+    howItHelps: "Inhaling over a narrow, moistened channel creates a cooling sensation, helping down-regulate arousal. Longer nasal exhale engages the parasympathetic response → calm, steady mood. Can reduce feelings of overheating, anger, restlessness, and support gentle focus.",
+    commonMistakes: [
+      "Forcing the inhale (creates throat tension)",
+      "Loud, windy mouth inhale; cheeks puffing",
+      "Rushed or short exhale; shoulders lifting"
+    ],
+    safetyNote: "Avoid in very cold or very polluted/dry air (may irritate throat/airways). If you have asthma, chronic cough, or throat sensitivity, use very gently or choose a nasal-only practice instead. Stop if dizzy, light-headed, or uncomfortable; return to normal breathing.",
+    stepByStepInstructions: [
+      "Sit tall; relax jaw/shoulders.",
+      "Sitali: roll the tongue into a tube and extend slightly past the lips. Sitkari (alternative): if you can't roll the tongue, part the teeth gently and rest the tongue tip behind them.",
+      "Inhale slowly through the rolled tongue (or gently across the teeth) for ~4 s, feeling the cool air.",
+      "Close the mouth; optionally pause 0–1 s without tension.",
+      "Exhale through the nose for ~6 s, smooth and quiet.",
+      "Repeat 6–10 rounds; keep face and throat soft."
+    ],
+    parametersNote: "Sitali (or Sheetali) Pranayama, the cooling breath, can be practiced for a few minutes to 10-15 minutes daily. Beginners may start with 5-10 minutes, gradually increasing the duration as they become comfortable. It's particularly beneficial during the hottest part of the day (around midday) or after physical activity to help cool down. ",
+    parameterSuggestion: "Start with 4–6 rounds, build to 10+ as comfortable. For stronger calming, extend the exhale to 7–8 s. If the mouth gets dry, pause briefly and swallow; keep the pull gentle, not slurping."
+  },
 ];
