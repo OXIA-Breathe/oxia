@@ -16,6 +16,7 @@ import ConsistencyPage from "./pages/ConsistencyPage";
 import BreathePage from "./pages/BreathePage";
 import ExerciseDetailsPage from "./pages/ExerciseDetailsPage";
 import NotFound from "./pages/NotFound";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
                 <Route path="/breathe/:id" element={<ExerciseDetailsPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/auth" element={<AuthPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/progress" element={<ConsistencyPage />} />
                 <Route path="*" element={<NotFound />} />

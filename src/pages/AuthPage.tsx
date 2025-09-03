@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 
 const AuthPage = () => {
   const { user, signIn, signUp } = useAuth();
@@ -84,10 +85,15 @@ const AuthPage = () => {
                     />
                   </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex flex-col space-y-2">
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "Signing in..." : "Sign In"}
                   </Button>
+                  <ForgotPasswordModal>
+                    <Button variant="link" className="text-sm p-0">
+                      Forgot password?
+                    </Button>
+                  </ForgotPasswordModal>
                 </CardFooter>
               </form>
             </Card>
