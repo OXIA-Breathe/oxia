@@ -175,7 +175,7 @@ const ChangePasswordModal = ({ children }: ChangePasswordModalProps) => {
               required
             />
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               type="button"
               variant="outline"
