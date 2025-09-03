@@ -47,7 +47,17 @@ const AuthPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <div className="w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-8">Breathify</h1>
+        <div className="flex justify-center mb-8">
+          <img 
+            src="/lovable-uploads/6d9cc0f0-addd-45b1-abab-238892b91dbf.png" 
+            alt="OXIA Logo" 
+            className="h-12 w-auto object-contain" 
+            onError={(e) => {
+              console.error("Logo failed to load:", e);
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </div>
         
         <Tabs defaultValue="sign-in" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
