@@ -72,7 +72,7 @@ const ForgotPasswordModal = ({ children }: ForgotPasswordModalProps) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
