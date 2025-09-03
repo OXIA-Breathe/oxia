@@ -16,7 +16,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Trash2 } from "lucide-react";
+import { LogOut, Trash2, Key } from "lucide-react";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 const ProfileActions = () => {
   const { signOut } = useAuth();
@@ -80,6 +81,13 @@ const ProfileActions = () => {
 
   return (
     <div className="flex flex-col sm:flex-row gap-4">
+      <ChangePasswordModal>
+        <Button variant="outline" className="flex items-center gap-2">
+          <Key className="w-4 h-4" />
+          <span>Change Password</span>
+        </Button>
+      </ChangePasswordModal>
+      
       <Button 
         variant="outline" 
         className="flex items-center gap-2" 
