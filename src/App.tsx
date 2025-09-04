@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BreathProvider } from "./context/BreathContext";
 import { BreathingExerciseProvider } from "./context/BreathingExerciseContext";
 import { AuthProvider } from "./context/AuthContext";
+import { useDailyStreakTracker } from "./hooks/useDailyStreakTracker";
 import Index from "./pages/Index";
 import LearnPage from "./pages/LearnPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -20,30 +21,38 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 const queryClient = new QueryClient();
 
+const AppContent = () => {
+  useDailyStreakTracker();
+  
+  return (
+    <BreathProvider>
+      <BreathingExerciseProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/learn" element={<LearnPage />} />
+            <Route path="/breathe" element={<BreathePage />} />
+            <Route path="/breathe/:id" element={<ExerciseDetailsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/progress" element={<ConsistencyPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </BreathingExerciseProvider>
+    </BreathProvider>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <AuthProvider>
-        <BreathProvider>
-          <BreathingExerciseProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/learn" element={<LearnPage />} />
-                <Route path="/breathe" element={<BreathePage />} />
-                <Route path="/breathe/:id" element={<ExerciseDetailsPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/reset-password" element={<ResetPasswordPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/progress" element={<ConsistencyPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </BreathingExerciseProvider>
-        </BreathProvider>
+        <AppContent />
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
