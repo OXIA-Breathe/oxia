@@ -106,10 +106,17 @@ const SettingsPage = () => {
                     About
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 leading-relaxed">
-                    Our breathing app is designed to help you find moments of calm and mindfulness in your daily life. 
-                    We believe that proper breathing techniques can significantly improve your mental and physical well-being. 
-                    Our company is dedicated to creating tools that promote wellness and help people develop healthy habits 
-                    for a more balanced lifestyle.
+                    I've lived with depression and anxiety for many years. Crowded events made my body buzz with discomfort, everyday challenges took a lot of mental energy, and over time the anxiety and stress became overwhelming.
+                    <br /><br />
+                    Then a friend sent me a link to a Wim Hof Method breathing exercise. I tried it. It changed how I understood my breath—and how my nervous system works.
+                    <br /><br />
+                    That's how OXIA was born. I want to offer an app that helps you experience the same shift: simple guidance, science-informed explanations, and gentle support for building a lasting habit. OXIA helps you understand why breathing matters for your system, how steady, calm breathing settles the mind and body, and how that can make everyday life feel lighter.
+                    <br /><br />
+                    Breathe with awareness and ease. Support your body and mind—and feel more at home in yourself.
+                    <br /><br />
+                    Breathing with you,<br />
+                    Kristo Epner<br />
+                    Founder
                   </AccordionContent>
                 </AccordionItem>
                 
