@@ -95,7 +95,7 @@ const SettingsPage = () => {
                 <span className="text-gray-800">About Us</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent>
               {/* Links Section */}
               <div className="space-y-2">
                 <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
