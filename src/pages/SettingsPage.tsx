@@ -98,11 +98,11 @@ const SettingsPage = () => {
             <CardContent className="space-y-4">
               {/* Links Section */}
               <div className="space-y-2">
-                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center justify-center text-breath hover:text-breath/80 font-medium">
+                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
                   Terms & Conditions
                 </div>
                 <Separator className="my-2" />
-                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center justify-center text-breath hover:text-breath/80 font-medium">
+                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
                   Privacy Policy
                 </div>
               </div>
