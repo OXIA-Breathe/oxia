@@ -8,12 +8,18 @@ import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
-import { Volume2, Bell, Info, Instagram, Facebook, Twitter, Video } from "lucide-react";
+import { Volume2, Bell, Info, Instagram, Facebook, Twitter, Share } from "lucide-react";
 import FeedbackForm from "@/components/settings/FeedbackForm";
 import ContactForm from "@/components/settings/ContactForm";
 
 const SettingsPage = () => {
   const { user, isLoading } = useAuth();
+  
+  const handleShare = () => {
+    const subject = encodeURIComponent("Check out OXIA - Amazing Breathing App!");
+    const body = encodeURIComponent("Hi! I wanted to share this amazing breathing app with you. OXIA has helped me with mindfulness and breathing exercises. Check it out at: " + window.location.origin);
+    window.open(`mailto:?subject=${subject}&body=${body}`);
+  };
   
   const [audioSettings, setAudioSettings] = useState({
     backgroundMusic: {
@@ -189,17 +195,15 @@ const SettingsPage = () => {
               </div>
             </a>
 
-            {/* TikTok */}
-            <a 
-              href="https://tiktok.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            {/* Share */}
+            <div 
+              onClick={handleShare}
               className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-center">
-                <Video className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
+                <Share className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
               </div>
-            </a>
+            </div>
           </div>
         </div>
       </div>
