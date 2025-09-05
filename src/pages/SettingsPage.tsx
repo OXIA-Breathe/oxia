@@ -98,16 +98,7 @@ const SettingsPage = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Links Section */}
-              <div className="space-y-2">
-                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
-                  Terms & Conditions
-                </div>
-                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
-                  Privacy Policy
-                </div>
-              </div>
-              
+             
               {/* About Accordion */}
               <Accordion type="single" collapsible>
                 <AccordionItem value="about" className="border-none">
@@ -140,6 +131,16 @@ const SettingsPage = () => {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
+
+              {/* Links Section */}
+              <div className="space-y-2">
+                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
+                  Terms & Conditions
+                </div>
+                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
+                  Privacy Policy
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
