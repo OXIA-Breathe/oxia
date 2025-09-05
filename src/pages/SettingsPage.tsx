@@ -8,7 +8,7 @@ import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
-import { Volume2, Bell, Info, Instagram, Facebook, Twitter, Wallet } from "lucide-react";
+import { Volume2, Bell, Info, Instagram, Facebook, Twitter, Video } from "lucide-react";
 import FeedbackForm from "@/components/settings/FeedbackForm";
 import ContactForm from "@/components/settings/ContactForm";
 
@@ -197,7 +197,7 @@ const SettingsPage = () => {
               className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-center">
-                <Wallet className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
+                <Video className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
               </div>
             </a>
           </div>
