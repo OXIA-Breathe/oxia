@@ -107,7 +107,7 @@ const SettingsPage = () => {
                 </div>
               </div>
               
-              <Separator className="my-4" />
+              <Separator className="my-2" />
               
               {/* About Accordion */}
               <Accordion type="single" collapsible>
