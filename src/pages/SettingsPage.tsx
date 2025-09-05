@@ -152,13 +152,13 @@ const SettingsPage = () => {
           </Card>
 
           {/* Social Media Section */}
-          <div className="space-y-3">
+          <div className="flex gap-3">
             {/* Instagram */}
             <a 
               href="https://instagram.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+              className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-center">
                 <Instagram className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
@@ -170,7 +170,7 @@ const SettingsPage = () => {
               href="https://facebook.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+              className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-center">
                 <Facebook className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
@@ -182,7 +182,7 @@ const SettingsPage = () => {
               href="https://twitter.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+              className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-center">
                 <Twitter className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
@@ -194,7 +194,7 @@ const SettingsPage = () => {
               href="https://tiktok.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+              className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-center">
                 <Wallet className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
