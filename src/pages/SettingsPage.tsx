@@ -97,7 +97,7 @@ const SettingsPage = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Links Section */}
-              <div className="space-y-2">
+              <div className="space-y-2 py-4">
                 <button className="text-breath hover:text-breath/80 font-medium transition-colors">
                   Terms & Conditions
                 </button>
