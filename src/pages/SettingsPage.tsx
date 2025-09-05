@@ -205,6 +205,16 @@ const SettingsPage = () => {
               </div>
             </div>
           </div>
+
+          {/* OXIA Logo and Version */}
+          <div className="flex flex-col items-center justify-center space-y-4 py-8">
+            <div className="text-4xl font-bold text-breath">
+              OXIA
+            </div>
+            <div className="text-sm text-gray-500">
+              Version - 1.0.0
+            </div>
+          </div>
         </div>
       </div>
     </MainLayout>
