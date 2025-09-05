@@ -6,7 +6,9 @@ import AudioSettings from "@/components/settings/AudioSettings";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Volume2, Bell } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Separator } from "@/components/ui/separator";
+import { Volume2, Bell, Info } from "lucide-react";
 
 const SettingsPage = () => {
   const { user, isLoading } = useAuth();
@@ -82,6 +84,45 @@ const SettingsPage = () => {
             </CardHeader>
             <CardContent>
               <NotificationSettings />
+            </CardContent>
+          </Card>
+
+          {/* About Us Section */}
+          <Card className="border-none shadow-md bg-white">
+            <CardHeader className="pb-6">
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5 text-breath" />
+                <span className="text-gray-800">About Us</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Links Section */}
+              <div className="space-y-2">
+                <button className="text-breath hover:text-breath/80 font-medium transition-colors">
+                  Terms & Conditions
+                </button>
+                <Separator className="my-2" />
+                <button className="text-breath hover:text-breath/80 font-medium transition-colors">
+                  Privacy Policy
+                </button>
+              </div>
+              
+              <Separator className="my-4" />
+              
+              {/* About Accordion */}
+              <Accordion type="single" collapsible>
+                <AccordionItem value="about" className="border-none">
+                  <AccordionTrigger className="text-gray-800 hover:text-breath">
+                    About
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 leading-relaxed">
+                    Our breathing app is designed to help you find moments of calm and mindfulness in your daily life. 
+                    We believe that proper breathing techniques can significantly improve your mental and physical well-being. 
+                    Our company is dedicated to creating tools that promote wellness and help people develop healthy habits 
+                    for a more balanced lifestyle.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </CardContent>
           </Card>
         </div>
