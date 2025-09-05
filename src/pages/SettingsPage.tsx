@@ -133,7 +133,7 @@ const SettingsPage = () => {
               </Accordion>
 
               {/* Links Section */}
-              <div className="space-y-2">
+              <div>
                 <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
                   Terms & Conditions
                 </div>
