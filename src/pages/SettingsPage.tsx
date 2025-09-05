@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import { Volume2, Bell, Info } from "lucide-react";
+import FeedbackForm from "@/components/settings/FeedbackForm";
+import ContactForm from "@/components/settings/ContactForm";
 
 const SettingsPage = () => {
   const { user, isLoading } = useAuth();
@@ -120,6 +122,24 @@ const SettingsPage = () => {
                     We believe that proper breathing techniques can significantly improve your mental and physical well-being. 
                     Our company is dedicated to creating tools that promote wellness and help people develop healthy habits 
                     for a more balanced lifestyle.
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="feedback" className="border-none">
+                  <AccordionTrigger className="text-gray-800 hover:text-breath">
+                    Help us improve
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <FeedbackForm />
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="contact" className="border-none">
+                  <AccordionTrigger className="text-gray-800 hover:text-breath">
+                    Contact us
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <ContactForm />
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
