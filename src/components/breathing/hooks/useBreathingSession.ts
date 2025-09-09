@@ -47,6 +47,8 @@ export const useBreathingSession = () => {
       totalDuration,
       breathCount: finalBreathCount,
       exerciseTitle: exerciseSettings.title,
+      exerciseId: exerciseSettings.id,
+      isCustom: exerciseSettings.isCustom || false,
     };
     
     addSession(newSession);
