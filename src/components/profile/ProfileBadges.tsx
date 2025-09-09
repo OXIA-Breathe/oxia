@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
-import { Award, BookOpen, TrendingUp, Zap, Trophy } from "lucide-react";
+import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles } from "lucide-react";
 
 interface BadgeItem {
   id: string;
@@ -25,7 +25,7 @@ const ProfileBadges = () => {
       id: "breaths-1",
       name: "First Breath",
       description: "Complete your first breath",
-      icon: BookOpen,
+      icon: Sparkles,
       threshold: 1
     },
     {

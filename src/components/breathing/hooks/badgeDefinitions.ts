@@ -1,12 +1,12 @@
 
-import { Award, BookOpen, TrendingUp, Zap, Trophy } from "lucide-react";
+import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles } from "lucide-react";
 
 export const badgeDefinitions = [
   {
     id: "breaths-1",
     name: "First Breath",
     description: "Complete your first breath",
-    icon: BookOpen,
+    icon: Sparkles,
     threshold: 1
   },
   {
