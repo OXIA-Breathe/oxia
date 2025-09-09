@@ -1,7 +1,7 @@
 
-import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles } from "lucide-react";
+import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from "lucide-react";
 
-export const badgeDefinitions = [
+export const breathBadgeDefinitions = [
   {
     id: "breaths-1",
     name: "First Breath",
@@ -43,5 +43,50 @@ export const badgeDefinitions = [
     description: "Complete 2000 total breaths",
     icon: Trophy,
     threshold: 2000
+  }
+];
+
+export const sessionBadgeDefinitions = [
+  {
+    id: "sessions-1",
+    name: "First Flow",
+    description: "Your very first session",
+    icon: Dice1,
+    threshold: 1
+  },
+  {
+    id: "sessions-10",
+    name: "Finding Rhythm",
+    description: "Complete 10 sessions",
+    icon: Dice2,
+    threshold: 10
+  },
+  {
+    id: "sessions-25",
+    name: "Habit Builder",
+    description: "Complete 25 sessions",
+    icon: Dice3,
+    threshold: 25
+  },
+  {
+    id: "sessions-50",
+    name: "Momentum",
+    description: "Complete 50 sessions",
+    icon: Dice4,
+    threshold: 50
+  },
+  {
+    id: "sessions-100",
+    name: "Consistency Pro",
+    description: "Complete 100 sessions",
+    icon: Dice5,
+    threshold: 100
+  },
+  {
+    id: "sessions-250",
+    name: "Deep Practice",
+    description: "Complete 250 sessions",
+    icon: Dice6,
+    threshold: 250
   }
 ];

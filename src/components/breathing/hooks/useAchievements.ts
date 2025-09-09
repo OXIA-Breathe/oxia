@@ -2,7 +2,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { badgeDefinitions } from "./badgeDefinitions";
+import { breathBadgeDefinitions } from "./badgeDefinitions";
 
 export const useAchievements = () => {
   const { user } = useAuth();
@@ -23,7 +23,7 @@ export const useAchievements = () => {
       const previousTotalBreaths = data ? data.reduce((sum, session) => sum + session.breath_count, 0) : 0;
       
       // Find newly earned badges
-      const newlyEarnedBadge = badgeDefinitions
+      const newlyEarnedBadge = breathBadgeDefinitions
         .filter(badge => 
           badge.threshold <= newTotalBreaths && // Badge threshold is now met
           badge.threshold > previousTotalBreaths // Badge threshold wasn't met before
