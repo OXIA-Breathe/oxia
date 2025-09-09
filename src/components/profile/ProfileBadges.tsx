@@ -22,39 +22,46 @@ const ProfileBadges = () => {
   // Define all possible badges
   const badgeDefinitions: Omit<BadgeItem, 'achieved'>[] = [
     {
-      id: "breaths-25",
-      name: "Breathing Beginner",
-      description: "Complete 25 total breaths",
+      id: "breaths-1",
+      name: "First Breath",
+      description: "Complete your first breath",
       icon: BookOpen,
-      threshold: 25
+      threshold: 1
     },
     {
       id: "breaths-50",
-      name: "Consistent Breather",
+      name: "Breathing Beginner",
       description: "Complete 50 total breaths",
-      icon: Zap,
+      icon: BookOpen,
       threshold: 50
     },
     {
-      id: "breaths-100",
-      name: "Breathing Enthusiast",
-      description: "Complete 100 total breaths",
-      icon: TrendingUp,
-      threshold: 100
-    },
-    {
-      id: "breaths-250",
-      name: "Breathing Expert",
-      description: "Complete 250 total breaths",
-      icon: Award,
-      threshold: 250
+      id: "breaths-150",
+      name: "Breathing Intermediate",
+      description: "Complete 150 total breaths",
+      icon: Zap,
+      threshold: 150
     },
     {
       id: "breaths-500",
-      name: "Breathing Master",
+      name: "Breathing Enthusiast",
       description: "Complete 500 total breaths",
-      icon: Trophy,
+      icon: TrendingUp,
       threshold: 500
+    },
+    {
+      id: "breaths-1000",
+      name: "Breathing Expert",
+      description: "Complete 1000 total breaths",
+      icon: Award,
+      threshold: 1000
+    },
+    {
+      id: "breaths-2000",
+      name: "Breathing Master",
+      description: "Complete 2000 total breaths",
+      icon: Trophy,
+      threshold: 2000
     }
   ];
 
@@ -107,8 +114,10 @@ const ProfileBadges = () => {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {badges.map((badge) => (
+    <div className="space-y-4">
+      <h3 className="font-semibold text-lg">Breaths</h3>
+      <div className="grid grid-cols-2 gap-4">
+        {badges.map((badge) => (
         <div 
           key={badge.id}
           className={`p-4 rounded-lg border flex flex-col items-center text-center gap-2 transition-all ${
@@ -128,8 +137,9 @@ const ProfileBadges = () => {
           <Badge variant={badge.achieved ? "default" : "outline"} className="mt-2">
             {badge.achieved ? "Unlocked" : `${stats?.totalBreaths || 0}/${badge.threshold} breaths`}
           </Badge>
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
