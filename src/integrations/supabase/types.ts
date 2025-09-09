@@ -221,6 +221,63 @@ export type Database = {
         }
         Relationships: []
       }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          achievement_type: string
+          created_at: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          achievement_type: string
+          created_at?: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          achievement_type?: string
+          created_at?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_exercise_completions: {
+        Row: {
+          created_at: string
+          exercise_id: string
+          exercise_title: string
+          first_completed_at: string
+          id: string
+          is_custom: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          exercise_id: string
+          exercise_title: string
+          first_completed_at?: string
+          id?: string
+          is_custom?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          exercise_id?: string
+          exercise_title?: string
+          first_completed_at?: string
+          id?: string
+          is_custom?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_streaks: {
         Row: {
           created_at: string
