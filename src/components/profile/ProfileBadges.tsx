@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
-import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from "lucide-react";
+import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Sprout, Flower2, Shrub, TreePine, Trees, MountainSnow } from "lucide-react";
 
 interface BadgeItem {
   id: string;
@@ -111,8 +111,54 @@ const ProfileBadges = () => {
     }
   ];
 
+  // Define streak-based badges
+  const streakBadgeDefinitions: Omit<BadgeItem, 'achieved'>[] = [
+    {
+      id: "streak-7",
+      name: "Spark Week",
+      description: "Seven days of steady calm",
+      icon: Sprout,
+      threshold: 7
+    },
+    {
+      id: "streak-30",
+      name: "Habit Month",
+      description: "Thirty days, habit locked",
+      icon: Flower2,
+      threshold: 30
+    },
+    {
+      id: "streak-91",
+      name: "Flow Quarter",
+      description: "Three months in steady flow",
+      icon: Shrub,
+      threshold: 91
+    },
+    {
+      id: "streak-182",
+      name: "Steady Half-Year",
+      description: "Six months of steady practice",
+      icon: TreePine,
+      threshold: 182
+    },
+    {
+      id: "streak-273",
+      name: "Unshakable Nine",
+      description: "Nine months, nothing shakes you",
+      icon: Trees,
+      threshold: 273
+    },
+    {
+      id: "streak-365",
+      name: "Year of Breath",
+      description: "365 days. Habit mastered",
+      icon: MountainSnow,
+      threshold: 365
+    }
+  ];
+
   // Fetch user stats
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["userStats", user?.id],
     queryFn: async () => {
       if (!user) return null;
@@ -149,6 +195,27 @@ const ProfileBadges = () => {
     enabled: !!user
   });
 
+  // Fetch user streak data
+  const { data: streakData, isLoading: streakLoading } = useQuery({
+    queryKey: ["streakData", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      
+      const { data, error } = await supabase
+        .from("user_streaks")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+        
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+      
+      return data;
+    },
+    enabled: !!user
+  });
+
   // Prepare badges with achieved status
   const breathBadges: BadgeItem[] = breathBadgeDefinitions.map(badge => ({
     ...badge,
@@ -160,7 +227,12 @@ const ProfileBadges = () => {
     achieved: stats?.totalSessions ? stats.totalSessions >= badge.threshold : false
   }));
 
-  if (isLoading) {
+  const streakBadges: BadgeItem[] = streakBadgeDefinitions.map(badge => ({
+    ...badge,
+    achieved: streakData?.longest_breath_streak ? streakData.longest_breath_streak >= badge.threshold : false
+  }));
+
+  if (statsLoading || streakLoading) {
     return <div className="text-center p-4">Loading badges...</div>;
   }
 
@@ -218,6 +290,35 @@ const ProfileBadges = () => {
               
               <Badge variant={badge.achieved ? "default" : "outline"} className="mt-2">
                 {badge.achieved ? "Unlocked" : `${stats?.totalSessions || 0}/${badge.threshold} sessions`}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Streak-based achievements */}
+      <div className="space-y-4">
+        <h3 className="font-semibold text-lg">Streaks</h3>
+        <div className="grid grid-cols-2 gap-4">
+          {streakBadges.map((badge) => (
+            <div 
+              key={badge.id}
+              className={`p-4 rounded-lg border flex flex-col items-center text-center gap-2 transition-all ${
+                badge.achieved 
+                  ? "bg-accent/50 border-accent" 
+                  : "bg-muted/30 border-muted opacity-50"
+              }`}
+            >
+              <div className={`p-3 rounded-full ${badge.achieved ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                <badge.icon size={24} />
+              </div>
+              
+              <h3 className="font-medium mt-1">{badge.name}</h3>
+              
+              <p className="text-xs text-muted-foreground">{badge.description}</p>
+              
+              <Badge variant={badge.achieved ? "default" : "outline"} className="mt-2">
+                {badge.achieved ? "Unlocked" : `${streakData?.longest_breath_streak || 0}/${badge.threshold} days`}
               </Badge>
             </div>
           ))}

@@ -1,5 +1,5 @@
 
-import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from "lucide-react";
+import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Sprout, Flower2, Shrub, TreePine, Trees, MountainSnow } from "lucide-react";
 
 export const breathBadgeDefinitions = [
   {
@@ -88,5 +88,50 @@ export const sessionBadgeDefinitions = [
     description: "Complete 250 sessions",
     icon: Dice6,
     threshold: 250
+  }
+];
+
+export const streakBadgeDefinitions = [
+  {
+    id: "streak-7",
+    name: "Spark Week",
+    description: "Seven days of steady calm",
+    icon: Sprout,
+    threshold: 7
+  },
+  {
+    id: "streak-30",
+    name: "Habit Month",
+    description: "Thirty days, habit locked",
+    icon: Flower2,
+    threshold: 30
+  },
+  {
+    id: "streak-91",
+    name: "Flow Quarter",
+    description: "Three months in steady flow",
+    icon: Shrub,
+    threshold: 91
+  },
+  {
+    id: "streak-182",
+    name: "Steady Half-Year",
+    description: "Six months of steady practice",
+    icon: TreePine,
+    threshold: 182
+  },
+  {
+    id: "streak-273",
+    name: "Unshakable Nine",
+    description: "Nine months, nothing shakes you",
+    icon: Trees,
+    threshold: 273
+  },
+  {
+    id: "streak-365",
+    name: "Year of Breath",
+    description: "365 days. Habit mastered",
+    icon: MountainSnow,
+    threshold: 365
   }
 ];
