@@ -1,11 +1,16 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
-import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Sprout, Flower2, Shrub, TreePine, Trees, MountainSnow } from "lucide-react";
+import { 
+  breathBadgeDefinitions, 
+  sessionBadgeDefinitions,
+  streakBadgeDefinitions,
+  exerciseBadgeDefinitions,
+  oxiaBadgeDefinitions
+} from "@/components/breathing/hooks/badgeDefinitions";
 
 interface BadgeItem {
   id: string;
@@ -14,148 +19,11 @@ interface BadgeItem {
   icon: React.ElementType;
   threshold: number;
   achieved: boolean;
+  progress?: string;
 }
 
 const ProfileBadges = () => {
   const { user } = useAuth();
-
-  // Define breath-based badges
-  const breathBadgeDefinitions: Omit<BadgeItem, 'achieved'>[] = [
-    {
-      id: "breaths-1",
-      name: "First Breath",
-      description: "Complete your first breath",
-      icon: Sparkles,
-      threshold: 1
-    },
-    {
-      id: "breaths-50",
-      name: "Breathing Beginner",
-      description: "Complete 50 total breaths",
-      icon: BookOpen,
-      threshold: 50
-    },
-    {
-      id: "breaths-150",
-      name: "Breathing Intermediate",
-      description: "Complete 150 total breaths",
-      icon: Zap,
-      threshold: 150
-    },
-    {
-      id: "breaths-500",
-      name: "Breathing Enthusiast",
-      description: "Complete 500 total breaths",
-      icon: TrendingUp,
-      threshold: 500
-    },
-    {
-      id: "breaths-1000",
-      name: "Breathing Expert",
-      description: "Complete 1000 total breaths",
-      icon: Award,
-      threshold: 1000
-    },
-    {
-      id: "breaths-2000",
-      name: "Breathing Master",
-      description: "Complete 2000 total breaths",
-      icon: Trophy,
-      threshold: 2000
-    }
-  ];
-
-  // Define session-based badges
-  const sessionBadgeDefinitions: Omit<BadgeItem, 'achieved'>[] = [
-    {
-      id: "sessions-1",
-      name: "First Flow",
-      description: "Your very first session",
-      icon: Dice1,
-      threshold: 1
-    },
-    {
-      id: "sessions-10",
-      name: "Finding Rhythm",
-      description: "Complete 10 sessions",
-      icon: Dice2,
-      threshold: 10
-    },
-    {
-      id: "sessions-25",
-      name: "Habit Builder",
-      description: "Complete 25 sessions",
-      icon: Dice3,
-      threshold: 25
-    },
-    {
-      id: "sessions-50",
-      name: "Momentum",
-      description: "Complete 50 sessions",
-      icon: Dice4,
-      threshold: 50
-    },
-    {
-      id: "sessions-100",
-      name: "Consistency Pro",
-      description: "Complete 100 sessions",
-      icon: Dice5,
-      threshold: 100
-    },
-    {
-      id: "sessions-250",
-      name: "Deep Practice",
-      description: "Complete 250 sessions",
-      icon: Dice6,
-      threshold: 250
-    }
-  ];
-
-  // Define streak-based badges
-  const streakBadgeDefinitions: Omit<BadgeItem, 'achieved'>[] = [
-    {
-      id: "streak-7",
-      name: "Spark Week",
-      description: "Seven days of steady calm",
-      icon: Sprout,
-      threshold: 7
-    },
-    {
-      id: "streak-30",
-      name: "Habit Month",
-      description: "Thirty days, habit locked",
-      icon: Flower2,
-      threshold: 30
-    },
-    {
-      id: "streak-91",
-      name: "Flow Quarter",
-      description: "Three months in steady flow",
-      icon: Shrub,
-      threshold: 91
-    },
-    {
-      id: "streak-182",
-      name: "Steady Half-Year",
-      description: "Six months of steady practice",
-      icon: TreePine,
-      threshold: 182
-    },
-    {
-      id: "streak-273",
-      name: "Unshakable Nine",
-      description: "Nine months, nothing shakes you",
-      icon: Trees,
-      threshold: 273
-    },
-    {
-      id: "streak-365",
-      name: "Year of Breath",
-      description: "365 days. Habit mastered",
-      icon: MountainSnow,
-      threshold: 365
-    }
-  ];
 
   // Fetch user stats
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -216,114 +84,185 @@ const ProfileBadges = () => {
     enabled: !!user
   });
 
+  // Fetch exercise completions
+  const { data: exerciseData, isLoading: exerciseLoading } = useQuery({
+    queryKey: ["exerciseCompletions", user?.id],
+    queryFn: async () => {
+      if (!user) return { customCount: 0, differentCount: 0, totalExercises: 0 };
+      
+      // Get user's exercise completions
+      const { data: completions, error: completionsError } = await supabase
+        .from("user_exercise_completions")
+        .select("*")
+        .eq("user_id", user.id);
+        
+      if (completionsError) throw completionsError;
+      
+      // Get total number of available exercises (excluding custom ones)
+      const { data: allExercises, error: exercisesError } = await supabase
+        .from("breathing_exercises")
+        .select("id")
+        .eq("is_custom", false);
+        
+      if (exercisesError) throw exercisesError;
+      
+      const customCount = completions?.filter(c => c.is_custom).length || 0;
+      const differentCount = completions?.filter(c => !c.is_custom).length || 0;
+      const totalExercises = allExercises?.length || 0;
+      
+      return {
+        customCount,
+        differentCount,
+        totalExercises
+      };
+    },
+    enabled: !!user
+  });
+
+  // Fetch OXIA achievements
+  const { data: oxiaData, isLoading: oxiaLoading } = useQuery({
+    queryKey: ["oxiaAchievements", user?.id],
+    queryFn: async () => {
+      if (!user) return { hasShared: false, totalAchievements: 0, unlockedAchievements: 0 };
+      
+      // Check if user has shared
+      const { data: achievements, error: achievementsError } = await supabase
+        .from("user_achievements")
+        .select("achievement_id")
+        .eq("user_id", user.id);
+        
+      if (achievementsError) throw achievementsError;
+      
+      const hasShared = achievements?.some(a => a.achievement_id === "oxia-share") || false;
+      
+      // Calculate total possible achievements vs unlocked
+      const totalPossibleAchievements = 
+        breathBadgeDefinitions.length + 
+        sessionBadgeDefinitions.length + 
+        streakBadgeDefinitions.length + 
+        exerciseBadgeDefinitions.length + 
+        1; // Share achievement (excluding True Oxian itself)
+      
+      const unlockedAchievements = achievements?.length || 0;
+      
+      return {
+        hasShared,
+        totalAchievements: totalPossibleAchievements,
+        unlockedAchievements
+      };
+    },
+    enabled: !!user
+  });
+
   // Prepare badges with achieved status
   const breathBadges: BadgeItem[] = breathBadgeDefinitions.map(badge => ({
     ...badge,
-    achieved: stats?.totalBreaths ? stats.totalBreaths >= badge.threshold : false
+    achieved: stats?.totalBreaths ? stats.totalBreaths >= badge.threshold : false,
+    progress: `${stats?.totalBreaths || 0}/${badge.threshold} breaths`
   }));
 
   const sessionBadges: BadgeItem[] = sessionBadgeDefinitions.map(badge => ({
     ...badge,
-    achieved: stats?.totalSessions ? stats.totalSessions >= badge.threshold : false
+    achieved: stats?.totalSessions ? stats.totalSessions >= badge.threshold : false,
+    progress: `${stats?.totalSessions || 0}/${badge.threshold} sessions`
   }));
 
   const streakBadges: BadgeItem[] = streakBadgeDefinitions.map(badge => ({
     ...badge,
-    achieved: streakData?.longest_breath_streak ? streakData.longest_breath_streak >= badge.threshold : false
+    achieved: streakData?.longest_breath_streak ? streakData.longest_breath_streak >= badge.threshold : false,
+    progress: `${streakData?.longest_breath_streak || 0}/${badge.threshold} days`
   }));
 
-  if (statsLoading || streakLoading) {
+  const exerciseBadges: BadgeItem[] = exerciseBadgeDefinitions.map(badge => {
+    let achieved = false;
+    let progress = "";
+    
+    if (badge.type === "custom") {
+      achieved = (exerciseData?.customCount || 0) >= badge.threshold;
+      progress = `${exerciseData?.customCount || 0}/${badge.threshold} custom`;
+    } else if (badge.type === "different") {
+      achieved = (exerciseData?.differentCount || 0) >= badge.threshold;
+      progress = `${exerciseData?.differentCount || 0}/${badge.threshold} different`;
+    } else if (badge.type === "all") {
+      achieved = (exerciseData?.differentCount || 0) >= (exerciseData?.totalExercises || 1);
+      progress = `${exerciseData?.differentCount || 0}/${exerciseData?.totalExercises || 0} exercises`;
+    }
+    
+    return {
+      ...badge,
+      achieved,
+      progress
+    };
+  });
+
+  const oxiaBadges: BadgeItem[] = oxiaBadgeDefinitions.map(badge => {
+    let achieved = false;
+    let progress = "";
+    
+    if (badge.id === "oxia-share") {
+      achieved = oxiaData?.hasShared || false;
+      progress = achieved ? "Shared!" : "Share the app";
+    } else if (badge.id === "oxia-true") {
+      // True Oxian requires all other achievements
+      const allOtherAchievements = 
+        breathBadges.filter(b => b.achieved).length +
+        sessionBadges.filter(b => b.achieved).length +
+        streakBadges.filter(b => b.achieved).length +
+        exerciseBadges.filter(b => b.achieved).length +
+        (oxiaData?.hasShared ? 1 : 0);
+      
+      achieved = allOtherAchievements >= (oxiaData?.totalAchievements || 1);
+      progress = `${allOtherAchievements}/${oxiaData?.totalAchievements || 0} achievements`;
+    }
+    
+    return {
+      ...badge,
+      achieved,
+      progress
+    };
+  });
+
+  if (statsLoading || streakLoading || exerciseLoading || oxiaLoading) {
     return <div className="text-center p-4">Loading badges...</div>;
   }
 
+  const renderBadgeSection = (title: string, badges: BadgeItem[]) => (
+    <div className="space-y-4">
+      <h3 className="font-semibold text-lg">{title}</h3>
+      <div className="grid grid-cols-2 gap-4">
+        {badges.map((badge) => (
+          <div 
+            key={badge.id}
+            className={`p-4 rounded-lg border flex flex-col items-center text-center gap-2 transition-all ${
+              badge.achieved 
+                ? "bg-accent/50 border-accent" 
+                : "bg-muted/30 border-muted opacity-50"
+            }`}
+          >
+            <div className={`p-3 rounded-full ${badge.achieved ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+              <badge.icon size={24} />
+            </div>
+            
+            <h3 className="font-medium mt-1">{badge.name}</h3>
+            
+            <p className="text-xs text-muted-foreground">{badge.description}</p>
+            
+            <Badge variant={badge.achieved ? "default" : "outline"} className="mt-2">
+              {badge.achieved ? "Unlocked" : badge.progress}
+            </Badge>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
-      {/* Breath-based achievements */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-lg">Breaths</h3>
-        <div className="grid grid-cols-2 gap-4">
-          {breathBadges.map((badge) => (
-            <div 
-              key={badge.id}
-              className={`p-4 rounded-lg border flex flex-col items-center text-center gap-2 transition-all ${
-                badge.achieved 
-                  ? "bg-accent/50 border-accent" 
-                  : "bg-muted/30 border-muted opacity-50"
-              }`}
-            >
-              <div className={`p-3 rounded-full ${badge.achieved ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-                <badge.icon size={24} />
-              </div>
-              
-              <h3 className="font-medium mt-1">{badge.name}</h3>
-              
-              <p className="text-xs text-muted-foreground">{badge.description}</p>
-              
-              <Badge variant={badge.achieved ? "default" : "outline"} className="mt-2">
-                {badge.achieved ? "Unlocked" : `${stats?.totalBreaths || 0}/${badge.threshold} breaths`}
-              </Badge>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Session-based achievements */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-lg">Sessions</h3>
-        <div className="grid grid-cols-2 gap-4">
-          {sessionBadges.map((badge) => (
-            <div 
-              key={badge.id}
-              className={`p-4 rounded-lg border flex flex-col items-center text-center gap-2 transition-all ${
-                badge.achieved 
-                  ? "bg-accent/50 border-accent" 
-                  : "bg-muted/30 border-muted opacity-50"
-              }`}
-            >
-              <div className={`p-3 rounded-full ${badge.achieved ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-                <badge.icon size={24} />
-              </div>
-              
-              <h3 className="font-medium mt-1">{badge.name}</h3>
-              
-              <p className="text-xs text-muted-foreground">{badge.description}</p>
-              
-              <Badge variant={badge.achieved ? "default" : "outline"} className="mt-2">
-                {badge.achieved ? "Unlocked" : `${stats?.totalSessions || 0}/${badge.threshold} sessions`}
-              </Badge>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Streak-based achievements */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-lg">Streaks</h3>
-        <div className="grid grid-cols-2 gap-4">
-          {streakBadges.map((badge) => (
-            <div 
-              key={badge.id}
-              className={`p-4 rounded-lg border flex flex-col items-center text-center gap-2 transition-all ${
-                badge.achieved 
-                  ? "bg-accent/50 border-accent" 
-                  : "bg-muted/30 border-muted opacity-50"
-              }`}
-            >
-              <div className={`p-3 rounded-full ${badge.achieved ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-                <badge.icon size={24} />
-              </div>
-              
-              <h3 className="font-medium mt-1">{badge.name}</h3>
-              
-              <p className="text-xs text-muted-foreground">{badge.description}</p>
-              
-              <Badge variant={badge.achieved ? "default" : "outline"} className="mt-2">
-                {badge.achieved ? "Unlocked" : `${streakData?.longest_breath_streak || 0}/${badge.threshold} days`}
-              </Badge>
-            </div>
-          ))}
-        </div>
-      </div>
+      {renderBadgeSection("Breaths", breathBadges)}
+      {renderBadgeSection("Sessions", sessionBadges)}
+      {renderBadgeSection("Streaks", streakBadges)}
+      {renderBadgeSection("Exercises", exerciseBadges)}
+      {renderBadgeSection("OXIA", oxiaBadges)}
     </div>
   );
 };

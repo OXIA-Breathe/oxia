@@ -4,12 +4,14 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useStreakManager } from "./useStreakManager";
 import { useAchievements } from "./useAchievements";
+import { useExerciseTracking } from "./useExerciseTracking";
 
 export const useSessionPersistence = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { updateBreathStreak } = useStreakManager();
   const { checkForNewAchievements } = useAchievements();
+  const { trackExerciseCompletion } = useExerciseTracking();
 
   const saveSessionToSupabase = async (sessionData: any) => {
     if (!user) return;
@@ -36,6 +38,15 @@ export const useSessionPersistence = () => {
           variant: "destructive"
         });
       } else {
+        // Track exercise completion if exercise ID and title are provided
+        if (sessionData.exerciseId && sessionData.exerciseTitle) {
+          await trackExerciseCompletion(
+            sessionData.exerciseId, 
+            sessionData.exerciseTitle, 
+            sessionData.isCustom || false
+          );
+        }
+        
         // Update breath streak after successfully saving the session
         await updateBreathStreak(user.id);
         

@@ -1,5 +1,5 @@
 
-import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Sprout, Flower2, Shrub, TreePine, Trees, MountainSnow } from "lucide-react";
+import { Award, BookOpen, TrendingUp, Zap, Trophy, Sparkles, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Sprout, Flower2, Shrub, TreePine, Trees, MountainSnow, Dumbbell, Footprints, Compass, Earth, Radar, Hand, Crown } from "lucide-react";
 
 export const breathBadgeDefinitions = [
   {
@@ -133,5 +133,65 @@ export const streakBadgeDefinitions = [
     description: "365 days. Habit mastered",
     icon: MountainSnow,
     threshold: 365
+  }
+];
+
+export const exerciseBadgeDefinitions = [
+  {
+    id: "exercise-creator",
+    name: "Creator",
+    description: "Your first custom exercise",
+    icon: Dumbbell,
+    threshold: 1,
+    type: "custom"
+  },
+  {
+    id: "exercise-explorer",
+    name: "Explorer",
+    description: "Three different techniques explored",
+    icon: Footprints,
+    threshold: 3,
+    type: "different"
+  },
+  {
+    id: "exercise-pathfinder",
+    name: "Pathfinder",
+    description: "Five different techniques explored",
+    icon: Compass,
+    threshold: 5,
+    type: "different"
+  },
+  {
+    id: "exercise-voyager",
+    name: "Voyager",
+    description: "Ten different techniques explored",
+    icon: Earth,
+    threshold: 10,
+    type: "different"
+  },
+  {
+    id: "exercise-full-spectrum",
+    name: "Full Spectrum",
+    description: "Every OXIA technique explored",
+    icon: Radar,
+    threshold: -1, // Special case for all exercises
+    type: "all"
+  }
+];
+
+export const oxiaBadgeDefinitions = [
+  {
+    id: "oxia-share",
+    name: "Share the Calm",
+    description: "Shared OXIA with friends",
+    icon: Hand,
+    threshold: 1
+  },
+  {
+    id: "oxia-true",
+    name: "True Oxian",
+    description: "Every achievement, platinum status",
+    icon: Crown,
+    threshold: -1 // Special case for all achievements
   }
 ];
