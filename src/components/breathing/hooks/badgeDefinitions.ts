@@ -140,7 +140,7 @@ export const exerciseBadgeDefinitions = [
   {
     id: "exercise-creator",
     name: "Creator",
-    description: "Your first custom exercise",
+    description: "Your first custom exercise completed",
     icon: Dumbbell,
     threshold: 1,
     type: "custom"
