@@ -20,9 +20,13 @@ export const BreathingExerciseProvider = ({ children }: { children: ReactNode })
       const savedVersion = localStorage.getItem("breathingExercisesVersion");
       const savedExercises = localStorage.getItem("breathingExercises");
       
-      // If version mismatch or no saved data, use fresh defaults
-      if (savedVersion !== currentVersion || !savedExercises) {
+      // If version mismatch, update the stored version but preserve custom exercises
+      if (savedVersion !== currentVersion) {
         localStorage.setItem("breathingExercisesVersion", currentVersion);
+      }
+      
+      // If no saved data at all, use fresh defaults
+      if (!savedExercises) {
         return defaultBreathingExercises;
       }
       
