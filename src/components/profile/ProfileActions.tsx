@@ -16,15 +16,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Trash2, Key } from "lucide-react";
+import { LogOut, Trash2, Key, RotateCcw } from "lucide-react";
 import ChangePasswordModal from "./ChangePasswordModal";
 
 const ProfileActions = () => {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -79,6 +80,67 @@ const ProfileActions = () => {
     }
   };
 
+  const handleResetStats = async () => {
+    if (!user) return;
+    
+    try {
+      setIsResetting(true);
+      
+      // Delete all user data in parallel
+      await Promise.all([
+        // Delete all breath sessions
+        supabase
+          .from("breath_sessions")
+          .delete()
+          .eq("user_id", user.id),
+        
+        // Delete all exercise completions
+        supabase
+          .from("user_exercise_completions")
+          .delete()
+          .eq("user_id", user.id),
+        
+        // Delete all achievements
+        supabase
+          .from("user_achievements")
+          .delete()
+          .eq("user_id", user.id),
+        
+        // Reset streaks to default values
+        supabase
+          .from("user_streaks")
+          .update({
+            current_login_streak: 1,
+            longest_login_streak: 1,
+            current_breath_streak: 0,
+            longest_breath_streak: 0,
+            last_login_date: new Date().toISOString().split('T')[0],
+            last_breath_session_date: null
+          })
+          .eq("user_id", user.id),
+        
+        // Reset daily activity
+        supabase
+          .from("daily_activity")
+          .delete()
+          .eq("user_id", user.id)
+      ]);
+      
+      toast({
+        title: "Stats reset",
+        description: "All your stats, achievements, and history have been reset"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error resetting stats",
+        description: error.message || "An error occurred while resetting your stats",
+        variant: "destructive"
+      });
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
   return (
     <div className="flex flex-col sm:flex-row gap-4">
       <ChangePasswordModal>
@@ -97,6 +159,37 @@ const ProfileActions = () => {
         <LogOut className="w-4 h-4" />
         <span>{isLoggingOut ? "Logging out..." : "Log Out"}</span>
       </Button>
+      
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 text-orange-600 border-orange-200 hover:bg-orange-50"
+            disabled={isResetting}
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>{isResetting ? "Resetting..." : "Reset Stats"}</span>
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reset all statistics?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete all your:
+              <br />• Breathing session history
+              <br />• Exercise achievements and badges
+              <br />• Activity streaks
+              <br />• Daily activity records
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleResetStats} className="bg-orange-600 hover:bg-orange-700">
+              Reset Stats
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       
       <AlertDialog>
         <AlertDialogTrigger asChild>
