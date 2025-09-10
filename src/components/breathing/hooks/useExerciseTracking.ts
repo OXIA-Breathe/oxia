@@ -35,6 +35,7 @@ export const useExerciseTracking = () => {
     console.log("DB Exercise ID:", dbExerciseId);
     console.log("Exercise Title:", exerciseTitle);
     console.log("Is Custom:", isCustom);
+    console.log("User ID:", user.id);
 
     try {
       // Insert exercise completion (UNIQUE constraint will prevent duplicates)
