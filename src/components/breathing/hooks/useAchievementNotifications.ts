@@ -40,33 +40,33 @@ export const useAchievementNotifications = () => {
   };
 
   const checkBreathAchievements = (totalBreaths: number, previousTotal: number) => {
-    const newBadges = breathBadgeDefinitions.filter(badge => 
+    const newBadge = breathBadgeDefinitions.find(badge => 
       badge.threshold <= totalBreaths && badge.threshold > previousTotal
     );
     
-    newBadges.forEach(badge => {
-      showAchievementToast(badge.name, badge.description, 'breath');
-    });
+    if (newBadge) {
+      showAchievementToast(newBadge.name, newBadge.description, 'breath');
+    }
   };
 
   const checkSessionAchievements = (totalSessions: number, previousTotal: number) => {
-    const newBadges = sessionBadgeDefinitions.filter(badge => 
+    const newBadge = sessionBadgeDefinitions.find(badge => 
       badge.threshold <= totalSessions && badge.threshold > previousTotal
     );
     
-    newBadges.forEach(badge => {
-      showAchievementToast(badge.name, badge.description, 'session');
-    });
+    if (newBadge) {
+      showAchievementToast(newBadge.name, newBadge.description, 'session');
+    }
   };
 
   const checkStreakAchievements = (currentStreak: number, previousStreak: number) => {
-    const newBadges = streakBadgeDefinitions.filter(badge => 
+    const newBadge = streakBadgeDefinitions.find(badge => 
       badge.threshold <= currentStreak && badge.threshold > previousStreak
     );
     
-    newBadges.forEach(badge => {
-      showAchievementToast(badge.name, badge.description, 'streak');
-    });
+    if (newBadge) {
+      showAchievementToast(newBadge.name, newBadge.description, 'streak');
+    }
   };
 
   const checkExerciseAchievements = (completedExercises: any[], isNewExercise: boolean) => {
