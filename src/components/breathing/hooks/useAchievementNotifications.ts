@@ -83,13 +83,13 @@ export const useAchievementNotifications = () => {
       showAchievementToast(customBadge.name, customBadge.description, 'exercise');
     }
 
-    // Check exploration badges
-    const explorationBadges = exerciseBadgeDefinitions.filter(badge => 
+    // Check exploration badges - only show the exact threshold match
+    const explorationBadge = exerciseBadgeDefinitions.find(badge => 
       badge.type === "different" && uniqueExercises === badge.threshold
     );
-    explorationBadges.forEach(badge => {
-      showAchievementToast(badge.name, badge.description, 'exercise');
-    });
+    if (explorationBadge) {
+      showAchievementToast(explorationBadge.name, explorationBadge.description, 'exercise');
+    }
 
     // Check full spectrum badge (all 11 default exercises)
     const nonCustomExercises = completedExercises.filter(ex => !ex.is_custom);
