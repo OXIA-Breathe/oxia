@@ -1,0 +1,119 @@
+import { useToast } from "@/hooks/use-toast";
+import { 
+  breathBadgeDefinitions, 
+  sessionBadgeDefinitions, 
+  streakBadgeDefinitions, 
+  exerciseBadgeDefinitions, 
+  oxiaBadgeDefinitions 
+} from "./badgeDefinitions";
+
+export const useAchievementNotifications = () => {
+  const { toast } = useToast();
+
+  const showAchievementToast = (
+    badgeName: string, 
+    badgeDescription: string, 
+    category: 'breath' | 'session' | 'streak' | 'exercise' | 'oxia' = 'breath'
+  ) => {
+    const categoryEmojis = {
+      breath: "🫁",
+      session: "🎯", 
+      streak: "🔥",
+      exercise: "🧘‍♀️",
+      oxia: "✨"
+    };
+
+    const categoryMessages = {
+      breath: "Your breathing practice is growing stronger!",
+      session: "Your dedication is paying off!",
+      streak: "Your consistency is incredible!",
+      exercise: "Your exploration journey continues!",
+      oxia: "You're a true OXIA champion!"
+    };
+
+    toast({
+      title: `${categoryEmojis[category]} Achievement Unlocked!`,
+      description: `Congratulations! You've earned "${badgeName}" - ${badgeDescription}. ${categoryMessages[category]}`,
+      duration: 8000,
+      className: "bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20"
+    });
+  };
+
+  const checkBreathAchievements = (totalBreaths: number, previousTotal: number) => {
+    const newBadges = breathBadgeDefinitions.filter(badge => 
+      badge.threshold <= totalBreaths && badge.threshold > previousTotal
+    );
+    
+    newBadges.forEach(badge => {
+      showAchievementToast(badge.name, badge.description, 'breath');
+    });
+  };
+
+  const checkSessionAchievements = (totalSessions: number, previousTotal: number) => {
+    const newBadges = sessionBadgeDefinitions.filter(badge => 
+      badge.threshold <= totalSessions && badge.threshold > previousTotal
+    );
+    
+    newBadges.forEach(badge => {
+      showAchievementToast(badge.name, badge.description, 'session');
+    });
+  };
+
+  const checkStreakAchievements = (currentStreak: number, previousStreak: number) => {
+    const newBadges = streakBadgeDefinitions.filter(badge => 
+      badge.threshold <= currentStreak && badge.threshold > previousStreak
+    );
+    
+    newBadges.forEach(badge => {
+      showAchievementToast(badge.name, badge.description, 'streak');
+    });
+  };
+
+  const checkExerciseAchievements = (completedExercises: any[], isNewExercise: boolean) => {
+    if (!isNewExercise) return;
+
+    const customCount = completedExercises.filter(ex => ex.is_custom).length;
+    const uniqueExercises = completedExercises.length;
+
+    // Check custom exercise badge
+    const customBadge = exerciseBadgeDefinitions.find(badge => 
+      badge.type === "custom" && customCount >= badge.threshold
+    );
+    if (customBadge && customCount === customBadge.threshold) {
+      showAchievementToast(customBadge.name, customBadge.description, 'exercise');
+    }
+
+    // Check exploration badges
+    const explorationBadges = exerciseBadgeDefinitions.filter(badge => 
+      badge.type === "different" && uniqueExercises === badge.threshold
+    );
+    explorationBadges.forEach(badge => {
+      showAchievementToast(badge.name, badge.description, 'exercise');
+    });
+
+    // Check full spectrum badge (all 11 default exercises)
+    const nonCustomExercises = completedExercises.filter(ex => !ex.is_custom);
+    if (nonCustomExercises.length === 11) {
+      const fullSpectrumBadge = exerciseBadgeDefinitions.find(badge => badge.type === "all");
+      if (fullSpectrumBadge) {
+        showAchievementToast(fullSpectrumBadge.name, fullSpectrumBadge.description, 'exercise');
+      }
+    }
+  };
+
+  const showShareAchievement = () => {
+    const shareBadge = oxiaBadgeDefinitions.find(badge => badge.id === "oxia-share");
+    if (shareBadge) {
+      showAchievementToast(shareBadge.name, shareBadge.description, 'oxia');
+    }
+  };
+
+  return {
+    showAchievementToast,
+    checkBreathAchievements,
+    checkSessionAchievements,
+    checkStreakAchievements,
+    checkExerciseAchievements,
+    showShareAchievement
+  };
+};

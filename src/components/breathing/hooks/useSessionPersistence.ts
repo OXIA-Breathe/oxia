@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useStreakManager } from "./useStreakManager";
 import { useAchievements } from "./useAchievements";
 import { useExerciseTracking } from "./useExerciseTracking";
+import { useAchievementNotifications } from "./useAchievementNotifications";
 
 export const useSessionPersistence = () => {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ export const useSessionPersistence = () => {
   const { updateBreathStreak } = useStreakManager();
   const { checkForNewAchievements } = useAchievements();
   const { trackExerciseCompletion } = useExerciseTracking();
+  const { checkSessionAchievements, checkExerciseAchievements } = useAchievementNotifications();
 
   const saveSessionToSupabase = async (sessionData: any) => {
     if (!user) return;
@@ -38,25 +40,50 @@ export const useSessionPersistence = () => {
           variant: "destructive"
         });
       } else {
+        // Get session count before tracking exercise completion to check for session achievements
+        const { data: allSessions } = await supabase
+          .from("breath_sessions")
+          .select("id, breath_count")
+          .eq("user_id", user.id);
+          
+        const previousSessionCount = allSessions ? allSessions.length - 1 : 0; // Subtract current session
+        const currentSessionCount = allSessions ? allSessions.length : 1;
+        
+        // Check for session achievements
+        checkSessionAchievements(currentSessionCount, previousSessionCount);
+        
         // Track exercise completion if exercise ID and title are provided
         if (sessionData.exerciseId && sessionData.exerciseTitle) {
+          // Get completed exercises before adding this one
+          const { data: previousExercises } = await supabase
+            .from("user_exercise_completions")
+            .select("*")
+            .eq("user_id", user.id);
+            
           await trackExerciseCompletion(
             sessionData.exerciseId, 
             sessionData.exerciseTitle, 
             sessionData.isCustom || false
           );
+          
+          // Get updated completed exercises to check for exercise achievements
+          const { data: updatedExercises } = await supabase
+            .from("user_exercise_completions")
+            .select("*")
+            .eq("user_id", user.id);
+            
+          const isNewExercise = updatedExercises && previousExercises && 
+            updatedExercises.length > previousExercises.length;
+            
+          if (updatedExercises && isNewExercise) {
+            checkExerciseAchievements(updatedExercises, true);
+          }
         }
         
         // Update breath streak after successfully saving the session
         await updateBreathStreak(user.id);
         
-        // Check for achievements after successfully saving the session
-        // Calculate new total breaths including this session
-        const { data: allSessions } = await supabase
-          .from("breath_sessions")
-          .select("breath_count")
-          .eq("user_id", user.id);
-          
+        // Check for breath achievements after successfully saving the session
         if (allSessions) {
           const newTotalBreaths = allSessions.reduce((sum, session) => sum + session.breath_count, 0);
           await checkForNewAchievements(newTotalBreaths);

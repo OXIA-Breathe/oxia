@@ -1,6 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
+import { useAchievementNotifications } from "./useAchievementNotifications";
 
 export const useStreakManager = () => {
+  const { checkStreakAchievements } = useAchievementNotifications();
   const updateBreathStreak = async (userId: string) => {
     try {
       const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
@@ -74,6 +76,9 @@ export const useStreakManager = () => {
         
       if (updateError) {
         console.error("Error updating breath streak:", updateError);
+      } else {
+        // Check for new streak achievements
+        checkStreakAchievements(newCurrentStreak, currentStreak);
       }
       
     } catch (error) {

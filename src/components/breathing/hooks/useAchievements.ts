@@ -1,12 +1,11 @@
 
 import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { breathBadgeDefinitions } from "./badgeDefinitions";
+import { useAchievementNotifications } from "./useAchievementNotifications";
 
 export const useAchievements = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
+  const { checkBreathAchievements } = useAchievementNotifications();
 
   const checkForNewAchievements = async (newTotalBreaths: number) => {
     if (!user) return;
@@ -22,22 +21,8 @@ export const useAchievements = () => {
       
       const previousTotalBreaths = data ? data.reduce((sum, session) => sum + session.breath_count, 0) : 0;
       
-      // Find newly earned badges
-      const newlyEarnedBadge = breathBadgeDefinitions
-        .filter(badge => 
-          badge.threshold <= newTotalBreaths && // Badge threshold is now met
-          badge.threshold > previousTotalBreaths // Badge threshold wasn't met before
-        )
-        .sort((a, b) => b.threshold - a.threshold)[0]; // Get the highest threshold badge
-        
-      if (newlyEarnedBadge) {
-        // Show achievement toast
-        toast({
-          title: "🎉 Achievement Unlocked!",
-          description: `Congratulations! You've earned the "${newlyEarnedBadge.name}" badge for completing ${newlyEarnedBadge.threshold} breaths!`,
-          duration: 6000,
-        });
-      }
+      // Check for new breath achievements using the comprehensive notification system
+      checkBreathAchievements(newTotalBreaths, previousTotalBreaths);
     } catch (err) {
       console.error("Error checking achievements:", err);
     }

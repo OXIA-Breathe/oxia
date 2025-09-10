@@ -1,10 +1,12 @@
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAchievementNotifications } from "./useAchievementNotifications";
 
 export const useShareTracking = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { showShareAchievement } = useAchievementNotifications();
 
   const trackShareAction = async () => {
     if (!user) return;
@@ -19,12 +21,8 @@ export const useShareTracking = () => {
           achievement_type: "oxia"
         });
 
-      // Show achievement toast
-      toast({
-        title: "🎉 Achievement Unlocked!",
-        description: "Congratulations! You've earned the \"Share the Calm\" badge for sharing OXIA with friends!",
-        duration: 6000,
-      });
+      // Show achievement toast using the comprehensive notification system
+      showShareAchievement();
     } catch (error) {
       // Ignore unique constraint violations - user already has this achievement
       console.log("Share achievement already unlocked or error:", error);
