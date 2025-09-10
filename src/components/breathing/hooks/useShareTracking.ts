@@ -1,14 +1,14 @@
 import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAchievementNotifications } from "./useAchievementNotifications";
+import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 
 export const useShareTracking = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const { showShareAchievement } = useAchievementNotifications();
+  const { queueNotifications } = useNotificationQueue();
 
-  const trackShareAction = async () => {
+  const trackShareAction = async (isNewAchievement: boolean = false) => {
     if (!user) return;
 
     try {
@@ -21,8 +21,10 @@ export const useShareTracking = () => {
           achievement_type: "oxia"
         });
 
-      // Show achievement toast using the comprehensive notification system
-      showShareAchievement();
+      // If this is a new achievement, show it
+      if (isNewAchievement) {
+        showShareAchievement();
+      }
     } catch (error) {
       // Ignore unique constraint violations - user already has this achievement
       console.log("Share achievement already unlocked or error:", error);
@@ -37,17 +39,43 @@ export const useShareTracking = () => {
     };
 
     try {
+      // Check if user already has the achievement
+      const { data: existingAchievement } = await supabase
+        .from("user_achievements")
+        .select("id")
+        .eq("user_id", user?.id)
+        .eq("achievement_id", "oxia-share")
+        .single();
+
+      const isNewAchievement = !existingAchievement;
+
       if (navigator.share && navigator.canShare(shareData)) {
         await navigator.share(shareData);
-        await trackShareAction();
+        await trackShareAction(isNewAchievement);
       } else {
         // Fallback: copy to clipboard
         await navigator.clipboard.writeText(shareData.url);
-        toast({
-          title: "Link copied!",
-          description: "Share link has been copied to your clipboard",
-        });
-        await trackShareAction();
+        
+        // Queue notifications in the correct order
+        const notifications = [
+          {
+            title: "Link copied!",
+            description: "Share link has been copied to your clipboard",
+            duration: 3000
+          }
+        ];
+
+        // Add achievement notification if it's new
+        if (isNewAchievement) {
+          notifications.push({
+            title: "🎉 Achievement Unlocked!",
+            description: "Ambassador - You shared OXIA with others!",
+            duration: 4000
+          });
+        }
+
+        queueNotifications(notifications);
+        await trackShareAction(isNewAchievement);
       }
     } catch (error) {
       console.log("Error sharing:", error);
