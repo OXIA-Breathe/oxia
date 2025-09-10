@@ -73,6 +73,16 @@ export const useSessionOperations = (
           .delete()
           .eq("id", session.id)
           .eq("user_id", user.id);
+          
+        // Also delete any exercise completion tracking for this session's exercise
+        // This ensures exercise achievements are properly reset when sessions are deleted
+        if (!error && session.exerciseTitle) {
+          await supabase
+            .from("user_exercise_completions")
+            .delete()
+            .eq("user_id", user.id)
+            .eq("exercise_title", session.exerciseTitle);
+        }
 
         if (error) {
           console.error("Supabase delete error:", error);
