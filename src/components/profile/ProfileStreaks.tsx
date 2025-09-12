@@ -2,12 +2,9 @@
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { useBreathStreakMigration } from "@/hooks/useBreathStreakMigration";
-import { Button } from "@/components/ui/button";
 
 const ProfileStreaks = () => {
   const { user } = useAuth();
-  const { migrateBreathStreaks } = useBreathStreakMigration();
 
   // Fetch user streak data
   const { data: streakData, isLoading } = useQuery({
@@ -44,19 +41,6 @@ const ProfileStreaks = () => {
 
   return (
     <div className="space-y-4">
-      {/* Show migration button if breath streaks are 0 but sessions exist */}
-      {(streakData.current_breath_streak === 0 && streakData.longest_breath_streak === 0) && (
-        <div className="text-center">
-          <Button 
-            onClick={migrateBreathStreaks}
-            variant="outline"
-            size="sm"
-          >
-            Calculate Breath Streaks from History
-          </Button>
-        </div>
-      )}
-      
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
         <StreakCard 
           title="Current Breath Streak" 
