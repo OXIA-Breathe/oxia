@@ -6,6 +6,8 @@ import { useBreathingExercise } from "@/context/BreathingExerciseContext";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useSessionPersistence } from "./useSessionPersistence";
+import { usePersistentBreathing } from "@/context/PersistentBreathingContext";
+import { useEffect } from "react";
 
 export const useBreathingSession = () => {
   const { addSession } = useBreath();
@@ -13,6 +15,7 @@ export const useBreathingSession = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { saveSessionToSupabase } = useSessionPersistence();
+  const { sessionState, saveSessionState, clearSessionState } = usePersistentBreathing();
 
   // Use current exercise or fallback to Box Breathing default
   const exerciseSettings = currentExercise || {
@@ -34,6 +37,39 @@ export const useBreathingSession = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [phaseTimeRemaining, setPhaseTimeRemaining] = useState<number | null>(null);
+
+  // Restore session state if available
+  useEffect(() => {
+    if (sessionState) {
+      setPhase(sessionState.phase);
+      setIsActive(sessionState.isActive);
+      setCurrentRepetition(sessionState.currentRepetition);
+      setBreathCount(sessionState.breathCount);
+      setTimeElapsed(sessionState.timeElapsed);
+      setSessionStartTime(sessionState.sessionStartTime);
+      setPhaseTimeRemaining(sessionState.phaseTimeRemaining);
+    }
+  }, [sessionState]);
+
+  // Save session state whenever it changes
+  useEffect(() => {
+    const currentState = {
+      phase,
+      isActive,
+      currentRepetition,
+      breathCount,
+      timeElapsed,
+      sessionStartTime,
+      phaseTimeRemaining,
+      exerciseSettings
+    };
+    
+    if (isActive && phase !== "idle") {
+      saveSessionState(currentState);
+    } else if (phase === "idle") {
+      clearSessionState();
+    }
+  }, [phase, isActive, currentRepetition, breathCount, timeElapsed, sessionStartTime, phaseTimeRemaining, exerciseSettings, saveSessionState, clearSessionState]);
 
   const completeSession = useCallback((finalBreathCount: number) => {
     const sessionEndTime = Date.now();
@@ -73,6 +109,7 @@ export const useBreathingSession = () => {
     setTimeElapsed(0);
     setSessionStartTime(null);
     setPhaseTimeRemaining(null);
+    clearSessionState();
   };
 
   const toggleExercise = () => {

@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { User, ArrowLeft } from "lucide-react";
 import Navbar from "./Navbar";
+import { ActiveSessionNotification } from "@/components/breathing/ActiveSessionNotification";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -41,6 +42,7 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
           )}
         </div>
         
+        <ActiveSessionNotification />
         {children}
       </main>
       <Navbar />
