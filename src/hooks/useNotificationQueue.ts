@@ -8,7 +8,7 @@ interface QueuedNotification {
   duration?: number;
 }
 
-export const useNotificationQueue = () => {
+const useNotificationQueue = () => {
   const { toast } = useToast();
   
   const showNotificationsInSequence = useCallback(async (notifications: QueuedNotification[]) => {
@@ -32,3 +32,5 @@ export const useNotificationQueue = () => {
 
   return { queueNotifications };
 };
+
+export { useNotificationQueue };
