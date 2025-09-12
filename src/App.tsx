@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BreathProvider } from "./context/BreathContext";
 import { BreathingExerciseProvider } from "./context/BreathingExerciseContext";
-import { PersistentBreathingProvider } from "./context/PersistentBreathingContext";
 import { AuthProvider } from "./context/AuthContext";
 import { useDailyStreakTracker } from "./hooks/useDailyStreakTracker";
 import Index from "./pages/Index";
@@ -28,8 +27,7 @@ const AppContent = () => {
   return (
     <BreathProvider>
       <BreathingExerciseProvider>
-        <PersistentBreathingProvider>
-          <BrowserRouter>
+        <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/learn" element={<LearnPage />} />
@@ -42,8 +40,7 @@ const AppContent = () => {
             <Route path="/progress" element={<ConsistencyPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          </BrowserRouter>
-        </PersistentBreathingProvider>
+        </BrowserRouter>
       </BreathingExerciseProvider>
     </BreathProvider>
   );
