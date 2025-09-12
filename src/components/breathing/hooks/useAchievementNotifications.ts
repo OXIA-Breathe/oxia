@@ -1,4 +1,4 @@
-import { useToast } from "@/hooks/use-toast";
+import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 import { 
   breathBadgeDefinitions, 
   sessionBadgeDefinitions, 
@@ -8,7 +8,7 @@ import {
 } from "./badgeDefinitions";
 
 export const useAchievementNotifications = () => {
-  const { toast } = useToast();
+  const { queueNotifications } = useNotificationQueue();
 
   const showAchievementToast = (
     badgeName: string, 
@@ -31,12 +31,11 @@ export const useAchievementNotifications = () => {
       oxia: "You're a true OXIA champion!"
     };
 
-    toast({
+    queueNotifications([{
       title: `${categoryEmojis[category]} Achievement Unlocked!`,
       description: `Congratulations! You've earned "${badgeName}" - ${badgeDescription}. ${categoryMessages[category]}`,
-      duration: 8000,
-      className: "bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20"
-    });
+      duration: 3000
+    }]);
   };
 
   const checkBreathAchievements = (totalBreaths: number, previousTotal: number) => {

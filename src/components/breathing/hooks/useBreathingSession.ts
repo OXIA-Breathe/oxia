@@ -4,14 +4,14 @@ import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
 import { useBreathingExercise } from "@/context/BreathingExerciseContext";
 import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/hooks/use-toast";
+import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 import { useSessionPersistence } from "./useSessionPersistence";
 
 export const useBreathingSession = () => {
   const { addSession } = useBreath();
   const { currentExercise } = useBreathingExercise();
   const { user } = useAuth();
-  const { toast } = useToast();
+  const { queueNotifications } = useNotificationQueue();
   const { saveSessionToSupabase } = useSessionPersistence();
 
   // Use current exercise or fallback to Box Breathing default
@@ -57,13 +57,14 @@ export const useBreathingSession = () => {
       saveSessionToSupabase(newSession);
     }
     
-    toast({
+    queueNotifications([{
       title: "Session completed!",
       description: `You completed ${finalBreathCount} breaths in ${totalDuration} seconds.`,
-    });
+      duration: 3000
+    }]);
     
     resetExercise();
-  }, [addSession, sessionStartTime, exerciseSettings, toast, user, saveSessionToSupabase]);
+  }, [addSession, sessionStartTime, exerciseSettings, queueNotifications, user, saveSessionToSupabase]);
 
   const resetExercise = () => {
     setPhase("idle");

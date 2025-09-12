@@ -1,6 +1,6 @@
 
 import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/hooks/use-toast";
+import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 import { supabase } from "@/integrations/supabase/client";
 import { useStreakManager } from "./useStreakManager";
 import { useAchievements } from "./useAchievements";
@@ -9,7 +9,7 @@ import { useAchievementNotifications } from "./useAchievementNotifications";
 
 export const useSessionPersistence = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
+  const { queueNotifications } = useNotificationQueue();
   const { updateBreathStreak } = useStreakManager();
   const { checkForNewAchievements } = useAchievements();
   const { trackExerciseCompletion } = useExerciseTracking();
@@ -34,11 +34,12 @@ export const useSessionPersistence = () => {
         
       if (error) {
         console.error("Error saving session to Supabase:", error);
-        toast({
+        queueNotifications([{
           title: "Error saving session",
           description: "Your session was saved locally but not to your account.",
-          variant: "destructive"
-        });
+          variant: "destructive",
+          duration: 3000
+        }]);
       } else {
         // Get session count before tracking exercise completion to check for session achievements
         const { data: allSessions } = await supabase
