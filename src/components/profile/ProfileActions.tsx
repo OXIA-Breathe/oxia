@@ -130,6 +130,11 @@ const ProfileActions = () => {
         title: "Stats reset",
         description: "All your stats, achievements, and history have been reset"
       });
+      
+      // Force page refresh to clear any cached achievement data
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error: any) {
       toast({
         title: "Error resetting stats",
