@@ -33,13 +33,13 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
   });
 
   const backgroundMusicOptions = [
-    { id: 'nature', name: 'Nature Sounds' },
-    { id: 'ocean', name: 'Ocean Waves' },
-    { id: 'forest', name: 'Forest Ambience' },
-    { id: 'rain', name: 'Gentle Rain' },
-    { id: 'meditation', name: 'Meditation Music' },
-    { id: 'piano', name: 'Soft Piano' },
-    { id: 'bells', name: 'Tibetan Bells' },
+    { id: 'cosmic', name: 'Cosmic Exploration' },
+    { id: 'ambient', name: 'Gentle Ambient Melodies' },
+    { id: 'meditation', name: 'Meditation Flow' },
+    { id: 'piano', name: 'Calm Piano' },
+    { id: 'nature', name: 'Nature Dreamscape' },
+    { id: 'stream', name: 'Peaceful Stream' },
+    { id: 'silent', name: 'Silent Universe' },
   ];
 
   const voiceGuidanceOptions = [
