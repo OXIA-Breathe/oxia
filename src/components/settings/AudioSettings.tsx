@@ -118,10 +118,10 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm text-muted-foreground">Volume</Label>
-                    <span className="text-sm text-muted-foreground">{Math.round(settings.backgroundMusic.volume * 100)}%</span>
+                    <span className="text-sm text-muted-foreground">{Math.round((settings.backgroundMusic.volume || 0.3) * 100)}%</span>
                   </div>
                   <Slider
-                    value={[settings.backgroundMusic.volume]}
+                    value={[settings.backgroundMusic.volume || 0.3]}
                     onValueChange={(value) => updateSetting('backgroundMusic', 'volume', value[0])}
                     max={1}
                     min={0}

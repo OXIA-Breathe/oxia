@@ -157,6 +157,13 @@ export const useBackgroundMusic = (options: UseBackgroundMusicOptions) => {
     }
   };
 
+  // Update volume when options change
+  useEffect(() => {
+    if (audioRef.current && options.volume !== undefined) {
+      audioRef.current.volume = options.volume;
+    }
+  }, [options.volume]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
