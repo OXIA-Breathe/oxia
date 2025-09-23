@@ -83,17 +83,36 @@ export const useBackgroundMusic = (options: UseBackgroundMusicOptions) => {
     }
 
     try {
+      if (isLoading) {
+        console.log('Music is already loading, skipping duplicate start');
+        return;
+      }
+
       console.log('Starting to load music:', musicPath);
       setIsLoading(true);
       
+      // If an audio element already exists, reuse it if it's the same track
       if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
+        const current = audioRef.current;
+        const sameSrc = current.src?.includes(musicPath);
+        if (sameSrc) {
+          if (current.paused) {
+            current.volume = 0;
+            await current.play();
+            setIsPlaying(true);
+            fadeIn(current, 500);
+          }
+          return;
+        } else {
+          current.pause();
+          audioRef.current = null;
+        }
       }
 
       const audio = new Audio(musicPath);
       audio.loop = true;
       audio.preload = 'auto';
+      audio.volume = 0;
       
       await new Promise<void>((resolve, reject) => {
         audio.oncanplaythrough = () => resolve();

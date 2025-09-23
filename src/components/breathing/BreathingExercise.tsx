@@ -110,7 +110,7 @@ const BreathingExercise = () => {
       // Stop background music when exercise ends
       stopMusic();
     }
-  }, [isActive, phase, startMusic, stopMusic, pauseMusic, resumeMusic]);
+  }, [isActive, phase]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
