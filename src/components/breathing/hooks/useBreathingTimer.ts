@@ -144,7 +144,7 @@ export const useBreathingTimer = ({
         timerRef.current = null;
       }
     };
-  }, [isActive, phase, onPhaseComplete, memoizedSettings]);
+  }, [isActive, phase, onPhaseComplete]); // Removed memoizedSettings from dependencies
 
   return { duration, timeRemaining };
 };

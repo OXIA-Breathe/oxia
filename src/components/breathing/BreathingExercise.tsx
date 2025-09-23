@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import BreathingCircle from "./BreathingCircle";
 import BreathingStats from "./BreathingStats";
 import BreathingControls from "./BreathingControls";
@@ -26,8 +26,8 @@ const BreathingExercise = () => {
     handlePhaseComplete,
   } = useBreathingSession();
 
-  // Get audio settings from localStorage
-  const getAudioSettings = () => {
+  // Get audio settings from localStorage (memoized to prevent re-creation)
+  const audioSettings = useMemo(() => {
     try {
       const stored = localStorage.getItem('audioSettings');
       return stored ? JSON.parse(stored) : {
@@ -36,10 +36,7 @@ const BreathingExercise = () => {
     } catch {
       return { backgroundMusic: { enabled: true, selected: 'Cosmic Exploration' } };
     }
-  };
-
-  const audioSettings = getAudioSettings();
-  console.log('Audio settings loaded:', audioSettings);
+  }, []);
 
   // Background music hook
   const { startMusic, stopMusic, pauseMusic, resumeMusic } = useBackgroundMusic({
