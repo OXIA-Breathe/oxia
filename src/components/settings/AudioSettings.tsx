@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp, Volume2, Music, Mic } from "lucide-react";
 
@@ -12,6 +13,7 @@ interface AudioSettingsProps {
     backgroundMusic: {
       enabled: boolean;
       selected: string;
+      volume: number;
     };
     voiceGuidance: {
       enabled: boolean;
@@ -111,6 +113,22 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
                     </div>
                   ))}
                 </RadioGroup>
+                
+                {/* Volume Slider */}
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm text-muted-foreground">Volume</Label>
+                    <span className="text-sm text-muted-foreground">{Math.round(settings.backgroundMusic.volume * 100)}%</span>
+                  </div>
+                  <Slider
+                    value={[settings.backgroundMusic.volume]}
+                    onValueChange={(value) => updateSetting('backgroundMusic', 'volume', value[0])}
+                    max={1}
+                    min={0}
+                    step={0.01}
+                    className="w-full"
+                  />
+                </div>
               </CollapsibleContent>
             </Collapsible>
           )}

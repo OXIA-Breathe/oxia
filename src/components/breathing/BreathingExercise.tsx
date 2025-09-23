@@ -31,18 +31,18 @@ const BreathingExercise = () => {
     try {
       const stored = localStorage.getItem('audioSettings');
       return stored ? JSON.parse(stored) : {
-        backgroundMusic: { enabled: true, selected: 'Cosmic Exploration' }
+        backgroundMusic: { enabled: true, selected: 'cosmic', volume: 0.3 }
       };
     } catch {
-      return { backgroundMusic: { enabled: true, selected: 'Cosmic Exploration' } };
+      return { backgroundMusic: { enabled: true, selected: 'cosmic', volume: 0.3 } };
     }
   }, []);
 
   // Background music hook
   const { startMusic, stopMusic, pauseMusic, resumeMusic } = useBackgroundMusic({
     isEnabled: audioSettings.backgroundMusic?.enabled || false,
-    selectedMusic: audioSettings.backgroundMusic?.selected || 'Cosmic Exploration',
-    volume: 0.3
+    selectedMusic: audioSettings.backgroundMusic?.selected || 'cosmic',
+    volume: audioSettings.backgroundMusic?.volume || 0.3
   });
 
 
