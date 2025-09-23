@@ -13,19 +13,12 @@ export const useBackgroundMusic = (options: UseBackgroundMusicOptions) => {
   const fadeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const musicFiles = {
-    'Cosmic Exploration': '/audio/background/cosmic-exploration.mp3',
     'cosmic': '/audio/background/cosmic-exploration.mp3',
-    'Gentle Ambient Melodies': '/audio/background/gentle-ambient-melodies.mp3',
-    'gentle': '/audio/background/gentle-ambient-melodies.mp3',
-    'Meditation Flow': '/audio/background/meditation-flow.mp3',
+    'ambient': '/audio/background/gentle-ambient-melodies.mp3',
     'meditation': '/audio/background/meditation-flow.mp3',
-    'Nature Calm Piano': '/audio/background/nature-calm-piano.mp3',
-    'nature-piano': '/audio/background/nature-calm-piano.mp3',
-    'Nature Dreamscape': '/audio/background/nature-dreamscape.mp3',
-    'nature-dreamscape': '/audio/background/nature-dreamscape.mp3',
-    'Peaceful Stream': '/audio/background/peaceful-stream.mp3',
-    'peaceful': '/audio/background/peaceful-stream.mp3',
-    'Silent Universe': '/audio/background/silent-universe.mp3',
+    'piano': '/audio/background/nature-calm-piano.mp3',
+    'nature': '/audio/background/nature-dreamscape.mp3',
+    'stream': '/audio/background/peaceful-stream.mp3',
     'silent': '/audio/background/silent-universe.mp3'
   };
 
