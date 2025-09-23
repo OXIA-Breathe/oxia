@@ -19,8 +19,8 @@ const SettingsPage = () => {
   
   const [audioSettings, setAudioSettings] = useState({
     backgroundMusic: {
-      enabled: false,
-      selected: 'nature',
+      enabled: true,
+      selected: 'cosmic',
     },
     voiceGuidance: {
       enabled: true,

@@ -36,7 +36,7 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
     { id: 'cosmic', name: 'Cosmic Exploration' },
     { id: 'ambient', name: 'Gentle Ambient Melodies' },
     { id: 'meditation', name: 'Meditation Flow' },
-    { id: 'piano', name: 'Calm Piano' },
+    { id: 'piano', name: 'Nature Calm Piano' },
     { id: 'nature', name: 'Nature Dreamscape' },
     { id: 'stream', name: 'Peaceful Stream' },
     { id: 'silent', name: 'Silent Universe' },
