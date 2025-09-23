@@ -114,7 +114,7 @@ export const useBreathingTimer = ({
             
             // Determine next phase
             if (phase === "countdown") {
-              nextPhase = "countdown"; // Signal to start the actual exercise
+              nextPhase = "inhale"; // Start with inhale after countdown
             } else if (phase === "inhale") {
               nextPhase = memoizedSettings.firstHoldDuration > 0 ? "hold1" : "exhale";
             } else if (phase === "hold1") {

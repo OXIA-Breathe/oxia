@@ -122,6 +122,23 @@ export const useBackgroundMusic = (options: UseBackgroundMusicOptions) => {
     }
   };
 
+  const pauseMusic = () => {
+    if (audioRef.current && isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const resumeMusic = () => {
+    if (audioRef.current && !isPlaying) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch((error) => {
+        console.error('Failed to resume music:', error);
+      });
+    }
+  };
+
   const setVolume = (volume: number) => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
@@ -144,6 +161,8 @@ export const useBackgroundMusic = (options: UseBackgroundMusicOptions) => {
   return {
     startMusic,
     stopMusic,
+    pauseMusic,
+    resumeMusic,
     setVolume,
     isLoading,
     isPlaying

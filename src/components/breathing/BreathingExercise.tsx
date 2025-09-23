@@ -42,7 +42,7 @@ const BreathingExercise = () => {
   console.log('Audio settings loaded:', audioSettings);
 
   // Background music hook
-  const { startMusic, stopMusic } = useBackgroundMusic({
+  const { startMusic, stopMusic, pauseMusic, resumeMusic } = useBackgroundMusic({
     isEnabled: audioSettings.backgroundMusic?.enabled || false,
     selectedMusic: audioSettings.backgroundMusic?.selected || 'Cosmic Exploration',
     volume: 0.3
@@ -87,6 +87,14 @@ const BreathingExercise = () => {
     if (isActive && phaseTimeRemaining === null && phase !== "idle") {
       setPhaseTimeRemaining(timeRemaining);
     }
+    
+    // Handle music pause/resume
+    if (isActive) {
+      pauseMusic();
+    } else if (phase !== "idle") {
+      resumeMusic();
+    }
+    
     toggleExercise();
   };
 
@@ -105,7 +113,7 @@ const BreathingExercise = () => {
       // Stop background music when exercise ends
       stopMusic();
     }
-  }, [isActive, phase, startMusic, stopMusic]);
+  }, [isActive, phase, startMusic, stopMusic, pauseMusic, resumeMusic]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
