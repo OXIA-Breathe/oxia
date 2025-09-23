@@ -8,7 +8,7 @@ import { useBreathingTimer } from "./hooks/useBreathingTimer";
 import { useElapsedTimer } from "./hooks/useElapsedTimer";
 import { useBreathingVoice } from "@/hooks/useBreathingVoice";
 import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
-import { useCountdownSound } from "@/hooks/useCountdownSound";
+
 
 const BreathingExercise = () => {
   const {
@@ -47,8 +47,6 @@ const BreathingExercise = () => {
     volume: 0.3
   });
 
-  // Countdown sound hook
-  const { startCountdownBeeps, stopCountdownBeeps } = useCountdownSound();
 
   // Add voice guidance with static audio files
   const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice, triggerVoicePrompt } = useBreathingVoice({
@@ -97,20 +95,16 @@ const BreathingExercise = () => {
     resetExercise();
   };
 
-  // Handle background music and countdown sounds
+  // Handle background music
   useEffect(() => {
     if (isActive && phase === "countdown") {
       // Start background music when exercise begins (during countdown)
       startMusic();
-      // Start countdown beeps
-      startCountdownBeeps();
     } else if (!isActive && phase === "idle") {
       // Stop background music when exercise ends
       stopMusic();
-      // Stop any ongoing countdown beeps
-      stopCountdownBeeps();
     }
-  }, [isActive, phase, startMusic, stopMusic, startCountdownBeeps, stopCountdownBeeps]);
+  }, [isActive, phase, startMusic, stopMusic]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
