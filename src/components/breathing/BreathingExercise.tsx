@@ -1,5 +1,5 @@
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import BreathingCircle from "./BreathingCircle";
 import BreathingStats from "./BreathingStats";
 import BreathingControls from "./BreathingControls";
@@ -7,6 +7,8 @@ import { useBreathingSession } from "./hooks/useBreathingSession";
 import { useBreathingTimer } from "./hooks/useBreathingTimer";
 import { useElapsedTimer } from "./hooks/useElapsedTimer";
 import { useBreathingVoice } from "@/hooks/useBreathingVoice";
+import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
+import { useCountdownSound } from "@/hooks/useCountdownSound";
 
 const BreathingExercise = () => {
   const {
@@ -23,6 +25,30 @@ const BreathingExercise = () => {
     toggleExercise,
     handlePhaseComplete,
   } = useBreathingSession();
+
+  // Get audio settings from localStorage
+  const getAudioSettings = () => {
+    try {
+      const stored = localStorage.getItem('audioSettings');
+      return stored ? JSON.parse(stored) : {
+        backgroundMusic: { enabled: true, selected: 'Cosmic Exploration' }
+      };
+    } catch {
+      return { backgroundMusic: { enabled: true, selected: 'Cosmic Exploration' } };
+    }
+  };
+
+  const audioSettings = getAudioSettings();
+
+  // Background music hook
+  const { startMusic, stopMusic } = useBackgroundMusic({
+    isEnabled: audioSettings.backgroundMusic?.enabled || false,
+    selectedMusic: audioSettings.backgroundMusic?.selected || 'Cosmic Exploration',
+    volume: 0.3
+  });
+
+  // Countdown sound hook
+  const { startCountdownBeeps, stopCountdownBeeps } = useCountdownSound();
 
   // Add voice guidance with static audio files
   const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice, triggerVoicePrompt } = useBreathingVoice({
@@ -67,8 +93,24 @@ const BreathingExercise = () => {
 
   const handleReset = () => {
     stopVoice(); // Stop any ongoing voice prompts
+    stopMusic(); // Stop background music
     resetExercise();
   };
+
+  // Handle background music and countdown sounds
+  useEffect(() => {
+    if (isActive && phase === "countdown") {
+      // Start background music when exercise begins (during countdown)
+      startMusic();
+      // Start countdown beeps
+      startCountdownBeeps();
+    } else if (!isActive && phase === "idle") {
+      // Stop background music when exercise ends
+      stopMusic();
+      // Stop any ongoing countdown beeps
+      stopCountdownBeeps();
+    }
+  }, [isActive, phase, startMusic, stopMusic, startCountdownBeeps, stopCountdownBeeps]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8">

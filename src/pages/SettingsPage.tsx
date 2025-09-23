@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import NotificationSettings from "@/components/settings/NotificationSettings";
 import AudioSettings from "@/components/settings/AudioSettings";
@@ -17,20 +17,45 @@ const SettingsPage = () => {
   const { user, isLoading } = useAuth();
   const { shareApp } = useShareTracking();
   
-  const [audioSettings, setAudioSettings] = useState({
-    backgroundMusic: {
-      enabled: true,
-      selected: 'cosmic',
-    },
-    voiceGuidance: {
-      enabled: true,
-      selected: 'kristo',
-    },
-    breathingVoices: {
-      enabled: false,
-      selected: 'gentle',
-    },
+  const [audioSettings, setAudioSettings] = useState(() => {
+    try {
+      const stored = localStorage.getItem('audioSettings');
+      return stored ? JSON.parse(stored) : {
+        backgroundMusic: {
+          enabled: true,
+          selected: 'Cosmic Exploration',
+        },
+        voiceGuidance: {
+          enabled: true,
+          selected: 'kristo',
+        },
+        breathingVoices: {
+          enabled: false,
+          selected: 'gentle',
+        },
+      };
+    } catch {
+      return {
+        backgroundMusic: {
+          enabled: true,
+          selected: 'Cosmic Exploration',
+        },
+        voiceGuidance: {
+          enabled: true,
+          selected: 'kristo',
+        },
+        breathingVoices: {
+          enabled: false,
+          selected: 'gentle',
+        },
+      };
+    }
   });
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('audioSettings', JSON.stringify(audioSettings));
+  }, [audioSettings]);
 
   console.log("SettingsPage - User:", user?.id, "Loading:", isLoading);
 
