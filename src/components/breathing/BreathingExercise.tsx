@@ -39,6 +39,7 @@ const BreathingExercise = () => {
   };
 
   const audioSettings = getAudioSettings();
+  console.log('Audio settings loaded:', audioSettings);
 
   // Background music hook
   const { startMusic, stopMusic } = useBackgroundMusic({

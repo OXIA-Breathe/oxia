@@ -62,12 +62,21 @@ export const useBackgroundMusic = (options: UseBackgroundMusicOptions) => {
   };
 
   const startMusic = async () => {
-    if (!options.isEnabled || !options.selectedMusic) return;
+    console.log('startMusic called with options:', options);
+    if (!options.isEnabled || !options.selectedMusic) {
+      console.log('Music not enabled or no music selected');
+      return;
+    }
 
     const musicPath = musicFiles[options.selectedMusic as keyof typeof musicFiles];
-    if (!musicPath) return;
+    console.log('Music path for', options.selectedMusic, ':', musicPath);
+    if (!musicPath) {
+      console.log('No music path found for:', options.selectedMusic);
+      return;
+    }
 
     try {
+      console.log('Starting to load music:', musicPath);
       setIsLoading(true);
       
       if (audioRef.current) {
@@ -87,12 +96,14 @@ export const useBackgroundMusic = (options: UseBackgroundMusicOptions) => {
 
       audioRef.current = audio;
       
+      console.log('Attempting to play music...');
       await audio.play();
+      console.log('Music started playing successfully');
       setIsPlaying(true);
       fadeIn(audio, 1500);
 
     } catch (error) {
-      console.error('Failed to start background music:', error);
+      console.error('Failed to start background music:', error, 'Path:', musicPath);
     } finally {
       setIsLoading(false);
     }
