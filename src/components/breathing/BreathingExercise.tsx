@@ -77,6 +77,17 @@ const BreathingExercise = () => {
   useElapsedTimer({ isActive, phase, setTimeElapsed });
 
   const handleCircleClick = () => {
+    if (isActive && phaseTimeRemaining === null && phase !== "idle") {
+      setPhaseTimeRemaining(timeRemaining);
+    }
+    
+    // Handle music pause/resume
+    if (isActive) {
+      pauseMusic();
+    } else if (phase !== "idle") {
+      resumeMusic();
+    }
+    
     toggleExercise();
   };
 
