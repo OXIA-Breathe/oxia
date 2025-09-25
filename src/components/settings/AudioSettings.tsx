@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -27,11 +27,17 @@ interface AudioSettingsProps {
 }
 
 const AudioSettings = ({ settings, onSettingsChange, onSaveSettings }: AudioSettingsProps) => {
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
+  const location = useLocation();
   const [openSections, setOpenSections] = useState({
     backgroundMusic: false,
     voiceGuidance: false,
   });
+
+  // Clear all toasts when route changes
+  useEffect(() => {
+    dismiss();
+  }, [location.pathname, dismiss]);
 
   const backgroundMusicOptions = [
     { id: 'cosmic', name: 'Cosmic Exploration' },
@@ -175,6 +181,7 @@ const AudioSettings = ({ settings, onSettingsChange, onSaveSettings }: AudioSett
             toast({
               title: "Settings saved",
               description: "Your audio settings have been applied successfully.",
+              duration: 3000,
             });
           }}
           className="w-full"
