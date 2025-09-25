@@ -33,11 +33,15 @@ const AudioSettings = ({ settings, onSettingsChange, onSaveSettings }: AudioSett
     backgroundMusic: false,
     voiceGuidance: false,
   });
+  const [currentPath, setCurrentPath] = useState(location.pathname);
 
-  // Clear all toasts when route changes
+  // Clear all toasts when route changes to a different page
   useEffect(() => {
-    dismiss();
-  }, [location.pathname, dismiss]);
+    if (currentPath !== location.pathname) {
+      dismiss();
+      setCurrentPath(location.pathname);
+    }
+  }, [location.pathname, currentPath, dismiss]);
 
   const backgroundMusicOptions = [
     { id: 'cosmic', name: 'Cosmic Exploration' },
