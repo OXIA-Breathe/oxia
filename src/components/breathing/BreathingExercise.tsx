@@ -60,9 +60,18 @@ const BreathingExercise = () => {
   // Create a stable voice prompt callback
   const handleVoicePrompt = useCallback((newPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
     if (isActive && triggerVoicePrompt) {
+      console.log(`🎙️ Triggering voice prompt for phase: ${newPhase}`);
       triggerVoicePrompt(newPhase);
     }
   }, [isActive, triggerVoicePrompt]);
+
+  // Trigger voice prompts when phase changes
+  useEffect(() => {
+    if (isActive && phase !== "idle" && phase !== "countdown") {
+      console.log(`🎙️ Phase changed to: ${phase}, triggering voice prompt`);
+      handleVoicePrompt(phase as "inhale" | "exhale" | "hold1" | "hold2");
+    }
+  }, [phase, isActive, handleVoicePrompt]);
 
   const { duration, timeRemaining } = useBreathingTimer({
     isActive,
