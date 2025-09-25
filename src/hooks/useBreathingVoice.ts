@@ -9,8 +9,13 @@ interface UseBreathingVoiceProps {
 }
 
 export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathingVoiceProps) => {
+  // Get voice selection from localStorage
+  const audioSettings = JSON.parse(localStorage.getItem('audioSettings') || '{}');
+  const selectedVoice = audioSettings.voiceGuidance?.selected || 'kristo';
+  
   const { isLoading, isReady, playAudio, stopAllAudio } = useStaticAudio({
-    volume: 0.8
+    volume: 0.8,
+    selectedVoice
   });
   
   const lastPhaseRef = useRef<string>('');
@@ -36,8 +41,10 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
         voicePrompt = 'Breathe in';
         break;
       case 'hold1':
+        voicePrompt = selectedVoice === 'mila' ? 'Hold' : 'Hold';
+        break;
       case 'hold2':
-        voicePrompt = 'Hold';
+        voicePrompt = selectedVoice === 'mila' ? 'Hold2' : 'Hold';
         break;
       case 'exhale':
         voicePrompt = 'Breathe out';

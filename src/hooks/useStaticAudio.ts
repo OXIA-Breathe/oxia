@@ -8,6 +8,7 @@ interface StaticAudioEntry {
 
 interface UseStaticAudioOptions {
   volume?: number;
+  selectedVoice?: string;
 }
 
 export const useStaticAudio = (options: UseStaticAudioOptions = {}) => {
@@ -15,16 +16,29 @@ export const useStaticAudio = (options: UseStaticAudioOptions = {}) => {
   const [isReady, setIsReady] = useState(false);
   const cacheRef = useRef<Map<string, StaticAudioEntry>>(new Map());
 
-  const audioFiles = {
-    'Breathe in': '/audio/breathe-in.mp3',
-    'Hold': '/audio/hold.mp3',
-    'Breathe out': '/audio/breathe-out.mp3'
+  const getAudioFiles = (selectedVoice: string = 'kristo') => {
+    if (selectedVoice === 'mila') {
+      return {
+        'Breathe in': '/audio/voices/mila/breath_in_mila.wav',
+        'Hold': '/audio/voices/mila/hold_1_mila.wav',
+        'Hold2': '/audio/voices/mila/hold_2_mila.wav',
+        'Breathe out': '/audio/voices/mila/breath_out_mila.wav'
+      };
+    }
+    
+    // Default to kristo voice files (or fallback)
+    return {
+      'Breathe in': '/audio/voices/kristo/breathe-in.mp3',
+      'Hold': '/audio/voices/kristo/hold.mp3',
+      'Breathe out': '/audio/voices/kristo/breathe-out.mp3'
+    };
   };
 
   const preloadAudioFiles = async () => {
     try {
       setIsLoading(true);
       const cache = new Map<string, StaticAudioEntry>();
+      const audioFiles = getAudioFiles(options.selectedVoice);
 
       for (const [text, filePath] of Object.entries(audioFiles)) {
         try {
@@ -104,7 +118,7 @@ export const useStaticAudio = (options: UseStaticAudioOptions = {}) => {
       });
       cacheRef.current.clear();
     };
-  }, [options.volume]);
+  }, [options.volume, options.selectedVoice]);
 
   return {
     isLoading,
