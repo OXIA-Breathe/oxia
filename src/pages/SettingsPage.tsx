@@ -20,39 +20,41 @@ const SettingsPage = () => {
   const [audioSettings, setAudioSettings] = useState(() => {
     try {
       const stored = localStorage.getItem('audioSettings');
-      return stored ? JSON.parse(stored) : {
+      const parsed = stored ? JSON.parse(stored) : null;
+      
+      // Migrate old settings or use defaults
+      return {
         backgroundMusic: {
-          enabled: true,
-          selected: 'Cosmic Exploration',
+          enabled: parsed?.backgroundMusic?.enabled ?? true,
+          selected: parsed?.backgroundMusic?.selected ?? 'cosmic',
+          volume: parsed?.backgroundMusic?.volume ?? 1,
         },
         voiceGuidance: {
-          enabled: true,
-          selected: 'kristo',
-        },
-        breathingVoices: {
-          enabled: false,
-          selected: 'gentle',
+          enabled: parsed?.voiceGuidance?.enabled ?? true,
+          selected: parsed?.voiceGuidance?.selected ?? 'kristo',
         },
       };
     } catch {
       return {
         backgroundMusic: {
           enabled: true,
-          selected: 'Cosmic Exploration',
+          selected: 'cosmic',
+          volume: 1,
         },
         voiceGuidance: {
           enabled: true,
           selected: 'kristo',
         },
-        breathingVoices: {
-          enabled: false,
-          selected: 'gentle',
-        },
       };
     }
   });
 
-  // Save settings to localStorage whenever they change
+  // Save settings to localStorage
+  const handleSaveSettings = () => {
+    localStorage.setItem('audioSettings', JSON.stringify(audioSettings));
+  };
+
+  // Auto-save settings to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('audioSettings', JSON.stringify(audioSettings));
   }, [audioSettings]);
@@ -98,7 +100,8 @@ const SettingsPage = () => {
             <CardContent>
               <AudioSettings 
                 settings={audioSettings} 
-                onSettingsChange={setAudioSettings} 
+                onSettingsChange={setAudioSettings}
+                onSaveSettings={handleSaveSettings}
               />
             </CardContent>
           </Card>

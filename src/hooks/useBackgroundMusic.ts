@@ -24,7 +24,7 @@ export const useBackgroundMusic = (options: UseBackgroundMusicOptions) => {
 
   const fadeIn = (audio: HTMLAudioElement, duration: number = 1000) => {
     audio.volume = 0;
-    const targetVolume = options.volume || 0.3;
+    const targetVolume = options.volume !== undefined ? options.volume : 1;
     const steps = 50;
     const stepTime = duration / steps;
     const volumeStep = targetVolume / steps;

@@ -5,8 +5,10 @@ import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp, Volume2, Music, Mic } from "lucide-react";
+import { ChevronDown, ChevronUp, Music, Mic, Save } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface AudioSettingsProps {
   settings: {
@@ -19,19 +21,16 @@ interface AudioSettingsProps {
       enabled: boolean;
       selected: string;
     };
-    breathingVoices: {
-      enabled: boolean;
-      selected: string;
-    };
   };
   onSettingsChange: (settings: any) => void;
+  onSaveSettings: () => void;
 }
 
-const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
+const AudioSettings = ({ settings, onSettingsChange, onSaveSettings }: AudioSettingsProps) => {
+  const { toast } = useToast();
   const [openSections, setOpenSections] = useState({
     backgroundMusic: false,
     voiceGuidance: false,
-    breathingVoices: false,
   });
 
   const backgroundMusicOptions = [
@@ -49,12 +48,6 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
     { id: 'angelika', name: 'Angelika (Female)', gender: 'female' },
   ];
 
-  const breathingVoicesOptions = [
-    { id: 'gentle', name: 'Gentle Breathing' },
-    { id: 'deep', name: 'Deep Breathing' },
-    { id: 'calm', name: 'Calm Breathing' },
-    { id: 'meditation', name: 'Meditation Breathing' },
-  ];
 
   const updateSetting = (category: string, field: string, value: any) => {
     const newSettings = {
@@ -118,10 +111,10 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm text-muted-foreground">Volume</Label>
-                    <span className="text-sm text-muted-foreground">{Math.round((settings.backgroundMusic.volume || 0.3) * 100)}%</span>
+                    <span className="text-sm text-muted-foreground">{Math.round((settings.backgroundMusic.volume || 1) * 100)}%</span>
                   </div>
                   <Slider
-                    value={[settings.backgroundMusic.volume || 0.3]}
+                    value={[settings.backgroundMusic.volume || 1]}
                     onValueChange={(value) => updateSetting('backgroundMusic', 'volume', value[0])}
                     max={1}
                     min={0}
@@ -176,46 +169,22 @@ const AudioSettings = ({ settings, onSettingsChange }: AudioSettingsProps) => {
           )}
         </div>
 
-        {/* Breathing Voices */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Volume2 className="h-4 w-4" />
-              <Label className="text-base font-medium">Breathing Voices</Label>
-            </div>
-            <Switch
-              checked={settings.breathingVoices.enabled}
-              onCheckedChange={(checked) => {
-                updateSetting('breathingVoices', 'enabled', checked);
-                if (checked) {
-                  setOpenSections(prev => ({ ...prev, breathingVoices: true }));
-                }
-              }}
-            />
-          </div>
-          
-          {settings.breathingVoices.enabled && (
-            <Collapsible open={openSections.breathingVoices} onOpenChange={(open) => toggleSection('breathingVoices')}>
-              <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-                {openSections.breathingVoices ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                Choose Breathing Style
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-2">
-                <RadioGroup
-                  value={settings.breathingVoices.selected}
-                  onValueChange={(value) => updateSetting('breathingVoices', 'selected', value)}
-                  className="ml-4"
-                >
-                  {breathingVoicesOptions.map((option) => (
-                    <div key={option.id} className="flex items-center space-x-2">
-                      <RadioGroupItem value={option.id} id={option.id} />
-                      <Label htmlFor={option.id} className="text-sm">{option.name}</Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </CollapsibleContent>
-            </Collapsible>
-          )}
+        {/* Save Settings Button */}
+        <div className="pt-4 border-t">
+          <Button 
+            onClick={() => {
+              onSaveSettings();
+              toast({
+                title: "Settings saved",
+                description: "Your audio settings have been applied successfully.",
+              });
+            }}
+            className="w-full"
+            variant="default"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            Save Settings
+          </Button>
         </div>
     </div>
   );
