@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp, Music, Mic, Save } from "lucide-react";
+import { ChevronDown, ChevronUp, Music, Mic } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface AudioSettingsProps {
@@ -169,23 +169,18 @@ const AudioSettings = ({ settings, onSettingsChange, onSaveSettings }: AudioSett
           )}
         </div>
 
-        {/* Save Settings Button */}
-        <div className="pt-4 border-t">
-          <Button 
-            onClick={() => {
-              onSaveSettings();
-              toast({
-                title: "Settings saved",
-                description: "Your audio settings have been applied successfully.",
-              });
-            }}
-            className="w-full"
-            variant="default"
-          >
-            <Save className="h-4 w-4 mr-2" />
-            Save Settings
-          </Button>
-        </div>
+        <Button 
+          onClick={() => {
+            onSaveSettings();
+            toast({
+              title: "Settings saved",
+              description: "Your audio settings have been applied successfully.",
+            });
+          }}
+          className="w-full"
+        >
+          Save Settings
+        </Button>
     </div>
   );
 };
