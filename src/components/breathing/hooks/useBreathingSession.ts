@@ -42,6 +42,8 @@ export const useBreathingSession = () => {
     const sessionEndTime = Date.now();
     const totalDuration = sessionStartTimeRef.current ? Math.floor((sessionEndTime - sessionStartTimeRef.current) / 1000) : 0;
     
+    console.log(`🕐 Session completion - Start: ${sessionStartTimeRef.current}, End: ${sessionEndTime}, Duration: ${totalDuration} seconds`);
+    
     const newSession = {
       id: uuidv4(),
       date: new Date().toISOString(),
@@ -99,6 +101,7 @@ export const useBreathingSession = () => {
       // Countdown complete, start the actual exercise
       if (sessionStartTimeRef.current === null) {
         const startTime = Date.now();
+        console.log(`🕐 Session starting at: ${startTime}`);
         setSessionStartTime(startTime);
         sessionStartTimeRef.current = startTime;
       }
