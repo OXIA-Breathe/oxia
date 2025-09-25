@@ -2,46 +2,37 @@ import { useRef, useEffect } from 'react';
 
 export const useCountdownSound = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const playCountdownBeep = () => {
+  const playCountdownTick = () => {
     try {
-      // Create a simple beep sound using Web Audio API for a gentle countdown
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-
-      // Gentle, soft beep sound
-      oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-      oscillator.type = 'sine';
+      if (!audioRef.current) {
+        audioRef.current = new Audio('/audio/countdown-tick.wav');
+        audioRef.current.volume = 0.6;
+      }
       
-      // Soft envelope for gentle sound
-      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.08, audioContext.currentTime + 0.05);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
-
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.4);
-
+      // Reset audio to beginning and play
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(error => {
+        console.error('Failed to play countdown tick:', error);
+      });
     } catch (error) {
-      console.error('Failed to play countdown beep:', error);
+      console.error('Failed to play countdown tick:', error);
     }
   };
 
-  const startCountdownBeeps = () => {
+  const startCountdownTicks = () => {
     let count = 0;
     intervalRef.current = setInterval(() => {
-      playCountdownBeep();
+      playCountdownTick();
       count++;
       if (count >= 3) {
-        stopCountdownBeeps();
+        stopCountdownTicks();
       }
     }, 1000);
   };
 
-  const stopCountdownBeeps = () => {
+  const stopCountdownTicks = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -51,13 +42,13 @@ export const useCountdownSound = () => {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      stopCountdownBeeps();
+      stopCountdownTicks();
     };
   }, []);
 
   return {
-    playCountdownBeep,
-    startCountdownBeeps,
-    stopCountdownBeeps
+    playCountdownTick,
+    startCountdownTicks,
+    stopCountdownTicks
   };
 };
