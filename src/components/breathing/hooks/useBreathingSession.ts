@@ -98,13 +98,14 @@ export const useBreathingSession = () => {
 
   const handlePhaseComplete = useCallback((nextPhase: "inhale" | "exhale" | "hold1" | "hold2" | "countdown") => {
     if (nextPhase === "countdown") {
-      // Countdown complete, start the actual exercise
+      // Countdown complete, start the actual exercise and set start time
       if (sessionStartTimeRef.current === null) {
         const startTime = Date.now();
         console.log(`🕐 Session starting at: ${startTime}`);
         setSessionStartTime(startTime);
         sessionStartTimeRef.current = startTime;
       }
+      // After setting start time, move to inhale phase
       setPhase("inhale");
     } else if (nextPhase === "inhale") {
       setBreathCount((prevBreathCount) => {

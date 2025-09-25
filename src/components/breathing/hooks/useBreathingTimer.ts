@@ -114,7 +114,9 @@ export const useBreathingTimer = ({
             
             // Determine next phase
             if (phase === "countdown") {
-              nextPhase = "inhale"; // Start with inhale after countdown
+              // After countdown, we need to signal that countdown is complete
+              // This will trigger the session start time setup
+              nextPhase = "countdown"; // This signals countdown completion
             } else if (phase === "inhale") {
               nextPhase = memoizedSettings.firstHoldDuration > 0 ? "hold1" : "exhale";
             } else if (phase === "hold1") {
