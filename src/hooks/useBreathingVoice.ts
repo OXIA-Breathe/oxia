@@ -13,6 +13,8 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
   const audioSettings = JSON.parse(localStorage.getItem('audioSettings') || '{}');
   const selectedVoice = audioSettings.voiceGuidance?.selected || 'kristo';
   
+  console.log(`🎙️ Voice hook initialized - Selected voice: ${selectedVoice}, Phase: ${phase}, Active: ${isActive}`);
+  
   const { isLoading, isReady, playAudio, stopAllAudio } = useStaticAudio({
     volume: 0.8,
     selectedVoice
@@ -23,12 +25,16 @@ export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathi
 
   // Create a precise voice trigger function
   const triggerVoicePrompt = (currentPhase: "inhale" | "exhale" | "hold1" | "hold2") => {
+    console.log(`🎙️ Voice trigger called - Phase: ${currentPhase}, Active: ${isActive}, Ready: ${isReady}, Playing: ${isPlayingRef.current}`);
+    
     if (!isActive || !isReady || isPlayingRef.current) {
+      console.log(`🎙️ Voice trigger blocked - Active: ${isActive}, Ready: ${isReady}, Playing: ${isPlayingRef.current}`);
       return;
     }
 
     // Prevent duplicate voice prompts
     if (currentPhase === lastPhaseRef.current) {
+      console.log(`🎙️ Voice trigger skipped - same phase as last: ${currentPhase}`);
       return;
     }
 

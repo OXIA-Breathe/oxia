@@ -39,6 +39,8 @@ export const useStaticAudio = (options: UseStaticAudioOptions = {}) => {
       setIsLoading(true);
       const cache = new Map<string, StaticAudioEntry>();
       const audioFiles = getAudioFiles(options.selectedVoice);
+      
+      console.log(`🎵 Preloading audio files for voice: ${options.selectedVoice}`, audioFiles);
 
       for (const [text, filePath] of Object.entries(audioFiles)) {
         try {
@@ -84,14 +86,22 @@ export const useStaticAudio = (options: UseStaticAudioOptions = {}) => {
   };
 
   const playAudio = (text: string) => {
+    console.log(`🎵 Attempting to play audio: "${text}"`);
     const cacheEntry = cacheRef.current.get(text);
     if (cacheEntry && cacheEntry.isLoaded) {
+      console.log(`🎵 Playing cached audio for: "${text}"`);
       // Reset and play the cached audio
       cacheEntry.audio.currentTime = 0;
       cacheEntry.audio.play().catch(error => {
         console.error('Failed to play audio:', error);
       });
       return true;
+    } else {
+      console.warn(`🎵 Audio not found or not loaded for: "${text}"`, { 
+        hasEntry: !!cacheEntry, 
+        isLoaded: cacheEntry?.isLoaded,
+        availableAudio: Array.from(cacheRef.current.keys())
+      });
     }
     return false;
   };
