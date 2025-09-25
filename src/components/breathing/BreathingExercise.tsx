@@ -8,7 +8,6 @@ import { useBreathingTimer } from "./hooks/useBreathingTimer";
 import { useElapsedTimer } from "./hooks/useElapsedTimer";
 import { useBreathingVoice } from "@/hooks/useBreathingVoice";
 import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
-import { useCountdownSound } from "@/hooks/useCountdownSound";
 
 
 const BreathingExercise = () => {
@@ -46,9 +45,6 @@ const BreathingExercise = () => {
     volume: audioSettings.backgroundMusic?.volume || 0.3
   });
 
-  // Countdown sound hook
-  const { startCountdownTicks } = useCountdownSound();
-
 
   // Add voice guidance with static audio files
   const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice, triggerVoicePrompt } = useBreathingVoice({
@@ -81,17 +77,6 @@ const BreathingExercise = () => {
   useElapsedTimer({ isActive, phase, setTimeElapsed });
 
   const handleCircleClick = () => {
-    if (isActive && phaseTimeRemaining === null && phase !== "idle") {
-      setPhaseTimeRemaining(timeRemaining);
-    }
-    
-    // Handle music pause/resume same as button
-    if (isActive) {
-      pauseMusic();
-    } else if (phase !== "idle") {
-      resumeMusic();
-    }
-    
     toggleExercise();
   };
 
@@ -116,17 +101,16 @@ const BreathingExercise = () => {
     resetExercise();
   };
 
-  // Handle background music and countdown sound
+  // Handle background music
   useEffect(() => {
     if (isActive && phase === "countdown") {
-      // Start background music and countdown ticks when exercise begins
+      // Start background music when exercise begins (during countdown)
       startMusic();
-      startCountdownTicks();
     } else if (!isActive && phase === "idle") {
       // Stop background music when exercise ends
       stopMusic();
     }
-  }, [isActive, phase, startMusic, stopMusic, startCountdownTicks]);
+  }, [isActive, phase]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
