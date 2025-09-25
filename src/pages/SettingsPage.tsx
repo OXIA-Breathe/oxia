@@ -31,7 +31,7 @@ const SettingsPage = () => {
         },
         voiceGuidance: {
           enabled: parsed?.voiceGuidance?.enabled ?? true,
-          selected: parsed?.voiceGuidance?.selected ?? 'kristo',
+          selected: parsed?.voiceGuidance?.selected ?? 'liam',
         },
       };
     } catch {
@@ -43,7 +43,7 @@ const SettingsPage = () => {
         },
         voiceGuidance: {
           enabled: true,
-          selected: 'kristo',
+          selected: 'liam',
         },
       };
     }

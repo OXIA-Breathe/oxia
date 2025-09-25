@@ -16,7 +16,7 @@ export const useStaticAudio = (options: UseStaticAudioOptions = {}) => {
   const [isReady, setIsReady] = useState(false);
   const cacheRef = useRef<Map<string, StaticAudioEntry>>(new Map());
 
-  const getAudioFiles = (selectedVoice: string = 'kristo') => {
+  const getAudioFiles = (selectedVoice: string = 'liam') => {
     if (selectedVoice === 'mila') {
       return {
         'Breathe in': '/audio/voices/mila/breath_in_mila.wav',
@@ -26,11 +26,12 @@ export const useStaticAudio = (options: UseStaticAudioOptions = {}) => {
       };
     }
     
-    // Default to kristo voice files (or fallback)
+    // Default to liam voice files
     return {
-      'Breathe in': '/audio/voices/kristo/breathe-in.mp3',
-      'Hold': '/audio/voices/kristo/hold.mp3',
-      'Breathe out': '/audio/voices/kristo/breathe-out.mp3'
+      'Breathe in': '/audio/voices/liam/breath_in_liam.wav',
+      'Hold': '/audio/voices/liam/hold_1_liam.wav',
+      'Hold2': '/audio/voices/liam/hold_2_liam.wav',
+      'Breathe out': '/audio/voices/liam/breath_out_liam.wav'
     };
   };
 

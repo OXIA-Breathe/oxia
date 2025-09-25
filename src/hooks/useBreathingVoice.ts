@@ -11,7 +11,7 @@ interface UseBreathingVoiceProps {
 export const useBreathingVoice = ({ phase, isActive, exerciseTitle }: UseBreathingVoiceProps) => {
   // Get voice selection from localStorage
   const audioSettings = JSON.parse(localStorage.getItem('audioSettings') || '{}');
-  const selectedVoice = audioSettings.voiceGuidance?.selected || 'kristo';
+  const selectedVoice = audioSettings.voiceGuidance?.selected || 'liam';
   
   console.log(`🎙️ Voice hook initialized - Selected voice: ${selectedVoice}, Phase: ${phase}, Active: ${isActive}`);
   
