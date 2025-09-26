@@ -20,11 +20,16 @@ const CreateExerciseModal = ({ open, onOpenChange }: CreateExerciseModalProps) =
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    detailedDescription: "",
     inhaleDuration: 4,
     firstHoldDuration: 4,
     exhaleDuration: 4,
     secondHoldDuration: 4,
     repetitions: 10,
+    stepByStepInstructions: "",
+    whenToUse: "",
+    howItHelps: "",
+    commonMistakes: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,11 +48,19 @@ const CreateExerciseModal = ({ open, onOpenChange }: CreateExerciseModalProps) =
       id: uuidv4(),
       title: formData.title,
       description: formData.description || undefined,
+      detailedDescription: formData.detailedDescription || undefined,
       inhaleDuration: formData.inhaleDuration,
       firstHoldDuration: formData.firstHoldDuration,
       exhaleDuration: formData.exhaleDuration,
       secondHoldDuration: formData.secondHoldDuration,
       repetitions: formData.repetitions,
+      stepByStepInstructions: formData.stepByStepInstructions ? 
+        formData.stepByStepInstructions.split('\n').filter(step => step.trim()) : undefined,
+      whenToUse: formData.whenToUse ? 
+        formData.whenToUse.split('\n').filter(use => use.trim()) : undefined,
+      howItHelps: formData.howItHelps || undefined,
+      commonMistakes: formData.commonMistakes ? 
+        formData.commonMistakes.split('\n').filter(mistake => mistake.trim()) : undefined,
       isCustom: true,
     };
 
@@ -62,11 +75,16 @@ const CreateExerciseModal = ({ open, onOpenChange }: CreateExerciseModalProps) =
     setFormData({
       title: "",
       description: "",
+      detailedDescription: "",
       inhaleDuration: 4,
       firstHoldDuration: 4,
       exhaleDuration: 4,
       secondHoldDuration: 4,
       repetitions: 10,
+      stepByStepInstructions: "",
+      whenToUse: "",
+      howItHelps: "",
+      commonMistakes: "",
     });
     
     onOpenChange(false);
@@ -78,7 +96,7 @@ const CreateExerciseModal = ({ open, onOpenChange }: CreateExerciseModalProps) =
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New Breathing Exercise</DialogTitle>
         </DialogHeader>
@@ -102,6 +120,17 @@ const CreateExerciseModal = ({ open, onOpenChange }: CreateExerciseModalProps) =
               onChange={(e) => handleInputChange("description", e.target.value)}
               placeholder="Optional description"
               rows={2}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="detailedDescription">Detailed Description</Label>
+            <Textarea
+              id="detailedDescription"
+              value={formData.detailedDescription}
+              onChange={(e) => handleInputChange("detailedDescription", e.target.value)}
+              placeholder="Optional detailed description of what this breathing exercise does"
+              rows={3}
             />
           </div>
 
@@ -162,6 +191,53 @@ const CreateExerciseModal = ({ open, onOpenChange }: CreateExerciseModalProps) =
               value={formData.repetitions}
               onChange={(e) => handleInputChange("repetitions", parseInt(e.target.value))}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="stepByStepInstructions">Step-by-Step Instructions (Optional)</Label>
+            <Textarea
+              id="stepByStepInstructions"
+              value={formData.stepByStepInstructions}
+              onChange={(e) => handleInputChange("stepByStepInstructions", e.target.value)}
+              placeholder="Enter each instruction on a new line"
+              rows={4}
+            />
+            <p className="text-xs text-muted-foreground">Each line will be a separate instruction step</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="whenToUse">When to Use (Optional)</Label>
+            <Textarea
+              id="whenToUse"
+              value={formData.whenToUse}
+              onChange={(e) => handleInputChange("whenToUse", e.target.value)}
+              placeholder="Enter each use case on a new line"
+              rows={3}
+            />
+            <p className="text-xs text-muted-foreground">Each line will be a separate use case</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="howItHelps">How it Helps (Optional)</Label>
+            <Textarea
+              id="howItHelps"
+              value={formData.howItHelps}
+              onChange={(e) => handleInputChange("howItHelps", e.target.value)}
+              placeholder="Describe the benefits and how this exercise helps"
+              rows={3}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="commonMistakes">Common Mistakes (Optional)</Label>
+            <Textarea
+              id="commonMistakes"
+              value={formData.commonMistakes}
+              onChange={(e) => handleInputChange("commonMistakes", e.target.value)}
+              placeholder="Enter each common mistake on a new line"
+              rows={3}
+            />
+            <p className="text-xs text-muted-foreground">Each line will be a separate mistake</p>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
