@@ -224,7 +224,7 @@ const SettingsPage = () => {
               </div>
             </a>
 
-            {/* Rate App */}
+            {/* Rate App Button */}
             <div 
               onClick={handleRateApp}
               className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
