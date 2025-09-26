@@ -204,7 +204,7 @@ const SettingsPage = () => {
           <div className="flex gap-3">
             {/* Instagram */}
             <a 
-              href="https://www.instagram.com/oxia_breathe/" 
+              href="https://instagram.com/oxia_breathe/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
