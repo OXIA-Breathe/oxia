@@ -114,12 +114,11 @@ const CreateExerciseModal = ({ open, onOpenChange }: CreateExerciseModalProps) =
 
           <div className="space-y-2">
             <Label htmlFor="description">Short Description</Label>
-            <Textarea
+            <Input
               id="description"
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Optional description"
-              rows={2}
+              placeholder="Short description shown in the breathing exercises list"
             />
           </div>
 
