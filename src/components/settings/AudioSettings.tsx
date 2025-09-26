@@ -54,8 +54,8 @@ const AudioSettings = ({ settings, onSettingsChange, onSaveSettings }: AudioSett
   ];
 
   const voiceGuidanceOptions = [
-    { id: 'liam', name: 'Liam (Male)', gender: 'male' },
-    { id: 'mila', name: 'Mila (Female)', gender: 'female' },
+    { id: 'liam', name: 'Liam', gender: 'male' },
+    { id: 'mila', name: 'Mila', gender: 'female' },
   ];
 
 
