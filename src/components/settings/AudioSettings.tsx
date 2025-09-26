@@ -20,6 +20,7 @@ interface AudioSettingsProps {
     voiceGuidance: {
       enabled: boolean;
       selected: string;
+      volume: number;
     };
   };
   onSettingsChange: (settings: any) => void;
@@ -54,8 +55,8 @@ const AudioSettings = ({ settings, onSettingsChange, onSaveSettings }: AudioSett
   ];
 
   const voiceGuidanceOptions = [
-    { id: 'liam', name: 'Liam', gender: 'male' },
     { id: 'mila', name: 'Mila', gender: 'female' },
+    { id: 'liam', name: 'Liam', gender: 'male' },
   ];
 
 
@@ -174,6 +175,22 @@ const AudioSettings = ({ settings, onSettingsChange, onSaveSettings }: AudioSett
                     </div>
                   ))}
                 </RadioGroup>
+                
+                {/* Volume Slider */}
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm text-muted-foreground">Volume</Label>
+                    <span className="text-sm text-muted-foreground">{Math.round((settings.voiceGuidance.volume || 1) * 100)}%</span>
+                  </div>
+                  <Slider
+                    value={[settings.voiceGuidance.volume || 1]}
+                    onValueChange={(value) => updateSetting('voiceGuidance', 'volume', value[0])}
+                    max={1}
+                    min={0}
+                    step={0.01}
+                    className="w-full"
+                  />
+                </div>
               </CollapsibleContent>
             </Collapsible>
           )}

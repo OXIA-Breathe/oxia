@@ -48,7 +48,8 @@ const SettingsPage = () => {
         },
         voiceGuidance: {
           enabled: parsed?.voiceGuidance?.enabled ?? true,
-          selected: parsed?.voiceGuidance?.selected ?? 'liam',
+          selected: parsed?.voiceGuidance?.selected ?? 'mila',
+          volume: parsed?.voiceGuidance?.volume ?? 1,
         },
       };
     } catch {
@@ -60,7 +61,8 @@ const SettingsPage = () => {
         },
         voiceGuidance: {
           enabled: true,
-          selected: 'liam',
+          selected: 'mila',
+          volume: 1,
         },
       };
     }
