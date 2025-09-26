@@ -118,7 +118,7 @@ const CreateExerciseModal = ({ open, onOpenChange }: CreateExerciseModalProps) =
               id="description"
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Short description shown in the breathing exercises list"
+              placeholder="Shown in the breathing exercises list"
             />
           </div>
 
