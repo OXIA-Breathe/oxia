@@ -8,7 +8,7 @@ import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
-import { Volume2, Bell, Info, Instagram, Twitter, Share, Music2 } from "lucide-react";
+import { Volume2, Bell, Info, Instagram, MessageCircleHeart, Share, Music2 } from "lucide-react";
 import FeedbackForm from "@/components/settings/FeedbackForm";
 import ContactForm from "@/components/settings/ContactForm";
 import { useShareTracking } from "@/components/breathing/hooks/useShareTracking";
@@ -16,6 +16,23 @@ import { useShareTracking } from "@/components/breathing/hooks/useShareTracking"
 const SettingsPage = () => {
   const { user, isLoading } = useAuth();
   const { shareApp } = useShareTracking();
+  
+  const handleRateApp = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isAndroid = /android/.test(userAgent);
+    
+    if (isIOS) {
+      // Redirect to Apple App Store
+      window.open('https://apps.apple.com/app/oxia-breathe', '_blank');
+    } else if (isAndroid) {
+      // Redirect to Google Play Store  
+      window.open('https://play.google.com/store/apps/details?id=app.lovable.d3590b81c81449329e6d4fbda085725b', '_blank');
+    } else {
+      // Fallback for other devices
+      window.open('https://apps.apple.com/app/oxia-breathe', '_blank');
+    }
+  };
   
   const [audioSettings, setAudioSettings] = useState(() => {
     try {
@@ -207,17 +224,15 @@ const SettingsPage = () => {
               </div>
             </a>
 
-            {/* Twitter */}
-            <a 
-              href="https://twitter.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            {/* Rate App */}
+            <div 
+              onClick={handleRateApp}
               className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
             >
               <div className="flex items-center justify-center">
-                <Twitter className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
+                <MessageCircleHeart className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
               </div>
-            </a>
+            </div>
 
             {/* Share */}
             <div 
