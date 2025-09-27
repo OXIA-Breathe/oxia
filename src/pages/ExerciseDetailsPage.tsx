@@ -7,6 +7,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import { useBreathingExercise } from "@/context/BreathingExerciseContext";
 import { formatTimeDisplay } from "@/components/history/utils/formatTime";
 import { ParametersModal } from "@/components/breathing/ParametersModal";
+import EditExerciseModal from "@/components/breathing/EditExerciseModal";
 
 const ExerciseDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +16,7 @@ const ExerciseDetailsPage = () => {
   
   const exercise = exercises.find(ex => ex.id === id);
   const [repetitions, setRepetitions] = useState(exercise?.repetitions || 20);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (!exercise) {
     return (
@@ -240,6 +242,21 @@ const ExerciseDetailsPage = () => {
             >
               Start this practice
             </Button>
+            
+            {/* Modify Button - Only for custom exercises */}
+            {exercise.isCustom && (
+              <div>
+                <Button
+                  onClick={() => setIsEditModalOpen(true)}
+                  variant="outline"
+                  size="lg"
+                  className="px-8 py-3 text-lg font-semibold text-foreground w-64"
+                >
+                  Modify
+                </Button>
+              </div>
+            )}
+            
             <div>
               <Button
                 onClick={handleSaveRepetitions}
@@ -252,6 +269,15 @@ const ExerciseDetailsPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Edit Exercise Modal */}
+        {exercise && exercise.isCustom && (
+          <EditExerciseModal
+            open={isEditModalOpen}
+            onOpenChange={setIsEditModalOpen}
+            exercise={exercise}
+          />
+        )}
       </div>
     </MainLayout>
   );
