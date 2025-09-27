@@ -171,59 +171,64 @@ const ExerciseDetailsPage = () => {
             </div>
           </Card>
 
-          {/* Exercise Information Card */}
-          <Card className="p-6 bg-white/90 backdrop-blur-sm">
-            <div className="space-y-6">
-              {/* When to use */}
-              {exercise.whenToUse && exercise.whenToUse.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">When to use:</h3>
-                  <ul className="space-y-1">
-                    {exercise.whenToUse.map((use, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="text-breath mr-2">•</span>
-                        <span className="text-gray-700">{use}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+          {/* Exercise Information Card - only show if any content exists */}
+          {((exercise.whenToUse && exercise.whenToUse.length > 0) || 
+            exercise.howItHelps || 
+            (exercise.commonMistakes && exercise.commonMistakes.length > 0) || 
+            exercise.safetyNote) && (
+            <Card className="p-6 bg-white/90 backdrop-blur-sm">
+              <div className="space-y-6">
+                {/* When to use */}
+                {exercise.whenToUse && exercise.whenToUse.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">When to use:</h3>
+                    <ul className="space-y-1">
+                      {exercise.whenToUse.map((use, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-breath mr-2">•</span>
+                          <span className="text-gray-700">{use}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-              {/* How it helps */}
-              {exercise.howItHelps && (
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">How it helps</h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {exercise.howItHelps}
-                  </p>
-                </div>
-              )}
+                {/* How it helps */}
+                {exercise.howItHelps && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">How it helps</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      {exercise.howItHelps}
+                    </p>
+                  </div>
+                )}
 
-              {/* Common mistakes */}
-              {exercise.commonMistakes && exercise.commonMistakes.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Common mistakes</h3>
-                  <ul className="space-y-1">
-                    {exercise.commonMistakes.map((mistake, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="text-red-500 mr-2">•</span>
-                        <span className="text-gray-700">{mistake}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                {/* Common mistakes */}
+                {exercise.commonMistakes && exercise.commonMistakes.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">Common mistakes</h3>
+                    <ul className="space-y-1">
+                      {exercise.commonMistakes.map((mistake, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-red-500 mr-2">•</span>
+                          <span className="text-gray-700">{mistake}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-              {/* Safety note */}
-              {exercise.safetyNote && (
-                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Safety note:</strong> {exercise.safetyNote}
-                  </p>
-                </div>
-              )}
-            </div>
-          </Card>
+                {/* Safety note */}
+                {exercise.safetyNote && (
+                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Safety note:</strong> {exercise.safetyNote}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
 
 
           {/* Start Practice Button */}
