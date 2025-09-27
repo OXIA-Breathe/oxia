@@ -71,35 +71,33 @@ const ExerciseDetailsPage = () => {
 
           {/* Description Card */}
           <Card className="p-6 bg-white/90 backdrop-blur-sm">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Description</h3>
-            <p className="text-gray-700 leading-relaxed mb-6">
-              {exercise.detailedDescription || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."}
-            </p>
+            {exercise.detailedDescription && (
+              <>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Description</h3>
+                <p className="text-gray-700 leading-relaxed mb-6">
+                  {exercise.detailedDescription}
+                </p>
+              </>
+            )}
             
-            <h4 className="text-base font-semibold text-gray-800 mb-3">How to do it (step-by-step)</h4>
-            <ol className="space-y-1">
-              {exercise.stepByStepInstructions ? exercise.stepByStepInstructions.map((step, index) => (
-                <li key={index} className="flex items-start">
-                  <span className="text-breath mr-3 font-medium">{index + 1}.</span>
-                  <span className="text-gray-700">{step}</span>
-                </li>
-              )) : (
-                <>
-                  <li className="flex items-start">
-                    <span className="text-breath mr-3 font-medium">1.</span>
-                    <span className="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-breath mr-3 font-medium">2.</span>
-                    <span className="text-gray-700">Sed do eiusmod tempor incididunt ut labore.</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-breath mr-3 font-medium">3.</span>
-                    <span className="text-gray-700">Ut enim ad minim veniam, quis nostrud.</span>
-                  </li>
-                </>
-              )}
-            </ol>
+            {exercise.stepByStepInstructions && exercise.stepByStepInstructions.length > 0 && (
+              <>
+                <h4 className="text-base font-semibold text-gray-800 mb-3">How to do it (step-by-step)</h4>
+                <ol className="space-y-1">
+                  {exercise.stepByStepInstructions.map((step, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-breath mr-3 font-medium">{index + 1}.</span>
+                      <span className="text-gray-700">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            )}
+            
+            {/* If no content at all, show message */}
+            {!exercise.detailedDescription && (!exercise.stepByStepInstructions || exercise.stepByStepInstructions.length === 0) && (
+              <p className="text-gray-500 italic">No detailed description or instructions provided for this exercise.</p>
+            )}
           </Card>
 
           {/* Breathing Parameters Card */}
@@ -132,9 +130,11 @@ const ExerciseDetailsPage = () => {
               </div>
             </div>
             
-            <p className="text-sm text-gray-600 leading-relaxed mb-6">
-              {exercise.parametersNote || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."}
-            </p>
+            {exercise.parametersNote && (
+              <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                {exercise.parametersNote}
+              </p>
+            )}
             
             <div className="space-y-4">
               <h4 className="text-base font-semibold text-gray-800">How long would you like to breathe?</h4>
@@ -175,75 +175,53 @@ const ExerciseDetailsPage = () => {
           <Card className="p-6 bg-white/90 backdrop-blur-sm">
             <div className="space-y-6">
               {/* When to use */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">When to use:</h3>
-                <ul className="space-y-1">
-                  {exercise.whenToUse ? exercise.whenToUse.map((use, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="text-breath mr-2">•</span>
-                      <span className="text-gray-700">{use}</span>
-                    </li>
-                  )) : (
-                    <>
-                      <li className="flex items-start">
+              {exercise.whenToUse && exercise.whenToUse.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">When to use:</h3>
+                  <ul className="space-y-1">
+                    {exercise.whenToUse.map((use, index) => (
+                      <li key={index} className="flex items-start">
                         <span className="text-breath mr-2">•</span>
-                        <span className="text-gray-700">Lorem ipsum dolor sit amet</span>
+                        <span className="text-gray-700">{use}</span>
                       </li>
-                      <li className="flex items-start">
-                        <span className="text-breath mr-2">•</span>
-                        <span className="text-gray-700">Consectetur adipiscing elit</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-breath mr-2">•</span>
-                        <span className="text-gray-700">Sed do eiusmod tempor</span>
-                      </li>
-                    </>
-                  )}
-                </ul>
-              </div>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* How it helps */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">How it helps</h3>
-                <p className="text-gray-700 leading-relaxed">
-                  {exercise.howItHelps || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."}
-                </p>
-              </div>
+              {exercise.howItHelps && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">How it helps</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    {exercise.howItHelps}
+                  </p>
+                </div>
+              )}
 
               {/* Common mistakes */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">Common mistakes</h3>
-                <ul className="space-y-1">
-                  {exercise.commonMistakes ? exercise.commonMistakes.map((mistake, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="text-red-500 mr-2">•</span>
-                      <span className="text-gray-700">{mistake}</span>
-                    </li>
-                  )) : (
-                    <>
-                      <li className="flex items-start">
+              {exercise.commonMistakes && exercise.commonMistakes.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Common mistakes</h3>
+                  <ul className="space-y-1">
+                    {exercise.commonMistakes.map((mistake, index) => (
+                      <li key={index} className="flex items-start">
                         <span className="text-red-500 mr-2">•</span>
-                        <span className="text-gray-700">Lorem ipsum dolor sit amet</span>
+                        <span className="text-gray-700">{mistake}</span>
                       </li>
-                      <li className="flex items-start">
-                        <span className="text-red-500 mr-2">•</span>
-                        <span className="text-gray-700">Consectetur adipiscing elit</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-red-500 mr-2">•</span>
-                        <span className="text-gray-700">Sed do eiusmod tempor</span>
-                      </li>
-                    </>
-                  )}
-                </ul>
-              </div>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Safety note */}
-              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800">
-                  <strong>Safety note:</strong> {exercise.safetyNote || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."}
-                </p>
-              </div>
+              {exercise.safetyNote && (
+                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Safety note:</strong> {exercise.safetyNote}
+                  </p>
+                </div>
+              )}
             </div>
           </Card>
 
