@@ -76,9 +76,23 @@ const ExerciseDetailsPage = () => {
             {exercise.detailedDescription && (
               <>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Description</h3>
-                <p className="text-gray-700 leading-relaxed mb-6 text-justify whitespace-pre-line">
-                  {exercise.detailedDescription}
-                </p>
+                <div className="text-gray-700 leading-relaxed mb-6 text-justify whitespace-pre-line">
+                  {exercise.detailedDescription.split('small study from 2022').map((part, index, array) => (
+                    <span key={index}>
+                      {part}
+                      {index < array.length - 1 && (
+                        <a 
+                          href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9277512/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline font-medium"
+                        >
+                          small study from 2022
+                        </a>
+                      )}
+                    </span>
+                  ))}
+                </div>
               </>
             )}
             
