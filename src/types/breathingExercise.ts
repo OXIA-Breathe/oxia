@@ -63,23 +63,23 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 7,
     exhaleDuration: 8,
     secondHoldDuration: 0,
-    repetitions: 20,
+    repetitions: 4,
     isCustom: false,
-    detailedDescription: "A calming technique designed to reduce anxiety and promote sleep.",
+    detailedDescription: "A calming technique designed to help us focus our mind and our body away from worries and repetitive thoughts. That way help us by reducing anxiety and promote sleep. \nAlso, according to a small study from 2022, practicing 4-7-8 breathing may improve heart rate variability and blood pressure in young adults. The researchers also suggest that it could be beneficial to people living with cardiovascular or pulmonary disease. It could potentially reduce your heart's workload and increase blood oxygen levels.",
     whenToUse: ["Before sleep", "During anxiety", "To calm the mind"],
-    howItHelps: "The extended exhale activates the parasympathetic nervous system, promoting relaxation and reducing stress.",
-    commonMistakes: ["Holding breath too forcefully", "Not fully exhaling", "Rushing the sequence"],
-    parametersNote: "Often practiced as 4 cycles at bedtime; increase gradually as comfort grows. Keep breath gentle and unforced.",
+    howItHelps: "Deep and mindful breathing activates what Dr. Herbert Benson called the relaxation response - the body's natural antidote to chronic stress. By calming the fight-or-flight system, it helps lower blood pressure, reduce anxiety, and support immune function. Regular practice improves sleep, focus, and emotional balance, while also easing pain and tension. In short, slow, conscious breathing restores both body and mind to a state of calm, clarity, and resilience.",
+    commonMistakes: ["Holding breath too forcefully", "Overthinking about the technique", "Rushing the sequence"],
+    parametersNote: "Often practiced as 4 cycles at bedtime; increase gradually as comfort grows. Keep breath gentle and unforced. Don't overthink. No one expects you to master your breath on the first try (or even the second or the 20th), so keep on practicing and consistency is key.",
     parameterSuggestion: "Classic 4-7-8 pattern is most effective. Beginners can try 3-5-6 if the full pattern feels too intense.",
     stepByStepInstructions: [
-      "Sit comfortably with your back straight.",
+      "Sit comfortably with your back straight or lie down (especially if you want to fall asleep).",
       "Inhale quietly through your nose for 4.",
       "Hold your breath for 7.",
       "Exhale completely through your mouth for 8.",
       "This completes one cycle.",
       "Repeat for 4 cycles total."
     ],
-    safetyNote: "Stop if you feel lightheaded. Practice on an empty stomach for best results."
+    safetyNote: "Stop and take a break, if you feel lightheaded. Practice on an empty stomach for best results."
   },
   {
     id: "pursed-lip",
