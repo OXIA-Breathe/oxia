@@ -26,22 +26,20 @@ const AppContent = () => {
   
   return (
     <BreathProvider>
-      <BreathingExerciseProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/learn" element={<LearnPage />} />
-            <Route path="/breathe" element={<BreathePage />} />
-            <Route path="/breathe/:id" element={<ExerciseDetailsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/progress" element={<ConsistencyPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </BreathingExerciseProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/learn" element={<LearnPage />} />
+          <Route path="/breathe" element={<BreathePage />} />
+          <Route path="/breathe/:id" element={<ExerciseDetailsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/progress" element={<ConsistencyPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </BreathProvider>
   );
 };
@@ -52,7 +50,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
-        <AppContent />
+        <BreathingExerciseProvider>
+          <AppContent />
+        </BreathingExerciseProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
