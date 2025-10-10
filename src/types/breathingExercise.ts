@@ -28,31 +28,32 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 4,
     exhaleDuration: 4,
     secondHoldDuration: 4,
-    repetitions: 6,
+    repetitions: 15,
     isCustom: false,
-    detailedDescription: "Inhale, hold, exhale, hold — each for the same count. A steady, structured rhythm that calms the nervous system and restores focus.",
+    detailedDescription: "Inhale, hold, exhale, hold — each for the same count. A steady, structured rhythm that calms the nervous system, helps to relax the body, clear the mind and improve focus.\nPeople with high stress jobs, such as soldiers and police officers, often use box breathing when their bodies are in fight, flight, or freeze mode. This technique is also relevant for anyone interested in recentering themselves or improving their concentration.",
     whenToUse: [
       "Pre-meeting, public speaking, exam prep",
       "Stress spikes, jitters, overthinking", 
       "Quick reset to clarity"
     ],
-    howItHelps: "Even, box-shaped cadence reduces breathing rate and promotes a parasympathetic shift. Brief holds improve CO₂ tolerance and create a sense of control under pressure.",
+    howItHelps: "Research has shown that deep breathing techniques significantly reduce the production of hormones associated with stress, such as cortisol. It also can be helpful in the reduction of anxiety, depression and stress. When we are anxious, we breathe shallowly and quickly, which actually creates more anxiety. Using breathwork, we activate parasympathetic nervous system, where our body rests and digest.",
     commonMistakes: [
       "Forcing the holds / throat tension",
       "Lifting shoulders (chest breathing)",
-      "Rushing counts; uneven box"
+      "Rushing counts; uneven box",
+      "Not being conscious of how the air fills lungs and stomach"
     ],
-    parametersNote: "A typical box breathing session can range from one to five minutes for beginners, with experienced practitioners potentially extending sessions to 10-20 minutes or longer. Consistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.",
+    parametersNote: "Ideally, the session should be 4 minutes, or until calm returns. If it is challenging, shorten the period to 2-3 minutes. If experienced, you can potentially extend the sessions to 10-20 minutes or longer. Consistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.",
     parameterSuggestion: "For beginners: Try 3-4 seconds for each phase. For experienced: 4-6 seconds works well for deeper relaxation.",
     stepByStepInstructions: [
-      "Sit or stand tall; relax jaw/shoulders.",
+      "Sit with your back supported, comfortably; relax jaw/shoulders.",
       "Inhale through the nose for 4.",
       "Hold gently for 4 (no strain).",
       "Exhale softly for 4 (nose or lips).",
       "Hold again for 4.",
       "Repeat, keeping the box smooth and unhurried."
     ],
-    safetyNote: "Shorten holds or stop if you feel dizzy or uncomfortable. Follow clinician guidance if you have cardiopulmonary conditions."
+    safetyNote: "Shorten holds or stop if you feel dizzy or uncomfortable. Follow doctor's guidance if you have cardiopulmonary conditions, you are pregnant or have high blood pressure."
   },
   {
     id: "4-7-8-breathing",
