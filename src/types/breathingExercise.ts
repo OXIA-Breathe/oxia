@@ -30,20 +30,20 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 4,
     repetitions: 15,
     isCustom: false,
-    detailedDescription: "Inhale, hold, exhale, hold — each for the same count. A steady, structured rhythm that calms the nervous system, helps to relax the body, clear the mind and improve focus.\nPeople with high stress jobs, such as soldiers and police officers, often use box breathing when their bodies are in fight, flight, or freeze mode. This technique is also relevant for anyone interested in recentering themselves or improving their concentration.",
+    detailedDescription: "Inhale, hold, exhale, hold — each for the same count. A steady, structured rhythm that calms the nervous system, helps to relax the body, clear the mind and improve focus.\n\nPeople with high stress jobs, such as soldiers and police officers, often use box breathing when their bodies are in fight, flight, or freeze mode. This technique is also relevant for anyone interested in recentering themselves or improving their concentration.",
     whenToUse: [
       "Pre-meeting, public speaking, exam prep",
       "Stress spikes, jitters, overthinking", 
       "Quick reset to clarity"
     ],
-    howItHelps: "Research has shown that deep breathing techniques significantly reduce the production of hormones associated with stress, such as cortisol. It also can be helpful in the reduction of anxiety, depression and stress. When we are anxious, we breathe shallowly and quickly, which actually creates more anxiety. Using breathwork, we activate parasympathetic nervous system, where our body rests and digest.",
+    howItHelps: "Research has shown that deep breathing techniques significantly reduce the production of hormones associated with stress, such as cortisol. It also can be helpful in the reduction of anxiety, depression and stress.\n\nWhen we are anxious, we breathe shallowly and quickly, which actually creates more anxiety. Using breathwork, we activate parasympathetic nervous system, where our body rests and digest.",
     commonMistakes: [
       "Forcing the holds / throat tension",
       "Lifting shoulders (chest breathing)",
       "Rushing counts; uneven box",
       "Not being conscious of how the air fills lungs and stomach"
     ],
-    parametersNote: "Ideally, the session should be 4 minutes, or until calm returns. If it is challenging, shorten the period to 2-3 minutes. If experienced, you can potentially extend the sessions to 10-20 minutes or longer. Consistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.",
+    parametersNote: "Ideally, the session should be 4 minutes, or until calm returns. If it is challenging, shorten the period to 2-3 minutes. If experienced, you can potentially extend the sessions to 10-20 minutes or longer.\n\nConsistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.",
     parameterSuggestion: "For beginners: Try 3-4 seconds for each phase. For experienced: 4-6 seconds works well for deeper relaxation.",
     stepByStepInstructions: [
       "Sit with your back supported, comfortably; relax jaw/shoulders.",
