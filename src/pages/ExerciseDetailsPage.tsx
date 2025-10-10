@@ -76,7 +76,7 @@ const ExerciseDetailsPage = () => {
             {exercise.detailedDescription && (
               <>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Description</h3>
-                <p className="text-gray-700 leading-relaxed mb-6 text-justify">
+                <p className="text-gray-700 leading-relaxed mb-6 text-justify whitespace-pre-line">
                   {exercise.detailedDescription}
                 </p>
               </>
@@ -133,7 +133,7 @@ const ExerciseDetailsPage = () => {
             </div>
             
             {exercise.parametersNote && (
-              <p className="text-sm text-gray-600 leading-relaxed mb-6 text-justify">
+              <p className="text-sm text-gray-600 leading-relaxed mb-6 text-justify whitespace-pre-line">
                 {exercise.parametersNote}
               </p>
             )}
@@ -199,7 +199,7 @@ const ExerciseDetailsPage = () => {
                 {exercise.howItHelps && (
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-3">How it helps</h3>
-                    <p className="text-gray-700 leading-relaxed text-justify">
+                    <p className="text-gray-700 leading-relaxed text-justify whitespace-pre-line">
                       {exercise.howItHelps}
                     </p>
                   </div>
