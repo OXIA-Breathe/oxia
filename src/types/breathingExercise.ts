@@ -84,35 +84,35 @@ export const defaultBreathingExercises: BreathingExercise[] = [
   {
     id: "pursed-lip",
     title: "Pursed Lip Breathing",
-    description: "Relaxation and focus",
+    description: "Calming & stabilizing",
     inhaleDuration: 3,
     firstHoldDuration: 1,
     exhaleDuration: 6,
     secondHoldDuration: 0,
-    repetitions: 6,
+    repetitions: 30,
     isCustom: false,
-    detailedDescription: "Slow nasal inhale, then a long, easy exhale through gently pursed lips. Calms the breath, reduces tension, and eases shortness of breath.",
+    detailedDescription: "Pursed lip breathing is a slow breathing technique that enables a person to control how much air enters and leaves their lungs. Calms the breath, reduces tension, and eases shortness of breath.\n\nIn long term, it may strengthen the lungs and improve their efficiency. That way, it may help people with lung conditions, namely chronic obstructive pulmonary disease (COPD).",
     whenToUse: [
       "Feeling tense, anxious, or short of breath",
-      "During or after exertion (e.g., stairs, brisk walk)", 
-      "Cool-down after other practices; moments of overwhelm"
+      "During or after exertion (e.g., stairs, brisk walk)",
+      "Inability to take a deep breath"
     ],
-    howItHelps: "Lengthens the exhale, that helps the nervous system settle (parasympathetic shift). Creates a gentle back-pressure in the airways and with that it can reduce air trapping and breathlessness. Lowers breathing rate, can improve perceived ease of breathing and focus.",
+    howItHelps: "Pursed-lip breathing is a simple yet powerful technique that slows your breathing, improves oxygen exchange, and helps you feel more in control. By exhaling slowly through lightly pursed lips, you create gentle back pressure in the lungs (PEEP), which keeps airways open longer and allows trapped carbon dioxide to escape.\n\nThis method is especially helpful for people with COPD or asthma, as it eases shortness of breath, increases oxygen levels, and enhances exercise endurance. Beyond physical benefits, it also calms the nervous system, reduces stress and anxiety, and restores a steady rhythm to your breath - bringing both body and mind into balance.",
     commonMistakes: [
       "Blowing too hard (creates tension)",
       "Inhaling through the mouth",
       "Exhale too short; cheeks puffing; shoulders lifted"
     ],
-    parametersNote: "Pursed lip breathing should be practiced 3-4 times a day for about 10 minutes each time, ideally when you are not short of breath. It's a technique to help relieve shortness of breath and can be incorporated into your routine when you feel comfortable. When experiencing shortness of breath, you can use pursed lip breathing as needed to help regulate your breath and find relief.",
+    parametersNote: "Pursed lip breathing should be practiced 3-4 times a day for about 10 minutes each time, ideally when you are not short of breath. It's a technique to help relieve shortness of breath and can be incorporated into your routine when you feel comfortable. When experiencing shortness of breath, you can use pursed lip breathing as needed to help regulate your breath and find relief.\n\nIt may take some time before the technique feels natural. However, with regular practice, it can become comfortable.",
     parameterSuggestion: "A 2:4 ratio (2s inhale, 4s exhale) is gentle for beginners. Advanced practitioners can try 3:6 or 4:8.",
     stepByStepInstructions: [
-      "Sit or stand tall; relax jaw/shoulders.",
+      "Sit and relax before starting, take a minute to drop the shoulders and release the tongue from the roof of the mouth.",
       "Inhale quietly through the nose for 2–3 seconds.",
-      "Purse lips softly (as if to whistle).",
+      "Purse lips softly (as if to whistle or blow out the candle).",
       "Exhale slowly and steadily for 4–6 seconds; don't force.",
       "Keep belly soft; avoid puffing cheeks. Repeat."
     ],
-    safetyNote: "Stop if dizzy, light-headed, chest pain, or worsening breathlessness. If you have a lung/heart condition, follow your clinician's guidance."
+    safetyNote: "Stop if dizzy, light-headed, chest pain, or worsening breathlessness. If you have a lung/heart condition, please seek advice from a healthcare professional before trying it."
   },
   {
     id: "diaphragmatic-breathing",
