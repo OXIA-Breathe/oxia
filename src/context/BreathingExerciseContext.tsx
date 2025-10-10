@@ -16,7 +16,7 @@ const BreathingExerciseContext = createContext<BreathingExerciseContextType | un
 export const BreathingExerciseProvider = ({ children }: { children: ReactNode }) => {
   const [exercises, setExercises] = useState<BreathingExercise[]>(() => {
     try {
-      const currentVersion = "1.1"; // Increment when defaults change
+      const currentVersion = "1.2"; // Increment when defaults change
       const savedVersion = localStorage.getItem("breathingExercisesVersion");
       const savedExercises = localStorage.getItem("breathingExercises");
       
@@ -36,7 +36,10 @@ export const BreathingExerciseProvider = ({ children }: { children: ReactNode })
       const customExercises = parsedExercises.filter((ex: BreathingExercise) => ex.isCustom);
       const updatedDefaults = defaultBreathingExercises.map(defaultEx => {
         const savedEx = parsedExercises.find((ex: BreathingExercise) => ex.id === defaultEx.id);
-        // Keep custom repetitions if user modified them, but use all other updated data
+        // On version change, use fresh defaults; otherwise keep custom repetitions
+        if (savedVersion !== currentVersion) {
+          return defaultEx;
+        }
         return savedEx && !savedEx.isCustom 
           ? { ...defaultEx, repetitions: savedEx.repetitions }
           : defaultEx;

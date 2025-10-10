@@ -223,7 +223,7 @@ const ExerciseDetailsPage = () => {
                 {/* Safety note */}
                 {exercise.safetyNote && (
                   <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
+                    <p className="text-sm text-yellow-800 text-justify">
                       <strong>Safety note:</strong> {exercise.safetyNote}
                     </p>
                   </div>
