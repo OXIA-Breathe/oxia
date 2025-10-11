@@ -117,7 +117,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
   {
     id: "diaphragmatic-breathing",
     title: "Diaphragmatic (Belly) Breathing",
-    description: "Increase lung efficiency",
+    description: "Increase lung efficiency. When you breathe normally, you don't use your lungs to their full capacity. Diaphragmatic breathing allows you to use your lungs at 100% capacity to increase lung efficiency.",
     inhaleDuration: 4,
     firstHoldDuration: 1,
     exhaleDuration: 5,
