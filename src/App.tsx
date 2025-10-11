@@ -25,8 +25,8 @@ const AppContent = () => {
   useDailyStreakTracker();
   
   return (
-    <BreathProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <BreathProvider>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/learn" element={<LearnPage />} />
@@ -39,8 +39,8 @@ const AppContent = () => {
           <Route path="/progress" element={<ConsistencyPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </BreathProvider>
+      </BreathProvider>
+    </BrowserRouter>
   );
 };
 
