@@ -1,4 +1,3 @@
-
 export interface BreathingExercise {
   id: string;
   title: string;
@@ -30,30 +29,35 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 4,
     repetitions: 15,
     isCustom: false,
-    detailedDescription: "Inhale, hold, exhale, hold — each for the same count. A steady, structured rhythm that calms the nervous system, helps to relax the body, clear the mind and improve focus.\n\nPeople with high stress jobs, such as soldiers and police officers, often use box breathing when their bodies are in fight, flight, or freeze mode. This technique is also relevant for anyone interested in recentering themselves or improving their concentration.",
+    detailedDescription:
+      "Inhale, hold, exhale, hold — each for the same count. A steady, structured rhythm that calms the nervous system, helps to relax the body, clear the mind and improve focus.\n\nPeople with high stress jobs, such as soldiers and police officers, often use box breathing when their bodies are in fight, flight, or freeze mode. This technique is also relevant for anyone interested in recentering themselves or improving their concentration.",
     whenToUse: [
       "Pre-meeting, public speaking, exam prep",
-      "Stress spikes, jitters, overthinking", 
-      "Quick reset to clarity"
+      "Stress spikes, jitters, overthinking",
+      "Quick reset to clarity",
     ],
-    howItHelps: "Research has shown that deep breathing techniques significantly reduce the production of hormones associated with stress, such as cortisol. It also can be helpful in the reduction of anxiety, depression and stress.\n\nWhen we are anxious, we breathe shallowly and quickly, which actually creates more anxiety. Using breathwork, we activate parasympathetic nervous system, where our body rests and digest.",
+    howItHelps:
+      "Research has shown that deep breathing techniques significantly reduce the production of hormones associated with stress, such as cortisol. It also can be helpful in the reduction of anxiety, depression and stress.\n\nWhen we are anxious, we breathe shallowly and quickly, which actually creates more anxiety. Using breathwork, we activate parasympathetic nervous system, where our body rests and digest.",
     commonMistakes: [
       "Forcing the holds / throat tension",
       "Lifting shoulders (chest breathing)",
       "Rushing counts; uneven box",
-      "Not being conscious of how the air fills lungs and stomach"
+      "Not being conscious of how the air fills lungs and stomach",
     ],
-    parametersNote: "Ideally, the session should be 4 minutes, or until calm returns. If it is challenging, shorten the period to 2-3 minutes. If experienced, you can potentially extend the sessions to 10-20 minutes or longer.\n\nConsistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.",
-    parameterSuggestion: "For beginners: Try 3-4 seconds for each phase. For experienced: 4-6 seconds works well for deeper relaxation.",
+    parametersNote:
+      "Ideally, the session should be 4 minutes, or until calm returns. If it is challenging, shorten the period to 2-3 minutes. If experienced, you can potentially extend the sessions to 10-20 minutes or longer.\n\nConsistency is key, and sessions can be as short as a minute or two, especially when used to manage stress or anxiety throughout the day.",
+    parameterSuggestion:
+      "For beginners: Try 3-4 seconds for each phase. For experienced: 4-6 seconds works well for deeper relaxation.",
     stepByStepInstructions: [
       "Sit with your back supported, comfortably; relax jaw/shoulders.",
       "Inhale through the nose for 4.",
       "Hold gently for 4 (no strain).",
       "Exhale softly for 4 (nose or lips).",
       "Hold again for 4.",
-      "Repeat, keeping the box smooth and unhurried."
+      "Repeat, keeping the box smooth and unhurried.",
     ],
-    safetyNote: "Shorten holds or stop if you feel dizzy or uncomfortable. Follow doctor's guidance if you have cardiopulmonary conditions, you are pregnant or have high blood pressure."
+    safetyNote:
+      "Shorten holds or stop if you feel dizzy or uncomfortable. Follow doctor's guidance if you have cardiopulmonary conditions, you are pregnant or have high blood pressure.",
   },
   {
     id: "4-7-8-breathing",
@@ -65,21 +69,25 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 4,
     isCustom: false,
-    detailedDescription: "A calming technique designed to help us focus our mind and our body away from worries and repetitive thoughts. That way help us by reducing anxiety and promote sleep.\n\nAlso, according to a small study from 2022, practicing 4-7-8 breathing may improve heart rate variability and blood pressure in young adults. The researchers also suggest that it could be beneficial to people living with cardiovascular or pulmonary disease. It could potentially reduce your heart's workload and increase blood oxygen levels.",
+    detailedDescription:
+      "A calming technique designed to help us focus our mind and our body away from worries and repetitive thoughts. That way help us by reducing anxiety and promote sleep.\n\nAlso, according to a small study from 2022, practicing 4-7-8 breathing may improve heart rate variability and blood pressure in young adults. The researchers also suggest that it could be beneficial to people living with cardiovascular or pulmonary disease. It could potentially reduce your heart's workload and increase blood oxygen levels.",
     whenToUse: ["Before sleep", "During anxiety", "To calm the mind"],
-    howItHelps: "Deep and mindful breathing activates what Dr. Herbert Benson called the relaxation response - the body's natural antidote to chronic stress. By calming the fight-or-flight system, it helps lower blood pressure, reduce anxiety, and support immune function.\n\nRegular practice improves sleep, focus, and emotional balance, while also easing pain and tension. In short, slow, conscious breathing restores both body and mind to a state of calm, clarity, and resilience.",
+    howItHelps:
+      "Deep and mindful breathing activates what Dr. Herbert Benson called the relaxation response - the body's natural antidote to chronic stress. By calming the fight-or-flight system, it helps lower blood pressure, reduce anxiety, and support immune function.\n\nRegular practice improves sleep, focus, and emotional balance, while also easing pain and tension. In short, slow, conscious breathing restores both body and mind to a state of calm, clarity, and resilience.",
     commonMistakes: ["Holding breath too forcefully", "Overthinking about the technique", "Rushing the sequence"],
-    parametersNote: "Often practiced as 4 cycles at bedtime; increase gradually as comfort grows. Keep breath gentle and unforced. Don't overthink. No one expects you to master your breath on the first try (or even the second or the 20th), so keep on practicing and consistency is key.",
-    parameterSuggestion: "Classic 4-7-8 pattern is most effective. Beginners can try 3-5-6 if the full pattern feels too intense.",
+    parametersNote:
+      "Often practiced as 4 cycles at bedtime; increase gradually as comfort grows. Keep breath gentle and unforced. Don't overthink. No one expects you to master your breath on the first try (or even the second or the 20th), so keep on practicing and consistency is key.",
+    parameterSuggestion:
+      "Classic 4-7-8 pattern is most effective. Beginners can try 3-5-6 if the full pattern feels too intense.",
     stepByStepInstructions: [
       "Sit comfortably with your back straight or lie down (especially if you want to fall asleep).",
       "Inhale quietly through your nose for 4.",
       "Hold your breath for 7.",
       "Exhale completely through your mouth for 8.",
       "This completes one cycle.",
-      "Repeat for 4 cycles total."
+      "Repeat for 4 cycles total.",
     ],
-    safetyNote: "Stop and take a break, if you feel lightheaded. Practice on an empty stomach for best results."
+    safetyNote: "Stop and take a break, if you feel lightheaded. Practice on an empty stomach for best results.",
   },
   {
     id: "pursed-lip",
@@ -91,28 +99,33 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 30,
     isCustom: false,
-    detailedDescription: "Pursed lip breathing is a slow breathing technique that enables a person to control how much air enters and leaves their lungs. Calms the breath, reduces tension, and eases shortness of breath.\n\nIn long term, it may strengthen the lungs and improve their efficiency. That way, it may help people with lung conditions, namely chronic obstructive pulmonary disease (COPD).",
+    detailedDescription:
+      "Pursed lip breathing is a slow breathing technique that enables a person to control how much air enters and leaves their lungs. Calms the breath, reduces tension, and eases shortness of breath.\n\nIn long term, it may strengthen the lungs and improve their efficiency. That way, it may help people with lung conditions, namely chronic obstructive pulmonary disease (COPD).",
     whenToUse: [
       "Feeling tense, anxious, or short of breath",
       "During or after exertion (e.g., stairs, brisk walk)",
-      "Inability to take a deep breath"
+      "Inability to take a deep breath",
     ],
-    howItHelps: "Pursed-lip breathing is a simple yet powerful technique that slows your breathing, improves oxygen exchange, and helps you feel more in control. By exhaling slowly through lightly pursed lips, you create gentle back pressure in the lungs (PEEP), which keeps airways open longer and allows trapped carbon dioxide to escape.\n\nThis method is especially helpful for people with COPD or asthma, as it eases shortness of breath, increases oxygen levels, and enhances exercise endurance. Beyond physical benefits, it also calms the nervous system, reduces stress and anxiety, and restores a steady rhythm to your breath - bringing both body and mind into balance.",
+    howItHelps:
+      "Pursed-lip breathing is a simple yet powerful technique that slows your breathing, improves oxygen exchange, and helps you feel more in control. By exhaling slowly through lightly pursed lips, you create gentle back pressure in the lungs (PEEP), which keeps airways open longer and allows trapped carbon dioxide to escape.\n\nThis method is especially helpful for people with COPD or asthma, as it eases shortness of breath, increases oxygen levels, and enhances exercise endurance. Beyond physical benefits, it also calms the nervous system, reduces stress and anxiety, and restores a steady rhythm to your breath - bringing both body and mind into balance.",
     commonMistakes: [
       "Blowing too hard (creates tension)",
       "Inhaling through the mouth",
-      "Exhale too short; cheeks puffing; shoulders lifted"
+      "Exhale too short; cheeks puffing; shoulders lifted",
     ],
-    parametersNote: "Pursed lip breathing should be practiced 3-4 times a day for about 10 minutes each time, ideally when you are not short of breath. It's a technique to help relieve shortness of breath and can be incorporated into your routine when you feel comfortable. When experiencing shortness of breath, you can use pursed lip breathing as needed to help regulate your breath and find relief.\n\nIt may take some time before the technique feels natural. However, with regular practice, it can become comfortable.",
-    parameterSuggestion: "A 2:4 ratio (2s inhale, 4s exhale) is gentle for beginners. Advanced practitioners can try 3:6 or 4:8.",
+    parametersNote:
+      "Pursed lip breathing should be practiced 3-4 times a day for about 10 minutes each time, ideally when you are not short of breath. It's a technique to help relieve shortness of breath and can be incorporated into your routine when you feel comfortable. When experiencing shortness of breath, you can use pursed lip breathing as needed to help regulate your breath and find relief.\n\nIt may take some time before the technique feels natural. However, with regular practice, it can become comfortable.",
+    parameterSuggestion:
+      "A 2:4 ratio (2s inhale, 4s exhale) is gentle for beginners. Advanced practitioners can try 3:6 or 4:8.",
     stepByStepInstructions: [
       "Sit and relax before starting, take a minute to drop the shoulders and release the tongue from the roof of the mouth.",
       "Inhale quietly through the nose for 2–3 seconds.",
       "Purse lips softly (as if to whistle or blow out the candle).",
       "Exhale slowly and steadily for 4–6 seconds; don't force.",
-      "Keep belly soft; avoid puffing cheeks. Repeat."
+      "Keep belly soft; avoid puffing cheeks. Repeat.",
     ],
-    safetyNote: "Stop if dizzy, light-headed, chest pain, or worsening breathlessness. If you have a lung/heart condition, please seek advice from a healthcare professional before trying it."
+    safetyNote:
+      "Stop if dizzy, light-headed, chest pain, or worsening breathlessness. If you have a lung/heart condition, please seek advice from a healthcare professional before trying it.",
   },
   {
     id: "diaphragmatic-breathing",
@@ -124,30 +137,35 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 20,
     isCustom: false,
-    detailedDescription: "Diaphragmatic breathing is a technique that helps you focus on your diaphragm, a muscle in your belly. It's sometimes called belly breathing or abdominal breathing. By \"training\" your diaphragm to open up your lungs, you can help your body breathe more efficiently.\n\nWhen you breathe normally, you don't use your lungs to their full capacity. Diaphragmatic breathing allows you to use your lungs at 100% capacity to increase lung efficiency.",
+    detailedDescription:
+      "Diaphragmatic breathing is a technique that helps you focus on your diaphragm, a muscle in your belly. It's sometimes called belly breathing or abdominal breathing. By \"training\" your diaphragm to open up your lungs, you can help your body breathe more efficiently.\n\nWhen you breathe normally, you don't use your lungs to their full capacity. Diaphragmatic breathing allows you to use your lungs at 100% capacity to increase lung efficiency.",
     whenToUse: [
-      "Any time you feel tense or \"breathing high in the chest\"",
+      'Any time you feel tense or "breathing high in the chest"',
       "Pre-sleep wind-down, post-stress reset, or as a baseline daily practice",
-      "Helpful for anxiety, digestive tension, or voice prep"
+      "Helpful for anxiety, digestive tension, or voice prep",
     ],
-    howItHelps: "That exercise strengthens your diaphragm and trains you to breathe more efficiently. By drawing air deep into the lungs, it improves oxygen flow, reduces tension, and activates the body's relaxation response. Regular practice helps calm the mind, lower stress, and support better posture and lung function. Even a few minutes a day can bring noticeable balance and ease to your body and breath.\n\nAs with learning anything new, the first few times you practice diaphragmatic breathing, it may be difficult. Take a couple of minutes each day to practice this new skill, which offers many benefits to your overall health and can help you relax.",
+    howItHelps:
+      "That exercise strengthens your diaphragm and trains you to breathe more efficiently. By drawing air deep into the lungs, it improves oxygen flow, reduces tension, and activates the body's relaxation response. Regular practice helps calm the mind, lower stress, and support better posture and lung function. Even a few minutes a day can bring noticeable balance and ease to your body and breath.\n\nAs with learning anything new, the first few times you practice diaphragmatic breathing, it may be difficult. Take a couple of minutes each day to practice this new skill, which offers many benefits to your overall health and can help you relax.",
     commonMistakes: [
       "Lifting shoulders / chest is moving",
       "Forcing the belly out or sucking it in (keep it easy)",
       "Noisy mouth breathing; rushing the exhale",
-      "Overthinking and putting too much pressure on yourself"
+      "Overthinking and putting too much pressure on yourself",
     ],
-    parametersNote: "For optimal benefit, diaphragmatic breathing is recommended for 10-20 minutes daily, practiced in several short sessions or one longer session. Beginners may start with shorter durations, such as 5-10 minutes, several times a day, gradually increasing the time as they become more comfortable.",
-    parameterSuggestion: "Start with 4:5 pattern (4s inhale, 5s exhale). As comfort increases, try 5:6 or 6:8 for deeper relaxation.",
+    parametersNote:
+      "For optimal benefit, diaphragmatic breathing is recommended for 10-20 minutes daily, practiced in several short sessions or one longer session. Beginners may start with shorter durations, such as 5-10 minutes, several times a day, gradually increasing the time as they become more comfortable.",
+    parameterSuggestion:
+      "Start with 4:5 pattern (4s inhale, 5s exhale). As comfort increases, try 5:6 or 6:8 for deeper relaxation.",
     stepByStepInstructions: [
       "Sit or lie comfortably; relax shoulders. Place one hand on the belly, one on the upper chest.",
       "Inhale through the nose for 4–5 s: feel the belly and lower ribs expand outward into your hand. Upper chest stays relatively quiet.",
       "Optional gentle hold for 0–1 s (no strain).",
       "Exhale slowly through pursed lips for 5–6 s; feel belly soften back toward the spine.",
       "Keep the breath quiet and smooth.",
-      "Mindful Practice: Focus on the sensation of your stomach rising and falling as you breathe, keeping your chest relatively still."
+      "Mindful Practice: Focus on the sensation of your stomach rising and falling as you breathe, keeping your chest relatively still.",
     ],
-    safetyNote: "If you feel dizzy or uncomfortable, pause and return to normal breathing. If you have a condition like COPD, asthma or anxiety, talk to your provider about diaphragmatic breathing to see if it's right for you."
+    safetyNote:
+      "If you feel dizzy or uncomfortable, pause and return to normal breathing. If you have a condition like COPD, asthma or anxiety, talk to your provider about diaphragmatic breathing to see if it's right for you.",
   },
   {
     id: "breathe-focus",
@@ -159,32 +177,37 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 10,
     isCustom: false,
-    detailedDescription: "A simple, mindful practice of gently placing attention on the breath - often paired with anchor words or imagery - to cultivate calm, clarity, and steady focus.\n\nChoose a word that makes you smile, feel relaxed or is simply neutral. For example, some use peace, let go, relax or simply breathe in and breathe out.",
+    detailedDescription:
+      "A simple, mindful practice of gently placing attention on the breath - often paired with anchor words or imagery - to cultivate calm, clarity, and steady focus.\n\nChoose a word that makes you smile, feel relaxed or is simply neutral. For example, some use peace, let go, relax or simply breathe in and breathe out.",
     whenToUse: [
       "Before deep work or study, during stress or overwhelm",
-      "As a daily centering practice (2–10 min)", 
-      "Any time you want clarity without a strict breathing pattern"
+      "As a daily centering practice (2–10 min)",
+      "Any time you want clarity without a strict breathing pattern",
     ],
-    howItHelps: "This practice strengthens your ability to focus by gently bringing your attention back to the breath whenever your mind starts to wander. Each time you notice distraction and return to your breathing, you train your mind to stay present with calm awareness.\n\nWhen thoughts arise, we often get caught up in them, which can trigger worry or negative emotions. By simply observing these thoughts without clinging to them, you develop non-reactivity - the ability to stay centered and composed even when your mind or emotions try to pull you off balance. Over time, this builds emotional regulation, mental clarity, and resilience.\n\nIt also activates the parasympathetic nervous system - your body's natural \"rest and restore\" mode - especially when you exhale slightly longer than you inhale. This helps lower stress, reduce emotional reactivity, and create a deep sense of inner calm.",
+    howItHelps:
+      'This practice strengthens your ability to focus by gently bringing your attention back to the breath whenever your mind starts to wander. Each time you notice distraction and return to your breathing, you train your mind to stay present with calm awareness.\n\nWhen thoughts arise, we often get caught up in them, which can trigger worry or negative emotions. By simply observing these thoughts without clinging to them, you develop non-reactivity - the ability to stay centered and composed even when your mind or emotions try to pull you off balance. Over time, this builds emotional regulation, mental clarity, and resilience.\n\nIt also activates the parasympathetic nervous system - your body\'s natural "rest and restore" mode - especially when you exhale slightly longer than you inhale. This helps lower stress, reduce emotional reactivity, and create a deep sense of inner calm.',
     commonMistakes: [
-      "Forcing the breath or \"doing it right\"",
+      'Forcing the breath or "doing it right"',
       "Trying to push thoughts away (just notice and return).",
-      "Mouth breathing noisily; shoulders tense."
+      "Mouth breathing noisily; shoulders tense.",
     ],
-    parametersNote: "For breath focus techniques, a good starting point is 5-10 minutes a day. You can gradually increase the duration to 20 minutes or longer as you become more comfortable and find it beneficial. It's also recommended to practice it several times a day if possible.",
-    parameterSuggestion: "A gentle 4:6 ratio (4s inhale, 6s exhale) helps maintain focus. Adjust timing to match your natural rhythm.",
+    parametersNote:
+      "For breath focus techniques, a good starting point is 5-10 minutes a day. You can gradually increase the duration to 20 minutes or longer as you become more comfortable and find it beneficial. It's also recommended to practice it several times a day if possible.",
+    parameterSuggestion:
+      "A gentle 4:6 ratio (4s inhale, 6s exhale) helps maintain focus. Adjust timing to match your natural rhythm.",
     stepByStepInstructions: [
       "Sit tall or lie comfortably; relax jaw/shoulders.",
       "Before starting the practice in the app, notice the natural breath (temperature at the nostrils, belly/ rib movement).",
       "Alternate between normal and deep breaths a few times. Notice any differences between normal breathing and deep breathing. Notice how your abdomen expands with deep inhalations.",
       "When you feel that you have focused on the sensation of breathing, you can start the practice (relaxing and building up focus before the practice helps you soothe in to exercise).",
-      "Choose an anchor: words (\"in… out…\", \"calm… clear…\") or imagery (wave/tide).",
+      'Choose an anchor: words ("in… out…", "calm… clear…") or imagery (wave/tide).',
       "Inhale gently; silently repeat your anchor (e.g., 'in… calm').",
       "Exhale slowly; repeat the pair (e.g., 'out… clear').",
-      "When the mind wanders, notice it – name it – return to breathing (e.g., \"thinking… back to breath\"). Be gentle, it is okay, when the mind wanders, just come back to breathing. Practice takes time to master.",
-      "Continue for the set cycles or time; finish with one longer, easy exhale."
+      'When the mind wanders, notice it – name it – return to breathing (e.g., "thinking… back to breath"). Be gentle, it is okay, when the mind wanders, just come back to breathing. Practice takes time to master.',
+      "Continue for the set cycles or time; finish with one longer, easy exhale.",
     ],
-    safetyNote: "Generally safe. If you feel dizzy or uncomfortable, return to natural breathing or pause. Follow doctor's guidance if you have medical concerns."
+    safetyNote:
+      "Generally safe. If you feel dizzy or uncomfortable, return to natural breathing or pause. Follow doctor's guidance if you have medical concerns.",
   },
   {
     id: "lions-breath",
@@ -196,22 +219,26 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 5,
     isCustom: false,
-    detailedDescription: "Lion's Breath (Simha Pranayama) is a powerful yogic breathing technique that releases physical tension and emotional blockages through an expressive exhalation. You inhale deeply through the nose, open your mouth wide, stretch out your tongue, and exhale with a strong \"haaa\" sound - like a lion's roar.\n\nUnlike most quiet breathing practices, this one is bold and freeing, engaging the diaphragm, vocal cords, and facial muscles. It brings awareness to the throat and upper chest, activates circulation, and invites a sense of openness, courage, and authentic expression.",
+    detailedDescription:
+      "Lion's Breath (Simha Pranayama) is a powerful yogic breathing technique that releases physical tension and emotional blockages through an expressive exhalation. You inhale deeply through the nose, open your mouth wide, stretch out your tongue, and exhale with a strong \"haaa\" sound - like a lion's roar.\n\nUnlike most quiet breathing practices, this one is bold and freeing, engaging the diaphragm, vocal cords, and facial muscles. It brings awareness to the throat and upper chest, activates circulation, and invites a sense of openness, courage, and authentic expression.",
     whenToUse: [
       "Feeling down or having low energy",
-      "Before stressful events, public speaking or creative work", 
-      "Feeling tense, frustrated or emotionally stuck", 
-      "At the end of yoga or breathing sessions to let go of lingering stress"
+      "Before stressful events, public speaking or creative work",
+      "Feeling tense, frustrated or emotionally stuck",
+      "At the end of yoga or breathing sessions to let go of lingering stress",
     ],
-    howItHelps: "Lion's Breath works on multiple levels - physical, emotional, and psychological. Physiologically, it relaxes the jaw, face, and neck muscles, strengthens the diaphragm and vocal cords, and enhances lung capacity and oxygen flow. Studies on pranayama show it can improve respiratory endurance, reduce stress, anxiety, and high blood pressure, and even benefit conditions like COPD and asthma by improving airflow and oxygenation.\n\nEmotionally, it helps release suppressed anger, frustration, or fear, replacing them with a sense of empowerment and confidence. The facial movements and audible exhale calm the nervous system and lower cortisol, leading to deep relaxation and a clearer, lighter mind. Psychologically, it trains you to let go of self-consciousness - helping you speak up, express emotions, and face challenges with renewed courage and presence.\n\nIn essence, Lion's Breath is not just a breathing exercise - it's a powerful emotional reset that reconnects you to your inner strength, authenticity, and vitality.",
+    howItHelps:
+      "Lion's Breath works on multiple levels - physical, emotional, and psychological. Physiologically, it relaxes the jaw, face, and neck muscles, strengthens the diaphragm and vocal cords, and enhances lung capacity and oxygen flow. Studies on pranayama show it can improve respiratory endurance, reduce stress, anxiety, and high blood pressure, and even benefit conditions like COPD and asthma by improving airflow and oxygenation.\n\nEmotionally, it helps release suppressed anger, frustration, or fear, replacing them with a sense of empowerment and confidence. The facial movements and audible exhale calm the nervous system and lower cortisol, leading to deep relaxation and a clearer, lighter mind. Psychologically, it trains you to let go of self-consciousness - helping you speak up, express emotions, and face challenges with renewed courage and presence.\n\nIn essence, Lion's Breath is not just a breathing exercise - it's a powerful emotional reset that reconnects you to your inner strength, authenticity, and vitality.",
     commonMistakes: [
       "Forcing the exhale – think releasing, not pushing the air out",
       "Holding tension in the face or shoulders (goal is to let go and feeling natural)",
       "Overdoing the number of rounds → dizziness or dryness in the throat",
-      "Skipping the inhale – take a full, deep breath in before the exhale"
+      "Skipping the inhale – take a full, deep breath in before the exhale",
     ],
-    parametersNote: "Lion's breath, a type of pranayama (yogic breathing), is generally recommended for a few minutes at a time, with 5-10 repetitions per session. Practitioners often follow this with a few minutes of normal, deep breathing. It's best to start with a few rounds and gradually work up to a comfortable duration, avoiding overexertion",
-    parameterSuggestion: "Keep it energizing: 3s inhale, 2s forceful exhale works well. Avoid longer timing to prevent strain.",
+    parametersNote:
+      "Lion's breath, a type of pranayama (yogic breathing), is generally recommended for a few minutes at a time, with 5-10 repetitions per session. Practitioners often follow this with a few minutes of normal, deep breathing. It's best to start with a few rounds and gradually work up to a comfortable duration, avoiding overexertion",
+    parameterSuggestion:
+      "Keep it energizing: 3s inhale, 2s forceful exhale works well. Avoid longer timing to prevent strain.",
     stepByStepInstructions: [
       "Sit tall (kneeling or cross-legged) or stand; relax shoulders/neck; hands resting on your knees or thighs.",
       "Before starting the exercise, take a few deep breaths.",
@@ -220,9 +247,10 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Mouth wide, tongue extended toward chin.",
       "Eyes can look up between the brows (optional).",
       "Repeat for 5-10 rounds, then finish with a few calm nasal breaths.",
-      "Sidenote: if you need, take few normal breaths in between rounds."
+      "Sidenote: if you need, take few normal breaths in between rounds.",
     ],
-    safetyNote: "Skip or reduce intensity if you have throat irritation, jaw/TMJ pain, recent dental work, or if dizziness appears. If you have cardiopulmonary conditions or are pregnant, avoid forceful breaths and follow clinician guidance."
+    safetyNote:
+      "Skip or reduce intensity if you have throat irritation, jaw/TMJ pain, recent dental work, or if dizziness appears. If you have cardiopulmonary conditions or are pregnant, avoid forceful breaths and follow clinician guidance.",
   },
   {
     id: "alternate-nostril",
@@ -234,19 +262,21 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 24,
     isCustom: false,
-    detailedDescription: "Alternate Nostril Breathing (Nadi Shodhana) is a traditional yogic pranayama technique where you gently breathe in through one nostril, close it with your fingers, and exhale through the other - then repeat in the opposite direction. The Sanskrit term Nadi Shodhana means \"channel purification,\" referring to the idea that breath moves through subtle energy pathways (nadis), clearing mental and physical blockages.\n\nIt's more than a simple breathing rhythm - it's a mindful balancing act between the left and right sides of the body and brain. The left nostril is linked to calm, introspective energy (the parasympathetic system), while the right nostril activates alertness and focus (the sympathetic system). By alternating between them, you bring both hemispheres into harmony, creating inner equilibrium.",
+    detailedDescription:
+      "Alternate Nostril Breathing (Nadi Shodhana) is a traditional yogic pranayama technique where you gently breathe in through one nostril, close it with your fingers, and exhale through the other - then repeat in the opposite direction. The Sanskrit term Nadi Shodhana means \"channel purification,\" referring to the idea that breath moves through subtle energy pathways (nadis), clearing mental and physical blockages.\n\nIt's more than a simple breathing rhythm - it's a mindful balancing act between the left and right sides of the body and brain. The left nostril is linked to calm, introspective energy (the parasympathetic system), while the right nostril activates alertness and focus (the sympathetic system). By alternating between them, you bring both hemispheres into harmony, creating inner equilibrium.",
     whenToUse: [
       "Preparing for sleep, meditation, or deep work",
       "After intense activity or stressful events",
-      "Any time you want a reset to mental balance"
+      "Any time you want a reset to mental balance",
     ],
-    howItHelps: "Alternate Nostril Breathing is known for its ability to calm the mind, balance the nervous system, and enhance focus and emotional regulation. Scientifically, regular practice has been shown to lower blood pressure, steady the heart rate, improve lung capacity, and even sharpen memory and coordination.\n\nEnergetically, it helps restore flow and clarity, dissolving inner agitation or fatigue. It's particularly effective before meditation, sleep, or any task that requires calm concentration. For experienced practitioners, it deepens self-awareness and breath control. For beginners, it's an easy entry into mindfulness and relaxation.\n\nIn essence, this technique reconnects you with your natural rhythm - balancing logic with intuition, stillness with clarity, and the breath with the mind.",
+    howItHelps:
+      "Alternate Nostril Breathing is known for its ability to calm the mind, balance the nervous system, and enhance focus and emotional regulation. Scientifically, regular practice has been shown to lower blood pressure, steady the heart rate, improve lung capacity, and even sharpen memory and coordination.\n\nEnergetically, it helps restore flow and clarity, dissolving inner agitation or fatigue. It's particularly effective before meditation, sleep, or any task that requires calm concentration. For experienced practitioners, it deepens self-awareness and breath control. For beginners, it's an easy entry into mindfulness and relaxation.\n\nIn essence, this technique reconnects you with your natural rhythm - balancing logic with intuition, stillness with clarity, and the breath with the mind.",
     commonMistakes: [
       "Pressing too hard on the nose (light touch is enough)",
       "Forcing or over-controlling the breath (let it flow naturally)",
       "Holding tension in the shoulders or jaw",
       "Losing the sequence and awareness (use mental cues: 'Left-in, Right-out, Right-in, Left-out')",
-      "Overcomplicating the process – simplicity is the key"
+      "Overcomplicating the process – simplicity is the key",
     ],
     stepByStepInstructions: [
       "Sit comfortably with a straight spine.",
@@ -256,12 +286,15 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Release your thumb and exhale through your right nostril for 4-6 seconds.",
       "Inhale through your right nostril for 4 seconds.",
       "Close your right nostril and exhale through your left for 4-6 seconds.",
-      "That's one full cycle. Continue 6–8 cycles, keeping the breath quiet and even.",
-      "Continue this breathing pattern for up to 5 minutes.",
+      "That's one full cycle. Continue this breathing pattern for up to 5 minutes, keeping the breath quiet and even.",
+      "Double the repetitions as in this app, the repetition is equal to one nostril side breathing.",
     ],
-    parametersNote: "It can be practiced for varying lengths of time depending on individual needs and comfort levels. A good starting point is 3-5 minutes, but it can be extended to 5-10 minutes or longer as you become more comfortable with the technique. Some practitioners find it beneficial to do 3-5 rounds, while others may prefer a set number of breaths on each side.",
-    parameterSuggestion: "A 4:4 rhythm is balanced and calming. If you want deeper relaxation, try 4:6 (shorter inhale, longer exhale).",
-    safetyNote: "Safe for most. Avoid if you have a cold or severe nasal blockage. If one nostril is partially blocked, reduce pressure or skip this practice until breathing is clearer. Stop if dizzy or light-headed."
+    parametersNote:
+      "It can be practiced for varying lengths of time depending on individual needs and comfort levels. A good starting point is 3-5 minutes, but it can be extended to 5-10 minutes or longer as you become more comfortable with the technique. Some practitioners find it beneficial to do 3-5 rounds, while others may prefer a set number of breaths on each side.",
+    parameterSuggestion:
+      "A 4:4 rhythm is balanced and calming. If you want deeper relaxation, try 4:6 (shorter inhale, longer exhale).",
+    safetyNote:
+      "Safe for most. Avoid if you have a cold or severe nasal blockage. If one nostril is partially blocked, reduce pressure or skip this practice until breathing is clearer. Stop if dizzy or light-headed.",
   },
   {
     id: "equal-breathing",
@@ -273,28 +306,33 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 12,
     isCustom: false,
-    detailedDescription: "A smooth, even rhythm where the inhale and exhale are the same length. Balances the nervous system, steadies attention, and promotes calm clarity.",
+    detailedDescription:
+      "A smooth, even rhythm where the inhale and exhale are the same length. Balances the nervous system, steadies attention, and promotes calm clarity.",
     whenToUse: [
       "Centering before work, calls, or study",
       "Transition moments (after stress, between tasks)",
-      "Any time you want calm focus without breath holds"
+      "Any time you want calm focus without breath holds",
     ],
-    howItHelps: "The 1:1 cadence stabilizes breathing rate and supports a parasympathetic shift. Smooth, even breaths reduce \"air hunger\" and settle reactivity. Builds awareness of breath mechanics without strain; great as a daily baseline.",
+    howItHelps:
+      'The 1:1 cadence stabilizes breathing rate and supports a parasympathetic shift. Smooth, even breaths reduce "air hunger" and settle reactivity. Builds awareness of breath mechanics without strain; great as a daily baseline.',
     commonMistakes: [
       "Forcing the breath or speeding up at the end of the count",
       "Breathing high into the chest; let the lower ribs/belly move",
-      "Mouth breathing or noisy exhale (aim for quiet nasal flow)"
+      "Mouth breathing or noisy exhale (aim for quiet nasal flow)",
     ],
-    safetyNote: "Generally safe. If you feel dizzy or uncomfortable, reduce the count (e.g., from 6–6 to 4–4) or pause and return to natural breathing.",
+    safetyNote:
+      "Generally safe. If you feel dizzy or uncomfortable, reduce the count (e.g., from 6–6 to 4–4) or pause and return to natural breathing.",
     stepByStepInstructions: [
       "Sit or stand tall; relax jaw/shoulders.",
       "Inhale through the nose for your chosen count (e.g., 5).",
       "Exhale through the nose for the same count (e.g., 5).",
       "Keep the breath quiet, smooth, and effortless.",
-      "Continue for 8–12 cycles; finish with one easy, slightly longer exhale."
+      "Continue for 8–12 cycles; finish with one easy, slightly longer exhale.",
     ],
-    parametersNote: "The recommended time for practicing Equal Breathing (Sama Vritti) is generally 5 to 10 minutes, but it can be adjusted based on individual needs and comfort levels. Beginners may start with shorter durations, like 2-3 minutes, and gradually increase the time as they become more comfortable. It's also beneficial to practice this technique for a few minutes before other practices like yoga asana or meditation.",
-    parameterSuggestion: "Begin with 4–4 if you're new; progress to 5–5 or 6–6 as it feels natural. If you feel agitated, try slightly longer exhales for a few rounds (e.g., 4–5 or 5–6), then return to equal. Practise 2–5 minutes daily to make it your default calm rhythm."
+    parametersNote:
+      "The recommended time for practicing Equal Breathing (Sama Vritti) is generally 5 to 10 minutes, but it can be adjusted based on individual needs and comfort levels. Beginners may start with shorter durations, like 2-3 minutes, and gradually increase the time as they become more comfortable. It's also beneficial to practice this technique for a few minutes before other practices like yoga asana or meditation.",
+    parameterSuggestion:
+      "Begin with 4–4 if you're new; progress to 5–5 or 6–6 as it feels natural. If you feel agitated, try slightly longer exhales for a few rounds (e.g., 4–5 or 5–6), then return to equal. Practise 2–5 minutes daily to make it your default calm rhythm.",
   },
   {
     id: "sitali-breath",
@@ -306,29 +344,34 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 10,
     isCustom: false,
-    detailedDescription: "A cooling breath that draws air over a rolled tongue (or gently through the teeth), then exhales through the nose. Soothes heat, irritability, and mental agitation.",
+    detailedDescription:
+      "A cooling breath that draws air over a rolled tongue (or gently through the teeth), then exhales through the nose. Soothes heat, irritability, and mental agitation.",
     whenToUse: [
       "Hot weather, post-exercise cool-down, or after a heated moment",
       "Emotional heat: frustration, irritability, anger",
-      "Afternoon settle, pre-sleep wind-down (keep the exhale soft and long)"
+      "Afternoon settle, pre-sleep wind-down (keep the exhale soft and long)",
     ],
-    howItHelps: "Inhaling over a narrow, moistened channel creates a cooling sensation, helping down-regulate arousal. Longer nasal exhale engages the parasympathetic response → calm, steady mood. Can reduce feelings of overheating, anger, restlessness, and support gentle focus.",
+    howItHelps:
+      "Inhaling over a narrow, moistened channel creates a cooling sensation, helping down-regulate arousal. Longer nasal exhale engages the parasympathetic response → calm, steady mood. Can reduce feelings of overheating, anger, restlessness, and support gentle focus.",
     commonMistakes: [
       "Forcing the inhale (creates throat tension)",
       "Loud, windy mouth inhale; cheeks puffing",
-      "Rushed or short exhale; shoulders lifting"
+      "Rushed or short exhale; shoulders lifting",
     ],
-    safetyNote: "Avoid in very cold or very polluted/dry air (may irritate throat/airways). If you have asthma, chronic cough, or throat sensitivity, use very gently or choose a nasal-only practice instead. Stop if dizzy, light-headed, or uncomfortable; return to normal breathing.",
+    safetyNote:
+      "Avoid in very cold or very polluted/dry air (may irritate throat/airways). If you have asthma, chronic cough, or throat sensitivity, use very gently or choose a nasal-only practice instead. Stop if dizzy, light-headed, or uncomfortable; return to normal breathing.",
     stepByStepInstructions: [
       "Sit tall; relax jaw/shoulders.",
       "Sitali: roll the tongue into a tube and extend slightly past the lips. Sitkari (alternative): if you can't roll the tongue, part the teeth gently and rest the tongue tip behind them.",
       "Inhale slowly through the rolled tongue (or gently across the teeth) for ~4 s, feeling the cool air.",
       "Close the mouth; optionally pause 0–1 s without tension.",
       "Exhale through the nose for ~6 s, smooth and quiet.",
-      "Repeat 6–10 rounds; keep face and throat soft."
+      "Repeat 6–10 rounds; keep face and throat soft.",
     ],
-    parametersNote: "Sitali (or Sheetali) Pranayama, the cooling breath, can be practiced for a few minutes to 10-15 minutes daily. Beginners may start with 5-10 minutes, gradually increasing the duration as they become comfortable. It's particularly beneficial during the hottest part of the day (around midday) or after physical activity to help cool down. ",
-    parameterSuggestion: "Start with 4–6 rounds, build to 10+ as comfortable. For stronger calming, extend the exhale to 7–8 s. If the mouth gets dry, pause briefly and swallow; keep the pull gentle, not slurping."
+    parametersNote:
+      "Sitali (or Sheetali) Pranayama, the cooling breath, can be practiced for a few minutes to 10-15 minutes daily. Beginners may start with 5-10 minutes, gradually increasing the duration as they become comfortable. It's particularly beneficial during the hottest part of the day (around midday) or after physical activity to help cool down. ",
+    parameterSuggestion:
+      "Start with 4–6 rounds, build to 10+ as comfortable. For stronger calming, extend the exhale to 7–8 s. If the mouth gets dry, pause briefly and swallow; keep the pull gentle, not slurping.",
   },
   {
     id: "bee-breath",
@@ -340,28 +383,33 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 10,
     isCustom: false,
-    detailedDescription: "A gentle nasal inhale followed by a soft humming exhale (\"mmm…\") with closed lips. The vibration soothes the nervous system, quiets mental noise, and eases facial/jaw tension.",
+    detailedDescription:
+      'A gentle nasal inhale followed by a soft humming exhale ("mmm…") with closed lips. The vibration soothes the nervous system, quiets mental noise, and eases facial/jaw tension.',
     whenToUse: [
       "Evening wind-down or post-stress reset",
       "Moments of overthinking, screen fatigue, or jaw/face tightness",
-      "Before meditation or deep work to center attention"
+      "Before meditation or deep work to center attention",
     ],
-    howItHelps: "The humming vibration provides a calming sensory focus and may stimulate vagal tone. Long, steady exhale promotes a parasympathetic shift (rest-and-digest). Can reduce perceived anxiety, irritability, and mental chatter; supports focus and sleep wind-down.",
+    howItHelps:
+      "The humming vibration provides a calming sensory focus and may stimulate vagal tone. Long, steady exhale promotes a parasympathetic shift (rest-and-digest). Can reduce perceived anxiety, irritability, and mental chatter; supports focus and sleep wind-down.",
     commonMistakes: [
       "Forcing the hum (throat tension or loud buzzing)",
       "Mouth open (keep lips closed, nasal breathing only)",
-      "Shoulders lifting; cheeks puffing"
+      "Shoulders lifting; cheeks puffing",
     ],
-    safetyNote: "Skip or be very gentle if you have ear infection, acute sinus issues, recent dental work, or throat irritation. Stop if dizzy, light-headed, or uncomfortable. If you have medical concerns, follow clinician guidance.",
+    safetyNote:
+      "Skip or be very gentle if you have ear infection, acute sinus issues, recent dental work, or throat irritation. Stop if dizzy, light-headed, or uncomfortable. If you have medical concerns, follow clinician guidance.",
     stepByStepInstructions: [
       "Sit tall; relax jaw/shoulders. Lightly touch tongue to the roof of the mouth (optional).",
       "Inhale quietly through the nose for ~4 s.",
-      "With lips closed and jaw soft, exhale while humming \"mmm…\" for 6–8 s. Keep the sound gentle and steady.",
+      'With lips closed and jaw soft, exhale while humming "mmm…" for 6–8 s. Keep the sound gentle and steady.',
       "Feel the vibration around lips, cheeks, and sinuses; keep throat relaxed.",
-      "Repeat 6–10 cycles; finish with 1–2 easy nasal breaths."
+      "Repeat 6–10 cycles; finish with 1–2 easy nasal breaths.",
     ],
-    parametersNote: "Bhramari Pranayama, or Bee Breath, can be practiced at any time of the day, but it's particularly beneficial when done in the morning or evening. A good starting point is 5-10 minutes, gradually increasing to 15-20 minutes as you become more comfortable. It can be incorporated into your daily routine or practiced before meditation or sleep according to yoga and wellness websites.",
-    parameterSuggestion: "Start with 4–6 rounds, build to 10+ as comfortable. Keep the hum quiet and effortless—aim for smoothness, not loudness. If you feel agitated, lengthen the exhale (up to 8 s)."
+    parametersNote:
+      "Bhramari Pranayama, or Bee Breath, can be practiced at any time of the day, but it's particularly beneficial when done in the morning or evening. A good starting point is 5-10 minutes, gradually increasing to 15-20 minutes as you become more comfortable. It can be incorporated into your daily routine or practiced before meditation or sleep according to yoga and wellness websites.",
+    parameterSuggestion:
+      "Start with 4–6 rounds, build to 10+ as comfortable. Keep the hum quiet and effortless—aim for smoothness, not loudness. If you feel agitated, lengthen the exhale (up to 8 s).",
   },
   {
     id: "dirga-breath",
@@ -373,19 +421,22 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 10,
     isCustom: false,
-    detailedDescription: "A smooth, full breath that expands in three parts—belly, lower ribs, then upper chest—followed by an easy, complete exhale. Re-educates healthy breathing mechanics and promotes deep calm.",
+    detailedDescription:
+      "A smooth, full breath that expands in three parts—belly, lower ribs, then upper chest—followed by an easy, complete exhale. Re-educates healthy breathing mechanics and promotes deep calm.",
     whenToUse: [
       "As a daily baseline practice (morning/evening, 2–5 min)",
       "Before meditation, sleep wind-down, or after stress",
-      "When you notice tight chest/short breaths and want to reset the pattern"
+      "When you notice tight chest/short breaths and want to reset the pattern",
     ],
-    howItHelps: "Trains the diaphragm and lateral ribs for efficient, low effort breathing. Reduces shallow chest breathing and shoulder/neck tension. Steadies the nervous system (especially with a slightly longer exhale). Useful foundation for all other breathing practices.",
+    howItHelps:
+      "Trains the diaphragm and lateral ribs for efficient, low effort breathing. Reduces shallow chest breathing and shoulder/neck tension. Steadies the nervous system (especially with a slightly longer exhale). Useful foundation for all other breathing practices.",
     commonMistakes: [
       "Starting the inhale high in the chest (skip belly/ribs)",
       "Forcing the belly out or sucking it in; creating tension",
-      "Noisy mouth breathing; raising shoulders; rushing the exhale"
+      "Noisy mouth breathing; raising shoulders; rushing the exhale",
     ],
-    safetyNote: "Generally gentle and safe. If you feel dizzy or uncomfortable, shorten the counts, return to natural breathing, or pause. Follow clinician guidance for respiratory/cardiac conditions.",
+    safetyNote:
+      "Generally gentle and safe. If you feel dizzy or uncomfortable, shorten the counts, return to natural breathing, or pause. Follow clinician guidance for respiratory/cardiac conditions.",
     stepByStepInstructions: [
       "Sit or lie comfortably; relax jaw/shoulders. Place one hand on belly, the other on lower ribs/upper chest.",
       "Inhale through the nose (4–5 s) in three parts:",
@@ -394,9 +445,11 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Upper chest lifts softly at the end (no strain).",
       "Optional easeful pause (0–1 s).",
       "Exhale slowly (~ 6 s) - upper chest softens, ribs draw inward, belly gently returns toward spine.",
-      "Keep the whole breath quiet, smooth, and effortless. Repeat 6–10 cycles."
+      "Keep the whole breath quiet, smooth, and effortless. Repeat 6–10 cycles.",
     ],
-    parametersNote: "For beginners, a good starting point for Dirga Pranayama (Three-Part Breath) is 5-10 minutes per session, gradually increasing as comfort and familiarity grow, with a total of 20-30 minutes of pranayama practice throughout the day.",
-    parameterSuggestion: "Begin with 4–6 cycles, build to 10+ as natural. If you feel agitated, favor a longer exhale (e.g., 4–6 or 5–7). Keep movements subtle, avoid forcing the chest lift."
+    parametersNote:
+      "For beginners, a good starting point for Dirga Pranayama (Three-Part Breath) is 5-10 minutes per session, gradually increasing as comfort and familiarity grow, with a total of 20-30 minutes of pranayama practice throughout the day.",
+    parameterSuggestion:
+      "Begin with 4–6 cycles, build to 10+ as natural. If you feel agitated, favor a longer exhale (e.g., 4–6 or 5–7). Keep movements subtle, avoid forcing the chest lift.",
   },
 ];
