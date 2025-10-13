@@ -196,28 +196,31 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 5,
     isCustom: false,
-    detailedDescription: "A tension-releasing breath with a bold, open-mouth exhale and tongue extended. Releases jaw/face tightness, energizes the body, and resets mental fatigue.",
+    detailedDescription: "Lion's Breath (Simha Pranayama) is a powerful yogic breathing technique that releases physical tension and emotional blockages through an expressive exhalation. You inhale deeply through the nose, open your mouth wide, stretch out your tongue, and exhale with a strong \"haaa\" sound - like a lion's roar.\n\nUnlike most quiet breathing practices, this one is bold and freeing, engaging the diaphragm, vocal cords, and facial muscles. It brings awareness to the throat and upper chest, activates circulation, and invites a sense of openness, courage, and authentic expression.",
     whenToUse: [
-      "Mid-day slump, screen fatigue, creative block",
-      "After periods of clenching teeth, jaw tightness, or over-focus", 
-      "As a short 'reset' before returning to calm practices"
+      "Feeling down or having low energy",
+      "Before stressful events, public speaking or creative work", 
+      "Feeling tense, frustrated or emotionally stuck", 
+      "At the end of yoga or breathing sessions to let go of lingering stress"
     ],
-    howItHelps: "Actively relaxes jaw, tongue, and facial muscles → reduces 'clench' and stress load. The forceful 'haaa' longer exhale encourages parasympathetic settling after the burst. Stimulates awareness and energizes when feeling dull or mentally stuck. Can support vocal ease and expression by reducing throat/jaw tension.",
+    howItHelps: "Lion's Breath works on multiple levels - physical, emotional, and psychological. Physiologically, it relaxes the jaw, face, and neck muscles, strengthens the diaphragm and vocal cords, and enhances lung capacity and oxygen flow. Studies on pranayama show it can improve respiratory endurance, reduce stress, anxiety, and high blood pressure, and even benefit conditions like COPD and asthma by improving airflow and oxygenation.\n\nEmotionally, it helps release suppressed anger, frustration, or fear, replacing them with a sense of empowerment and confidence. The facial movements and audible exhale calm the nervous system and lower cortisol, leading to deep relaxation and a clearer, lighter mind. Psychologically, it trains you to let go of self-consciousness - helping you speak up, express emotions, and face challenges with renewed courage and presence.\n\nIn essence, Lion's Breath is not just a breathing exercise - it's a powerful emotional reset that reconnects you to your inner strength, authenticity, and vitality.",
     commonMistakes: [
-      "Forcing or squeezing in the throat/neck (keep the channel open)",
-      "Jaw locking or clenching during the exhale (allow it to release)",
-      "Overdoing the number of rounds → dizziness or dryness in the throat"
+      "Forcing the exhale – think releasing, not pushing the air out",
+      "Holding tension in the face or shoulders (goal is to let go and feeling natural)",
+      "Overdoing the number of rounds → dizziness or dryness in the throat",
+      "Skipping the inhale – take a full, deep breath in before the exhale"
     ],
     parametersNote: "Lion's breath, a type of pranayama (yogic breathing), is generally recommended for a few minutes at a time, with 5-10 repetitions per session. Practitioners often follow this with a few minutes of normal, deep breathing. It's best to start with a few rounds and gradually work up to a comfortable duration, avoiding overexertion",
     parameterSuggestion: "Keep it energizing: 3s inhale, 2s forceful exhale works well. Avoid longer timing to prevent strain.",
     stepByStepInstructions: [
-      "Sit tall (kneeling or cross-legged) or stand; relax shoulders/neck.",
-      "Inhale through the nose for 3–4 s; feel ribs expand.",
-      "Exhale forcefully through the mouth with a 'haaa' sound:",
-      "  • Mouth wide, tongue extended toward chin.",
-      "  • Eyes can look up between the brows (optional).",
-      "Let the face return to neutral. Pause 1–2 easy nasal breaths.",
-      "Repeat for 5–8 rounds, then finish with a few calm nasal breaths."
+      "Sit tall (kneeling or cross-legged) or stand; relax shoulders/neck; hands resting on your knees or thighs.",
+      "Before starting the exercise, take a few deep breaths.",
+      "Inhale through the nose for 3-4 sec, feel ribs expand.",
+      "Exhale forcefully through the mouth with a 'haaa' sound 2-3 sec:",
+      "Mouth wide, tongue extended toward chin.",
+      "Eyes can look up between the brows (optional).",
+      "Repeat for 5-10 rounds, then finish with a few calm nasal breaths.",
+      "Sidenote: if you need, take few normal breaths in between rounds."
     ],
     safetyNote: "Skip or reduce intensity if you have throat irritation, jaw/TMJ pain, recent dental work, or if dizziness appears. If you have cardiopulmonary conditions or are pregnant, avoid forceful breaths and follow clinician guidance."
   },
