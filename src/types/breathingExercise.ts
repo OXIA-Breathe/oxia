@@ -117,20 +117,20 @@ export const defaultBreathingExercises: BreathingExercise[] = [
   {
     id: "diaphragmatic-breathing",
     title: "Diaphragmatic (Belly) Breathing",
-    description: "Increase lung efficiency. When you breathe normally, you don't use your lungs to their full capacity. Diaphragmatic breathing allows you to use your lungs at 100% capacity to increase lung efficiency.",
+    description: "Increase lung efficiency",
     inhaleDuration: 4,
     firstHoldDuration: 1,
     exhaleDuration: 5,
     secondHoldDuration: 0,
     repetitions: 20,
     isCustom: false,
-    detailedDescription: "Diaphragmatic breathing is a technique that helps you focus on your diaphragm, a muscle in your belly. It's sometimes called belly breathing or abdominal breathing. By \"training\" your diaphragm to open up your lungs, you can help your body breathe more efficiently.\nWhen you breathe normally, you don't use your lungs to their full capacity. Diaphragmatic breathing allows you to use your lungs at 100% capacity to increase lung efficiency.",
+    detailedDescription: "Diaphragmatic breathing is a technique that helps you focus on your diaphragm, a muscle in your belly. It's sometimes called belly breathing or abdominal breathing. By \"training\" your diaphragm to open up your lungs, you can help your body breathe more efficiently.\n\nWhen you breathe normally, you don't use your lungs to their full capacity. Diaphragmatic breathing allows you to use your lungs at 100% capacity to increase lung efficiency.",
     whenToUse: [
       "Any time you feel tense or 'breathing high in the chest'",
       "Pre-sleep wind-down, post-stress reset, or as a baseline daily practice",
       "Helpful for anxiety, digestive tension, or voice prep"
     ],
-    howItHelps: "That exercise strengthens your diaphragm and trains you to breathe more efficiently. By drawing air deep into the lungs, it improves oxygen flow, reduces tension, and activates the body's relaxation response. Regular practice helps calm the mind, lower stress, and support better posture and lung function. Even a few minutes a day can bring noticeable balance and ease to your body and breath. \nAs with learning anything new, the first few times you practice diaphragmatic breathing, it may be difficult. Take a couple of minutes each day to practice this new skill, which offers many benefits to your overall health and can help you relax.",
+    howItHelps: "That exercise strengthens your diaphragm and trains you to breathe more efficiently. By drawing air deep into the lungs, it improves oxygen flow, reduces tension, and activates the body's relaxation response. Regular practice helps calm the mind, lower stress, and support better posture and lung function. Even a few minutes a day can bring noticeable balance and ease to your body and breath.\n\nAs with learning anything new, the first few times you practice diaphragmatic breathing, it may be difficult. Take a couple of minutes each day to practice this new skill, which offers many benefits to your overall health and can help you relax.",
     commonMistakes: [
       "Lifting shoulders / chest is moving",
       "Forcing the belly out or sucking it in (keep it easy)",
