@@ -347,33 +347,38 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     repetitions: 10,
     isCustom: false,
     detailedDescription:
-      "A cooling breath that draws air over a rolled tongue (or gently through the teeth), then exhales through the nose. Soothes heat, irritability, and mental agitation.",
+      "Sitali Breath, or Cooling Breath, is a yogic pranayama technique that involves inhaling air through a rolled tongue or pursed lips and exhaling smoothly through the nose. As the air passes over the tongue, it creates a cooling effect on the body and soothes the nervous system.\n\nThe Sanskrit word sitali means \"cool\" or \"soothing,\" reflecting the breath's purpose - to lower internal heat, calm emotional intensity, and restore balance after physical or mental strain.",
     whenToUse: [
-      "Hot weather, post-exercise cool-down, or after a heated moment",
+      "Cool down after intense exercise, heat exposure, or emotional stress",
       "Emotional heat: frustration, irritability, anger",
-      "Afternoon settle, pre-sleep wind-down (keep the exhale soft and long)",
+      "Soothe the nervous system before meditation or rest",
+      "Reduce anxiety and balance body temperature during stressful days",
+      "Refresh your mind when feeling overheated or mentally drained",
     ],
     howItHelps:
-      "Inhaling over a narrow, moistened channel creates a cooling sensation, helping down-regulate arousal. Longer nasal exhale engages the parasympathetic response → calm, steady mood. Can reduce feelings of overheating, anger, restlessness, and support gentle focus.",
+      "The main goal of Sitali Breath is to cool both the body and the mind. It helps regulate temperature, ease agitation, and reduce the \"fiery\" qualities associated with stress, anger, or overexertion. The slow, mindful breathing activates the parasympathetic nervous system, lowering heart rate and calming the body's stress response.\n\nThis technique also promotes mental clarity and emotional steadiness, making it particularly helpful in situations of tension or overwhelm. Regular practice can improve digestion, reduce fatigue, and help the body adapt better to heat - both external and emotional.",
     commonMistakes: [
       "Forcing the inhale (creates throat tension)",
-      "Loud, windy mouth inhale; cheeks puffing",
-      "Rushed or short exhale; shoulders lifting",
+      "Breathing too fast",
+      "Tensing the tongue or face",
+      "Exhaling through the mouth",
+      "Practicing in cold conditions",
     ],
     safetyNote:
-      "Avoid in very cold or very polluted/dry air (may irritate throat/airways). If you have asthma, chronic cough, or throat sensitivity, use very gently or choose a nasal-only practice instead. Stop if dizzy, light-headed, or uncomfortable; return to normal breathing.",
+      "Avoid it in very cold weather or if you tend to get chills easily. Those with low blood pressure, respiratory infections, or chronic sinus issues should use caution or consult a professional before starting. If dizziness, shivering, or discomfort occurs, stop the practice and return to natural breathing.",
     stepByStepInstructions: [
-      "Sit tall; relax jaw/shoulders.",
+      "Sit comfortably, relax jaw/shoulders.",
       "Sitali: roll the tongue into a tube and extend slightly past the lips. Sitkari (alternative): if you can't roll the tongue, part the teeth gently and rest the tongue tip behind them.",
-      "Inhale slowly through the rolled tongue (or gently across the teeth) for ~4 s, feeling the cool air.",
-      "Close the mouth; optionally pause 0–1 s without tension.",
-      "Exhale through the nose for ~6 s, smooth and quiet.",
-      "Repeat 6–10 rounds; keep face and throat soft.",
+      "As a third option, you can also purse your lips",
+      "Inhale slowly through the rolled tongue (or gently across the teeth) for 4 seconds, feeling the cool air.",
+      "Close the mouth (optionally pause 0–1 s without tension).",
+      "Exhale through the nose for 6 s, smooth and effortless.",
+      "Continue breathing like this at least 5-10 times to maximize the cooling effect.",
     ],
     parametersNote:
-      "Sitali (or Sheetali) Pranayama, the cooling breath, can be practiced for a few minutes to 10-15 minutes daily. Beginners may start with 5-10 minutes, gradually increasing the duration as they become comfortable. It's particularly beneficial during the hottest part of the day (around midday) or after physical activity to help cool down. ",
+      "Start with 2-3 minutes of sitali breathing, gradually building up to a 5-10 minute practice. Beginners can begin with a shorter duration, and many sources suggest breaking the practice into sections, such as 2-3 minutes of sitali followed by a period of normal breathing, before repeating. You can practice daily or as needed, particularly when feeling overheated or stressed, and some recommend doing it in the morning or before bed.",
     parameterSuggestion:
-      "Start with 4–6 rounds, build to 10+ as comfortable. For stronger calming, extend the exhale to 7–8 s. If the mouth gets dry, pause briefly and swallow; keep the pull gentle, not slurping.",
+      "Start with 4:6 ratio (inhale 4, exhale 6 seconds). For stronger calming, extend the exhale to 7–8 s. If the mouth gets dry, pause briefly and swallow; keep the pull gentle, not slurping.\n\nIf needed and feels natural, you can add a 1-2 seconds hold between the breathings.",
   },
   {
     id: "bee-breath",
