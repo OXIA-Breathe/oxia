@@ -465,4 +465,46 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     parameterSuggestion:
       "Begin with 4–6 cycles, build to 10+ as natural. If you feel agitated, favor a longer exhale (e.g., 4–6 or 5–7). Keep movements subtle, avoid forcing the chest lift.",
   },
+  {
+    id: "resonant-breathing",
+    title: "Resonant Breathing",
+    description: "Balanced & restorative rhythm",
+    inhaleDuration: 6,
+    firstHoldDuration: 0,
+    exhaleDuration: 6,
+    secondHoldDuration: 0,
+    repetitions: 50,
+    isCustom: false,
+    detailedDescription:
+      "Resonant Breathing, also known as Coherent Breathing, is a scientifically validated breathing technique that involves inhaling and exhaling at a steady, equal pace — typically around 5 to 6 breaths per minute (about 5-6 seconds in, 5-6 seconds out).\n\nThis rhythm aligns your breathing with your body's natural heart rate variability (HRV) - creating a resonance between the cardiovascular, respiratory, and nervous systems.\n\nIn simple terms, it means breathing in harmony with your body's own biological rhythm. The result is a deeply balanced, synchronized state that supports mental clarity, emotional regulation, and physiological calm.",
+    whenToUse: [
+      "Recover from stress or emotional overload",
+      "Rebalance after intense exercise or conflict",
+      "Calm your mind before sleep",
+      "Regain composure during anxiety or tension",
+      "Support heart, lung, and nervous system health through daily practice",
+    ],
+    howItHelps:
+      "The purpose of Resonant Breathing is to bring your entire system - body, mind, and heart - into harmony. By breathing at a natural rhythm of around six breaths per minute, your cardiovascular and nervous systems begin to synchronize, creating a state of deep physiological balance known as coherence.\n\nThis steady rhythm activates the parasympathetic nervous system, helping you move from stress and overthinking into a calm, focused state of awareness. It balances emotional responses, sharpens mental clarity, and promotes restful sleep. Over time, it also enhances heart rate variability (HRV), which improves your resilience to stress and emotional turbulence. The effect is subtle yet powerful - a sense of inner steadiness and calm energy that lasts long after you stop breathing.",
+    commonMistakes: [
+      "Breathing too fast",
+      "Forcing deep inhales",
+      "Holding the breath – this exercise needs to keep the flow continuous and smooth",
+      "Losing rhythm and awareness",
+      "Ignoring posture – sit upright with relaxed shoulders",
+    ],
+    safetyNote:
+      "If you experience dizziness, shortness of breath, or anxiety while slowing your breathing, return to your normal pace and try again later. Those with severe heart or lung conditions should consult a healthcare professional before starting.",
+    stepByStepInstructions: [
+      "Sit comfortably, relax jaw/shoulders.",
+      "Inhale gently through the nose for 6 seconds.",
+      "Exhale slowly through the nose for 6 seconds, without forcing it.",
+      "Keep the breath quiet, smooth, and effortless.",
+      "Continue this for preferred time (few minutes at least).",
+    ],
+    parametersNote:
+      "Aim for 10 minutes to start, focusing on a steady rhythm of approximately 5 to 6 breaths per minute, meaning a 5 to 6-second inhale followed by a 5 to 6-second exhale. You can practice for longer, up to 20 minutes, as you become more comfortable.",
+    parameterSuggestion:
+      "As the breathing rate should be 5-6 breaths per minute, then the parameters should stay between 5-6 seconds for both - inhale and exhale. Breathing is smooth, nasal and continuous, so no holds. Keep the inhale and exhale equal.",
+  },
 ];
