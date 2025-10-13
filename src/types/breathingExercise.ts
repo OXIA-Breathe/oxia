@@ -425,47 +425,6 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Start with 4–6 rounds, build to 10+ as comfortable. Keep the hum quiet and effortless—aim for smoothness, not loudness. If you feel agitated, lengthen the exhale (up to 8 s). Keep the ratio comfortable, no breath retention needed.",
   },
   {
-    id: "dirga-breath",
-    title: "Dirga Pranayama (Three-Part Breath)",
-    description: "Promotes deep calm",
-    inhaleDuration: 4,
-    firstHoldDuration: 0,
-    exhaleDuration: 6,
-    secondHoldDuration: 0,
-    repetitions: 10,
-    isCustom: false,
-    detailedDescription:
-      "A smooth, full breath that expands in three parts—belly, lower ribs, then upper chest—followed by an easy, complete exhale. Re-educates healthy breathing mechanics and promotes deep calm.",
-    whenToUse: [
-      "As a daily baseline practice (morning/evening, 2–5 min)",
-      "Before meditation, sleep wind-down, or after stress",
-      "When you notice tight chest/short breaths and want to reset the pattern",
-    ],
-    howItHelps:
-      "Trains the diaphragm and lateral ribs for efficient, low effort breathing. Reduces shallow chest breathing and shoulder/neck tension. Steadies the nervous system (especially with a slightly longer exhale). Useful foundation for all other breathing practices.",
-    commonMistakes: [
-      "Starting the inhale high in the chest (skip belly/ribs)",
-      "Forcing the belly out or sucking it in; creating tension",
-      "Noisy mouth breathing; raising shoulders; rushing the exhale",
-    ],
-    safetyNote:
-      "Generally gentle and safe. If you feel dizzy or uncomfortable, shorten the counts, return to natural breathing, or pause. Follow clinician guidance for respiratory/cardiac conditions.",
-    stepByStepInstructions: [
-      "Sit or lie comfortably; relax jaw/shoulders. Place one hand on belly, the other on lower ribs/upper chest.",
-      "Inhale through the nose (4–5 s) in three parts:",
-      "Belly gently rises into your lower hand.",
-      "Lower ribs widen sideways.",
-      "Upper chest lifts softly at the end (no strain).",
-      "Optional easeful pause (0–1 s).",
-      "Exhale slowly (~ 6 s) - upper chest softens, ribs draw inward, belly gently returns toward spine.",
-      "Keep the whole breath quiet, smooth, and effortless. Repeat 6–10 cycles.",
-    ],
-    parametersNote:
-      "For beginners, a good starting point for Dirga Pranayama (Three-Part Breath) is 5-10 minutes per session, gradually increasing as comfort and familiarity grow, with a total of 20-30 minutes of pranayama practice throughout the day.",
-    parameterSuggestion:
-      "Begin with 4–6 cycles, build to 10+ as natural. If you feel agitated, favor a longer exhale (e.g., 4–6 or 5–7). Keep movements subtle, avoid forcing the chest lift.",
-  },
-  {
     id: "resonant-breathing",
     title: "Resonant Breathing",
     description: "Balanced & restorative rhythm",
