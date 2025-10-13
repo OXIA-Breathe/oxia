@@ -16,7 +16,7 @@ const BreathingExerciseContext = createContext<BreathingExerciseContextType | un
 export const BreathingExerciseProvider = ({ children }: { children: ReactNode }) => {
   const [exercises, setExercises] = useState<BreathingExercise[]>(() => {
     try {
-      const currentVersion = "2.2"; // Increment when defaults change
+      const currentVersion = "2.3"; // Increment when defaults change
       const savedVersion = localStorage.getItem("breathingExercisesVersion");
       const savedExercises = localStorage.getItem("breathingExercises");
       
