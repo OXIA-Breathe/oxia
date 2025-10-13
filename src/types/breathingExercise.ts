@@ -159,15 +159,15 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 10,
     isCustom: false,
-    detailedDescription: "A mindful practice of gently placing attention on the breath—often paired with anchor words (e.g., 'in… out…') or imagery—to cultivate calm, clarity, and steady focus.",
+    detailedDescription: "A simple, mindful practice of gently placing attention on the breath - often paired with anchor words or imagery - to cultivate calm, clarity, and steady focus. \nChoose a word that makes you smile, feel relaxed or is simply neutral. For example, some use peace, let go, relax or simply breathe in and breathe out.",
     whenToUse: [
-      "Before deep work or study; during stress or overwhelm",
+      "Before deep work or study, during stress or overwhelm",
       "As a daily centering practice (2–10 min)", 
       "Any time you want clarity without a strict breathing pattern"
     ],
-    howItHelps: "Trains attentional control: noticing the breath, returning softly when the mind wanders. Engages the parasympathetic response (especially with a slightly longer exhale). Builds non-reactivity to thoughts and sensations; supports emotional regulation.",
+    howItHelps: "This practice strengthens your ability to focus by gently bringing your attention back to the breath whenever your mind starts to wander. Each time you notice distraction and return to your breathing, you train your mind to stay present with calm awareness.\nWhen thoughts arise, we often get caught up in them, which can trigger worry or negative emotions. By simply observing these thoughts without clinging to them, you develop non-reactivity - the ability to stay centered and composed even when your mind or emotions try to pull you off balance. Over time, this builds emotional regulation, mental clarity, and resilience.\nIt also activates the parasympathetic nervous system - your body's natural \"rest and restore\" mode - especially when you exhale slightly longer than you inhale. This helps lower stress, reduce emotional reactivity, and create a deep sense of inner calm.",
     commonMistakes: [
-      "Forcing the breath or 'doing it right'",
+      "Forcing the breath or \"doing it right\"",
       "Trying to push thoughts away (just notice and return).",
       "Mouth breathing noisily; shoulders tense."
     ],
@@ -175,14 +175,16 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     parameterSuggestion: "A gentle 4:6 ratio (4s inhale, 6s exhale) helps maintain focus. Adjust timing to match your natural rhythm.",
     stepByStepInstructions: [
       "Sit tall or lie comfortably; relax jaw/shoulders.",
-      "Notice the natural breath (temperature at the nostrils, belly/ rib movement).",
-      "Choose an anchor: words ('in… out…', 'calm… clear…'), a count (1–4), or imagery (wave/tide).",
+      "Before starting the practice in the app, notice the natural breath (temperature at the nostrils, belly/ rib movement).",
+      "Alternate between normal and deep breaths a few times. Notice any differences between normal breathing and deep breathing. Notice how your abdomen expands with deep inhalations.",
+      "When you feel that you have focused on the sensation of breathing, you can start the practice (relaxing and building up focus before the practice helps you soothe in to exercise).",
+      "Choose an anchor: words (\"in… out…\", \"calm… clear…\") or imagery (wave/tide).",
       "Inhale gently; silently repeat your anchor (e.g., 'in… calm').",
       "Exhale slowly; repeat the pair (e.g., 'out… clear').",
-      "When the mind wanders, notice–name–return (e.g., 'thinking… back to breath').",
+      "When the mind wanders, notice it – name it – return to breathing (e.g., \"thinking… back to breath\"). Be gentle, it is okay, when the mind wanders, just come back to breathing. Practice takes time to master.",
       "Continue for the set cycles or time; finish with one longer, easy exhale."
     ],
-    safetyNote: "Generally safe. If you feel dizzy or uncomfortable, return to natural breathing or pause. Follow clinician guidance if you have medical concerns."
+    safetyNote: "Generally safe. If you feel dizzy or uncomfortable, return to natural breathing or pause. Follow doctor's guidance if you have medical concerns."
   },
   {
     id: "lions-breath",
