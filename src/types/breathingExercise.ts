@@ -126,7 +126,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     isCustom: false,
     detailedDescription: "Diaphragmatic breathing is a technique that helps you focus on your diaphragm, a muscle in your belly. It's sometimes called belly breathing or abdominal breathing. By \"training\" your diaphragm to open up your lungs, you can help your body breathe more efficiently.\n\nWhen you breathe normally, you don't use your lungs to their full capacity. Diaphragmatic breathing allows you to use your lungs at 100% capacity to increase lung efficiency.",
     whenToUse: [
-      "Any time you feel tense or 'breathing high in the chest'",
+      "Any time you feel tense or \"breathing high in the chest\"",
       "Pre-sleep wind-down, post-stress reset, or as a baseline daily practice",
       "Helpful for anxiety, digestive tension, or voice prep"
     ],
