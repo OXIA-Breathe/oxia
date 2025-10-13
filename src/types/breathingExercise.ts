@@ -159,13 +159,13 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     secondHoldDuration: 0,
     repetitions: 10,
     isCustom: false,
-    detailedDescription: "A simple, mindful practice of gently placing attention on the breath - often paired with anchor words or imagery - to cultivate calm, clarity, and steady focus. \nChoose a word that makes you smile, feel relaxed or is simply neutral. For example, some use peace, let go, relax or simply breathe in and breathe out.",
+    detailedDescription: "A simple, mindful practice of gently placing attention on the breath - often paired with anchor words or imagery - to cultivate calm, clarity, and steady focus.\n\nChoose a word that makes you smile, feel relaxed or is simply neutral. For example, some use peace, let go, relax or simply breathe in and breathe out.",
     whenToUse: [
       "Before deep work or study, during stress or overwhelm",
       "As a daily centering practice (2–10 min)", 
       "Any time you want clarity without a strict breathing pattern"
     ],
-    howItHelps: "This practice strengthens your ability to focus by gently bringing your attention back to the breath whenever your mind starts to wander. Each time you notice distraction and return to your breathing, you train your mind to stay present with calm awareness.\nWhen thoughts arise, we often get caught up in them, which can trigger worry or negative emotions. By simply observing these thoughts without clinging to them, you develop non-reactivity - the ability to stay centered and composed even when your mind or emotions try to pull you off balance. Over time, this builds emotional regulation, mental clarity, and resilience.\nIt also activates the parasympathetic nervous system - your body's natural \"rest and restore\" mode - especially when you exhale slightly longer than you inhale. This helps lower stress, reduce emotional reactivity, and create a deep sense of inner calm.",
+    howItHelps: "This practice strengthens your ability to focus by gently bringing your attention back to the breath whenever your mind starts to wander. Each time you notice distraction and return to your breathing, you train your mind to stay present with calm awareness.\n\nWhen thoughts arise, we often get caught up in them, which can trigger worry or negative emotions. By simply observing these thoughts without clinging to them, you develop non-reactivity - the ability to stay centered and composed even when your mind or emotions try to pull you off balance. Over time, this builds emotional regulation, mental clarity, and resilience.\n\nIt also activates the parasympathetic nervous system - your body's natural \"rest and restore\" mode - especially when you exhale slightly longer than you inhale. This helps lower stress, reduce emotional reactivity, and create a deep sense of inner calm.",
     commonMistakes: [
       "Forcing the breath or \"doing it right\"",
       "Trying to push thoughts away (just notice and return).",
