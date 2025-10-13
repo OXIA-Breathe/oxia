@@ -227,37 +227,41 @@ export const defaultBreathingExercises: BreathingExercise[] = [
   {
     id: "alternate-nostril",
     title: "Alternate Nostril Breathing",
-    description: "Balance and calming nervous system",
+    description: "Balancing & calming breath",
     inhaleDuration: 4,
     firstHoldDuration: 0,
     exhaleDuration: 4,
     secondHoldDuration: 0,
-    repetitions: 12,
+    repetitions: 24,
     isCustom: false,
-    detailedDescription: "A balancing breath: inhale through one nostril, exhale through the other, then switch. Calms the nervous system, steadies attention, and balances left–right activation.",
+    detailedDescription: "Alternate Nostril Breathing (Nadi Shodhana) is a traditional yogic pranayama technique where you gently breathe in through one nostril, close it with your fingers, and exhale through the other - then repeat in the opposite direction. The Sanskrit term Nadi Shodhana means \"channel purification,\" referring to the idea that breath moves through subtle energy pathways (nadis), clearing mental and physical blockages.\n\nIt's more than a simple breathing rhythm - it's a mindful balancing act between the left and right sides of the body and brain. The left nostril is linked to calm, introspective energy (the parasympathetic system), while the right nostril activates alertness and focus (the sympathetic system). By alternating between them, you bring both hemispheres into harmony, creating inner equilibrium.",
     whenToUse: [
-      "Pre-focus ritual (study, creative work)",
-      "Transition moments (between tasks, before sleep wind-down)", 
-      "After stimulating breathwork to re-center"
+      "Preparing for sleep, meditation, or deep work",
+      "After intense activity or stressful events",
+      "Any time you want a reset to mental balance"
     ],
-    howItHelps: "Encourages coherent, even breathing → reduces stress arousal and promotes calm focus. The alternating flow may help balance hemispheric activity and attention. Slows respiratory rate; can reduce perceived anxiety and mental 'noise.'",
+    howItHelps: "Alternate Nostril Breathing is known for its ability to calm the mind, balance the nervous system, and enhance focus and emotional regulation. Scientifically, regular practice has been shown to lower blood pressure, steady the heart rate, improve lung capacity, and even sharpen memory and coordination.\n\nEnergetically, it helps restore flow and clarity, dissolving inner agitation or fatigue. It's particularly effective before meditation, sleep, or any task that requires calm concentration. For experienced practitioners, it deepens self-awareness and breath control. For beginners, it's an easy entry into mindfulness and relaxation.\n\nIn essence, this technique reconnects you with your natural rhythm - balancing logic with intuition, stillness with clarity, and the breath with the mind.",
     commonMistakes: [
-      "Forcing the pace or holds; creating throat/jaw tension",
-      "Pressing too hard on the nose; noisy breathing",
-      "Losing the sequence (use mental cues: 'Left-in, Right-out, Right-in, Left-out')"
+      "Pressing too hard on the nose (light touch is enough)",
+      "Forcing or over-controlling the breath (let it flow naturally)",
+      "Holding tension in the shoulders or jaw",
+      "Losing the sequence and awareness (use mental cues: 'Left-in, Right-out, Right-in, Left-out')",
+      "Overcomplicating the process – simplicity is the key"
     ],
-    parametersNote: "Alternate nostril breathing, also known as Nadi Shodhana, can be practiced for varying lengths of time depending on individual needs and comfort levels. A good starting point is 3-5 minutes, but it can be extended to 5-10 minutes or longer as you become more comfortable with the technique. Some practitioners find it beneficial to do 3-5 rounds, while others may prefer a set number of breaths on each side.",
-    parameterSuggestion: "Equal timing works best: 4:4 (4s inhale, 4s exhale) creates balance. Beginners can start with 3:3.",
     stepByStepInstructions: [
-      "Sit tall, relax jaw/shoulders. Form a gentle nasal seal with your right hand (Vishnu mudra): index & middle finger folded, thumb closes the right nostril; ring finger closes the left.",
-      "Close right nostril with the thumb. Inhale left for 4.",
-      "Switch: close left, exhale right for 4–6.",
-      "Inhale right for 4.",
-      "Switch: close right, exhale left for 4–6.",
+      "Sit comfortably with a straight spine.",
+      "Use your right thumb to close your right nostril.",
+      "Inhale slowly through your left nostril for 4 seconds.",
+      "Close your left nostril with your ring or little finger (may use both).",
+      "Release your thumb and exhale through your right nostril for 4-6 seconds.",
+      "Inhale through your right nostril for 4 seconds.",
+      "Close your right nostril and exhale through your left for 4-6 seconds.",
       "That's one full cycle. Continue 6–8 cycles, keeping the breath quiet and even.",
-      "Continue this breathing pattern for up to 5 minutes."
+      "Continue this breathing pattern for up to 5 minutes.",
     ],
-    safetyNote: "Skip or modify if you have acute nasal congestion, sinus infection, or discomfort. Avoid long holds if pregnant or with cardiopulmonary issues; follow clinician guidance. Stop if dizzy or light-headed."
+    parametersNote: "It can be practiced for varying lengths of time depending on individual needs and comfort levels. A good starting point is 3-5 minutes, but it can be extended to 5-10 minutes or longer as you become more comfortable with the technique. Some practitioners find it beneficial to do 3-5 rounds, while others may prefer a set number of breaths on each side.",
+    parameterSuggestion: "A 4:4 rhythm is balanced and calming. If you want deeper relaxation, try 4:6 (shorter inhale, longer exhale).",
+    safetyNote: "Safe for most. Avoid if you have a cold or severe nasal blockage. If one nostril is partially blocked, reduce pressure or skip this practice until breathing is clearer. Stop if dizzy or light-headed."
   },
   {
     id: "equal-breathing",
