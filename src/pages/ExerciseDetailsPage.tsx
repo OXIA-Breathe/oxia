@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,6 +17,11 @@ const ExerciseDetailsPage = () => {
   const exercise = exercises.find(ex => ex.id === id);
   const [repetitions, setRepetitions] = useState(exercise?.repetitions || 20);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   if (!exercise) {
     return (
