@@ -10,14 +10,14 @@ const Index = () => {
 
   return (
     <MainLayout fullHeight>
-      <div className="h-full">
-        <div className="container py-6 px-6 flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex justify-center mb-4 mt-16">
+      <div className="h-full overflow-hidden">
+        <div className="container flex flex-col h-full px-4 sm:px-6">
+          {/* Logo - responsive height based on viewport */}
+          <div className="flex justify-center pt-[8vh] pb-[2vh]">
             <img 
               src="/lovable-uploads/6d9cc0f0-addd-45b1-abab-238892b91dbf.png" 
               alt="OXIA Logo" 
-              className="h-16 w-auto object-contain" 
+              className="max-h-[8vh] min-h-[40px] w-auto object-contain" 
               onError={(e) => {
                 console.error("Logo failed to load:", e);
                 e.currentTarget.style.display = 'none';
@@ -25,13 +25,13 @@ const Index = () => {
             />
           </div>
           
-          {/* Breathing Circle */}
-          <div className="flex-1 flex flex-col items-center justify-center">
+          {/* Breathing Circle - takes remaining space */}
+          <div className="flex-1 flex flex-col items-center justify-center min-h-0">
             <BreathingExercise />
           </div>
           
-          {/* Bottom Controls */}
-          <div className="mt-auto pb-20">
+          {/* Bottom Controls - minimal padding to stay visible */}
+          <div className="pb-[10vh] md:pb-[5vh]">
             {user && (
               <div className="mt-4 text-center hidden">
                 <Link to="/progress">

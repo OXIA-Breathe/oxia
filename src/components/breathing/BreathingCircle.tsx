@@ -21,10 +21,11 @@ const BreathingCircle = ({
 }: BreathingCircleProps) => {
   const innerCircleRef = useRef<HTMLDivElement>(null);
   
+  // Responsive sizes using viewport units with min/max constraints
   const sizeClasses = {
-    sm: "w-32 h-32",
-    md: "w-48 h-48",
-    lg: "w-64 h-64",
+    sm: "w-[min(40vw,128px)] h-[min(40vw,128px)]",
+    md: "w-[min(50vw,192px)] h-[min(50vw,192px)]",
+    lg: "w-[min(65vw,400px)] h-[min(65vw,400px)] max-w-[min(65vh,400px)] max-h-[min(65vh,400px)]",
   };
 
   const getPhaseDisplayName = () => {

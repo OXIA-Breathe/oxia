@@ -145,11 +145,11 @@ const BreathingExercise = () => {
   }, [phase, isActive]);
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-8">
+    <div className="flex flex-col items-center justify-center w-full h-full gap-[3vh] sm:gap-[4vh]">
       {/* Exercise Title */}
       {exerciseSettings.title && (
-        <div className="text-center mb-4">
-          <h2 className="text-xl font-semibold text-white">
+        <div className="text-center">
+          <h2 className="text-lg sm:text-xl font-semibold text-white">
             {exerciseSettings.title}
           </h2>
         </div>
@@ -162,7 +162,7 @@ const BreathingExercise = () => {
         timeElapsed={timeElapsed}
       />
       
-      <div className="flex items-center justify-center my-8">
+      <div className="flex items-center justify-center flex-shrink-0">
         <BreathingCircle 
           phase={isActive ? phase : "idle"} 
           duration={duration}
