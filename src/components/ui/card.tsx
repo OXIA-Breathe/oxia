@@ -89,14 +89,14 @@ const StatsCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 flex flex-col items-center justify-center text-center transition-all",
+      "flex flex-col items-center justify-center text-center",
       fullWidth ? "w-full" : "flex-1",
       className
     )}
     {...props}
   >
-    <p className="text-2xl font-bold text-gray-800 font-nunito">{value}</p>
-    <p className="text-sm font-semibold text-gray-500 mt-1 font-nunito">{label}</p>
+    <p className="text-2xl font-bold text-white font-nunito">{value}</p>
+    <p className="text-sm font-semibold text-white/70 mt-1 font-nunito">{label}</p>
   </div>
 ))
 StatsCard.displayName = "StatsCard"
