@@ -23,21 +23,19 @@ const BreathingControls = ({
         onClick={onToggle} 
         variant="default"
         size="lg"
-        className="flex items-center gap-2 flex-1 sm:flex-initial min-w-[120px]"
+        className="flex items-center justify-center flex-1 sm:flex-initial min-w-[60px]"
       >
-        {isActive ? <Pause className="w-4 h-4 sm:w-5 sm:h-5" /> : <Play className="w-4 h-4 sm:w-5 sm:h-5" />}
-        <span className="text-sm sm:text-base">{isActive ? "Pause" : (phase === "idle" || phase === "countdown") ? "Start" : "Resume"}</span>
+        {isActive ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
       </Button>
       
       <Button 
         onClick={onReset} 
         variant="outline"
         size="lg"
-        className="flex items-center gap-2 border-red-400 hover:bg-red-100 hover:text-red-600 text-red-500 flex-1 sm:flex-initial min-w-[120px]"
+        className="flex items-center justify-center border-red-400 hover:bg-red-100 hover:text-red-600 text-red-500 flex-1 sm:flex-initial min-w-[60px]"
         disabled={(phase === "idle" || phase === "countdown") && currentRepetition === 0}
       >
-        <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-        <span className="text-sm sm:text-base">Reset</span>
+        <RotateCcw className="w-5 h-5" />
       </Button>
     </div>
   );
