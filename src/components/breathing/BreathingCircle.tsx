@@ -101,16 +101,38 @@ const BreathingCircle = ({
         
         <div 
           ref={innerCircleRef}
-          className="absolute inset-0 m-auto rounded-full flex items-center justify-center"
+          className="absolute inset-0 m-auto rounded-full flex items-center justify-center overflow-hidden"
           style={{ 
             transformOrigin: 'center',
             width: '100%',
             height: '100%',
             backgroundColor: 'rgba(59, 130, 246, 0.3)',
-            backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%)',
             backdropFilter: 'blur(8px)'
           }}
         >
+          {/* Fluid air-like animation layers */}
+          {phase !== "idle" && !isPaused && (
+            <>
+              <div className="absolute inset-0 animate-fluid-1" 
+                style={{
+                  background: 'radial-gradient(circle at 30% 40%, rgba(255,255,255,0.4) 0%, transparent 50%)',
+                  filter: 'blur(20px)'
+                }}
+              />
+              <div className="absolute inset-0 animate-fluid-2" 
+                style={{
+                  background: 'radial-gradient(circle at 70% 60%, rgba(147,197,253,0.5) 0%, transparent 50%)',
+                  filter: 'blur(25px)'
+                }}
+              />
+              <div className="absolute inset-0 animate-fluid-3" 
+                style={{
+                  background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 60%)',
+                  filter: 'blur(30px)'
+                }}
+              />
+            </>
+          )}
           <div className="text-center flex flex-col items-center justify-center">
             {phase === "idle" ? (
               <span className="text-xl font-bold text-white">

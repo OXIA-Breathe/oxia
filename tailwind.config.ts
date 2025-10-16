@@ -126,6 +126,44 @@ export default {
 					'100%': {
 						boxShadow: '0 0 0 0 rgba(119, 169, 232, 0.7)'
 					}
+				},
+				'fluid-float-1': {
+					'0%, 100%': { 
+						transform: 'translate(0%, 0%) scale(1)',
+						opacity: '0.6'
+					},
+					'33%': { 
+						transform: 'translate(20%, -15%) scale(1.1)',
+						opacity: '0.8'
+					},
+					'66%': { 
+						transform: 'translate(-15%, 10%) scale(0.9)',
+						opacity: '0.7'
+					}
+				},
+				'fluid-float-2': {
+					'0%, 100%': { 
+						transform: 'translate(0%, 0%) scale(1)',
+						opacity: '0.5'
+					},
+					'33%': { 
+						transform: 'translate(-25%, 20%) scale(1.2)',
+						opacity: '0.7'
+					},
+					'66%': { 
+						transform: 'translate(15%, -10%) scale(0.85)',
+						opacity: '0.6'
+					}
+				},
+				'fluid-float-3': {
+					'0%, 100%': { 
+						transform: 'translate(0%, 0%) scale(1) rotate(0deg)',
+						opacity: '0.4'
+					},
+					'50%': { 
+						transform: 'translate(10%, -20%) scale(1.15) rotate(180deg)',
+						opacity: '0.6'
+					}
 				}
 			},
 			animation: {
@@ -133,7 +171,10 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'breathe-in': 'breathe-in var(--breathe-in-duration, 4s) ease-in-out forwards',
 				'breathe-out': 'breathe-out var(--breathe-out-duration, 4s) ease-in-out forwards',
-				'breathe-hold': 'breathe-hold var(--breathe-hold-duration, 4s) ease-in-out infinite'
+				'breathe-hold': 'breathe-hold var(--breathe-hold-duration, 4s) ease-in-out infinite',
+				'fluid-1': 'fluid-float-1 8s ease-in-out infinite',
+				'fluid-2': 'fluid-float-2 10s ease-in-out infinite',
+				'fluid-3': 'fluid-float-3 12s ease-in-out infinite'
 			}
 		}
 	},
