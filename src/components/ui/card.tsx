@@ -95,8 +95,8 @@ const StatsCard = React.forwardRef<
     )}
     {...props}
   >
-    <p className="text-sm font-semibold text-gray-500 mb-1 font-nunito">{label}</p>
     <p className="text-2xl font-bold text-gray-800 font-nunito">{value}</p>
+    <p className="text-sm font-semibold text-gray-500 mt-1 font-nunito">{label}</p>
   </div>
 ))
 StatsCard.displayName = "StatsCard"
