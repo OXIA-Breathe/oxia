@@ -140,10 +140,10 @@ const BreathingCircle = ({
               </span>
             ) : (
               <>
-                <span className="text-xl font-bold text-white">
+                <span className="text-[1.5rem] font-bold text-white">
                   {isPaused ? "Paused" : getPhaseDisplayName()}
                 </span>
-                <span className="text-lg text-white mt-1">
+                <span className="text-[1.5rem] text-white mt-1">
                   {Math.max(0, Math.ceil(timeRemaining))}
                 </span>
               </>
