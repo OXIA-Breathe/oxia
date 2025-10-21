@@ -32,7 +32,7 @@ const BreathePage = () => {
       <div className="container pt-24 pb-12 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-4 text-white">Breathing Exercises</h1>
-          <p className="text-lg text-white/80">
+          <p className="text-center text-white mb-8">
             Choose a technique, calm your mind, and begin your journey inward.
           </p>
         </div>
