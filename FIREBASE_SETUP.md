@@ -37,18 +37,54 @@ npx cap add android
 mv google-services.json android/app/
 ```
 
-### 5. Update Dependencies
+### 5. Configure Gradle (Android)
+
+Open your project in Android Studio and add the Google services plugin:
+
+**Project-level build.gradle** (`android/build.gradle`):
+```gradle
+buildscript {
+    dependencies {
+        // Add the Google services Gradle plugin
+        classpath 'com.google.gms:google-services:4.4.4'
+    }
+}
+```
+
+**App-level build.gradle** (`android/app/build.gradle`):
+```gradle
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services' // Add this line
+}
+
+dependencies {
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:34.4.0')
+    
+    // Add Firebase Analytics
+    implementation 'com.google.firebase:firebase-analytics'
+}
+```
+
+### 6. Update Dependencies
 ```bash
 npx cap update android
 ```
 
-### 6. Build the Project
+### 7. Sync Gradle
+In Android Studio, click **"Sync Project with Gradle Files"** or run:
+```bash
+./gradlew sync
+```
+
+### 8. Build the Project
 ```bash
 npm run build
 npx cap sync
 ```
 
-### 7. Run on Device/Emulator
+### 9. Run on Device/Emulator
 ```bash
 npx cap run android
 ```
