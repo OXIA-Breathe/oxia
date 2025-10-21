@@ -13,7 +13,7 @@ const Index = () => {
       <div className="h-full overflow-hidden">
         <div className="container flex flex-col h-full px-4 sm:px-6">
           {/* Logo - responsive height based on viewport */}
-          <div className="flex justify-center pt-[8vh] pb-[2vh]">
+          <div className="flex justify-center pt-[10vh] pb-[2vh]">
             <img 
               src="/lovable-uploads/6d9cc0f0-addd-45b1-abab-238892b91dbf.png" 
               alt="OXIA Logo" 
