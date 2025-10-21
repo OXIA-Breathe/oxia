@@ -84,7 +84,7 @@ const SettingsPage = () => {
   if (isLoading) {
     return (
       <MainLayout>
-        <div className="container py-12 max-w-4xl">
+        <div className="container pt-24 pb-12 max-w-4xl">
           <h1 className="text-3xl font-bold mb-8 text-center">Settings</h1>
           <div className="space-y-6">
             <Card className="border-none shadow-md bg-white">
@@ -105,7 +105,7 @@ const SettingsPage = () => {
 
   return (
     <MainLayout>
-      <div className="container py-12 max-w-4xl">
+      <div className="container pt-24 pb-12 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8 text-center">Settings</h1>
         <div className="space-y-6">
           {/* Audio Settings Section */}

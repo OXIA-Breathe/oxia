@@ -26,7 +26,7 @@ const ExerciseDetailsPage = () => {
   if (!exercise) {
     return (
       <MainLayout>
-        <div className="container py-12 max-w-4xl">
+        <div className="container pt-24 pb-12 max-w-4xl">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-white mb-4">Exercise not found</h1>
             <Button onClick={() => navigate("/breathe")} variant="outline">
@@ -63,7 +63,7 @@ const ExerciseDetailsPage = () => {
 
   return (
     <MainLayout>
-      <div className="container py-8 max-w-4xl pt-16">
+      <div className="container pt-24 pb-12 max-w-4xl">
         {/* Header removed - using MainLayout back button */}
 
         {/* Exercise Details */}
