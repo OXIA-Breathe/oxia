@@ -22,9 +22,9 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
           {(isProfilePage || isExerciseDetailPage) ? (
             <button 
               onClick={() => window.history.back()}
-              className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+              className="w-12 h-12 flex items-center justify-center border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-5 w-5" />
             </button>
           ) : (
             <div />
@@ -34,9 +34,9 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
             <Link 
               to="/profile" 
               state={{ from: location.pathname }}
-              className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+              className="w-12 h-12 flex items-center justify-center border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
             >
-              <User className="h-4 w-4" />
+              <User className="h-5 w-5" />
             </Link>
           )}
         </div>
