@@ -145,7 +145,7 @@ const BreathingExercise = () => {
   }, [phase, isActive]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-[3vh] sm:gap-[4vh]">
+    <div className="flex flex-col items-center justify-center w-full h-full gap-[4.5vh] sm:gap-[5.5vh]">
       {/* Exercise Title */}
       {exerciseSettings.title && (
         <div className="text-center">
