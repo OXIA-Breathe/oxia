@@ -190,10 +190,16 @@ const SettingsPage = () => {
 
               {/* Links Section */}
               <div>
-                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
+                <div 
+                  onClick={() => window.open('https://oxiabreathe.eu/terms/', '_blank')}
+                  className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
+                >
                   Terms & Conditions
                 </div>
-                <div className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium">
+                <div 
+                  onClick={() => window.open('https://oxiabreathe.eu/privacy-policy/', '_blank')}
+                  className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
+                >
                   Privacy Policy
                 </div>
               </div>
