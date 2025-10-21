@@ -135,7 +135,7 @@ const BreathingCircle = ({
           )}
           <div className="text-center flex flex-col items-center justify-center">
             {phase === "idle" ? (
-              <span className="text-xl font-bold text-white">
+              <span className="text-[1.5rem] font-bold text-white">
                 Breathe
               </span>
             ) : (
