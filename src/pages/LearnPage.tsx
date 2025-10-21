@@ -20,7 +20,7 @@ const LearnPage = () => {
   return (
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-2 text-center">Learning Resources</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">Learning Resources</h1>
         <p className="text-center text-white mb-8">
           Expand your understanding of why conscious breathing transforms your life.
         </p>
