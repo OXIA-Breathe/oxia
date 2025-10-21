@@ -18,7 +18,7 @@ const BreathingControls = ({
   onReset 
 }: BreathingControlsProps) => {
   return (
-    <div className="flex gap-3 sm:gap-4 px-4">
+    <div className="flex gap-6 sm:gap-8 px-4">
       <Button 
         onClick={onToggle} 
         variant="default"
