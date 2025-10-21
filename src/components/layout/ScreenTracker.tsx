@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useFirebaseAnalytics } from './useFirebaseAnalytics';
+import { useFirebaseAnalytics } from '@/hooks/useFirebaseAnalytics';
 
 const routeToScreenName: Record<string, string> = {
   '/': 'Home',
@@ -12,7 +12,7 @@ const routeToScreenName: Record<string, string> = {
   '/auth': 'Auth',
 };
 
-export const useScreenTracking = () => {
+export const ScreenTracker = () => {
   const location = useLocation();
   const { logScreenView } = useFirebaseAnalytics();
 
@@ -20,4 +20,6 @@ export const useScreenTracking = () => {
     const screenName = routeToScreenName[location.pathname] || location.pathname;
     logScreenView(screenName);
   }, [location.pathname, logScreenView]);
+
+  return null;
 };

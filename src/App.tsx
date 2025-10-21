@@ -8,7 +8,7 @@ import { BreathProvider } from "./context/BreathContext";
 import { BreathingExerciseProvider } from "./context/BreathingExerciseContext";
 import { AuthProvider } from "./context/AuthContext";
 import { useDailyStreakTracker } from "./hooks/useDailyStreakTracker";
-import { useScreenTracking } from "./hooks/useScreenTracking";
+import { ScreenTracker } from "./components/layout/ScreenTracker";
 import Index from "./pages/Index";
 import LearnPage from "./pages/LearnPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -24,10 +24,10 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useDailyStreakTracker();
-  useScreenTracking();
   
   return (
     <BrowserRouter>
+      <ScreenTracker />
       <BreathProvider>
         <Routes>
           <Route path="/" element={<Index />} />
