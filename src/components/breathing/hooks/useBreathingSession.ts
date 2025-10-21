@@ -6,6 +6,7 @@ import { useBreathingExercise } from "@/context/BreathingExerciseContext";
 import { useAuth } from "@/context/AuthContext";
 import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 import { useSessionPersistence } from "./useSessionPersistence";
+import { useFirebaseAnalytics } from "@/hooks/useFirebaseAnalytics";
 
 export const useBreathingSession = () => {
   const { addSession } = useBreath();
@@ -13,6 +14,7 @@ export const useBreathingSession = () => {
   const { user } = useAuth();
   const { queueNotifications } = useNotificationQueue();
   const { saveSessionToSupabase } = useSessionPersistence();
+  const { logEvent } = useFirebaseAnalytics();
 
   // Use current exercise or fallback to Box Breathing default
   const exerciseSettings = currentExercise || {
@@ -61,6 +63,13 @@ export const useBreathingSession = () => {
     if (user) {
       saveSessionToSupabase(newSession);
     }
+    
+    logEvent('breathing_session_completed', {
+      exercise_name: exerciseSettings.title,
+      breath_count: finalBreathCount,
+      duration_seconds: totalDuration,
+      is_custom: exerciseSettings.isCustom || false,
+    });
     
     queueNotifications([{
       title: "Session completed!",

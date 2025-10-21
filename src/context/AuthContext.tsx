@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useFirebaseAnalytics } from "@/hooks/useFirebaseAnalytics";
 
 interface AuthContextType {
   user: User | null;
@@ -20,6 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { setUserId, logEvent } = useFirebaseAnalytics();
 
   useEffect(() => {
     // Set up the auth state listener first
@@ -27,6 +29,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        if (session?.user) {
+          setUserId(session.user.id);
+        }
         setIsLoading(false);
       }
     );
@@ -35,6 +40,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        setUserId(session.user.id);
+      }
       setIsLoading(false);
     });
 
@@ -49,6 +57,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("Attempting sign in for:", email);
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
+      
+      logEvent('login', { method: 'email' });
     } catch (error: any) {
       console.error("Sign in error:", error);
       toast({
@@ -71,6 +81,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       });
       if (error) throw error;
+      
+      logEvent('sign_up', { method: 'email' });
+      
       toast({
         title: "Account created",
         description: "Check your email for the confirmation link",

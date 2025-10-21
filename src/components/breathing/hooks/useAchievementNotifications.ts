@@ -1,4 +1,5 @@
 import { useNotificationQueue } from "@/hooks/useNotificationQueue";
+import { useFirebaseAnalytics } from "@/hooks/useFirebaseAnalytics";
 import { 
   breathBadgeDefinitions, 
   sessionBadgeDefinitions, 
@@ -9,6 +10,7 @@ import {
 
 export const useAchievementNotifications = () => {
   const { queueNotifications } = useNotificationQueue();
+  const { logEvent } = useFirebaseAnalytics();
 
   const showAchievementToast = (
     badgeName: string, 
@@ -31,6 +33,11 @@ export const useAchievementNotifications = () => {
       oxia: "You're a true OXIA champion!"
     };
 
+    logEvent('unlock_achievement', {
+      achievement_name: badgeName,
+      achievement_category: category,
+    });
+    
     queueNotifications([{
       title: `${categoryEmojis[category]} Achievement Unlocked!`,
       description: `Congratulations! You've earned "${badgeName}" - ${badgeDescription}. ${categoryMessages[category]}`,

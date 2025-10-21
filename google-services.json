@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "135748359119",
+    "project_id": "oxia-app-bb056",
+    "storage_bucket": "oxia-app-bb056.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135748359119:android:cf6c9fae613171f6bbf8ba",
+        "android_client_info": {
+          "package_name": "app.lovable.d3590b81c81449329e6d4fbda085725b"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9iECN4iSiOjx8neVmZLY3bwD8Pt61RmE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
