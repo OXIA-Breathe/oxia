@@ -10,6 +10,7 @@ interface ContactEmailRequest {
   name: string;
   email: string;
   message: string;
+  type?: 'contact' | 'feedback';
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -19,9 +20,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, message }: ContactEmailRequest = await req.json();
+    const { name, email, message, type = 'contact' }: ContactEmailRequest = await req.json();
 
-    console.log('Received contact form submission:', { name, email });
+    console.log(`Received ${type} form submission:`, { name, email });
 
     // Validate input
     if (!name || !email || !message) {
@@ -67,10 +68,12 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     try {
+      const subject = type === 'feedback' ? `Feedback: ${name}` : `Contact Form: ${name}`;
+      
       await client.send({
         from: smtpUser,
         to: smtpUser,
-        subject: `Contact Form: ${name}`,
+        subject,
         content: `From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
       });
 

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const FeedbackForm = () => {
   const { user } = useAuth();
@@ -25,12 +26,16 @@ const FeedbackForm = () => {
 
     setIsSubmitting(true);
     try {
-      // TODO: Implement email sending via Supabase edge function
-      console.log('Feedback submission:', {
-        name,
-        feedback,
-        userEmail: user?.email
+      const { error } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          name,
+          email: user?.email || 'anonymous@oxiabreathe.eu',
+          message: feedback,
+          type: 'feedback'
+        }
       });
+
+      if (error) throw error;
       
       toast({
         title: "Feedback sent successfully!",
@@ -40,6 +45,7 @@ const FeedbackForm = () => {
       setName('');
       setFeedback('');
     } catch (error) {
+      console.error('Error sending feedback:', error);
       toast({
         title: "Failed to send feedback",
         description: "Please try again later.",
