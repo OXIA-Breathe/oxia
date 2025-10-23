@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactForm = () => {
   const { user } = useAuth();
@@ -25,12 +26,15 @@ const ContactForm = () => {
 
     setIsSubmitting(true);
     try {
-      // TODO: Implement email sending via Supabase edge function
-      console.log('Contact submission:', {
-        name,
-        message,
-        userEmail: user?.email
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          name: name.trim(),
+          email: user?.email || '',
+          message: message.trim()
+        }
       });
+
+      if (error) throw error;
       
       toast({
         title: "Message sent successfully!",
@@ -40,6 +44,7 @@ const ContactForm = () => {
       setName('');
       setMessage('');
     } catch (error) {
+      console.error('Contact form error:', error);
       toast({
         title: "Failed to send message",
         description: "Please try again later.",
