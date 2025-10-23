@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -49,76 +50,35 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Use SMTP port 587 with STARTTLS
     const port = parseInt(smtpPort);
-    const useTLS = port === 465;
     
-    // Construct email body
-    const emailBody = `
-From: ${name}
-Email: ${email}
+    console.log(`Sending email via ${smtpHost}:${port}`);
 
-Message:
-${message}
-    `.trim();
-
-    console.log(`Connecting to SMTP server ${smtpHost}:${port}`);
-
-    // Send email using native Deno TCP connection with SMTP protocol
-    const conn = await Deno.connect({
-      hostname: smtpHost,
-      port: port,
-      transport: useTLS ? "tcp" : "tcp",
+    const client = new SMTPClient({
+      connection: {
+        hostname: smtpHost,
+        port: port,
+        tls: port === 465,
+        auth: {
+          username: smtpUser,
+          password: smtpPassword,
+        },
+      },
     });
 
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
+    try {
+      await client.send({
+        from: smtpUser,
+        to: smtpUser,
+        subject: `Contact Form: ${name}`,
+        content: `From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+      });
 
-    async function sendCommand(command: string): Promise<string> {
-      console.log('SMTP Command:', command.split('\r\n')[0]);
-      await conn.write(encoder.encode(command + "\r\n"));
-      const buffer = new Uint8Array(1024);
-      const n = await conn.read(buffer);
-      const response = decoder.decode(buffer.subarray(0, n || 0));
-      console.log('SMTP Response:', response.trim());
-      return response;
+      await client.close();
+    } catch (smtpError: any) {
+      console.error("SMTP error:", smtpError);
+      throw new Error(`Failed to send email: ${smtpError.message}`);
     }
-
-    // Read server greeting
-    const buffer = new Uint8Array(1024);
-    await conn.read(buffer);
-    
-    // SMTP handshake
-    await sendCommand(`EHLO oxiabreathe.eu`);
-    
-    if (port === 587) {
-      await sendCommand("STARTTLS");
-      // After STARTTLS, we would need to upgrade connection to TLS
-      // For now, using port 465 with TLS is more straightforward
-    }
-    
-    // Authentication
-    await sendCommand("AUTH LOGIN");
-    await sendCommand(btoa(smtpUser));
-    await sendCommand(btoa(smtpPassword));
-    
-    // Send email
-    await sendCommand(`MAIL FROM:<${smtpUser}>`);
-    await sendCommand(`RCPT TO:<${smtpUser}>`);
-    await sendCommand("DATA");
-    
-    const emailContent = `From: ${smtpUser}
-To: ${smtpUser}
-Subject: Contact Form: ${name}
-Content-Type: text/plain; charset=utf-8
-
-${emailBody}
-.`;
-    
-    await sendCommand(emailContent);
-    await sendCommand("QUIT");
-    
-    conn.close();
 
     console.log("Email sent successfully");
 
