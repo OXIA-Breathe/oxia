@@ -164,6 +164,16 @@ export default {
 						transform: 'translate(10%, -20%) scale(1.15) rotate(180deg)',
 						opacity: '0.6'
 					}
+				},
+				breathe: {
+					'0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+					'50%': { transform: 'scale(1.1)', opacity: '1' },
+				},
+				wave: {
+					'0%, 100%': { transform: 'rotate(0deg)' },
+					'10%, 30%': { transform: 'rotate(14deg)' },
+					'20%, 40%': { transform: 'rotate(-8deg)' },
+					'50%, 100%': { transform: 'rotate(0deg)' },
 				}
 			},
 			animation: {
@@ -174,7 +184,9 @@ export default {
 				'breathe-hold': 'breathe-hold var(--breathe-hold-duration, 4s) ease-in-out infinite',
 				'fluid-1': 'fluid-float-1 8s ease-in-out infinite',
 				'fluid-2': 'fluid-float-2 10s ease-in-out infinite',
-				'fluid-3': 'fluid-float-3 12s ease-in-out infinite'
+				'fluid-3': 'fluid-float-3 12s ease-in-out infinite',
+				breathe: 'breathe 4s ease-in-out infinite',
+				wave: 'wave 1s ease-in-out infinite'
 			}
 		}
 	},

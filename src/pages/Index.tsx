@@ -1,12 +1,30 @@
-
 import MainLayout from "@/components/layout/MainLayout";
 import BreathingExercise from "@/components/breathing/BreathingExercise";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { useState, useEffect } from "react";
+import OnboardingCarousel from "@/components/onboarding/OnboardingCarousel";
 
 const Index = () => {
   const { user, isLoading } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem("hasSeenOnboarding");
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem("hasSeenOnboarding", "true");
+    setShowOnboarding(false);
+  };
+
+  if (showOnboarding) {
+    return <OnboardingCarousel onComplete={handleOnboardingComplete} />;
+  }
 
   return (
     <MainLayout fullHeight>
