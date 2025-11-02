@@ -56,7 +56,13 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
       showLogo: true,
     },
     {
-      icon: <Wind className="w-16 h-16 animate-[breathe_4s_ease-in-out_infinite]" />,
+      icon: (
+        <img 
+          src="/lovable-uploads/breathing_exercises.gif" 
+          alt="Breathing exercises animation"
+          className="w-48 h-auto object-contain rounded-lg shadow-lg"
+        />
+      ),
       heading: "Just breathe and feel the calm",
       paragraph: "Here you'll find a range of guided breathing practices to help you relax, focus, and restore inner balance.\nYou can also create your own — a rhythm that feels right for you.",
     },
