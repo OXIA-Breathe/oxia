@@ -32,7 +32,17 @@ const BreathingExercise = () => {
     resetExercise,
     toggleExercise,
     handlePhaseComplete,
-  } = useBreathingSession();
+  } = useBreathingSession(() => {
+    // Increment trial counter when session completes (for unauthenticated users)
+    if (!user) {
+      incrementTrial();
+      
+      // Check if this was the last free session
+      if (remainingSessions === 1) {
+        setTimeout(() => setShowSignUpModal(true), 1000);
+      }
+    }
+  });
 
   // Get audio settings from localStorage (memoized to prevent re-creation)
   const audioSettings = useMemo(() => {
@@ -163,19 +173,6 @@ const BreathingExercise = () => {
     }
   }, [phase, isActive]);
 
-  // Track session completion for unauthenticated users
-  useEffect(() => {
-    if (!user && phase === "idle" && !isActive && breathCount > 0 && currentRepetition > 0) {
-      // Session just completed, increment trial counter
-      incrementTrial();
-      
-      // Check if this was the last free session
-      if (remainingSessions === 1) {
-        // Show modal after this session
-        setTimeout(() => setShowSignUpModal(true), 1000);
-      }
-    }
-  }, [user, phase, isActive, breathCount, currentRepetition]);
 
   return (
     <>

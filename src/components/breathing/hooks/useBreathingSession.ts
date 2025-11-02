@@ -8,7 +8,7 @@ import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 import { useSessionPersistence } from "./useSessionPersistence";
 import { useFirebaseAnalytics } from "@/hooks/useFirebaseAnalytics";
 
-export const useBreathingSession = () => {
+export const useBreathingSession = (onSessionComplete?: () => void) => {
   const { addSession } = useBreath();
   const { currentExercise } = useBreathingExercise();
   const { user } = useAuth();
@@ -76,6 +76,11 @@ export const useBreathingSession = () => {
       description: `You completed ${finalBreathCount} breaths in ${totalDuration} seconds.`,
       duration: 3000
     }]);
+    
+    // Call the callback for session completion (e.g., to increment trial counter)
+    if (onSessionComplete) {
+      onSessionComplete();
+    }
     
     resetExercise();
   }, [addSession, exerciseSettings, queueNotifications, user, saveSessionToSupabase]);
