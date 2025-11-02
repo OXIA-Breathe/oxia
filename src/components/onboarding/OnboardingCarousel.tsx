@@ -46,7 +46,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
     {
       icon: (
         <img
-          src="/lovable-uploads/woman_breath.gif"
+          src="/lovable-uploads/woman_breathing_in_the_forest.gif"
           alt="Breathing animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
