@@ -1,17 +1,24 @@
-
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import BreathingCircle from "./BreathingCircle";
 import BreathingStats from "./BreathingStats";
 import BreathingControls from "./BreathingControls";
+import { SignUpPromptModal } from "./SignUpPromptModal";
 import { useBreathingSession } from "./hooks/useBreathingSession";
 import { useBreathingTimer } from "./hooks/useBreathingTimer";
 import { useElapsedTimer } from "./hooks/useElapsedTimer";
 import { useBreathingVoice } from "@/hooks/useBreathingVoice";
 import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
 import { useCountdownSound } from "@/hooks/useCountdownSound";
-
+import { useAuth } from "@/context/AuthContext";
+import { useTrialCounter } from "@/hooks/useTrialCounter";
+import { useToast } from "@/hooks/use-toast";
 
 const BreathingExercise = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { hasReachedLimit, remainingSessions, incrementTrial } = useTrialCounter();
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+  
   const {
     phase,
     isActive,
@@ -90,6 +97,12 @@ const BreathingExercise = () => {
   useElapsedTimer({ isActive, phase, setTimeElapsed });
 
   const handleCircleClick = () => {
+    // Check trial limit for unauthenticated users
+    if (!user && !isActive && phase === "idle" && hasReachedLimit) {
+      setShowSignUpModal(true);
+      return;
+    }
+    
     if (isActive && phaseTimeRemaining === null && phase !== "idle") {
       setPhaseTimeRemaining(timeRemaining);
     }
@@ -105,6 +118,12 @@ const BreathingExercise = () => {
   };
 
   const handleToggle = () => {
+    // Check trial limit for unauthenticated users
+    if (!user && !isActive && phase === "idle" && hasReachedLimit) {
+      setShowSignUpModal(true);
+      return;
+    }
+    
     if (isActive && phaseTimeRemaining === null && phase !== "idle") {
       setPhaseTimeRemaining(timeRemaining);
     }
@@ -144,7 +163,23 @@ const BreathingExercise = () => {
     }
   }, [phase, isActive]);
 
+  // Track session completion for unauthenticated users
+  useEffect(() => {
+    if (!user && phase === "idle" && !isActive && breathCount > 0 && currentRepetition > 0) {
+      // Session just completed, increment trial counter
+      incrementTrial();
+      
+      // Check if this was the last free session
+      if (remainingSessions === 1) {
+        // Show modal after this session
+        setTimeout(() => setShowSignUpModal(true), 1000);
+      }
+    }
+  }, [user, phase, isActive, breathCount, currentRepetition]);
+
   return (
+    <>
+      <SignUpPromptModal open={showSignUpModal} onOpenChange={setShowSignUpModal} />
     <div className="flex flex-col items-center justify-center w-full h-full gap-[4.5vh] sm:gap-[5.5vh]">
       {/* Exercise Title */}
       {exerciseSettings.title && (
@@ -178,8 +213,11 @@ const BreathingExercise = () => {
         currentRepetition={currentRepetition}
         onToggle={handleToggle}
         onReset={handleReset}
+        isAuthenticated={!!user}
+        remainingSessions={remainingSessions}
       />
-    </div>
+      </div>
+    </>
   );
 };
 

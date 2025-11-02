@@ -8,6 +8,8 @@ interface BreathingControlsProps {
   currentRepetition: number;
   onToggle: () => void;
   onReset: () => void;
+  isAuthenticated: boolean;
+  remainingSessions: number;
 }
 
 const BreathingControls = ({ 
@@ -15,10 +17,22 @@ const BreathingControls = ({
   phase, 
   currentRepetition, 
   onToggle, 
-  onReset 
+  onReset,
+  isAuthenticated,
+  remainingSessions
 }: BreathingControlsProps) => {
   return (
-    <div className="flex gap-8 sm:gap-10 px-4">
+    <div className="flex flex-col items-center gap-3">
+      {/* Trial info for unauthenticated users */}
+      {!isAuthenticated && (
+        <p className="text-sm text-white/70">
+          {remainingSessions > 0 
+            ? `${remainingSessions} free ${remainingSessions === 1 ? 'session' : 'sessions'} remaining`
+            : 'Sign up to continue'}
+        </p>
+      )}
+      
+      <div className="flex gap-8 sm:gap-10 px-4">
       <Button 
         onClick={onToggle} 
         variant="default"
@@ -37,6 +51,7 @@ const BreathingControls = ({
       >
         <RotateCcw className="w-6 h-6" />
       </Button>
+      </div>
     </div>
   );
 };
