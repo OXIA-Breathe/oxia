@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useLocalNotifications } from "@/hooks/useLocalNotifications";
 
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -26,6 +27,7 @@ interface NotificationSchedule {
 
 const NotificationSettings = () => {
   const { user } = useAuth();
+  const { hasPermission, requestPermissions, syncNotifications } = useLocalNotifications();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState<NotificationSettingsType>({
@@ -205,8 +207,22 @@ const NotificationSettings = () => {
     }
   });
 
-  const handleSaveSettings = () => {
-    saveSettingsMutation.mutate(settings);
+  const handleSaveSettings = async () => {
+    if (!user) return;
+
+    try {
+      await saveSettingsMutation.mutateAsync(settings);
+      
+      // Request notification permissions if enabling notifications
+      if (settings.enabled && !hasPermission) {
+        await requestPermissions();
+      }
+      
+      // Sync notifications with schedules
+      await syncNotifications();
+    } catch (error) {
+      console.error("Error saving settings:", error);
+    }
   };
 
   const handleEditNotification = (notification: NotificationSchedule) => {
@@ -214,12 +230,29 @@ const NotificationSettings = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteNotification = (id: string) => {
-    deleteScheduleMutation.mutate(id);
+  const handleDeleteNotification = async (id: string) => {
+    try {
+      await deleteScheduleMutation.mutateAsync(id);
+      
+      // Sync notifications after deleting
+      await syncNotifications();
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
   };
 
-  const handleSaveNotification = (notification: Omit<NotificationSchedule, 'id'> & { id?: string }) => {
-    saveScheduleMutation.mutate(notification);
+  const handleSaveNotification = async (notification: Omit<NotificationSchedule, 'id'> & { id?: string }) => {
+    try {
+      await saveScheduleMutation.mutateAsync(notification);
+      
+      // Sync notifications after saving
+      await syncNotifications();
+      
+      setIsModalOpen(false);
+      setEditingNotification(undefined);
+    } catch (error) {
+      console.error("Error saving notification:", error);
+    }
   };
 
   const handleAddNotification = () => {
