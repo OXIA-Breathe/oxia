@@ -10,7 +10,10 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg rounded-t-3xl px-2 sm:px-4 py-4 z-20 md:hidden">
+    <div 
+      className="fixed bottom-0 left-0 w-full bg-white shadow-lg rounded-t-3xl px-2 sm:px-4 z-20 md:hidden"
+      style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))', paddingTop: '1rem' }}
+    >
       <div className="flex justify-around items-center max-w-screen-xl mx-auto">
         <NavItem path="/" label="Home" icon={<Home size={20} />} isActive={isActive("/")} />
         <NavItem path="/learn" label="Learn" icon={<Book size={20} />} isActive={isActive("/learn")} />
