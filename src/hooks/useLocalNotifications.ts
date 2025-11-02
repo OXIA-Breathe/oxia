@@ -78,8 +78,15 @@ export const useLocalNotifications = () => {
             scheduledDate.setDate(scheduledDate.getDate() + 7);
           }
 
+          // Generate a valid numeric ID from UUID
+          // Take first 8 chars of UUID, convert to numeric hash, combine with day
+          const hashCode = schedule.id.slice(0, 8).split('').reduce((acc, char) => {
+            return acc + char.charCodeAt(0);
+          }, 0);
+          const notificationId = (hashCode * 10) + day;
+
           notifications.push({
-            id: parseInt(`${schedule.id.slice(0, 8)}${day}`),
+            id: notificationId,
             title: schedule.title,
             body: "Time for your breathing exercise! 🌬️",
             schedule: {
