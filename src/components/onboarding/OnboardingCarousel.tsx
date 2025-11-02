@@ -78,7 +78,13 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
       paragraph: "OXIA helps you notice your progress over time — your breaths, your moods, your growth.\nEvery inhale and exhale brings you closer to clarity, calm, and mastery.",
     },
     {
-      icon: <Users className="w-16 h-16 animate-pulse" />,
+      icon: (
+        <img 
+          src="/lovable-uploads/feedback.gif" 
+          alt="Feedback and community animation"
+          className="w-48 h-auto object-contain rounded-lg shadow-lg"
+        />
+      ),
       heading: "We grow together",
       paragraph: "Our journey is just beginning. We're constantly developing OXIA and would love for you to be part of it.\nYour feedback, ideas, and curiosity help us create something truly meaningful — for everyone's wellbeing. 💙",
     },
