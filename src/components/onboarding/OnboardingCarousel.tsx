@@ -44,7 +44,13 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
 
   const slides = [
     {
-      icon: <Hand className="w-16 h-16 animate-[wave_1s_ease-in-out_infinite]" />,
+      icon: (
+        <img 
+          src="/lovable-uploads/woman_breath.gif" 
+          alt="Breathing animation"
+          className="max-h-[8vh] min-h-[40px] w-auto object-contain rounded-lg shadow-lg"
+        />
+      ),
       heading: "Welcome to OXIA.",
       paragraph: "I'm truly glad you're here — a space where breathing takes on a new meaning.\nTake a moment, breathe in deeply… and just be present.",
       showLogo: true,
