@@ -48,10 +48,13 @@ const BreathePage = () => {
           ))}
         </div>
 
-        {/* Floating + Button - moved higher by changing bottom-20 to bottom-24 */}
+        {/* Floating + Button */}
         <Button
           onClick={() => setIsModalOpen(true)}
-          className="fixed bottom-24 md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-lg"
+          className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-lg"
+          style={{
+            bottom: 'calc(6rem + env(safe-area-inset-bottom))'
+          }}
           size="icon"
         >
           <Plus className="h-6 w-6" />
