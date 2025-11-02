@@ -78,7 +78,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
       ),
       heading: "Track your journey",
       paragraph:
-        "OXIA helps you notice your progress over time — your breaths, your moods, your growth.\nEvery inhale and exhale brings you closer to clarity, calm, and mastery.",
+        "OXIA helps you notice your progress over time — your breaths, your consistency, your growth.\nEvery inhale and exhale brings you closer to clarity, calm, and mastery.",
     },
     {
       icon: (
@@ -96,13 +96,12 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
       icon: <Sparkles className="w-16 h-16 animate-[spin_3s_linear_infinite]" />,
       heading: "Feel free to use",
       paragraph:
-        "For now, all OXIA content is available completely free.\nYou can try up to 5 sessions per month without signing in.\nCreate an account to unlock unlimited access — freely, just like your breath.",
+        "For now, all OXIA content is available completely free. You can try up to 5 sessions per month without signing in.\nCreate an account to unlock unlimited access — freely, just like your breath.",
     },
     {
       icon: <Smile className="w-16 h-16 animate-[bounce_1.5s_ease-in-out_infinite]" />,
-      heading: "Your Choice",
-      paragraph:
-        "Ready to begin?\nYou can start with 5 free sessions,\nor create your account to explore without limits.",
+      heading: "Ready to begin?",
+      paragraph: "You can start with 5 free sessions,\nor create your account to explore without limits.",
       isFinal: true,
     },
   ];
