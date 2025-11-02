@@ -67,7 +67,13 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
       paragraph: "Here you'll find a range of guided breathing practices to help you relax, focus, and restore inner balance.\nYou can also create your own — a rhythm that feels right for you.",
     },
     {
-      icon: <TrendingUp className="w-16 h-16 animate-[bounce_2s_ease-in-out_infinite]" />,
+      icon: (
+        <img 
+          src="/lovable-uploads/progress.gif" 
+          alt="Progress tracking animation"
+          className="w-48 h-auto object-contain rounded-lg shadow-lg"
+        />
+      ),
       heading: "Track your journey",
       paragraph: "OXIA helps you notice your progress over time — your breaths, your moods, your growth.\nEvery inhale and exhale brings you closer to clarity, calm, and mastery.",
     },
