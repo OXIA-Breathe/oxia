@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { User, ArrowLeft } from "lucide-react";
 import Navbar from "./Navbar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -11,12 +12,18 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
   const location = useLocation();
+  const isMobile = useIsMobile();
   const isProfilePage = location.pathname === "/profile";
   const isExerciseDetailPage = location.pathname.startsWith("/breathe/");
 
   return (
     <div className={`flex flex-col md:flex-row min-h-screen ${fullHeight ? 'h-screen overflow-hidden' : ''} breathing-bg text-white`}>
-      <main className="flex-1 pb-16 md:pb-0 md:pl-16 lg:pl-0 w-full max-w-screen-xl mx-auto">
+      <main 
+        className="flex-1 md:pl-16 lg:pl-0 w-full max-w-screen-xl mx-auto"
+        style={{ 
+          paddingBottom: isMobile ? 'calc(5rem + env(safe-area-inset-bottom))' : '0'
+        }}
+      >
         {/* Header with navigation icons */}
         <div className="absolute top-8 left-6 right-6 flex justify-between items-center z-10">
           {(isProfilePage || isExerciseDetailPage) ? (
