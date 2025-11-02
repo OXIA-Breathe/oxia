@@ -12,7 +12,7 @@ const Navbar = () => {
   return (
     <div 
       className="fixed bottom-0 left-0 w-full bg-white shadow-lg rounded-t-3xl px-2 sm:px-4 z-20 md:hidden"
-      style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))', paddingTop: '0.75rem' }}
+      style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))', paddingTop: '0.5rem' }}
     >
       <div className="flex justify-around items-center max-w-screen-xl mx-auto">
         <NavItem path="/" label="Home" icon={<Home size={20} />} isActive={isActive("/")} />
