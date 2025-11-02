@@ -48,7 +48,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
         <img 
           src="/lovable-uploads/woman_breath.gif" 
           alt="Breathing animation"
-          className="max-h-[8vh] min-h-[40px] w-auto object-contain rounded-lg shadow-lg"
+          className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
       ),
       heading: "Welcome to OXIA.",
