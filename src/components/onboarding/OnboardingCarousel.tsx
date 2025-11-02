@@ -45,58 +45,64 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
   const slides = [
     {
       icon: (
-        <img 
-          src="/lovable-uploads/woman_breath.gif" 
+        <img
+          src="/lovable-uploads/woman_breath.gif"
           alt="Breathing animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
       ),
-      heading: "Welcome to OXIA.",
-      paragraph: "I'm truly glad you're here — a space where breathing takes on a new meaning.\nTake a moment, breathe in deeply… and just be present.",
+      heading: "Welcome to OXIA",
+      paragraph:
+        "I'm truly glad you're here — a space where breathing takes on a new meaning.\nTake a moment, breathe in deeply… and just be present.",
       showLogo: true,
     },
     {
       icon: (
-        <img 
-          src="/lovable-uploads/breathing_exercises.gif" 
+        <img
+          src="/lovable-uploads/breathing_exercises.gif"
           alt="Breathing exercises animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
       ),
       heading: "Just breathe and feel the calm",
-      paragraph: "Here you'll find a range of guided breathing practices to help you relax, focus, and restore inner balance.\nYou can also create your own — a rhythm that feels right for you.",
+      paragraph:
+        "Here you'll find a range of guided breathing practices to help you relax, focus, and restore inner balance.\nYou can also create your own — a rhythm that feels right for you.",
     },
     {
       icon: (
-        <img 
-          src="/lovable-uploads/progress.gif" 
+        <img
+          src="/lovable-uploads/progress.gif"
           alt="Progress tracking animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
       ),
       heading: "Track your journey",
-      paragraph: "OXIA helps you notice your progress over time — your breaths, your moods, your growth.\nEvery inhale and exhale brings you closer to clarity, calm, and mastery.",
+      paragraph:
+        "OXIA helps you notice your progress over time — your breaths, your moods, your growth.\nEvery inhale and exhale brings you closer to clarity, calm, and mastery.",
     },
     {
       icon: (
-        <img 
-          src="/lovable-uploads/feedback.gif" 
+        <img
+          src="/lovable-uploads/feedback.gif"
           alt="Feedback and community animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
       ),
       heading: "We grow together",
-      paragraph: "Our journey is just beginning. We're constantly developing OXIA and would love for you to be part of it.\nYour feedback, ideas, and curiosity help us create something truly meaningful — for everyone's wellbeing. 💙",
+      paragraph:
+        "Our journey is just beginning. We're constantly developing OXIA and would love for you to be part of it.\nYour feedback, ideas, and curiosity help us create something truly meaningful — for everyone's wellbeing. 💙",
     },
     {
       icon: <Sparkles className="w-16 h-16 animate-[spin_3s_linear_infinite]" />,
       heading: "Feel free to use",
-      paragraph: "For now, all OXIA content is available completely free.\nYou can try up to 5 sessions per month without signing in.\nCreate an account to unlock unlimited access — freely, just like your breath.",
+      paragraph:
+        "For now, all OXIA content is available completely free.\nYou can try up to 5 sessions per month without signing in.\nCreate an account to unlock unlimited access — freely, just like your breath.",
     },
     {
       icon: <Smile className="w-16 h-16 animate-[bounce_1.5s_ease-in-out_infinite]" />,
       heading: "Your Choice",
-      paragraph: "Ready to begin?\nYou can start with 5 free sessions,\nor create your account to explore without limits.",
+      paragraph:
+        "Ready to begin?\nYou can start with 5 free sessions,\nor create your account to explore without limits.",
       isFinal: true,
     },
   ];
@@ -133,9 +139,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
                   <div className="text-white mb-8">{slide.icon}</div>
 
                   {/* Heading */}
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                    {slide.heading}
-                  </h2>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{slide.heading}</h2>
 
                   {/* Paragraph */}
                   <p className="text-lg md:text-xl text-white/90 whitespace-pre-line max-w-xl leading-relaxed">
@@ -183,9 +187,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
               key={index}
               onClick={() => api?.scrollTo(index)}
               className={`w-2 h-2 rounded-full transition-all ${
-                index === current
-                  ? "bg-white w-8"
-                  : "bg-white/40 hover:bg-white/60"
+                index === current ? "bg-white w-8" : "bg-white/40 hover:bg-white/60"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
