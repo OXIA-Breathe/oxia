@@ -11,12 +11,10 @@ const Index = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    // Temporarily always show onboarding for testing
-    setShowOnboarding(true);
-    // const hasSeenOnboarding = localStorage.getItem("hasSeenOnboarding");
-    // if (!hasSeenOnboarding) {
-    //   setShowOnboarding(true);
-    // }
+    const hasSeenOnboarding = localStorage.getItem("hasSeenOnboarding");
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
   }, []);
 
   const handleOnboardingComplete = () => {
