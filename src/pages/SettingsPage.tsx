@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import NotificationSettings from "@/components/settings/NotificationSettings";
-import NotificationDiagnostics from "@/components/settings/NotificationDiagnostics";
 import AudioSettings from "@/components/settings/AudioSettings";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
@@ -136,8 +135,6 @@ const SettingsPage = () => {
             </CardHeader>
             <CardContent>
               <NotificationSettings />
-              {/* Diagnostics helper for capturing on-device logs */}
-              <NotificationDiagnostics />
             </CardContent>
           </Card>
 
