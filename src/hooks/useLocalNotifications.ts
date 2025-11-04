@@ -69,8 +69,16 @@ export const useLocalNotifications = () => {
     }
 
     try {
-      // Cancel existing notifications
-      await LocalNotifications.cancel({ notifications: [] });
+      // Cancel existing notifications safely (avoid empty array error)
+      try {
+        const pending = await (LocalNotifications as any).getPending?.();
+        if (pending?.notifications?.length) {
+          await LocalNotifications.cancel({ notifications: pending.notifications });
+        }
+        await (LocalNotifications as any).removeAllDeliveredNotifications?.();
+      } catch (e) {
+        console.warn('Failed to clear existing notifications (non-fatal):', e);
+      }
 
       const notifications = [];
       const now = new Date();
@@ -141,7 +149,15 @@ export const useLocalNotifications = () => {
         .single();
 
       if (!settings?.enabled) {
-        await LocalNotifications.cancel({ notifications: [] });
+        try {
+          const pending = await (LocalNotifications as any).getPending?.();
+          if (pending?.notifications?.length) {
+            await LocalNotifications.cancel({ notifications: pending.notifications });
+          }
+          await (LocalNotifications as any).removeAllDeliveredNotifications?.();
+        } catch (e) {
+          console.warn('Failed to cancel notifications (non-fatal):', e);
+        }
         return;
       }
 
