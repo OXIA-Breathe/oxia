@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalNotifications } from "@/hooks/useLocalNotifications";
+import { NOTIFICATION_CATEGORIES } from "@/constants/notificationMessages";
 
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -93,6 +94,35 @@ const NotificationSettings = () => {
     },
     enabled: !!user && settings.enabled
   });
+
+  // Auto-create default schedules for existing users if they don't have any
+  useEffect(() => {
+    const createDefaultSchedules = async () => {
+      if (!user || !schedules || schedules.length > 0) return;
+      
+      console.log("Creating default notification schedules for existing user");
+      
+      const defaultSchedules = NOTIFICATION_CATEGORIES.map(category => ({
+        user_id: user.id,
+        title: category.defaultTitle,
+        time: category.defaultTime + ':00',
+        days: [0, 1, 2, 3, 4, 5, 6]
+      }));
+
+      const { error } = await supabase
+        .from("notification_schedules")
+        .insert(defaultSchedules);
+
+      if (error) {
+        console.error("Error creating default schedules:", error);
+      } else {
+        console.log("Default schedules created successfully");
+        queryClient.invalidateQueries({ queryKey: ["notificationSchedules", user?.id] });
+      }
+    };
+
+    createDefaultSchedules();
+  }, [schedules, user, queryClient]);
 
   // Mutation to save settings
   const saveSettingsMutation = useMutation({
