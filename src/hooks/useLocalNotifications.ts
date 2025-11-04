@@ -110,18 +110,34 @@ export const useLocalNotifications = () => {
           const category = getCategoryByTime(schedule.time);
           const personalizedMessage = getRandomMessage(category);
 
-          // Use schedule.on for weekly repeats
+          // Calculate next occurrence of this weekday at specified time
+          const now = new Date();
+          const targetDate = new Date();
+          targetDate.setHours(hours, minutes, 0, 0);
+          
+          // Get current day (0=Sunday...6=Saturday)
+          const currentDay = now.getDay();
+          
+          // Calculate days until target weekday
+          let daysUntilTarget = day - currentDay;
+          if (daysUntilTarget < 0) {
+            daysUntilTarget += 7;
+          } else if (daysUntilTarget === 0 && now >= targetDate) {
+            // If it's today but time has passed, schedule for next week
+            daysUntilTarget = 7;
+          }
+          
+          targetDate.setDate(now.getDate() + daysUntilTarget);
+
+          // Use schedule.at with exact date for precise timing
           notifications.push({
             id: notificationId,
             title: schedule.title,
             body: personalizedMessage,
             schedule: {
-              on: {
-                // Capacitor Weekday enum: 1=Sunday ... 7=Saturday
-                weekday: day === 0 ? 1 : day + 1,
-                hour: hours,
-                minute: minutes,
-              },
+              at: targetDate,
+              repeats: true,
+              every: 'week',
             },
             smallIcon: 'ic_notification',
             channelId: 'oxia_reminders_v2',
