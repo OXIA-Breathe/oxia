@@ -117,7 +117,8 @@ export const useLocalNotifications = () => {
             body: personalizedMessage,
             schedule: {
               on: {
-                weekday: day === 0 ? 7 : day, // Capacitor uses 1=Monday...7=Sunday
+                // Capacitor Weekday enum: 1=Sunday ... 7=Saturday
+                weekday: day === 0 ? 1 : day + 1,
                 hour: hours,
                 minute: minutes,
               },
