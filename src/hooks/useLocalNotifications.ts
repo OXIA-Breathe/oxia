@@ -116,6 +116,8 @@ export const useLocalNotifications = () => {
               at: scheduledDate,
               repeats: true,
               every: 'week',
+              allowWhileIdle: true,
+              exact: true, // Request exact timing (Android 12+)
             },
             channelId: 'oxia_reminders',
           });
