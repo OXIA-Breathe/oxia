@@ -95,34 +95,41 @@ const NotificationSettings = () => {
     enabled: !!user && settings.enabled
   });
 
-  // Auto-create default schedules for existing users if they don't have any
+  // Auto-create default schedules only on first enable
+  const [hasCheckedDefaults, setHasCheckedDefaults] = useState(false);
+  
   useEffect(() => {
     const createDefaultSchedules = async () => {
-      if (!user || !schedules || schedules.length > 0) return;
+      if (!user || !schedules || hasCheckedDefaults) return;
       
-      console.log("Creating default notification schedules for existing user");
-      
-      const defaultSchedules = NOTIFICATION_CATEGORIES.map(category => ({
-        user_id: user.id,
-        title: category.defaultTitle,
-        time: category.defaultTime + ':00',
-        days: [0, 1, 2, 3, 4, 5, 6]
-      }));
+      // Only create defaults if user just enabled notifications and has no schedules
+      if (schedules.length === 0 && settings.enabled) {
+        console.log("Creating default notification schedules for existing user");
+        
+        const defaultSchedules = NOTIFICATION_CATEGORIES.map(category => ({
+          user_id: user.id,
+          title: category.defaultTitle,
+          time: category.defaultTime + ':00',
+          days: [0, 1, 2, 3, 4, 5, 6]
+        }));
 
-      const { error } = await supabase
-        .from("notification_schedules")
-        .insert(defaultSchedules);
+        const { error } = await supabase
+          .from("notification_schedules")
+          .insert(defaultSchedules);
 
-      if (error) {
-        console.error("Error creating default schedules:", error);
-      } else {
-        console.log("Default schedules created successfully");
-        queryClient.invalidateQueries({ queryKey: ["notificationSchedules", user?.id] });
+        if (error) {
+          console.error("Error creating default schedules:", error);
+        } else {
+          console.log("Default schedules created successfully");
+          queryClient.invalidateQueries({ queryKey: ["notificationSchedules", user?.id] });
+        }
       }
+      
+      setHasCheckedDefaults(true);
     };
 
     createDefaultSchedules();
-  }, [schedules, user, queryClient]);
+  }, [schedules, user, queryClient, hasCheckedDefaults, settings.enabled]);
 
   // Mutation to save settings
   const saveSettingsMutation = useMutation({
