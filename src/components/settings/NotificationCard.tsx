@@ -13,7 +13,7 @@ interface NotificationSchedule {
 interface NotificationCardProps {
   notification: NotificationSchedule;
   onEdit: (notification: NotificationSchedule) => void;
-  onDelete: (id: string) => void;
+  onDelete: (notification: NotificationSchedule) => void;
 }
 
 const NotificationCard = ({ notification, onEdit, onDelete }: NotificationCardProps) => {
@@ -43,7 +43,7 @@ const NotificationCard = ({ notification, onEdit, onDelete }: NotificationCardPr
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onDelete(notification.id);
+    onDelete(notification);
   };
 
   return (

@@ -28,7 +28,7 @@ interface NotificationSchedule {
 
 const NotificationSettings = () => {
   const { user } = useAuth();
-  const { hasPermission, requestPermissions, syncNotifications } = useLocalNotifications();
+  const { hasPermission, requestPermissions, syncNotifications, cancelSchedule } = useLocalNotifications();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState<NotificationSettingsType>({
@@ -267,11 +267,14 @@ const NotificationSettings = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteNotification = async (id: string) => {
+  const handleDeleteNotification = async (notification: NotificationSchedule) => {
     try {
-      await deleteScheduleMutation.mutateAsync(id);
+      // Proactively cancel OS-scheduled notifications for this schedule
+      await cancelSchedule(notification);
+
+      await deleteScheduleMutation.mutateAsync(notification.id);
       
-      // Sync notifications after deleting
+      // Sync notifications after deleting to ensure clean state
       await syncNotifications();
     } catch (error) {
       console.error("Error deleting notification:", error);

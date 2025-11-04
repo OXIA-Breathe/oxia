@@ -183,6 +183,24 @@ export const useLocalNotifications = () => {
     }
   };
 
+  // Cancel notifications for a specific schedule (more reliable on Android)
+  const cancelSchedule = async (schedule: NotificationSchedule) => {
+    try {
+      const cancels = schedule.days.map((day) => {
+        const hashCode = schedule.id.slice(0, 8).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const notificationId = (hashCode * 10) + day;
+        return { id: notificationId } as any;
+      });
+      if (cancels.length) {
+        await LocalNotifications.cancel({ notifications: cancels });
+      }
+      await (LocalNotifications as any).removeAllDeliveredNotifications?.();
+      console.info('Cancelled notifications for schedule', schedule.id);
+    } catch (e) {
+      console.warn('Failed to cancel specific schedule notifications (non-fatal):', e);
+    }
+  };
+
   // Debug listeners for testing on device
   useEffect(() => {
     let sub1: any;
@@ -215,5 +233,6 @@ export const useLocalNotifications = () => {
     requestPermissions,
     scheduleNotifications,
     syncNotifications,
+    cancelSchedule,
   };
 };
