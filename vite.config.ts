@@ -25,7 +25,6 @@ export default defineConfig(({ mode }) => ({
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select', '@radix-ui/react-tabs'],
-          'firebase': ['firebase', '@capacitor-firebase/analytics'],
           'supabase': ['@supabase/supabase-js'],
           'charts': ['recharts'],
           'pdf': ['jspdf', 'jspdf-autotable', 'html2pdf.js'],
