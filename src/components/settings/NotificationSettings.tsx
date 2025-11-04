@@ -28,7 +28,7 @@ interface NotificationSchedule {
 
 const NotificationSettings = () => {
   const { user } = useAuth();
-  const { hasPermission, requestPermissions, syncNotifications, cancelSchedule } = useLocalNotifications();
+  const { hasPermission, requestPermissions, syncNotifications, cancelSchedule, forceClearAll } = useLocalNotifications();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState<NotificationSettingsType>({
@@ -365,6 +365,14 @@ const NotificationSettings = () => {
           className="w-full"
         >
           {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
+        </Button>
+
+        <Button 
+          onClick={forceClearAll} 
+          variant="destructive"
+          className="w-full"
+        >
+          Force Clear All Notifications
         </Button>
 
         <NotificationModal

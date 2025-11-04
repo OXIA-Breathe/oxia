@@ -44,16 +44,16 @@ export const useLocalNotifications = () => {
       console.info('LocalNotifications.checkPermissions result:', result);
       setHasPermission(result.display === 'granted');
 
-      // Ensure Android notification channel exists (safe no-op on other platforms)
+      // Ensure Android notification channel exists (v2 to avoid old cache)
       try {
         await (LocalNotifications as any).createChannel?.({
-          id: 'oxia_reminders',
+          id: 'oxia_reminders_v2',
           name: 'OXIA Reminders',
           description: 'Breathing exercise reminders',
           importance: 5,
           vibration: true,
         });
-        console.info('Ensured notification channel exists: oxia_reminders');
+        console.info('Ensured notification channel exists: oxia_reminders_v2');
       } catch (e) {
         console.warn('Channel creation failed or unsupported (non-fatal):', e);
       }
@@ -113,19 +113,21 @@ export const useLocalNotifications = () => {
           const category = getCategoryByTime(schedule.time);
           const personalizedMessage = getRandomMessage(category);
 
+          // Use schedule.on for more reliable weekly repeats on Android
           notifications.push({
             id: notificationId,
             title: schedule.title,
             body: personalizedMessage,
             schedule: {
-              at: scheduledDate,
-              repeats: true,
-              every: 'week',
-              allowWhileIdle: true,
-              exact: true, // Request exact timing (Android 12+)
+              on: {
+                weekday: day === 0 ? 7 : day, // Capacitor uses 1=Monday...7=Sunday
+                hour: hours,
+                minute: minutes,
+              },
+              // Remove exact/allowWhileIdle to prevent burst repeats on Android
             },
-            smallIcon: 'ic_notification', // Monochrome notification icon
-            channelId: 'oxia_reminders',
+            smallIcon: 'ic_notification',
+            channelId: 'oxia_reminders_v2', // Use v2 channel to avoid old cache
           });
         }
       }
@@ -240,11 +242,54 @@ export const useLocalNotifications = () => {
     checkSupport();
   }, []);
 
+  // Force clear ALL notifications and reset channel (nuclear option for stuck alarms)
+  const forceClearAll = async () => {
+    try {
+      // Cancel all pending
+      const pending = await (LocalNotifications as any).getPending?.();
+      if (pending?.notifications?.length) {
+        await LocalNotifications.cancel({ notifications: pending.notifications });
+      }
+      // Remove all delivered
+      await (LocalNotifications as any).removeAllDeliveredNotifications?.();
+      
+      // Delete old channels and recreate v2
+      try {
+        await (LocalNotifications as any).deleteChannel?.({ id: 'oxia_reminders' });
+        await (LocalNotifications as any).deleteChannel?.({ id: 'oxia_reminders_v2' });
+      } catch (e) {
+        console.warn('Channel deletion not supported or failed:', e);
+      }
+      
+      await (LocalNotifications as any).createChannel?.({
+        id: 'oxia_reminders_v2',
+        name: 'OXIA Reminders',
+        description: 'Breathing exercise reminders',
+        importance: 5,
+        vibration: true,
+      });
+      
+      console.info('Force cleared all notifications and reset channel');
+      toast({
+        title: "Notifications Cleared",
+        description: "All scheduled notifications have been removed",
+      });
+    } catch (error) {
+      console.error('Error force clearing notifications:', error);
+      toast({
+        title: "Clear Failed",
+        description: "Could not clear all notifications",
+        variant: "destructive",
+      });
+    }
+  };
+
   return {
     hasPermission,
     requestPermissions,
     scheduleNotifications,
     syncNotifications,
     cancelSchedule,
+    forceClearAll,
   };
 };
