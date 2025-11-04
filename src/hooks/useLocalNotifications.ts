@@ -169,15 +169,27 @@ export const useLocalNotifications = () => {
         return;
       }
 
-      // Get user's schedules
-      const { data: schedules } = await supabase
-        .from('notification_schedules')
-        .select('*')
-        .eq('user_id', user.id);
+    // Get user's schedules
+    const { data: schedules } = await supabase
+      .from('notification_schedules')
+      .select('*')
+      .eq('user_id', user.id);
 
-      if (schedules && schedules.length > 0) {
-        await scheduleNotifications(schedules as NotificationSchedule[]);
+    if (schedules && schedules.length > 0) {
+      await scheduleNotifications(schedules as NotificationSchedule[]);
+    } else {
+      // No schedules: ensure any previously scheduled notifications are cleared
+      try {
+        const pending = await (LocalNotifications as any).getPending?.();
+        if (pending?.notifications?.length) {
+          await LocalNotifications.cancel({ notifications: pending.notifications });
+        }
+        await (LocalNotifications as any).removeAllDeliveredNotifications?.();
+        console.info('No schedules found; cleared all pending/delivered notifications');
+      } catch (e) {
+        console.warn('Failed to clear notifications when no schedules (non-fatal):', e);
       }
+    }
     } catch (error) {
       console.error('Error syncing notifications:', error);
     }
