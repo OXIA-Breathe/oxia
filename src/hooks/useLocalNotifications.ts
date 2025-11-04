@@ -124,6 +124,7 @@ export const useLocalNotifications = () => {
               allowWhileIdle: true,
               exact: true, // Request exact timing (Android 12+)
             },
+            smallIcon: 'ic_launcher_foreground', // Use OXIA app icon for notifications
             channelId: 'oxia_reminders',
           });
         }
