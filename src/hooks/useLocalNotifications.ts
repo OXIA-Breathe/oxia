@@ -3,6 +3,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { getCategoryByTime, getRandomMessage } from '@/constants/notificationMessages';
 
 interface NotificationSchedule {
   id: string;
@@ -108,10 +109,14 @@ export const useLocalNotifications = () => {
           }, 0);
           const notificationId = (hashCode * 10) + day;
 
+          // Get personalized message based on notification time
+          const category = getCategoryByTime(schedule.time);
+          const personalizedMessage = getRandomMessage(category);
+
           notifications.push({
             id: notificationId,
             title: schedule.title,
-            body: "Time for your breathing exercise! 🌬️",
+            body: personalizedMessage,
             schedule: {
               at: scheduledDate,
               repeats: true,
