@@ -40,7 +40,22 @@ export const useLocalNotifications = () => {
   const checkSupport = async () => {
     try {
       const result = await LocalNotifications.checkPermissions();
+      console.info('LocalNotifications.checkPermissions result:', result);
       setHasPermission(result.display === 'granted');
+
+      // Ensure Android notification channel exists (safe no-op on other platforms)
+      try {
+        await (LocalNotifications as any).createChannel?.({
+          id: 'oxia_reminders',
+          name: 'OXIA Reminders',
+          description: 'Breathing exercise reminders',
+          importance: 5,
+          vibration: true,
+        });
+        console.info('Ensured notification channel exists: oxia_reminders');
+      } catch (e) {
+        console.warn('Channel creation failed or unsupported (non-fatal):', e);
+      }
     } catch (error) {
       console.error('Local notifications not supported:', error);
     }
@@ -94,6 +109,7 @@ export const useLocalNotifications = () => {
               repeats: true,
               every: 'week',
             },
+            channelId: 'oxia_reminders',
           });
         }
       }
@@ -106,7 +122,7 @@ export const useLocalNotifications = () => {
       console.error('Error scheduling notifications:', error);
       toast({
         title: "Notification Error",
-        description: "Failed to schedule notifications",
+        description: `Failed to schedule notifications${(error as any)?.message ? ": " + (error as any).message : ""}`,
         variant: "destructive",
       });
     }
@@ -142,6 +158,28 @@ export const useLocalNotifications = () => {
       console.error('Error syncing notifications:', error);
     }
   };
+
+  // Debug listeners for testing on device
+  useEffect(() => {
+    let sub1: any;
+    let sub2: any;
+    (async () => {
+      try {
+        sub1 = await LocalNotifications.addListener('localNotificationReceived', (notification) => {
+          console.info('Local notification received:', notification);
+        });
+        sub2 = await LocalNotifications.addListener('localNotificationActionPerformed', (action) => {
+          console.info('Local notification action performed:', action);
+        });
+      } catch (e) {
+        console.warn('Failed to register LocalNotifications listeners:', e);
+      }
+    })();
+    return () => {
+      try { sub1?.remove?.(); } catch {}
+      try { sub2?.remove?.(); } catch {}
+    };
+  }, []);
 
   // Initialize
   useEffect(() => {
