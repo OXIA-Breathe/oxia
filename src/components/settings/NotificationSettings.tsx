@@ -28,7 +28,7 @@ interface NotificationSchedule {
 
 const NotificationSettings = () => {
   const { user } = useAuth();
-  const { hasPermission, requestPermissions, syncNotifications, cancelSchedule } = useLocalNotifications();
+  const { hasPermission, requestPermissions, syncNotifications, cancelSchedule, clearAllNotifications } = useLocalNotifications();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState<NotificationSettingsType>({
@@ -330,7 +330,40 @@ const NotificationSettings = () => {
           <Switch
             id="notifications-enabled"
             checked={settings.enabled}
-            onCheckedChange={(checked) => setSettings({ ...settings, enabled: checked })}
+            onCheckedChange={async (checked) => {
+              const newSettings = { ...settings, enabled: checked };
+              setSettings(newSettings);
+              try {
+                await saveSettingsMutation.mutateAsync(newSettings);
+
+                if (checked) {
+                  if (!hasPermission) {
+                    await requestPermissions();
+                  }
+                  await syncNotifications();
+                  toast({
+                    title: "Notifications enabled",
+                    description: "We'll remind you at your scheduled times",
+                  });
+                } else {
+                  // Immediately clear any OS-scheduled notifications
+                  await clearAllNotifications();
+                  // Ensure nothing gets rescheduled
+                  await syncNotifications();
+                  toast({
+                    title: "Notifications disabled",
+                    description: "All scheduled notifications cleared",
+                  });
+                }
+              } catch (err) {
+                console.error("Error updating notifications toggle:", err);
+                toast({
+                  title: "Error",
+                  description: "Could not update notification setting",
+                  variant: "destructive",
+                });
+              }
+            }}
           />
         </div>
 

@@ -231,5 +231,6 @@ export const useLocalNotifications = () => {
     scheduleNotifications,
     syncNotifications,
     cancelSchedule,
+    clearAllNotifications,
   };
 };
