@@ -62,17 +62,38 @@ export const useLocalNotifications = () => {
     }
   };
 
-  // Clear all scheduled notifications
+  // Clear all scheduled notifications - thorough cleanup
   const clearAllNotifications = async () => {
     try {
+      // 1. Get and cancel all pending notifications
       const pending = await (LocalNotifications as any).getPending?.();
       if (pending?.notifications?.length) {
+        console.info(`Canceling ${pending.notifications.length} pending notifications`);
         await LocalNotifications.cancel({ notifications: pending.notifications });
       }
+      
+      // 2. Remove all delivered notifications
       await (LocalNotifications as any).removeAllDeliveredNotifications?.();
+      
+      // 3. Try to delete old channel as fallback (Android)
+      try {
+        await (LocalNotifications as any).deleteChannel?.({ id: 'oxia_reminders' });
+      } catch {}
+      
       console.info('Cleared all pending and delivered notifications');
     } catch (e) {
       console.warn('Failed to clear notifications (non-fatal):', e);
+    }
+  };
+
+  // Get pending notifications for debugging
+  const getPendingNotifications = async () => {
+    try {
+      const pending = await (LocalNotifications as any).getPending?.();
+      return pending?.notifications || [];
+    } catch (e) {
+      console.warn('Failed to get pending notifications:', e);
+      return [];
     }
   };
 
@@ -100,7 +121,7 @@ export const useLocalNotifications = () => {
 
         // Schedule for each day
         for (const day of schedule.days) {
-          // Generate a valid numeric ID from UUID
+          // Generate a stable numeric ID from UUID + day
           const hashCode = schedule.id.slice(0, 8).split('').reduce((acc, char) => {
             return acc + char.charCodeAt(0);
           }, 0);
@@ -110,34 +131,23 @@ export const useLocalNotifications = () => {
           const category = getCategoryByTime(schedule.time);
           const personalizedMessage = getRandomMessage(category);
 
-          // Calculate next occurrence of this weekday at specified time
-          const now = new Date();
-          const targetDate = new Date();
-          targetDate.setHours(hours, minutes, 0, 0);
-          
-          // Get current day (0=Sunday...6=Saturday)
-          const currentDay = now.getDay();
-          
-          // Calculate days until target weekday
-          let daysUntilTarget = day - currentDay;
-          if (daysUntilTarget < 0) {
-            daysUntilTarget += 7;
-          } else if (daysUntilTarget === 0 && now >= targetDate) {
-            // If it's today but time has passed, schedule for next week
-            daysUntilTarget = 7;
-          }
-          
-          targetDate.setDate(now.getDate() + daysUntilTarget);
+          // Use schedule.on for reliable weekly repeating notifications
+          // Capacitor weekday: 1=Sunday, 2=Monday, ..., 7=Saturday
+          // Our day: 0=Sunday, 1=Monday, ..., 6=Saturday
+          const capacitorWeekday = day + 1;
 
-          // Use schedule.at with exact date for precise timing
           notifications.push({
             id: notificationId,
             title: schedule.title,
             body: personalizedMessage,
             schedule: {
-              at: targetDate,
+              on: {
+                weekday: capacitorWeekday,
+                hour: hours,
+                minute: minutes,
+              },
               repeats: true,
-              every: 'week',
+              allowWhileIdle: true, // Ensures delivery even in Doze mode on Android
             },
             smallIcon: 'ic_notification',
             channelId: 'oxia_reminders_v2',
@@ -232,5 +242,6 @@ export const useLocalNotifications = () => {
     syncNotifications,
     cancelSchedule,
     clearAllNotifications,
+    getPendingNotifications,
   };
 };
