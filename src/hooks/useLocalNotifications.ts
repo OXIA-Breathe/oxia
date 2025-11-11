@@ -37,6 +37,54 @@ export const useLocalNotifications = () => {
     }
   };
 
+  // Request exact alarm permissions (Android 12+)
+  const requestExactAlarmPermission = async () => {
+    try {
+      // Check if exact alarms can be scheduled
+      const canSchedule = await (LocalNotifications as any).canScheduleExactNotifications?.();
+      
+      if (canSchedule === false) {
+        console.info('Requesting SCHEDULE_EXACT_ALARM permission...');
+        toast({
+          title: "Precise Timing",
+          description: "For accurate notifications, please allow exact alarms in the next screen",
+        });
+        
+        // This will open system settings for exact alarm permission
+        await (LocalNotifications as any).requestExactNotificationPermission?.();
+      } else {
+        console.info('Exact alarm permission already granted or not needed');
+      }
+    } catch (error) {
+      console.warn('Exact alarm permission request failed or unsupported:', error);
+    }
+  };
+
+  // Purge legacy notifications that may be stuck
+  const purgeLegacyNotifications = async () => {
+    try {
+      console.info('Purging legacy notifications...');
+      
+      // Cancel known legacy notification IDs
+      const legacyIds = [5122, 5123, 5124, 5125]; // Known problematic IDs
+      await LocalNotifications.cancel({
+        notifications: legacyIds.map(id => ({ id }))
+      });
+      
+      // Delete old channel (this will prevent "No Channel found" errors)
+      try {
+        await (LocalNotifications as any).deleteChannel?.({ id: 'oxia_reminders' });
+        console.info('Deleted legacy channel: oxia_reminders');
+      } catch (e) {
+        console.warn('Could not delete legacy channel (may not exist):', e);
+      }
+      
+      console.info('Legacy notifications purged');
+    } catch (error) {
+      console.warn('Failed to purge legacy notifications:', error);
+    }
+  };
+
   // Check if notifications are supported
   const checkSupport = async () => {
     try {
@@ -56,6 +104,14 @@ export const useLocalNotifications = () => {
         console.info('Ensured notification channel exists: oxia_reminders_v2');
       } catch (e) {
         console.warn('Channel creation failed or unsupported (non-fatal):', e);
+      }
+
+      // Purge any legacy notifications from old channel
+      await purgeLegacyNotifications();
+      
+      // Request exact alarm permission for precise timing
+      if (result.display === 'granted') {
+        await requestExactAlarmPermission();
       }
     } catch (error) {
       console.error('Local notifications not supported:', error);
@@ -258,10 +314,12 @@ export const useLocalNotifications = () => {
   return {
     hasPermission,
     requestPermissions,
+    requestExactAlarmPermission,
     scheduleNotifications,
     syncNotifications,
     cancelSchedule,
     clearAllNotifications,
     getPendingNotifications,
+    purgeLegacyNotifications,
   };
 };

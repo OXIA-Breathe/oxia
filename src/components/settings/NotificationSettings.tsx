@@ -28,7 +28,7 @@ interface NotificationSchedule {
 
 const NotificationSettings = () => {
   const { user } = useAuth();
-  const { hasPermission, requestPermissions, syncNotifications, cancelSchedule, clearAllNotifications } = useLocalNotifications();
+  const { hasPermission, requestPermissions, requestExactAlarmPermission, syncNotifications, cancelSchedule, clearAllNotifications } = useLocalNotifications();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState<NotificationSettingsType>({
@@ -253,9 +253,10 @@ const NotificationSettings = () => {
       // Request notification permissions if enabling notifications
       if (settings.enabled && !hasPermission) {
         await requestPermissions();
+        await requestExactAlarmPermission();
       }
       
-      // Sync notifications with schedules
+      // Sync notifications with schedules immediately
       await syncNotifications();
     } catch (error) {
       console.error("Error saving settings:", error);
@@ -285,11 +286,17 @@ const NotificationSettings = () => {
     try {
       await saveScheduleMutation.mutateAsync(notification);
       
-      // Sync notifications after saving
-      await syncNotifications();
-      
+      // Close modal first for better UX
       setIsModalOpen(false);
       setEditingNotification(undefined);
+      
+      // Immediately sync notifications to OS (this ensures new notifications appear right away)
+      await syncNotifications();
+      
+      toast({
+        title: "Synced",
+        description: "Your notification has been scheduled",
+      });
     } catch (error) {
       console.error("Error saving notification:", error);
     }
@@ -339,7 +346,9 @@ const NotificationSettings = () => {
                 if (checked) {
                   if (!hasPermission) {
                     await requestPermissions();
+                    await requestExactAlarmPermission();
                   }
+                  // Immediate sync when enabling
                   await syncNotifications();
                   toast({
                     title: "Notifications enabled",
