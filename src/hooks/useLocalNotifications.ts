@@ -136,7 +136,7 @@ export const useLocalNotifications = () => {
           // Our day: 0=Sunday, 1=Monday, ..., 6=Saturday
           const capacitorWeekday = day + 1;
 
-          notifications.push({
+          const notificationPayload = {
             id: notificationId,
             title: schedule.title,
             body: personalizedMessage,
@@ -147,17 +147,37 @@ export const useLocalNotifications = () => {
                 minute: minutes,
               },
               repeats: true,
-              allowWhileIdle: true, // Ensures delivery even in Doze mode on Android
+              allowWhileIdle: true,
             },
             smallIcon: 'ic_notification',
             channelId: 'oxia_reminders_v2',
+          };
+
+          console.info('📅 Scheduling notification:', {
+            id: notificationId,
+            time: `${hours}:${minutes.toString().padStart(2, '0')}`,
+            weekday: capacitorWeekday,
+            dayName: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day],
+            title: schedule.title,
           });
+
+          notifications.push(notificationPayload);
         }
       }
 
       if (notifications.length > 0) {
         await LocalNotifications.schedule({ notifications });
-        console.log(`Scheduled ${notifications.length} notifications`);
+        console.info(`✅ Successfully scheduled ${notifications.length} notifications`);
+        
+        // Verify what was actually scheduled
+        const pending = await getPendingNotifications();
+        console.info(`📋 Total pending notifications: ${pending.length}`, pending.map((n: any) => ({
+          id: n.id,
+          title: n.title,
+          schedule: n.schedule,
+        })));
+      } else {
+        console.info('No notifications to schedule');
       }
     } catch (error) {
       console.error('Error scheduling notifications:', error);
