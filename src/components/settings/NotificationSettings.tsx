@@ -13,6 +13,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import NotificationCard from "./NotificationCard";
 import AddNotificationCard from "./AddNotificationCard";
 import NotificationModal from "./NotificationModal";
+import { NotificationDebugPanel } from "./NotificationDebugPanel";
 
 interface NotificationSettingsType {
   enabled: boolean;
@@ -406,6 +407,8 @@ const NotificationSettings = () => {
           notification={editingNotification}
           onSave={handleSaveNotification}
         />
+
+        {settings.enabled && <NotificationDebugPanel />}
     </div>
   );
 };
