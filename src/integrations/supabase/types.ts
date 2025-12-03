@@ -140,6 +140,50 @@ export type Database = {
         }
         Relationships: []
       }
+      emotion_tracking: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          post_arousal: number | null
+          post_valence: number | null
+          pre_arousal: number | null
+          pre_valence: number | null
+          session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          post_arousal?: number | null
+          post_valence?: number | null
+          pre_arousal?: number | null
+          pre_valence?: number | null
+          session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          post_arousal?: number | null
+          post_valence?: number | null
+          pre_arousal?: number | null
+          pre_valence?: number | null
+          session_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emotion_tracking_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "breath_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_schedules: {
         Row: {
           created_at: string
@@ -202,21 +246,30 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           display_name: string | null
+          emotion_tracking_enabled: boolean
           id: string
+          is_subscribed: boolean
+          subscription_expires_at: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          emotion_tracking_enabled?: boolean
           id: string
+          is_subscribed?: boolean
+          subscription_expires_at?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          emotion_tracking_enabled?: boolean
           id?: string
+          is_subscribed?: boolean
+          subscription_expires_at?: string | null
           updated_at?: string
         }
         Relationships: []
