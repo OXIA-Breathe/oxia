@@ -8,7 +8,7 @@ import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 import { useSessionPersistence } from "./useSessionPersistence";
 import { useFirebaseAnalytics } from "@/hooks/useFirebaseAnalytics";
 
-export const useBreathingSession = (onSessionComplete?: () => void) => {
+export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCount: number; duration: number; sessionId: string }) => void) => {
   const { addSession } = useBreath();
   const { currentExercise } = useBreathingExercise();
   const { user } = useAuth();
@@ -46,8 +46,9 @@ export const useBreathingSession = (onSessionComplete?: () => void) => {
     
     console.log(`🕐 Session completion - Start: ${sessionStartTimeRef.current}, End: ${sessionEndTime}, Duration: ${totalDuration} seconds`);
     
+    const sessionId = uuidv4();
     const newSession = {
-      id: uuidv4(),
+      id: sessionId,
       date: new Date().toISOString(),
       repetitions: exerciseSettings.repetitions,
       holdDuration: exerciseSettings.firstHoldDuration,
@@ -71,19 +72,24 @@ export const useBreathingSession = (onSessionComplete?: () => void) => {
       is_custom: exerciseSettings.isCustom || false,
     });
     
-    queueNotifications([{
-      title: "Session completed!",
-      description: `You completed ${finalBreathCount} breaths in ${totalDuration} seconds.`,
-      duration: 3000
-    }]);
-    
-    // Call the callback for session completion (e.g., to increment trial counter)
+    // Call the callback with session data for emotion tracking
     if (onSessionComplete) {
-      onSessionComplete();
+      onSessionComplete({
+        breathCount: finalBreathCount,
+        duration: totalDuration,
+        sessionId,
+      });
+    } else {
+      // If no callback, show default notification
+      queueNotifications([{
+        title: "Session completed!",
+        description: `You completed ${finalBreathCount} breaths in ${totalDuration} seconds.`,
+        duration: 3000
+      }]);
     }
     
     resetExercise();
-  }, [addSession, exerciseSettings, queueNotifications, user, saveSessionToSupabase]);
+  }, [addSession, exerciseSettings, queueNotifications, user, saveSessionToSupabase, onSessionComplete]);
 
   const resetExercise = () => {
     setPhase("idle");
