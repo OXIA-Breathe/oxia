@@ -3,12 +3,15 @@ import BreathingCircle from "./BreathingCircle";
 import BreathingStats from "./BreathingStats";
 import BreathingControls from "./BreathingControls";
 import { SignUpPromptModal } from "./SignUpPromptModal";
+import PreExerciseCheckIn from "../emotion/PreExerciseCheckIn";
+import PostExerciseTracking from "../emotion/PostExerciseTracking";
 import { useBreathingSession } from "./hooks/useBreathingSession";
 import { useBreathingTimer } from "./hooks/useBreathingTimer";
 import { useElapsedTimer } from "./hooks/useElapsedTimer";
 import { useBreathingVoice } from "@/hooks/useBreathingVoice";
 import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
 import { useCountdownSound } from "@/hooks/useCountdownSound";
+import { useEmotionTracking } from "@/hooks/useEmotionTracking";
 import { useAuth } from "@/context/AuthContext";
 import { useTrialCounter } from "@/hooks/useTrialCounter";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +21,47 @@ const BreathingExercise = () => {
   const { toast } = useToast();
   const { hasReachedLimit, remainingSessions, incrementTrial } = useTrialCounter();
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [showPreCheckIn, setShowPreCheckIn] = useState(false);
+  const [showPostTracking, setShowPostTracking] = useState(false);
+  const [completedSessionData, setCompletedSessionData] = useState<{ breathCount: number; duration: number; sessionId?: string } | null>(null);
   
+  const {
+    isTrackingEnabled,
+    checkTrackingEnabled,
+    setPreEmotion,
+    setPostEmotionAndSave,
+    resetEmotionTracking,
+  } = useEmotionTracking();
+
+  // Check emotion tracking status on mount
+  useEffect(() => {
+    checkTrackingEnabled();
+  }, [checkTrackingEnabled]);
+
+  const handleSessionComplete = useCallback((sessionData: { breathCount: number; duration: number; sessionId: string }) => {
+    // Increment trial counter when session completes (for unauthenticated users)
+    if (!user) {
+      incrementTrial();
+      
+      // Check if this was the last free session
+      if (remainingSessions === 1) {
+        setTimeout(() => setShowSignUpModal(true), 1000);
+      }
+    }
+    
+    // If emotion tracking is enabled, show post-exercise tracking
+    if (isTrackingEnabled) {
+      setCompletedSessionData(sessionData);
+      setShowPostTracking(true);
+    } else {
+      // Show default completion toast
+      toast({
+        title: "Session completed!",
+        description: `You completed ${sessionData.breathCount} breaths in ${sessionData.duration} seconds.`,
+      });
+    }
+  }, [user, incrementTrial, remainingSessions, isTrackingEnabled, toast]);
+
   const {
     phase,
     isActive,
@@ -32,17 +75,7 @@ const BreathingExercise = () => {
     resetExercise,
     toggleExercise,
     handlePhaseComplete,
-  } = useBreathingSession(() => {
-    // Increment trial counter when session completes (for unauthenticated users)
-    if (!user) {
-      incrementTrial();
-      
-      // Check if this was the last free session
-      if (remainingSessions === 1) {
-        setTimeout(() => setShowSignUpModal(true), 1000);
-      }
-    }
-  });
+  } = useBreathingSession(handleSessionComplete);
 
   // Get audio settings from localStorage (memoized to prevent re-creation)
   const audioSettings = useMemo(() => {
@@ -66,9 +99,8 @@ const BreathingExercise = () => {
   // Countdown sound hook
   const { playCountdownTick, stopCountdownTicks } = useCountdownSound();
 
-
   // Add voice guidance with static audio files
-  const { isVoiceSupported, isVoiceReady, isVoiceLoading, stopVoice, triggerVoicePrompt } = useBreathingVoice({
+  const { stopVoice, triggerVoicePrompt } = useBreathingVoice({
     phase: phase as "inhale" | "exhale" | "hold1" | "hold2",
     isActive,
     exerciseTitle: exerciseSettings.title
@@ -106,6 +138,40 @@ const BreathingExercise = () => {
 
   useElapsedTimer({ isActive, phase, setTimeElapsed });
 
+  // Handle pre-exercise check-in
+  const handlePreCheckInSubmit = (valence: number, arousal: number) => {
+    setPreEmotion(valence, arousal);
+  };
+
+  const handlePreCheckInSkip = () => {
+    resetEmotionTracking();
+  };
+
+  // Handle post-exercise tracking
+  const handlePostTrackingSubmit = async (valence: number, arousal: number, note: string) => {
+    if (completedSessionData) {
+      await setPostEmotionAndSave(valence, arousal, note, completedSessionData.sessionId);
+    }
+    setShowPostTracking(false);
+    setCompletedSessionData(null);
+    toast({
+      title: "Session saved!",
+      description: "Your breathing session and emotions have been recorded.",
+    });
+  };
+
+  const handlePostTrackingSkip = () => {
+    setShowPostTracking(false);
+    setCompletedSessionData(null);
+    resetEmotionTracking();
+    toast({
+      title: "Session completed!",
+      description: completedSessionData 
+        ? `You completed ${completedSessionData.breathCount} breaths in ${completedSessionData.duration} seconds.`
+        : "Great work!",
+    });
+  };
+
   const handleCircleClick = () => {
     // Check trial limit for unauthenticated users
     if (!user && !isActive && phase === "idle" && hasReachedLimit) {
@@ -133,6 +199,11 @@ const BreathingExercise = () => {
       setShowSignUpModal(true);
       return;
     }
+
+    // Show pre-exercise check-in if emotion tracking is enabled and starting fresh
+    if (!isActive && phase === "idle" && isTrackingEnabled) {
+      setShowPreCheckIn(true);
+    }
     
     if (isActive && phaseTimeRemaining === null && phase !== "idle") {
       setPhaseTimeRemaining(timeRemaining);
@@ -149,19 +220,18 @@ const BreathingExercise = () => {
   };
 
   const handleReset = () => {
-    stopVoice(); // Stop any ongoing voice prompts
-    stopMusic(); // Stop background music
+    stopVoice();
+    stopMusic();
     resetExercise();
+    resetEmotionTracking();
   };
 
   // Handle background music and countdown sound
   useEffect(() => {
     if (isActive && phase === "countdown") {
-      // Start background music and countdown sound when exercise begins
       startMusic();
-      playCountdownTick(); // Play the full 3-tick audio clip once
+      playCountdownTick();
     } else if (!isActive && phase === "idle") {
-      // Stop background music when exercise ends
       stopMusic();
     }
   }, [isActive, phase]);
@@ -173,46 +243,65 @@ const BreathingExercise = () => {
     }
   }, [phase, isActive]);
 
+  // Show post-exercise tracking modal
+  if (showPostTracking && completedSessionData) {
+    return (
+      <div className="flex items-center justify-center w-full h-full p-4">
+        <PostExerciseTracking
+          breathCount={completedSessionData.breathCount}
+          duration={completedSessionData.duration}
+          onSubmit={handlePostTrackingSubmit}
+          onSkip={handlePostTrackingSkip}
+        />
+      </div>
+    );
+  }
 
   return (
     <>
       <SignUpPromptModal open={showSignUpModal} onOpenChange={setShowSignUpModal} />
-    <div className="flex flex-col items-center justify-center w-full h-full gap-[4.5vh] sm:gap-[5.5vh]">
-      {/* Exercise Title */}
-      {exerciseSettings.title && (
-        <div className="text-center">
-          <h2 className="text-[1.5rem] font-semibold text-white">
-            {exerciseSettings.title}
-          </h2>
-        </div>
-      )}
-      
-      <BreathingStats
-        currentRepetition={currentRepetition}
-        totalRepetitions={exerciseSettings.repetitions}
-        breathCount={breathCount}
-        timeElapsed={timeElapsed}
+      <PreExerciseCheckIn
+        open={showPreCheckIn}
+        onOpenChange={setShowPreCheckIn}
+        onSubmit={handlePreCheckInSubmit}
+        onSkip={handlePreCheckInSkip}
       />
-      
-      <div className="flex items-center justify-center flex-shrink-0">
-        <BreathingCircle 
-          phase={isActive ? phase : "idle"} 
-          duration={duration}
-          timeRemaining={timeRemaining}
-          onCircleClick={handleCircleClick}
-          isPaused={!isActive && phase !== "idle"}
+      <div className="flex flex-col items-center justify-center w-full h-full gap-[4.5vh] sm:gap-[5.5vh]">
+        {/* Exercise Title */}
+        {exerciseSettings.title && (
+          <div className="text-center">
+            <h2 className="text-[1.5rem] font-semibold text-white">
+              {exerciseSettings.title}
+            </h2>
+          </div>
+        )}
+        
+        <BreathingStats
+          currentRepetition={currentRepetition}
+          totalRepetitions={exerciseSettings.repetitions}
+          breathCount={breathCount}
+          timeElapsed={timeElapsed}
         />
-      </div>
-      
-      <BreathingControls
-        isActive={isActive}
-        phase={phase}
-        currentRepetition={currentRepetition}
-        onToggle={handleToggle}
-        onReset={handleReset}
-        isAuthenticated={!!user}
-        remainingSessions={remainingSessions}
-      />
+        
+        <div className="flex items-center justify-center flex-shrink-0">
+          <BreathingCircle 
+            phase={isActive ? phase : "idle"} 
+            duration={duration}
+            timeRemaining={timeRemaining}
+            onCircleClick={handleCircleClick}
+            isPaused={!isActive && phase !== "idle"}
+          />
+        </div>
+        
+        <BreathingControls
+          isActive={isActive}
+          phase={phase}
+          currentRepetition={currentRepetition}
+          onToggle={handleToggle}
+          onReset={handleReset}
+          isAuthenticated={!!user}
+          remainingSessions={remainingSessions}
+        />
       </div>
     </>
   );

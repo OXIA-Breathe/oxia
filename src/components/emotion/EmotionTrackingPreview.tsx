@@ -25,7 +25,7 @@ export const EmotionTrackingPreview = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 space-y-8">
+    <div className="min-h-screen breathing-bg p-4 space-y-8">
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold text-foreground">Emotion Tracking UI Preview</h1>
         <p className="text-muted-foreground text-sm">This is a design mockup - not functional yet</p>
@@ -186,9 +186,9 @@ export const EmotionTrackingPreview = () => {
           </div>
 
           <div className="flex gap-2">
-            <Button variant="outline" className="flex-1">Skip Tracking</Button>
-            <Button className="flex-1 bg-green-600 hover:bg-green-700">
-              Save & Finish
+            <Button variant="outline" className="flex-1">Skip</Button>
+            <Button className="flex-1">
+              Continue
             </Button>
           </div>
         </CardContent>
