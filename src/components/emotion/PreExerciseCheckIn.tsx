@@ -38,7 +38,7 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="bg-card/50 backdrop-blur border-primary/20 rounded-2xl max-w-sm mx-auto"
+        className="bg-white/95 backdrop-blur border-primary/20 rounded-2xl max-w-sm mx-auto"
         overlayClassName="bg-[#77a9e8]/50"
       >
         <DialogHeader>
