@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Smile, Frown, Battery, BatteryLow } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Smile, Frown, BatteryFull, BatteryLow } from "lucide-react";
 
 interface PreExerciseCheckInProps {
   open: boolean;
@@ -27,11 +27,14 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-white/95 backdrop-blur-sm border-none max-w-sm mx-auto">
+      <DialogContent className="bg-card/98 backdrop-blur-md border-border/50 rounded-2xl max-w-sm mx-auto">
         <DialogHeader>
           <DialogTitle className="text-center text-lg font-semibold">
-            Quick check-in?
+            Quick check-in
           </DialogTitle>
+          <DialogDescription className="text-center text-muted-foreground">
+            How do you feel?
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-4">
           {/* Valence Slider */}
@@ -68,7 +71,7 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
                 <BatteryLow className="w-4 h-4" /> Calm
               </span>
               <span className="flex items-center gap-1">
-                Energized <Battery className="w-4 h-4" />
+                Energized <BatteryFull className="w-4 h-4" />
               </span>
             </div>
             <Slider
