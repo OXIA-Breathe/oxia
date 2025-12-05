@@ -3,12 +3,13 @@ import { useState, useEffect } from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import NotificationSettings from "@/components/settings/NotificationSettings";
 import AudioSettings from "@/components/settings/AudioSettings";
+import OtherSettings from "@/components/settings/OtherSettings";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
-import { Volume2, Bell, Info, Instagram, MessageCircleHeart, Share, Music2 } from "lucide-react";
+import { Volume2, Bell, Info, Instagram, MessageCircleHeart, Share, Music2, Settings2 } from "lucide-react";
 import FeedbackForm from "@/components/settings/FeedbackForm";
 import ContactForm from "@/components/settings/ContactForm";
 import { useShareTracking } from "@/components/breathing/hooks/useShareTracking";
@@ -135,6 +136,19 @@ const SettingsPage = () => {
             </CardHeader>
             <CardContent>
               <NotificationSettings />
+            </CardContent>
+          </Card>
+
+          {/* Other Settings Section */}
+          <Card className="border-none shadow-md bg-white">
+            <CardHeader className="pb-6">
+              <CardTitle className="flex items-center gap-2">
+                <Settings2 className="h-5 w-5 text-breath" />
+                <span className="text-gray-800">Other Settings</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <OtherSettings />
             </CardContent>
           </Card>
 
