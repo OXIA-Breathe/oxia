@@ -138,13 +138,22 @@ const BreathingExercise = () => {
 
   useElapsedTimer({ isActive, phase, setTimeElapsed });
 
+  // Start the exercise (called after modal closes or directly if no modal)
+  const startExerciseFromIdle = useCallback(() => {
+    toggleExercise();
+  }, [toggleExercise]);
+
   // Handle pre-exercise check-in
   const handlePreCheckInSubmit = (valence: number, arousal: number) => {
     setPreEmotion(valence, arousal);
+    // Start exercise after submitting pre-check-in
+    startExerciseFromIdle();
   };
 
   const handlePreCheckInSkip = () => {
     resetEmotionTracking();
+    // Start exercise after skipping pre-check-in
+    startExerciseFromIdle();
   };
 
   // Handle post-exercise tracking
@@ -172,28 +181,8 @@ const BreathingExercise = () => {
     });
   };
 
-  const handleCircleClick = () => {
-    // Check trial limit for unauthenticated users
-    if (!user && !isActive && phase === "idle" && hasReachedLimit) {
-      setShowSignUpModal(true);
-      return;
-    }
-    
-    if (isActive && phaseTimeRemaining === null && phase !== "idle") {
-      setPhaseTimeRemaining(timeRemaining);
-    }
-    
-    // Handle music pause/resume
-    if (isActive) {
-      pauseMusic();
-    } else if (phase !== "idle") {
-      resumeMusic();
-    }
-    
-    toggleExercise();
-  };
-
-  const handleToggle = () => {
+  // Common logic for starting/toggling exercise
+  const handleStartOrToggle = useCallback(() => {
     // Check trial limit for unauthenticated users
     if (!user && !isActive && phase === "idle" && hasReachedLimit) {
       setShowSignUpModal(true);
@@ -203,6 +192,7 @@ const BreathingExercise = () => {
     // Show pre-exercise check-in if emotion tracking is enabled and starting fresh
     if (!isActive && phase === "idle" && isTrackingEnabled) {
       setShowPreCheckIn(true);
+      return; // Don't start exercise yet - wait for modal to close
     }
     
     if (isActive && phaseTimeRemaining === null && phase !== "idle") {
@@ -217,6 +207,14 @@ const BreathingExercise = () => {
     }
     
     toggleExercise();
+  }, [user, isActive, phase, hasReachedLimit, isTrackingEnabled, phaseTimeRemaining, timeRemaining, setPhaseTimeRemaining, pauseMusic, resumeMusic, toggleExercise]);
+
+  const handleCircleClick = () => {
+    handleStartOrToggle();
+  };
+
+  const handleToggle = () => {
+    handleStartOrToggle();
   };
 
   const handleReset = () => {
