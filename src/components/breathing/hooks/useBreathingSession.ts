@@ -37,8 +37,10 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [phaseTimeRemaining, setPhaseTimeRemaining] = useState<number | null>(null);
   
-  // Use a ref to track session start time to avoid stale closure issues
+  // Use refs to track session state without causing re-renders
   const sessionStartTimeRef = useRef<number | null>(null);
+  const isCompletingRef = useRef(false);
+  const completionDataRef = useRef<{ breathCount: number } | null>(null);
 
   const completeSession = useCallback((finalBreathCount: number) => {
     const sessionEndTime = Date.now();
@@ -116,16 +118,18 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
     }
   };
 
-  // Effect to handle session completion - avoids setState during render
+  // Effect to handle session completion - processes queued completion
   useEffect(() => {
-    if (currentRepetition > 0 && currentRepetition >= exerciseSettings.repetitions) {
-      // Use setTimeout to schedule the completion outside the render cycle
-      const timeoutId = setTimeout(() => {
-        completeSession(breathCount);
-      }, 0);
-      return () => clearTimeout(timeoutId);
+    if (completionDataRef.current && !isCompletingRef.current) {
+      isCompletingRef.current = true;
+      const data = completionDataRef.current;
+      completionDataRef.current = null;
+      
+      // Run completion synchronously now that we're in effect
+      completeSession(data.breathCount);
+      isCompletingRef.current = false;
     }
-  }, [currentRepetition, exerciseSettings.repetitions, breathCount, completeSession]);
+  });
 
   const handlePhaseComplete = useCallback((nextPhase: "inhale" | "exhale" | "hold1" | "hold2" | "countdown") => {
     if (nextPhase === "countdown") {
@@ -139,15 +143,22 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
       // After setting start time, move to inhale phase
       setPhase("inhale");
     } else if (nextPhase === "inhale") {
-      // Only increment if we haven't reached the target
-      setCurrentRepetition((prevRep) => {
-        if (prevRep < exerciseSettings.repetitions) {
-          return prevRep + 1;
-        }
-        return prevRep;
+      setBreathCount((prevBreathCount) => {
+        const newBreathCount = prevBreathCount + 1;
+        
+        setCurrentRepetition((prevRep) => {
+          const newRep = prevRep + 1;
+          if (newRep >= exerciseSettings.repetitions) {
+            // Queue completion to be processed by useEffect
+            completionDataRef.current = { breathCount: newBreathCount };
+            return newRep;
+          }
+          setPhase("inhale");
+          return newRep;
+        });
+        
+        return newBreathCount;
       });
-      setBreathCount((prevBreathCount) => prevBreathCount + 1);
-      setPhase("inhale");
     } else {
       setPhase(nextPhase);
     }
