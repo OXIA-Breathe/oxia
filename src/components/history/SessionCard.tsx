@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { BreathSession } from "@/types/breath";
 import { formatTime } from "./utils/formatTime";
 import { Edit, Trash2, ChevronDown, ChevronUp, Heart, Activity, ArrowRight } from "lucide-react";
-import { getMoodConfig, getStressLabel, getStressColor, getStressBgColor } from "@/constants/emotionConfig";
+import { getMoodConfig, getStressLabel, getStressColor } from "@/constants/emotionConfig";
 
 interface SessionCardProps {
   session: BreathSession;
@@ -23,6 +23,13 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
   const preMood = session.emotionData?.preValence ? getMoodConfig(session.emotionData.preValence) : null;
   const postMood = session.emotionData?.postValence ? getMoodConfig(session.emotionData.postValence) : null;
 
+  // Create gradient style for expanded view
+  const getGradientStyle = () => {
+    if (!preMood || !postMood) return {};
+    return {
+      background: `linear-gradient(135deg, ${preMood.bgColor} 0%, ${postMood.bgColor} 100%)`
+    };
+  };
 
   const handleCardClick = () => {
     if (hasEmotionData) {
@@ -101,31 +108,28 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
 
       {/* Expanded emotion data section */}
       {isExpanded && hasEmotionData && (
-        <div className="p-4 border-t">
+        <div 
+          className="p-4 border-t"
+          style={getGradientStyle()}
+        >
           <div className="space-y-4">
             {/* Mood comparison */}
             {preMood && postMood && (
-              <div className="bg-muted/50 rounded-lg p-3">
+              <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <Heart className="h-4 w-4 text-rose-400" />
                   <span className="text-sm font-medium">Mood</span>
                 </div>
                 <div className="flex items-center justify-center gap-4">
-                  <div 
-                    className="flex flex-col items-center gap-1 rounded-lg p-2"
-                    style={{ backgroundColor: preMood.bgColor }}
-                  >
+                  <div className="flex flex-col items-center gap-1">
                     <img src={preMood.icon} alt={preMood.label} className="w-10 h-10" />
-                    <span className="text-xs font-medium" style={{ color: preMood.color }}>{preMood.label}</span>
+                    <span className="text-xs" style={{ color: preMood.color }}>{preMood.label}</span>
                     <span className="text-[10px] text-muted-foreground">Before</span>
                   </div>
                   <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                  <div 
-                    className="flex flex-col items-center gap-1 rounded-lg p-2"
-                    style={{ backgroundColor: postMood.bgColor }}
-                  >
+                  <div className="flex flex-col items-center gap-1">
                     <img src={postMood.icon} alt={postMood.label} className="w-10 h-10" />
-                    <span className="text-xs font-medium" style={{ color: postMood.color }}>{postMood.label}</span>
+                    <span className="text-xs" style={{ color: postMood.color }}>{postMood.label}</span>
                     <span className="text-[10px] text-muted-foreground">After</span>
                   </div>
                 </div>
@@ -134,16 +138,13 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
 
             {/* Stress comparison */}
             {session.emotionData?.preStress !== null && session.emotionData?.postStress !== null && (
-              <div className="bg-muted/50 rounded-lg p-3">
+              <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <Activity className="h-4 w-4 text-amber-400" />
                   <span className="text-sm font-medium">Stress Level</span>
                 </div>
                 <div className="flex items-center justify-center gap-4">
-                  <div 
-                    className="flex flex-col items-center rounded-lg p-2"
-                    style={{ backgroundColor: getStressBgColor(session.emotionData.preStress!) }}
-                  >
+                  <div className="flex flex-col items-center">
                     <span 
                       className="text-xl font-bold"
                       style={{ color: getStressColor(session.emotionData.preStress!) }}
@@ -156,10 +157,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
                     <span className="text-[10px] text-muted-foreground mt-1">Before</span>
                   </div>
                   <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                  <div 
-                    className="flex flex-col items-center rounded-lg p-2"
-                    style={{ backgroundColor: getStressBgColor(session.emotionData.postStress!) }}
-                  >
+                  <div className="flex flex-col items-center">
                     <span 
                       className="text-xl font-bold"
                       style={{ color: getStressColor(session.emotionData.postStress!) }}
@@ -177,7 +175,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
 
             {/* Note */}
             {session.emotionData?.note && (
-              <div className="bg-muted/50 rounded-lg p-3">
+              <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3">
                 <p className="text-xs text-muted-foreground mb-1">Note</p>
                 <p className="text-sm">{session.emotionData.note}</p>
               </div>
