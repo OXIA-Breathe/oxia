@@ -1,5 +1,5 @@
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useBreath } from "@/context/BreathContext";
 import { useBreathingExercise } from "@/context/BreathingExerciseContext";
@@ -116,6 +116,17 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
     }
   };
 
+  // Effect to handle session completion - avoids setState during render
+  useEffect(() => {
+    if (currentRepetition > 0 && currentRepetition >= exerciseSettings.repetitions) {
+      // Use setTimeout to schedule the completion outside the render cycle
+      const timeoutId = setTimeout(() => {
+        completeSession(breathCount);
+      }, 0);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [currentRepetition, exerciseSettings.repetitions, breathCount, completeSession]);
+
   const handlePhaseComplete = useCallback((nextPhase: "inhale" | "exhale" | "hold1" | "hold2" | "countdown") => {
     if (nextPhase === "countdown") {
       // Countdown complete, start the actual exercise and set start time
@@ -128,26 +139,19 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
       // After setting start time, move to inhale phase
       setPhase("inhale");
     } else if (nextPhase === "inhale") {
-      setBreathCount((prevBreathCount) => {
-        const newBreathCount = prevBreathCount + 1;
-        
-        setCurrentRepetition((prevRep) => {
-          const newRep = prevRep + 1;
-          if (newRep >= exerciseSettings.repetitions) {
-            completeSession(newBreathCount);
-            return 0;
-          } else {
-            setPhase("inhale");
-            return newRep;
-          }
-        });
-        
-        return newBreathCount;
+      // Only increment if we haven't reached the target
+      setCurrentRepetition((prevRep) => {
+        if (prevRep < exerciseSettings.repetitions) {
+          return prevRep + 1;
+        }
+        return prevRep;
       });
+      setBreathCount((prevBreathCount) => prevBreathCount + 1);
+      setPhase("inhale");
     } else {
       setPhase(nextPhase);
     }
-  }, [exerciseSettings.repetitions, completeSession]);
+  }, [exerciseSettings.repetitions]);
 
   return {
     phase,
