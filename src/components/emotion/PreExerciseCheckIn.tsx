@@ -77,12 +77,9 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
                   onClick={() => setMood(m.value)}
                   className={`w-8 h-8 rounded-full transition-all ${
                     mood === m.value 
-                      ? "ring-2 ring-offset-1 scale-110" 
+                      ? "scale-110" 
                       : "opacity-60 hover:opacity-100"
                   }`}
-                  style={mood === m.value ? { 
-                    boxShadow: `0 0 0 2px ${m.color}` 
-                  } : undefined}
                 >
                   <img 
                     src={m.icon} 
