@@ -4,9 +4,9 @@ import { useAuth } from "@/context/AuthContext";
 
 interface EmotionData {
   preValence: number | null;
-  preArousal: number | null;
+  preStress: number | null;
   postValence: number | null;
-  postArousal: number | null;
+  postStress: number | null;
   note: string | null;
   sessionId: string | null;
 }
@@ -15,9 +15,9 @@ export const useEmotionTracking = () => {
   const { user } = useAuth();
   const [emotionData, setEmotionData] = useState<EmotionData>({
     preValence: null,
-    preArousal: null,
+    preStress: null,
     postValence: null,
-    postArousal: null,
+    postStress: null,
     note: null,
     sessionId: null,
   });
@@ -52,17 +52,18 @@ export const useEmotionTracking = () => {
   }, [user]);
 
   // Set pre-exercise emotion
-  const setPreEmotion = useCallback((valence: number, arousal: number) => {
+  const setPreEmotion = useCallback((valence: number, stress: number) => {
     setEmotionData((prev) => ({
       ...prev,
       preValence: valence,
-      preArousal: arousal,
+      preStress: stress,
     }));
   }, []);
 
   // Set post-exercise emotion and save to database
+  // Note: Database still uses arousal columns, we map stress to arousal for storage
   const setPostEmotionAndSave = useCallback(
-    async (valence: number, arousal: number, note: string, sessionId?: string) => {
+    async (valence: number, stress: number, note: string, sessionId?: string) => {
       if (!user) return;
 
       setIsLoading(true);
@@ -71,9 +72,9 @@ export const useEmotionTracking = () => {
           user_id: user.id,
           session_id: sessionId || null,
           pre_valence: emotionData.preValence,
-          pre_arousal: emotionData.preArousal,
+          pre_arousal: emotionData.preStress, // Map stress to arousal column
           post_valence: valence,
-          post_arousal: arousal,
+          post_arousal: stress, // Map stress to arousal column
           note: note || null,
         });
 
@@ -82,9 +83,9 @@ export const useEmotionTracking = () => {
         // Reset emotion data after successful save
         setEmotionData({
           preValence: null,
-          preArousal: null,
+          preStress: null,
           postValence: null,
-          postArousal: null,
+          postStress: null,
           note: null,
           sessionId: null,
         });
@@ -94,16 +95,16 @@ export const useEmotionTracking = () => {
         setIsLoading(false);
       }
     },
-    [user, emotionData.preValence, emotionData.preArousal]
+    [user, emotionData.preValence, emotionData.preStress]
   );
 
   // Reset emotion tracking state
   const resetEmotionTracking = useCallback(() => {
     setEmotionData({
       preValence: null,
-      preArousal: null,
+      preStress: null,
       postValence: null,
-      postArousal: null,
+      postStress: null,
       note: null,
       sessionId: null,
     });
