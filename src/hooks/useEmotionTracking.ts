@@ -64,11 +64,17 @@ export const useEmotionTracking = () => {
   // Note: Database still uses arousal columns, we map stress to arousal for storage
   const setPostEmotionAndSave = useCallback(
     async (valence: number, stress: number, note: string, sessionId?: string) => {
-      if (!user) return;
+      console.log("🎭 setPostEmotionAndSave called with:", { valence, stress, note, sessionId, userId: user?.id });
+      console.log("🎭 Pre-emotion data:", { preValence: emotionData.preValence, preStress: emotionData.preStress });
+      
+      if (!user) {
+        console.log("🎭 No user, skipping emotion save");
+        return;
+      }
 
       setIsLoading(true);
       try {
-        const { error } = await supabase.from("emotion_tracking").insert({
+        const insertData = {
           user_id: user.id,
           session_id: sessionId || null,
           pre_valence: emotionData.preValence,
@@ -76,9 +82,18 @@ export const useEmotionTracking = () => {
           post_valence: valence,
           post_arousal: stress, // Map stress to arousal column
           note: note || null,
-        });
+        };
+        
+        console.log("🎭 Inserting emotion data:", insertData);
+        
+        const { data, error } = await supabase.from("emotion_tracking").insert(insertData).select();
 
-        if (error) throw error;
+        if (error) {
+          console.error("🎭 Supabase error saving emotion:", error);
+          throw error;
+        }
+        
+        console.log("🎭 Emotion data saved successfully:", data);
 
         // Reset emotion data after successful save
         setEmotionData({
@@ -90,7 +105,7 @@ export const useEmotionTracking = () => {
           sessionId: null,
         });
       } catch (error) {
-        console.error("Error saving emotion tracking data:", error);
+        console.error("🎭 Error saving emotion tracking data:", error);
       } finally {
         setIsLoading(false);
       }
