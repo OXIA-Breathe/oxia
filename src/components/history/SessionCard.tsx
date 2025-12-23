@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { BreathSession } from "@/types/breath";
 import { formatTime } from "./utils/formatTime";
 import { Edit, Trash2, ChevronDown, ChevronUp, Heart, Activity, ArrowRight } from "lucide-react";
-import { getMoodConfig, getStressLabel, getStressColor } from "@/constants/emotionConfig";
+import { getMoodConfig, getStressLabel, getStressColor, getStressBgColor } from "@/constants/emotionConfig";
 
 interface SessionCardProps {
   session: BreathSession;
@@ -21,14 +21,6 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
 
   const preMood = session.emotionData?.preValence ? getMoodConfig(session.emotionData.preValence) : null;
   const postMood = session.emotionData?.postValence ? getMoodConfig(session.emotionData.postValence) : null;
-
-  // Create gradient style for expanded view
-  const getGradientStyle = () => {
-    if (!preMood || !postMood) return {};
-    return {
-      background: `linear-gradient(135deg, ${preMood.bgColor} 0%, ${postMood.bgColor} 100%)`,
-    };
-  };
 
   const handleCardClick = () => {
     if (hasEmotionData) {
@@ -111,11 +103,16 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
 
       {/* Expanded emotion data section */}
       {isExpanded && hasEmotionData && (
-        <div className="p-4 border-t" style={getGradientStyle()}>
+        <div className="p-4 border-t bg-muted/30">
           <div className="space-y-4">
             {/* Mood comparison */}
             {preMood && postMood && (
-              <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3">
+              <div
+                className="rounded-lg p-3"
+                style={{
+                  background: `linear-gradient(135deg, ${preMood.bgColor} 0%, ${postMood.bgColor} 100%)`,
+                }}
+              >
                 <div className="flex items-center gap-2 mb-2">
                   <Heart className="h-4 w-4 text-rose-400" />
                   <span className="text-sm font-medium">Mood</span>
@@ -142,7 +139,12 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
 
             {/* Stress comparison */}
             {session.emotionData?.preStress !== null && session.emotionData?.postStress !== null && (
-              <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3">
+              <div
+                className="rounded-lg p-3"
+                style={{
+                  background: `linear-gradient(135deg, ${getStressBgColor(session.emotionData.preStress!)} 0%, ${getStressBgColor(session.emotionData.postStress!)} 100%)`,
+                }}
+              >
                 <div className="flex items-center gap-2 mb-2">
                   <Activity className="h-4 w-4 text-amber-400" />
                   <span className="text-sm font-medium">Stress Level</span>
