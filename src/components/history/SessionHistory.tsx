@@ -24,34 +24,60 @@ const SessionHistory = ({ selectedDate }: SessionHistoryProps) => {
     queryKey: ["breathSessions", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      
-      const { data, error } = await supabase
+
+      const { data: sessionsData, error: sessionsError } = await supabase
         .from("breath_sessions")
         .select("*")
         .eq("user_id", user.id)
         .order("date", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching sessions:", error);
-        throw error;
+      if (sessionsError) {
+        console.error("Error fetching sessions:", sessionsError);
+        throw sessionsError;
       }
-      
-      if (data) {
-        // Convert Supabase data to app format
-        const formattedSessions: BreathSession[] = data.map(session => ({
-          id: session.id,
-          date: session.date,
-          repetitions: session.repetitions,
-          holdDuration: session.hold_duration,
-          totalDuration: session.total_duration,
-          breathCount: session.breath_count,
-          exerciseTitle: session.exercise_title || "Breathing Exercise"
-        }));
-        
-        return formattedSessions;
-      } else {
-        return [];
+
+      const sessionIds = (sessionsData ?? []).map((s) => s.id);
+
+      // Fetch emotion data for these sessions (if any)
+      const { data: emotionData, error: emotionError } = sessionIds.length
+        ? await supabase
+            .from("emotion_tracking")
+            .select("session_id, pre_valence, pre_arousal, post_valence, post_arousal, note")
+            .eq("user_id", user.id)
+            .in("session_id", sessionIds)
+        : { data: [], error: null };
+
+      if (emotionError) {
+        console.error("Error fetching emotion tracking:", emotionError);
+        // Don't block session history if emotion fetch fails
       }
+
+      const emotionMap = new Map(
+        (emotionData ?? [])
+          .filter((e) => !!e.session_id)
+          .map((e) => [
+            e.session_id as string,
+            {
+              preValence: e.pre_valence,
+              preStress: e.pre_arousal,
+              postValence: e.post_valence,
+              postStress: e.post_arousal,
+              note: e.note,
+            },
+          ])
+      );
+
+      // Convert Supabase data to app format (and attach emotion data)
+      return (sessionsData ?? []).map((session) => ({
+        id: session.id,
+        date: session.date,
+        repetitions: session.repetitions,
+        holdDuration: session.hold_duration,
+        totalDuration: session.total_duration,
+        breathCount: session.breath_count,
+        exerciseTitle: session.exercise_title || "Breathing Exercise",
+        emotionData: emotionMap.get(session.id),
+      })) as BreathSession[];
     },
     enabled: !!user
   });
