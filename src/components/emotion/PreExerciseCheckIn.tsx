@@ -2,31 +2,24 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Heart, Zap, ChevronRight } from "lucide-react";
+import { Heart, Activity, ChevronRight } from "lucide-react";
+import { MOODS, getMoodConfig, getStressLabel, getStressColor, getStressBgColor } from "@/constants/emotionConfig";
 
 interface PreExerciseCheckInProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (valence: number, arousal: number) => void;
+  onSubmit: (valence: number, stress: number) => void;
   onSkip: () => void;
 }
 
-const getValenceLabel = (value: number) => {
-  const labels = ["Very Negative", "Negative", "Slightly Negative", "Neutral", "Slightly Positive", "Positive", "Very Positive"];
-  return labels[value - 1];
-};
-
-const getArousalLabel = (value: number) => {
-  const labels = ["Very Calm", "Calm", "Slightly Calm", "Neutral", "Slightly Energized", "Energized", "Very Energized"];
-  return labels[value - 1];
-};
-
 const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExerciseCheckInProps) => {
-  const [valence, setValence] = useState(4);
-  const [arousal, setArousal] = useState(4);
+  const [mood, setMood] = useState(5); // Default to Calm
+  const [stress, setStress] = useState(50); // Default to Moderate
+
+  const currentMood = getMoodConfig(mood);
 
   const handleSubmit = () => {
-    onSubmit(valence, arousal);
+    onSubmit(mood, stress);
     onOpenChange(false);
   };
 
@@ -50,54 +43,82 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-2">
-          {/* Valence Slider */}
+          {/* Mood Slider */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium flex items-center gap-2">
                 <Heart className="h-4 w-4 text-rose-400" />
                 Mood
               </label>
-              <span className="text-xs text-primary font-medium px-2 py-1 bg-primary/10 rounded-full">
-                {getValenceLabel(valence)}
+              <span 
+                className="text-xs font-medium px-2 py-1 rounded-full"
+                style={{ 
+                  color: currentMood.color, 
+                  backgroundColor: currentMood.bgColor 
+                }}
+              >
+                {currentMood.label}
               </span>
             </div>
             <Slider
-              value={[valence]}
-              onValueChange={(v) => setValence(v[0])}
+              value={[mood]}
+              onValueChange={(v) => setMood(v[0])}
               min={1}
               max={7}
               step={1}
               className="w-full"
             />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Negative</span>
-              <span>Positive</span>
+            {/* Mood icons row */}
+            <div className="flex justify-between px-0.5">
+              {MOODS.map((m) => (
+                <button
+                  key={m.value}
+                  type="button"
+                  onClick={() => setMood(m.value)}
+                  className={`w-8 h-8 rounded-full transition-all ${
+                    mood === m.value 
+                      ? "ring-2 ring-offset-1 scale-110" 
+                      : "opacity-60 hover:opacity-100"
+                  }`}
+                  style={mood === m.value ? { 
+                    boxShadow: `0 0 0 2px ${m.color}` 
+                  } : undefined}
+                >
+                  <img 
+                    src={m.icon} 
+                    alt={m.label} 
+                    className="w-full h-full object-contain"
+                  />
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Arousal Slider */}
+          {/* Stress Level Slider */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium flex items-center gap-2">
-                <Zap className="h-4 w-4 text-amber-400" />
-                Energy
+                <Activity className="h-4 w-4 text-amber-400" />
+                Stress Level
               </label>
-              <span className="text-xs text-primary font-medium px-2 py-1 bg-primary/10 rounded-full">
-                {getArousalLabel(arousal)}
+              <span 
+                className="text-xs font-medium px-2 py-1 rounded-full"
+                style={{ 
+                  color: getStressColor(stress), 
+                  backgroundColor: getStressBgColor(stress) 
+                }}
+              >
+                {getStressLabel(stress)}
               </span>
             </div>
             <Slider
-              value={[arousal]}
-              onValueChange={(v) => setArousal(v[0])}
-              min={1}
-              max={7}
+              value={[stress]}
+              onValueChange={(v) => setStress(v[0])}
+              min={0}
+              max={100}
               step={1}
               className="w-full"
             />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Calm</span>
-              <span>Energized</span>
-            </div>
           </div>
 
           <div className="flex gap-2 pt-2">

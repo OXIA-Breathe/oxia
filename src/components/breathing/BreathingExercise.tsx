@@ -26,6 +26,7 @@ const BreathingExercise = () => {
   const [completedSessionData, setCompletedSessionData] = useState<{ breathCount: number; duration: number; sessionId?: string } | null>(null);
   
   const {
+    emotionData,
     isTrackingEnabled,
     checkTrackingEnabled,
     setPreEmotion,
@@ -248,6 +249,8 @@ const BreathingExercise = () => {
         <PostExerciseTracking
           breathCount={completedSessionData.breathCount}
           duration={completedSessionData.duration}
+          preMood={emotionData.preValence ?? undefined}
+          preStress={emotionData.preStress ?? undefined}
           onSubmit={handlePostTrackingSubmit}
           onSkip={handlePostTrackingSkip}
         />
