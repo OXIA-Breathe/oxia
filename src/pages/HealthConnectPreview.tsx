@@ -24,24 +24,31 @@ import {
 const HealthConnectPreview = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(true);
-  const [stressLevel, setStressLevel] = useState(4);
+  const [stressLevel, setStressLevel] = useState(50); // 0-100 scale
 
+  // 0-100 scale mapping to 5 categories
   const getStressLabel = (value: number) => {
-    if (value <= 2) return "Very Low";
-    if (value <= 3) return "Low";
-    if (value === 4) return "Neutral";
-    if (value <= 5) return "Moderate";
-    if (value <= 6) return "High";
+    if (value < 20) return "Very Low";
+    if (value < 40) return "Low";
+    if (value < 60) return "Moderate";
+    if (value < 80) return "High";
     return "Very High";
   };
 
   const getStressColor = (value: number) => {
-    if (value <= 2) return "text-emerald-500";
-    if (value <= 3) return "text-green-500";
-    if (value === 4) return "text-yellow-500";
-    if (value <= 5) return "text-orange-400";
-    if (value <= 6) return "text-orange-500";
+    if (value < 20) return "text-emerald-500";
+    if (value < 40) return "text-green-500";
+    if (value < 60) return "text-amber-500";
+    if (value < 80) return "text-orange-500";
     return "text-red-500";
+  };
+
+  const getStressBgColor = (value: number) => {
+    if (value < 20) return "bg-emerald-100";
+    if (value < 40) return "bg-green-100";
+    if (value < 60) return "bg-amber-100";
+    if (value < 80) return "bg-orange-100";
+    return "bg-red-100";
   };
 
   return (
@@ -271,15 +278,17 @@ const HealthConnectPreview = () => {
                   </span>
                 </div>
                 
-                {isConnected ? (
+              {isConnected ? (
                   /* Auto-populated from Health Connect */
                   <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg p-3 border border-emerald-100">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Activity className="w-5 h-5 text-emerald-500" />
+                        <div className={`w-12 h-12 rounded-full ${getStressBgColor(32)} flex items-center justify-center`}>
+                          <span className={`text-lg font-bold ${getStressColor(32)}`}>32</span>
+                        </div>
                         <div>
-                          <p className="text-lg font-bold text-slate-800">Level 3</p>
-                          <p className="text-xs text-slate-500">Low stress detected</p>
+                          <p className={`text-sm font-bold ${getStressColor(32)}`}>{getStressLabel(32)}</p>
+                          <p className="text-xs text-slate-500">Current stress level</p>
                         </div>
                       </div>
                       <Button variant="ghost" size="sm" className="text-emerald-600">
@@ -294,19 +303,32 @@ const HealthConnectPreview = () => {
                 ) : (
                   /* Manual slider when not connected */
                   <>
+                    <div className="flex items-center justify-center mb-2">
+                      <div className={`w-14 h-14 rounded-full ${getStressBgColor(stressLevel)} flex items-center justify-center`}>
+                        <span className={`text-xl font-bold ${getStressColor(stressLevel)}`}>{stressLevel}</span>
+                      </div>
+                    </div>
                     <Slider 
                       value={[stressLevel]} 
                       onValueChange={(v) => setStressLevel(v[0])}
-                      max={7} 
-                      min={1} 
+                      max={100} 
+                      min={0} 
                       step={1} 
                       className="w-full" 
                     />
-                    <div className="flex justify-between text-xs text-slate-400">
-                      <span>Very Low</span>
-                      <span>Very High</span>
+                    <div className="flex justify-between text-xs text-slate-400 mt-1">
+                      <span>0 - Very Low</span>
+                      <span>100 - Very High</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 rounded-lg p-2">
+                    {/* Category indicators */}
+                    <div className="flex justify-between text-xs mt-2 px-1">
+                      <span className="text-emerald-500">0-19</span>
+                      <span className="text-green-500">20-39</span>
+                      <span className="text-amber-500">40-59</span>
+                      <span className="text-orange-500">60-79</span>
+                      <span className="text-red-500">80+</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 rounded-lg p-2 mt-2">
                       <Heart className="w-3 h-3" />
                       <span>Connect Health Connect to auto-detect stress level</span>
                       <ChevronRight className="w-3 h-3 ml-auto" />
@@ -350,23 +372,32 @@ const HealthConnectPreview = () => {
                   <div className="text-center">
                     <p className="text-xs text-slate-400 mb-1">Before</p>
                     <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-orange-500">5</span>
+                      <span className="text-2xl font-bold text-orange-500">62</span>
                     </div>
-                    <p className="text-xs text-orange-500 mt-1">Moderate</p>
+                    <p className="text-xs text-orange-500 mt-1">High</p>
                   </div>
                   
                   <div className="flex flex-col items-center">
                     <TrendingDown className="w-8 h-8 text-emerald-500" />
-                    <span className="text-xs font-bold text-emerald-600">-40%</span>
+                    <span className="text-xs font-bold text-emerald-600">-30 pts</span>
                   </div>
                   
                   <div className="text-center">
                     <p className="text-xs text-slate-400 mb-1">After</p>
-                    <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-emerald-500">3</span>
+                    <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-green-500">32</span>
                     </div>
-                    <p className="text-xs text-emerald-500 mt-1">Low</p>
+                    <p className="text-xs text-green-500 mt-1">Low</p>
                   </div>
+                </div>
+
+                {/* Scale Reference */}
+                <div className="flex justify-between text-xs px-2 py-1 bg-slate-50 rounded">
+                  <span className="text-emerald-500">Very Low</span>
+                  <span className="text-green-500">Low</span>
+                  <span className="text-amber-500">Moderate</span>
+                  <span className="text-orange-500">High</span>
+                  <span className="text-red-500">Very High</span>
                 </div>
 
                 {/* Data Attribution */}
