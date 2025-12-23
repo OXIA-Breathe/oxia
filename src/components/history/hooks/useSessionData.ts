@@ -52,8 +52,15 @@ export const useSessionData = (user: User | null) => {
       }>();
 
       if (emotionData) {
+        console.log("📊 Raw emotion data from DB:", emotionData);
         emotionData.forEach((emotion) => {
           if (emotion.session_id) {
+            console.log(`📊 Mapping emotion to session ${emotion.session_id}:`, {
+              preValence: emotion.pre_valence,
+              preStress: emotion.pre_arousal,
+              postValence: emotion.post_valence,
+              postStress: emotion.post_arousal,
+            });
             emotionMap.set(emotion.session_id, {
               preValence: emotion.pre_valence,
               preStress: emotion.pre_arousal, // arousal stores stress
@@ -63,6 +70,7 @@ export const useSessionData = (user: User | null) => {
             });
           }
         });
+        console.log("📊 Emotion map size:", emotionMap.size);
       }
       
       console.log("Raw Supabase response:", sessionsData);
