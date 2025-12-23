@@ -22,6 +22,14 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
   const preMood = session.emotionData?.preValence ? getMoodConfig(session.emotionData.preValence) : null;
   const postMood = session.emotionData?.postValence ? getMoodConfig(session.emotionData.postValence) : null;
 
+  // Create gradient style for expanded view
+  const getGradientStyle = () => {
+    if (!preMood || !postMood) return {};
+    return {
+      background: `linear-gradient(135deg, ${preMood.bgColor} 0%, ${postMood.bgColor} 100%)`,
+    };
+  };
+
   const handleCardClick = () => {
     if (hasEmotionData) {
       setIsExpanded(!isExpanded);
