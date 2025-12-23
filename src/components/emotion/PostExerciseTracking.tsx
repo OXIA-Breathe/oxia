@@ -32,18 +32,18 @@ const getPraiseMessage = (moodImproved: boolean, stressReduced: boolean, moodLab
   } else if (stressReduced) {
     return `Well done! You've managed to reduce your stress levels. Your body thanks you for this moment of calm.`;
   } else {
-    return `You showed up for yourself today. Consistency is key—keep breathing, and the benefits will follow.`;
+    return `You showed up for yourself today. Consistency is key — keep breathing, and the benefits will follow.`;
   }
 };
 
-const PostExerciseTracking = ({ 
-  breathCount, 
-  duration, 
-  exerciseTitle, 
+const PostExerciseTracking = ({
+  breathCount,
+  duration,
+  exerciseTitle,
   preMood,
   preStress,
-  onSubmit, 
-  onSkip 
+  onSubmit,
+  onSkip,
 }: PostExerciseTrackingProps) => {
   const [mood, setMood] = useState(5); // Default to Calm
   const [stress, setStress] = useState(30); // Default lower after exercise
@@ -74,7 +74,7 @@ const PostExerciseTracking = ({
   // Impact Summary View
   if (showImpactSummary && hasPreData) {
     const praiseMessage = getPraiseMessage(moodImproved, stressReduced, currentMood.label);
-    
+
     return (
       <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto max-h-[calc(100vh-8rem)] overflow-y-auto">
         <CardHeader className="pb-3 text-center">
@@ -83,24 +83,22 @@ const PostExerciseTracking = ({
           </div>
           <CardTitle className="text-xl">Session Impact</CardTitle>
           <p className="text-sm text-muted-foreground">
-            {formatDuration(duration)} • {breathCount} breaths{exerciseTitle ? ` • ${exerciseTitle}` : ''}
+            {formatDuration(duration)} • {breathCount} breaths{exerciseTitle ? ` • ${exerciseTitle}` : ""}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Praise Message */}
           <div className="p-4 rounded-lg bg-primary/5 border border-primary/10 text-center">
-            <p className="text-sm text-foreground leading-relaxed">
-              {praiseMessage}
-            </p>
+            <p className="text-sm text-foreground leading-relaxed">{praiseMessage}</p>
           </div>
 
           {/* Stats Cards */}
           <div className="space-y-3">
             {/* Mood Change Card */}
-            <div 
+            <div
               className="p-4 rounded-lg"
               style={{
-                background: `linear-gradient(135deg, ${preMoodConfig?.bgColor || 'transparent'} 0%, ${currentMood.bgColor} 100%)`
+                background: `linear-gradient(135deg, ${preMoodConfig?.bgColor || "transparent"} 0%, ${currentMood.bgColor} 100%)`,
               }}
             >
               <div className="flex items-center justify-between">
@@ -119,21 +117,25 @@ const PostExerciseTracking = ({
               <div className="flex items-center justify-center gap-3 mt-3">
                 <div className="flex flex-col items-center gap-1">
                   <img src={preMoodConfig?.icon} alt={preMoodConfig?.label} className="w-10 h-10" />
-                  <span className="text-xs" style={{ color: preMoodConfig?.color }}>{preMoodConfig?.label}</span>
+                  <span className="text-xs" style={{ color: preMoodConfig?.color }}>
+                    {preMoodConfig?.label}
+                  </span>
                 </div>
                 <ArrowRight className="h-5 w-5 text-muted-foreground" />
                 <div className="flex flex-col items-center gap-1">
                   <img src={currentMood.icon} alt={currentMood.label} className="w-10 h-10" />
-                  <span className="text-xs" style={{ color: currentMood.color }}>{currentMood.label}</span>
+                  <span className="text-xs" style={{ color: currentMood.color }}>
+                    {currentMood.label}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Stress Change Card */}
-            <div 
+            <div
               className="p-4 rounded-lg"
               style={{
-                background: `linear-gradient(135deg, ${getStressBgColor(preStress)} 0%, ${getStressBgColor(stress)} 100%)`
+                background: `linear-gradient(135deg, ${getStressBgColor(preStress)} 0%, ${getStressBgColor(stress)} 100%)`,
               }}
             >
               <div className="flex items-center justify-between">
@@ -151,12 +153,16 @@ const PostExerciseTracking = ({
               </div>
               <div className="flex items-center justify-center gap-4 mt-3">
                 <div className="flex flex-col items-center">
-                  <span className="text-2xl font-bold" style={{ color: getStressColor(preStress) }}>{preStress}%</span>
+                  <span className="text-2xl font-bold" style={{ color: getStressColor(preStress) }}>
+                    {preStress}%
+                  </span>
                   <span className="text-xs text-muted-foreground">{getStressLabel(preStress)}</span>
                 </div>
                 <ArrowRight className="h-5 w-5 text-muted-foreground" />
                 <div className="flex flex-col items-center">
-                  <span className="text-2xl font-bold" style={{ color: getStressColor(stress) }}>{stress}%</span>
+                  <span className="text-2xl font-bold" style={{ color: getStressColor(stress) }}>
+                    {stress}%
+                  </span>
                   <span className="text-xs text-muted-foreground">{getStressLabel(stress)}</span>
                 </div>
               </div>
@@ -193,13 +199,13 @@ const PostExerciseTracking = ({
         </div>
         <CardTitle className="text-xl">Session Complete!</CardTitle>
         <p className="text-sm text-muted-foreground">
-          {formatDuration(duration)} • {breathCount} breaths{exerciseTitle ? ` • ${exerciseTitle}` : ''}
+          {formatDuration(duration)} • {breathCount} breaths{exerciseTitle ? ` • ${exerciseTitle}` : ""}
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="p-4 rounded-lg bg-card/50 space-y-5">
           <p className="text-sm font-medium text-center text-muted-foreground">How do you feel now?</p>
-          
+
           {/* Mood Slider */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -207,24 +213,17 @@ const PostExerciseTracking = ({
                 <Heart className="h-4 w-4 text-rose-400" />
                 Mood
               </label>
-              <span 
+              <span
                 className="text-xs font-medium px-2 py-1 rounded-full"
-                style={{ 
-                  color: currentMood.color, 
-                  backgroundColor: currentMood.bgColor 
+                style={{
+                  color: currentMood.color,
+                  backgroundColor: currentMood.bgColor,
                 }}
               >
                 {currentMood.label}
               </span>
             </div>
-            <Slider
-              value={[mood]}
-              onValueChange={(v) => setMood(v[0])}
-              min={1}
-              max={7}
-              step={1}
-              className="w-full"
-            />
+            <Slider value={[mood]} onValueChange={(v) => setMood(v[0])} min={1} max={7} step={1} className="w-full" />
             {/* Mood icons row */}
             <div className="flex justify-between px-0.5">
               {MOODS.map((m) => (
@@ -233,16 +232,10 @@ const PostExerciseTracking = ({
                   type="button"
                   onClick={() => setMood(m.value)}
                   className={`w-8 h-8 rounded-full transition-all ${
-                    mood === m.value 
-                      ? "scale-110" 
-                      : "opacity-60 hover:opacity-100"
+                    mood === m.value ? "scale-110" : "opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <img 
-                    src={m.icon} 
-                    alt={m.label} 
-                    className="w-full h-full object-contain"
-                  />
+                  <img src={m.icon} alt={m.label} className="w-full h-full object-contain" />
                 </button>
               ))}
             </div>
@@ -255,11 +248,11 @@ const PostExerciseTracking = ({
                 <Activity className="h-4 w-4 text-amber-400" />
                 Stress Level
               </label>
-              <span 
+              <span
                 className="text-xs font-medium px-2 py-1 rounded-full"
-                style={{ 
-                  color: getStressColor(stress), 
-                  backgroundColor: getStressBgColor(stress) 
+                style={{
+                  color: getStressColor(stress),
+                  backgroundColor: getStressBgColor(stress),
                 }}
               >
                 {getStressLabel(stress)}
