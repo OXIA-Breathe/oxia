@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
@@ -17,19 +16,11 @@ interface SessionCardProps {
 const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const hasEmotionData = session.emotionData && 
-    (session.emotionData.preValence !== null || session.emotionData.postValence !== null);
+  const hasEmotionData =
+    session.emotionData && (session.emotionData.preValence !== null || session.emotionData.postValence !== null);
 
   const preMood = session.emotionData?.preValence ? getMoodConfig(session.emotionData.preValence) : null;
   const postMood = session.emotionData?.postValence ? getMoodConfig(session.emotionData.postValence) : null;
-
-  // Create gradient style for expanded view
-  const getGradientStyle = () => {
-    if (!preMood || !postMood) return {};
-    return {
-      background: `linear-gradient(135deg, ${preMood.bgColor} 0%, ${postMood.bgColor} 100%)`
-    };
-  };
 
   const handleCardClick = () => {
     if (hasEmotionData) {
@@ -38,8 +29,8 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
   };
 
   return (
-    <Card 
-      className={`overflow-hidden hover:bg-accent/50 transition-colors ${hasEmotionData ? 'cursor-pointer' : ''}`}
+    <Card
+      className={`overflow-hidden hover:bg-accent/50 transition-colors ${hasEmotionData ? "cursor-pointer" : ""}`}
       onClick={handleCardClick}
     >
       {/* Main card content */}
@@ -47,14 +38,15 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <div className="flex items-center justify-between">
-              <h3 className="font-medium text-base">
-                {session.exerciseTitle || "Breathing Exercise"}
-              </h3>
+              <h3 className="font-medium text-base">{session.exerciseTitle || "Breathing Exercise"}</h3>
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={(e) => { e.stopPropagation(); onModify(session); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onModify(session);
+                  }}
                   className="h-8 w-8 p-0 hover:bg-gray-100"
                 >
                   <Edit className="h-4 w-4" />
@@ -62,7 +54,10 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={(e) => { e.stopPropagation(); onDelete(session); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(session);
+                  }}
                   className="h-8 w-8 p-0 hover:bg-gray-100 text-red-600 hover:text-red-700"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -76,7 +71,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
             </p>
           </div>
         </div>
-          
+
         <div className="grid grid-cols-2 gap-2 mt-3">
           <div>
             <p className="text-xs text-muted-foreground">Breaths</p>
@@ -108,10 +103,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
 
       {/* Expanded emotion data section */}
       {isExpanded && hasEmotionData && (
-        <div 
-          className="p-4 border-t"
-          style={getGradientStyle()}
-        >
+        <div className="p-4 border-t" style={getGradientStyle()}>
           <div className="space-y-4">
             {/* Mood comparison */}
             {preMood && postMood && (
@@ -123,13 +115,17 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
                 <div className="flex items-center justify-center gap-4">
                   <div className="flex flex-col items-center gap-1">
                     <img src={preMood.icon} alt={preMood.label} className="w-10 h-10" />
-                    <span className="text-xs" style={{ color: preMood.color }}>{preMood.label}</span>
+                    <span className="text-xs" style={{ color: preMood.color }}>
+                      {preMood.label}
+                    </span>
                     <span className="text-[10px] text-muted-foreground">Before</span>
                   </div>
                   <ArrowRight className="h-5 w-5 text-muted-foreground" />
                   <div className="flex flex-col items-center gap-1">
                     <img src={postMood.icon} alt={postMood.label} className="w-10 h-10" />
-                    <span className="text-xs" style={{ color: postMood.color }}>{postMood.label}</span>
+                    <span className="text-xs" style={{ color: postMood.color }}>
+                      {postMood.label}
+                    </span>
                     <span className="text-[10px] text-muted-foreground">After</span>
                   </div>
                 </div>
@@ -145,7 +141,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
                 </div>
                 <div className="flex items-center justify-center gap-4">
                   <div className="flex flex-col items-center">
-                    <span 
+                    <span
                       className="text-xl font-bold"
                       style={{ color: getStressColor(session.emotionData.preStress!) }}
                     >
@@ -158,7 +154,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
                   </div>
                   <ArrowRight className="h-5 w-5 text-muted-foreground" />
                   <div className="flex flex-col items-center">
-                    <span 
+                    <span
                       className="text-xl font-bold"
                       style={{ color: getStressColor(session.emotionData.postStress!) }}
                     >
