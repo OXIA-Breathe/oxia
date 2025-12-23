@@ -37,26 +37,30 @@ export const useExerciseTracking = () => {
     console.log("Is Custom:", isCustom);
     console.log("User ID:", user.id);
 
-    try {
-      // Insert exercise completion (UNIQUE constraint will prevent duplicates)
-      const { data, error } = await supabase
-        .from("user_exercise_completions")
-        .insert({
+    // Use upsert to handle duplicates gracefully
+    const { data, error } = await supabase
+      .from("user_exercise_completions")
+      .upsert(
+        {
           user_id: user.id,
           exercise_id: dbExerciseId || exerciseId,
           exercise_title: exerciseTitle,
           is_custom: isCustom
-        })
-        .select();
+        },
+        {
+          onConflict: 'user_id,exercise_id',
+          ignoreDuplicates: true
+        }
+      )
+      .select();
 
-      if (error) {
+    if (error) {
+      // Only log non-duplicate errors
+      if (error.code !== '23505') {
         console.error("Exercise tracking error:", error);
-      } else {
-        console.log("Exercise tracking success:", data);
       }
-    } catch (error) {
-      // Ignore unique constraint violations - user already completed this exercise
-      console.log("Exercise completion already tracked or error:", error);
+    } else {
+      console.log("Exercise tracking success:", data);
     }
   };
 
