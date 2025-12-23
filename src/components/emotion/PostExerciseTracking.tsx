@@ -98,9 +98,6 @@ const PostExerciseTracking = ({
                       ? "scale-110" 
                       : "opacity-60 hover:opacity-100"
                   }`}
-                  style={mood === m.value ? { 
-                    boxShadow: `0 0 0 2px ${m.color}` 
-                  } : undefined}
                 >
                   <img 
                     src={m.icon} 
