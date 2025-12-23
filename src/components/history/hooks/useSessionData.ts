@@ -19,24 +19,60 @@ export const useSessionData = (user: User | null) => {
       console.log("Fetching sessions for user:", user.id);
       setIsLoading(true);
       
-      const { data, error } = await supabase
+      // Fetch breath sessions
+      const { data: sessionsData, error: sessionsError } = await supabase
         .from("breath_sessions")
         .select("*")
         .eq("user_id", user.id)
         .order("date", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching sessions:", error);
-        throw error;
+      if (sessionsError) {
+        console.error("Error fetching sessions:", sessionsError);
+        throw sessionsError;
       }
       
-      console.log("Raw Supabase response:", data);
-      console.log("Number of sessions fetched:", data?.length || 0);
+      // Fetch emotion tracking data for all sessions
+      const { data: emotionData, error: emotionError } = await supabase
+        .from("emotion_tracking")
+        .select("*")
+        .eq("user_id", user.id);
+
+      if (emotionError) {
+        console.error("Error fetching emotion data:", emotionError);
+        // Continue without emotion data
+      }
+
+      // Create a map of session_id to emotion data
+      const emotionMap = new Map<string, {
+        preValence: number | null;
+        preStress: number | null;
+        postValence: number | null;
+        postStress: number | null;
+        note: string | null;
+      }>();
+
+      if (emotionData) {
+        emotionData.forEach((emotion) => {
+          if (emotion.session_id) {
+            emotionMap.set(emotion.session_id, {
+              preValence: emotion.pre_valence,
+              preStress: emotion.pre_arousal, // arousal stores stress
+              postValence: emotion.post_valence,
+              postStress: emotion.post_arousal, // arousal stores stress
+              note: emotion.note,
+            });
+          }
+        });
+      }
       
-      if (data) {
+      console.log("Raw Supabase response:", sessionsData);
+      console.log("Number of sessions fetched:", sessionsData?.length || 0);
+      console.log("Emotion data entries:", emotionData?.length || 0);
+      
+      if (sessionsData) {
         // Convert Supabase data to app format
-        const formattedSessions: BreathSession[] = data.map(session => {
-          console.log("Processing session:", session.id, session.exercise_title);
+        const formattedSessions: BreathSession[] = sessionsData.map(session => {
+          const emotionForSession = emotionMap.get(session.id);
           return {
             id: session.id,
             date: session.date,
@@ -44,7 +80,8 @@ export const useSessionData = (user: User | null) => {
             holdDuration: session.hold_duration,
             totalDuration: session.total_duration,
             breathCount: session.breath_count,
-            exerciseTitle: session.exercise_title || "Breathing Exercise"
+            exerciseTitle: session.exercise_title || "Breathing Exercise",
+            emotionData: emotionForSession || undefined,
           };
         });
         
@@ -71,8 +108,6 @@ export const useSessionData = (user: User | null) => {
       setOnlineSessions([]);
     }
   }, [user, fetchUserSessions]);
-
-  // Removed the problematic query cache subscription that was causing infinite loops
 
   return { isLoading, onlineSessions, refreshSessions: fetchUserSessions };
 };
