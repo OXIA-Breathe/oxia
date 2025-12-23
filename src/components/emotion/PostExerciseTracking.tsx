@@ -76,7 +76,7 @@ const PostExerciseTracking = ({
     const praiseMessage = getPraiseMessage(moodImproved, stressReduced, currentMood.label);
     
     return (
-      <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto">
+      <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto max-h-[calc(100vh-8rem)] overflow-y-auto">
         <CardHeader className="pb-3 text-center">
           <div className="mx-auto w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-3">
             <Sparkles className="h-8 w-8 text-green-500" />
@@ -186,7 +186,7 @@ const PostExerciseTracking = ({
 
   // Input View (default)
   return (
-    <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto">
+    <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto max-h-[calc(100vh-8rem)] overflow-y-auto">
       <CardHeader className="pb-3 text-center">
         <div className="mx-auto w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-3">
           <Sparkles className="h-8 w-8 text-green-500" />
