@@ -309,24 +309,24 @@ const HealthConnectPreview = () => {
                       </div>
                     </div>
                     <Slider 
-                      value={[stressLevel]} 
-                      onValueChange={(v) => setStressLevel(v[0])}
+                      value={[100 - stressLevel]} 
+                      onValueChange={(v) => setStressLevel(100 - v[0])}
                       max={100} 
                       min={0} 
                       step={1} 
                       className="w-full" 
                     />
                     <div className="flex justify-between text-xs text-slate-400 mt-1">
-                      <span>0 - Very Low</span>
                       <span>100 - Very High</span>
+                      <span>0 - Very Low</span>
                     </div>
                     {/* Category indicators */}
                     <div className="flex justify-between text-xs mt-2 px-1">
-                      <span className="text-emerald-500">0-19</span>
-                      <span className="text-green-500">20-39</span>
-                      <span className="text-amber-500">40-59</span>
-                      <span className="text-orange-500">60-79</span>
                       <span className="text-red-500">80+</span>
+                      <span className="text-orange-500">60-79</span>
+                      <span className="text-amber-500">40-59</span>
+                      <span className="text-green-500">20-39</span>
+                      <span className="text-emerald-500">0-19</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 rounded-lg p-2 mt-2">
                       <Heart className="w-3 h-3" />

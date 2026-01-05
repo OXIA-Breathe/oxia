@@ -91,7 +91,7 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
             </div>
           </div>
 
-          {/* Stress Level Slider */}
+          {/* Stress Level Slider - inverted: left=high(100), right=low(0) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium flex items-center gap-2">
@@ -109,13 +109,17 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
               </span>
             </div>
             <Slider
-              value={[stress]}
-              onValueChange={(v) => setStress(v[0])}
+              value={[100 - stress]}
+              onValueChange={(v) => setStress(100 - v[0])}
               min={0}
               max={100}
               step={1}
               className="w-full"
             />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Very High</span>
+              <span>Very Low</span>
+            </div>
           </div>
 
           <div className="flex gap-2 pt-2">
