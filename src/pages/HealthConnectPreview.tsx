@@ -317,7 +317,7 @@ const HealthConnectPreview = () => {
                     >
                       {isStressSliderActive && (
                         <div 
-                          className="absolute top-0 text-xs font-medium px-1.5 py-0.5 rounded bg-slate-700 text-slate-200 -translate-x-1/2 pointer-events-none transition-opacity"
+                          className="absolute top-0 text-sm font-medium px-1.5 py-0.5 rounded bg-slate-700 text-slate-200 -translate-x-1/2 pointer-events-none transition-opacity"
                           style={{ left: `${100 - stressLevel}%` }}
                         >
                           {stressLevel}
