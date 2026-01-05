@@ -267,7 +267,7 @@ const PostExerciseTracking = ({
             >
               {isStressSliderActive && (
                 <div 
-                  className="absolute top-0 text-xs font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground -translate-x-1/2 pointer-events-none transition-opacity"
+                  className="absolute top-0 text-sm font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground -translate-x-1/2 pointer-events-none transition-opacity"
                   style={{ left: `${100 - stress}%` }}
                 >
                   {stress}
