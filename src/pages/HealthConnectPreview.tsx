@@ -308,14 +308,22 @@ const HealthConnectPreview = () => {
                         <span className={`text-xl font-bold ${getStressColor(stressLevel)}`}>{stressLevel}</span>
                       </div>
                     </div>
-                    <Slider 
-                      value={[100 - stressLevel]} 
-                      onValueChange={(v) => setStressLevel(100 - v[0])}
-                      max={100} 
-                      min={0} 
-                      step={1} 
-                      className="w-full" 
-                    />
+                    <div className="relative">
+                      <Slider 
+                        value={[100 - stressLevel]} 
+                        onValueChange={(v) => setStressLevel(100 - v[0])}
+                        max={100} 
+                        min={0} 
+                        step={1} 
+                        className="w-full" 
+                      />
+                      <div 
+                        className="absolute -top-6 text-xs font-medium px-1.5 py-0.5 rounded bg-slate-700 text-slate-200 transform -translate-x-1/2 pointer-events-none"
+                        style={{ left: `${100 - stressLevel}%` }}
+                      >
+                        {stressLevel}
+                      </div>
+                    </div>
                     <div className="flex justify-between text-xs text-slate-400 mt-1">
                       <span>100 - Very High</span>
                       <span>0 - Very Low</span>
