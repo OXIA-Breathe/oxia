@@ -15,6 +15,7 @@ interface PreExerciseCheckInProps {
 const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExerciseCheckInProps) => {
   const [mood, setMood] = useState(5); // Default to Calm
   const [stress, setStress] = useState(50); // Default to Moderate
+  const [isStressSliderActive, setIsStressSliderActive] = useState(false);
 
   const currentMood = getMoodConfig(mood);
 
@@ -108,7 +109,20 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
                 {getStressLabel(stress)}
               </span>
             </div>
-            <div className="relative">
+            <div 
+              className="relative pt-7"
+              onPointerDown={() => setIsStressSliderActive(true)}
+              onPointerUp={() => setIsStressSliderActive(false)}
+              onPointerLeave={() => setIsStressSliderActive(false)}
+            >
+              {isStressSliderActive && (
+                <div 
+                  className="absolute top-0 text-xs font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground -translate-x-1/2 pointer-events-none transition-opacity"
+                  style={{ left: `${100 - stress}%` }}
+                >
+                  {stress}
+                </div>
+              )}
               <Slider
                 value={[100 - stress]}
                 onValueChange={(v) => setStress(100 - v[0])}
@@ -117,12 +131,6 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
                 step={1}
                 className="w-full"
               />
-              <div 
-                className="absolute -top-6 text-xs font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground transform -translate-x-1/2 pointer-events-none"
-                style={{ left: `${100 - stress}%` }}
-              >
-                {stress}
-              </div>
             </div>
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>Very High</span>

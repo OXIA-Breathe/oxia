@@ -25,6 +25,7 @@ const HealthConnectPreview = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [stressLevel, setStressLevel] = useState(50); // 0-100 scale
+  const [isStressSliderActive, setIsStressSliderActive] = useState(false);
 
   // 0-100 scale mapping to 5 categories
   const getStressLabel = (value: number) => {
@@ -308,7 +309,20 @@ const HealthConnectPreview = () => {
                         <span className={`text-xl font-bold ${getStressColor(stressLevel)}`}>{stressLevel}</span>
                       </div>
                     </div>
-                    <div className="relative">
+                    <div 
+                      className="relative pt-7"
+                      onPointerDown={() => setIsStressSliderActive(true)}
+                      onPointerUp={() => setIsStressSliderActive(false)}
+                      onPointerLeave={() => setIsStressSliderActive(false)}
+                    >
+                      {isStressSliderActive && (
+                        <div 
+                          className="absolute top-0 text-xs font-medium px-1.5 py-0.5 rounded bg-slate-700 text-slate-200 -translate-x-1/2 pointer-events-none transition-opacity"
+                          style={{ left: `${100 - stressLevel}%` }}
+                        >
+                          {stressLevel}
+                        </div>
+                      )}
                       <Slider 
                         value={[100 - stressLevel]} 
                         onValueChange={(v) => setStressLevel(100 - v[0])}
@@ -317,12 +331,6 @@ const HealthConnectPreview = () => {
                         step={1} 
                         className="w-full" 
                       />
-                      <div 
-                        className="absolute -top-6 text-xs font-medium px-1.5 py-0.5 rounded bg-slate-700 text-slate-200 transform -translate-x-1/2 pointer-events-none"
-                        style={{ left: `${100 - stressLevel}%` }}
-                      >
-                        {stressLevel}
-                      </div>
                     </div>
                     <div className="flex justify-between text-xs text-slate-400 mt-1">
                       <span>100 - Very High</span>
