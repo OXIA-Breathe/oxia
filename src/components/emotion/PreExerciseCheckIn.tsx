@@ -108,14 +108,22 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
                 {getStressLabel(stress)}
               </span>
             </div>
-            <Slider
-              value={[100 - stress]}
-              onValueChange={(v) => setStress(100 - v[0])}
-              min={0}
-              max={100}
-              step={1}
-              className="w-full"
-            />
+            <div className="relative">
+              <Slider
+                value={[100 - stress]}
+                onValueChange={(v) => setStress(100 - v[0])}
+                min={0}
+                max={100}
+                step={1}
+                className="w-full"
+              />
+              <div 
+                className="absolute -top-6 text-xs font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground transform -translate-x-1/2 pointer-events-none"
+                style={{ left: `${100 - stress}%` }}
+              >
+                {stress}
+              </div>
+            </div>
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>Very High</span>
               <span>Very Low</span>
