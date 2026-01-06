@@ -1,15 +1,13 @@
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import TimeFilterSelect from "./TimeFilterSelect";
 import InsufficientDataOverlay from "./InsufficientDataOverlay";
-import { useEmotionalStatistics, processMoodData, calculateMoodSummary, TimeFilter, DateRange } from "@/hooks/useEmotionalStatistics";
-import { MOODS, getMoodConfig } from "@/constants/emotionConfig";
+import { useEmotionalStatistics, processMoodData, calculateMoodSummary } from "@/hooks/useEmotionalStatistics";
+import { usePersistedTimeFilter } from "@/hooks/usePersistedTimeFilter";
 
 const MoodInsightsCard = () => {
-  const [filter, setFilter] = useState<TimeFilter>("weekly");
-  const [customRange, setCustomRange] = useState<DateRange | undefined>();
+  const { filter, setFilter, customRange, setCustomRange } = usePersistedTimeFilter();
   
   const { records, isLoading, hasEnoughData, uniqueDaysCount, isTrackingEnabled, isPremium } = useEmotionalStatistics(filter, customRange);
   
