@@ -64,9 +64,17 @@ const TimeFilterSelect = ({ value, onChange, customRange, onCustomRangeChange }:
           <PopoverContent className="w-auto p-0 pointer-events-auto" align="end">
             <Calendar
               mode="range"
-              selected={tempRange.from && tempRange.to ? { from: tempRange.from, to: tempRange.to } : undefined}
+              selected={
+                tempRange.from
+                  ? {
+                      from: tempRange.from,
+                      to: tempRange.to,
+                    }
+                  : undefined
+              }
               onSelect={(range) => setTempRange({ from: range?.from, to: range?.to })}
               numberOfMonths={1}
+              initialFocus
               className="p-3 pointer-events-auto"
             />
             <div className="p-3 border-t flex justify-end">
