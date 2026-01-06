@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { ActivityCalendar } from "@/components/consistency/ActivityCalendar";
 import SessionHistory from "@/components/history/SessionHistory";
 import ProgressStats from "@/components/profile/ProgressStats";
+import MoodInsightsCard from "@/components/progress/MoodInsightsCard";
+import StressInsightsCard from "@/components/progress/StressInsightsCard";
 import { Button } from "@/components/ui/button";
 import AddSessionModal from "@/components/history/AddSessionModal";
 import { BreathSession } from "@/types/breath";
@@ -120,6 +122,14 @@ const ConsistencyPage = () => {
               onDateSelect={setSelectedCalendarDate}
               selectedDate={selectedCalendarDate}
             />
+            
+            {/* Emotional Insights */}
+            <div className="md:col-span-2">
+              <MoodInsightsCard />
+            </div>
+            <div className="md:col-span-2">
+              <StressInsightsCard />
+            </div>
             
             {/* Session History */}
             <div className="md:col-span-2">
