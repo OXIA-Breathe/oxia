@@ -19,13 +19,14 @@
 6. [Audio System](#6-audio-system)
 7. [Emotion Tracking](#7-emotion-tracking)
 8. [Progress & Analytics](#8-progress--analytics)
-9. [Achievements & Gamification](#9-achievements--gamification)
-10. [Session History](#10-session-history)
-11. [Notification System](#11-notification-system)
-12. [User Profile](#12-user-profile)
-13. [Settings](#13-settings)
-14. [Learning Resources](#14-learning-resources)
-15. [Social & Sharing](#15-social--sharing)
+9. [Emotional Statistics](#9-emotional-statistics)
+10. [Achievements & Gamification](#10-achievements--gamification)
+11. [Session History](#11-session-history)
+12. [Notification System](#12-notification-system)
+13. [User Profile](#13-user-profile)
+14. [Settings](#14-settings)
+15. [Learning Resources](#15-learning-resources)
+16. [Social & Sharing](#16-social--sharing)
 
 ---
 
@@ -425,7 +426,83 @@ Comprehensive progress tracking showing user's breathing journey over time.
 
 ---
 
-## 9. Achievements & Gamification
+## 9. Emotional Statistics
+
+### Description
+Advanced analytics feature for premium users that provides visual insights into mood patterns and stress levels over time, helping users understand the impact of their breathing practice on emotional wellbeing.
+
+### User Stories
+- As a premium user, I want to see pie charts showing my mood distribution before and after exercises.
+- As a premium user, I want to track my stress levels over time with a line chart.
+- As a premium user, I want to filter my emotional data by different time periods.
+- As a premium user, I want to see summary statistics about my mood improvements and stress reduction.
+
+### Functional Requirements
+| ID | Requirement | Priority |
+|----|-------------|----------|
+| EST-001 | Mood Insights Card with before/after pie charts | High |
+| EST-002 | Stress Insights Card with before/after line chart | High |
+| EST-003 | Time filter options: weekly, monthly, quarterly, yearly, all-time | High |
+| EST-004 | Custom date range picker | Medium |
+| EST-005 | Minimum 3 days of data required to display charts | High |
+| EST-006 | Blurred overlay with message when insufficient data | High |
+| EST-007 | Premium-only feature gate | High |
+| EST-008 | Requires Emotional State Tracking to be enabled | High |
+| EST-009 | Average daily stress when multiple sessions exist | High |
+| EST-010 | Most common mood summary (before → after) | Medium |
+| EST-011 | Average stress reduction percentage | Medium |
+| EST-012 | Interpolated lines for stress chart with gaps | Low |
+
+### Mood Insights Card
+- **Before Pie Chart:** Distribution of moods recorded before exercises
+- **After Pie Chart:** Distribution of moods recorded after exercises
+- **Summary:** Most common mood transition (e.g., "Anxious → Calm")
+- **Mood Improvement:** Average mood value change (+/- indicator)
+
+### Stress Insights Card
+- **Line Chart:** Two lines showing before/after stress levels
+- **X-Axis:** Dates within selected time range
+- **Y-Axis:** Stress level (0-100)
+- **Summary:** Average stress reduction percentage
+- **Daily Aggregation:** If multiple sessions on same day, calculate average
+
+### Data Requirements
+- Minimum 3 days with emotion tracking data (not necessarily consecutive)
+- Data sourced from `emotion_tracking` table
+- `pre_valence` / `post_valence` for mood (1-7 scale)
+- `pre_arousal` / `post_arousal` for stress (0-100 scale)
+
+### Technical Implementation
+- **Files:**
+  - `src/components/progress/MoodInsightsCard.tsx`
+  - `src/components/progress/StressInsightsCard.tsx`
+  - `src/components/progress/TimeFilterSelect.tsx`
+  - `src/components/progress/InsufficientDataOverlay.tsx`
+  - `src/hooks/useEmotionalStatistics.ts`
+  - `src/pages/ConsistencyPage.tsx` (updated)
+
+### Access Control States
+| State | Display |
+|-------|---------|
+| Not Premium | Blurred with "Premium Feature" message |
+| Tracking Disabled | Blurred with "Enable Tracking" message |
+| < 3 Days Data | Blurred with "More Data Needed" message |
+| Valid | Full charts and statistics |
+
+### Acceptance Criteria
+- [ ] Mood pie charts show accurate distribution of emotions
+- [ ] Stress line chart displays daily averages with interpolation
+- [ ] Time filters correctly filter data range
+- [ ] Custom date range picker works correctly
+- [ ] Blurred overlay appears for non-premium users
+- [ ] Blurred overlay appears when tracking is disabled
+- [ ] Blurred overlay appears with < 3 days of data
+- [ ] Summary statistics calculate correctly
+- [ ] Charts update when filter changes
+
+---
+
+## 10. Achievements & Gamification
 
 ### Description
 Badge-based achievement system to motivate users and celebrate milestones.
@@ -475,7 +552,7 @@ Badge-based achievement system to motivate users and celebrate milestones.
 
 ---
 
-## 10. Session History
+## 11. Session History
 
 ### Description
 Detailed history of all completed breathing sessions with export functionality.
@@ -530,7 +607,7 @@ Detailed history of all completed breathing sessions with export functionality.
 
 ---
 
-## 11. Notification System
+## 12. Notification System
 
 ### Description
 Customizable reminder notifications to help users maintain their breathing practice.
@@ -582,7 +659,7 @@ Customizable reminder notifications to help users maintain their breathing pract
 
 ---
 
-## 12. User Profile
+## 13. User Profile
 
 ### Description
 User profile page displaying personal information, stats, achievements, and account management.
@@ -624,7 +701,7 @@ User profile page displaying personal information, stats, achievements, and acco
 
 ---
 
-## 13. Settings
+## 14. Settings
 
 ### Description
 Centralized settings page for managing app preferences and account options.
@@ -675,7 +752,7 @@ Centralized settings page for managing app preferences and account options.
 
 ---
 
-## 14. Learning Resources
+## 15. Learning Resources
 
 ### Description
 Educational content hub for users to learn about breathing techniques and their benefits.
@@ -711,7 +788,7 @@ Educational content hub for users to learn about breathing techniques and their 
 
 ---
 
-## 15. Social & Sharing
+## 16. Social & Sharing
 
 ### Description
 Social features for sharing progress and connecting with the OXIA community.
