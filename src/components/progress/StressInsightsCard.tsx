@@ -1,15 +1,14 @@
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, TrendingDown, ArrowDown } from "lucide-react";
+import { Activity, ArrowDown } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import TimeFilterSelect from "./TimeFilterSelect";
 import InsufficientDataOverlay from "./InsufficientDataOverlay";
-import { useEmotionalStatistics, processStressData, calculateStressSummary, TimeFilter, DateRange } from "@/hooks/useEmotionalStatistics";
+import { useEmotionalStatistics, processStressData, calculateStressSummary } from "@/hooks/useEmotionalStatistics";
+import { usePersistedTimeFilter } from "@/hooks/usePersistedTimeFilter";
 import { format, parseISO } from "date-fns";
 
 const StressInsightsCard = () => {
-  const [filter, setFilter] = useState<TimeFilter>("weekly");
-  const [customRange, setCustomRange] = useState<DateRange | undefined>();
+  const { filter, setFilter, customRange, setCustomRange } = usePersistedTimeFilter();
   
   const { records, isLoading, hasEnoughData, uniqueDaysCount, isTrackingEnabled, isPremium } = useEmotionalStatistics(filter, customRange);
   
