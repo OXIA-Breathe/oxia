@@ -100,7 +100,8 @@ export const useEmotionalStatistics = (filter: TimeFilter, customRange?: DateRan
     data?.map(record => format(parseISO(record.created_at), "yyyy-MM-dd")) || []
   );
   
-  const hasEnoughData = uniqueDays.size >= 3;
+  // Only require data to exist - no minimum days requirement
+  const hasEnoughData = uniqueDays.size > 0;
   const isTrackingEnabled = profile?.emotion_tracking_enabled ?? false;
   const isPremium = profile?.is_subscribed ?? false;
 
@@ -115,16 +116,16 @@ export const useEmotionalStatistics = (filter: TimeFilter, customRange?: DateRan
   };
 };
 
-// Process mood data for pie charts
+// Process mood data for pie charts - using soft pastel colors
 export const processMoodData = (records: EmotionRecord[], type: "pre" | "post") => {
   const moodLabels: Record<number, { label: string; color: string }> = {
-    1: { label: "Irritated", color: "hsl(0, 70%, 55%)" },
-    2: { label: "Sad", color: "hsl(210, 60%, 50%)" },
-    3: { label: "Tired", color: "hsl(200, 50%, 60%)" },
-    4: { label: "Anxious", color: "hsl(270, 50%, 65%)" },
-    5: { label: "Calm", color: "hsl(120, 45%, 55%)" },
-    6: { label: "Happy", color: "hsl(45, 90%, 50%)" },
-    7: { label: "Excited", color: "hsl(15, 80%, 60%)" },
+    1: { label: "Irritated", color: "hsl(0, 65%, 75%)" },
+    2: { label: "Sad", color: "hsl(210, 55%, 70%)" },
+    3: { label: "Tired", color: "hsl(200, 45%, 72%)" },
+    4: { label: "Anxious", color: "hsl(270, 45%, 75%)" },
+    5: { label: "Calm", color: "hsl(120, 40%, 70%)" },
+    6: { label: "Happy", color: "hsl(45, 75%, 72%)" },
+    7: { label: "Excited", color: "hsl(15, 70%, 75%)" },
   };
 
   const counts: Record<number, number> = {};

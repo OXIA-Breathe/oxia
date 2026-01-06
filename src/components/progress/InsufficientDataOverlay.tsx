@@ -22,8 +22,8 @@ const InsufficientDataOverlay = ({ daysCount, minDays = 3, type = "data" }: Insu
       case "data":
       default:
         return {
-          title: "More Data Needed",
-          description: `We need at least ${minDays} days of tracking data to show meaningful insights. You have ${daysCount} day${daysCount !== 1 ? 's' : ''} so far.`,
+          title: "No Data Yet",
+          description: "Start tracking your emotions during exercises to see insights here.",
         };
     }
   };
