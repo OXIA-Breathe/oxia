@@ -77,7 +77,15 @@ const TimeFilterSelect = ({ value, onChange, customRange, onCustomRangeChange }:
               initialFocus
               className="p-3 pointer-events-auto"
             />
-            <div className="p-3 border-t flex justify-end">
+            <div className="p-3 border-t flex justify-between">
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => setTempRange({ from: undefined, to: undefined })}
+                disabled={!tempRange.from && !tempRange.to}
+              >
+                Clear
+              </Button>
               <Button size="sm" onClick={handleApplyCustomRange} disabled={!tempRange.from || !tempRange.to}>
                 Apply
               </Button>
