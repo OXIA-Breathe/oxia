@@ -36,9 +36,9 @@ const TimeFilterSelect = ({ value, onChange, customRange, onCustomRangeChange }:
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1">
       <Select value={value} onValueChange={handleFilterChange}>
-        <SelectTrigger className="w-[140px] h-8 text-xs">
+        <SelectTrigger className="w-[112px] h-8 text-xs">
           <SelectValue placeholder="Select period" />
         </SelectTrigger>
         <SelectContent>
@@ -47,26 +47,27 @@ const TimeFilterSelect = ({ value, onChange, customRange, onCustomRangeChange }:
           <SelectItem value="quarterly">Quarterly</SelectItem>
           <SelectItem value="yearly">Yearly</SelectItem>
           <SelectItem value="all-time">All Time</SelectItem>
-          <SelectItem value="custom">Custom Range</SelectItem>
+          <SelectItem value="custom">Custom</SelectItem>
         </SelectContent>
       </Select>
 
       {value === "custom" && (
         <Popover open={isCustomOpen} onOpenChange={setIsCustomOpen}>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="h-8 text-xs gap-1">
+            <Button variant="outline" size="sm" className="h-8 text-xs px-2">
               <CalendarIcon className="h-3 w-3" />
               {customRange?.start && customRange?.end
-                ? `${format(customRange.start, "MMM d")} - ${format(customRange.end, "MMM d")}`
-                : "Pick dates"}
+                ? `${format(customRange.start, "M/d")} - ${format(customRange.end, "M/d")}`
+                : "Dates"}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
+          <PopoverContent className="w-auto p-0 pointer-events-auto" align="end">
             <Calendar
               mode="range"
               selected={tempRange.from && tempRange.to ? { from: tempRange.from, to: tempRange.to } : undefined}
               onSelect={(range) => setTempRange({ from: range?.from, to: range?.to })}
               numberOfMonths={1}
+              className="p-3 pointer-events-auto"
             />
             <div className="p-3 border-t flex justify-end">
               <Button size="sm" onClick={handleApplyCustomRange} disabled={!tempRange.from || !tempRange.to}>
