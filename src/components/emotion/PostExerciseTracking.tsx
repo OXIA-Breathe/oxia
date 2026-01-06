@@ -77,27 +77,27 @@ const PostExerciseTracking = ({
     const praiseMessage = getPraiseMessage(moodImproved, stressReduced, currentMood.label);
 
     return (
-      <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto max-h-[calc(100vh-8rem)] overflow-y-auto">
-        <CardHeader className="pb-3 text-center">
-          <div className="mx-auto w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-3">
-            <Sparkles className="h-8 w-8 text-green-500" />
+      <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto max-h-[calc(100vh-12rem)] md:max-h-[calc(100vh-8rem)] overflow-y-auto">
+        <CardHeader className="pb-2 pt-4 text-center">
+          <div className="mx-auto w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-2">
+            <Sparkles className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
           </div>
-          <CardTitle className="text-xl">Session Impact</CardTitle>
-          <p className="text-sm text-muted-foreground">
+          <CardTitle className="text-lg md:text-xl">Session Impact</CardTitle>
+          <p className="text-xs md:text-sm text-muted-foreground">
             {formatDuration(duration)} • {breathCount} breaths{exerciseTitle ? ` • ${exerciseTitle}` : ""}
           </p>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 md:space-y-6 pt-2">
           {/* Praise Message */}
-          <div className="p-4 rounded-lg bg-primary/5 border border-primary/10 text-center">
-            <p className="text-sm text-foreground leading-relaxed">{praiseMessage}</p>
+          <div className="p-3 rounded-lg bg-primary/5 border border-primary/10 text-center">
+            <p className="text-xs md:text-sm text-foreground leading-relaxed">{praiseMessage}</p>
           </div>
 
           {/* Stats Cards */}
-          <div className="space-y-3">
+          <div className="space-y-2 md:space-y-3">
             {/* Mood Change Card */}
             <div
-              className="p-4 rounded-lg"
+              className="p-3 rounded-lg"
               style={{
                 background: `linear-gradient(135deg, ${preMoodConfig?.bgColor || "transparent"} 0%, ${currentMood.bgColor} 100%)`,
               }}
@@ -105,7 +105,7 @@ const PostExerciseTracking = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Heart className="h-4 w-4 text-rose-400" />
-                  <span className="text-sm font-medium">Mood</span>
+                  <span className="text-xs md:text-sm font-medium">Mood</span>
                 </div>
                 {moodImproved ? (
                   <TrendingUp className="h-4 w-4 text-green-500" />
@@ -115,16 +115,16 @@ const PostExerciseTracking = ({
                   <Minus className="h-4 w-4 text-muted-foreground" />
                 )}
               </div>
-              <div className="flex items-center justify-center gap-3 mt-3">
-                <div className="flex flex-col items-center gap-1">
-                  <img src={preMoodConfig?.icon} alt={preMoodConfig?.label} className="w-10 h-10" />
+              <div className="flex items-center justify-center gap-3 mt-2">
+                <div className="flex flex-col items-center gap-0.5">
+                  <img src={preMoodConfig?.icon} alt={preMoodConfig?.label} className="w-8 h-8 md:w-10 md:h-10" />
                   <span className="text-xs" style={{ color: preMoodConfig?.color }}>
                     {preMoodConfig?.label}
                   </span>
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                <div className="flex flex-col items-center gap-1">
-                  <img src={currentMood.icon} alt={currentMood.label} className="w-10 h-10" />
+                <ArrowRight className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                <div className="flex flex-col items-center gap-0.5">
+                  <img src={currentMood.icon} alt={currentMood.label} className="w-8 h-8 md:w-10 md:h-10" />
                   <span className="text-xs" style={{ color: currentMood.color }}>
                     {currentMood.label}
                   </span>
@@ -134,7 +134,7 @@ const PostExerciseTracking = ({
 
             {/* Stress Change Card */}
             <div
-              className="p-4 rounded-lg"
+              className="p-3 rounded-lg"
               style={{
                 background: `linear-gradient(135deg, ${getStressBgColor(preStress)} 0%, ${getStressBgColor(stress)} 100%)`,
               }}
@@ -142,7 +142,7 @@ const PostExerciseTracking = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Activity className="h-4 w-4 text-amber-400" />
-                  <span className="text-sm font-medium">Stress Level</span>
+                  <span className="text-xs md:text-sm font-medium">Stress Level</span>
                 </div>
                 {stressReduced ? (
                   <TrendingDown className="h-4 w-4 text-green-500" />
@@ -152,16 +152,16 @@ const PostExerciseTracking = ({
                   <Minus className="h-4 w-4 text-muted-foreground" />
                 )}
               </div>
-              <div className="flex items-center justify-center gap-4 mt-3">
+              <div className="flex items-center justify-center gap-4 mt-2">
                 <div className="flex flex-col items-center">
-                  <span className="text-2xl font-bold" style={{ color: getStressColor(preStress) }}>
+                  <span className="text-xl md:text-2xl font-bold" style={{ color: getStressColor(preStress) }}>
                     {preStress}%
                   </span>
                   <span className="text-xs text-muted-foreground">{getStressLabel(preStress)}</span>
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground" />
+                <ArrowRight className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
                 <div className="flex flex-col items-center">
-                  <span className="text-2xl font-bold" style={{ color: getStressColor(stress) }}>
+                  <span className="text-xl md:text-2xl font-bold" style={{ color: getStressColor(stress) }}>
                     {stress}%
                   </span>
                   <span className="text-xs text-muted-foreground">{getStressLabel(stress)}</span>
@@ -172,9 +172,9 @@ const PostExerciseTracking = ({
 
           {/* Note Display */}
           {note && (
-            <div className="p-3 rounded-lg bg-card/50 border border-border/50">
-              <p className="text-xs text-muted-foreground mb-1">Your note</p>
-              <p className="text-sm">{note}</p>
+            <div className="p-2 md:p-3 rounded-lg bg-card/50 border border-border/50">
+              <p className="text-xs text-muted-foreground mb-0.5">Your note</p>
+              <p className="text-xs md:text-sm">{note}</p>
             </div>
           )}
 
@@ -193,29 +193,29 @@ const PostExerciseTracking = ({
 
   // Input View (default)
   return (
-    <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto max-h-[calc(100vh-8rem)] overflow-y-auto">
-      <CardHeader className="pb-3 text-center">
-        <div className="mx-auto w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-3">
-          <Sparkles className="h-8 w-8 text-green-500" />
+    <Card className="border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent max-w-sm mx-auto max-h-[calc(100vh-12rem)] md:max-h-[calc(100vh-8rem)] overflow-y-auto">
+      <CardHeader className="pb-2 pt-4 text-center">
+        <div className="mx-auto w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-2">
+          <Sparkles className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
         </div>
-        <CardTitle className="text-xl">Session Complete!</CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <CardTitle className="text-lg md:text-xl">Session Complete!</CardTitle>
+        <p className="text-xs md:text-sm text-muted-foreground">
           {formatDuration(duration)} • {breathCount} breaths{exerciseTitle ? ` • ${exerciseTitle}` : ""}
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="p-4 rounded-lg bg-card/50 space-y-5">
-          <p className="text-sm font-medium text-center text-muted-foreground">How do you feel now?</p>
+      <CardContent className="space-y-4 md:space-y-6 pt-2">
+        <div className="p-3 md:p-4 rounded-lg bg-card/50 space-y-4 md:space-y-5">
+          <p className="text-xs md:text-sm font-medium text-center text-muted-foreground">How do you feel now?</p>
 
           {/* Mood Slider */}
-          <div className="space-y-3">
+          <div className="space-y-2 md:space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium flex items-center gap-2">
+              <label className="text-xs md:text-sm font-medium flex items-center gap-2">
                 <Heart className="h-4 w-4 text-rose-400" />
                 Mood
               </label>
               <span
-                className="text-xs font-medium px-2 py-1 rounded-full"
+                className="text-xs font-medium px-2 py-0.5 md:py-1 rounded-full"
                 style={{
                   color: currentMood.color,
                   backgroundColor: currentMood.bgColor,
@@ -232,7 +232,7 @@ const PostExerciseTracking = ({
                   key={m.value}
                   type="button"
                   onClick={() => setMood(m.value)}
-                  className={`w-8 h-8 rounded-full transition-all ${
+                  className={`w-7 h-7 md:w-8 md:h-8 rounded-full transition-all ${
                     mood === m.value ? "scale-110" : "opacity-60 hover:opacity-100"
                   }`}
                 >
@@ -243,14 +243,14 @@ const PostExerciseTracking = ({
           </div>
 
           {/* Stress Level Slider - inverted: left=high(100), right=low(0) */}
-          <div className="space-y-3">
+          <div className="space-y-2 md:space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium flex items-center gap-2">
+              <label className="text-xs md:text-sm font-medium flex items-center gap-2">
                 <Activity className="h-4 w-4 text-amber-400" />
                 Stress Level
               </label>
               <span
-                className="text-xs font-medium px-2 py-1 rounded-full"
+                className="text-xs font-medium px-2 py-0.5 md:py-1 rounded-full"
                 style={{
                   color: getStressColor(stress),
                   backgroundColor: getStressBgColor(stress),
@@ -260,14 +260,14 @@ const PostExerciseTracking = ({
               </span>
             </div>
             <div 
-              className="relative pt-7"
+              className="relative pt-6"
               onPointerDown={() => setIsStressSliderActive(true)}
               onPointerUp={() => setIsStressSliderActive(false)}
               onPointerLeave={() => setIsStressSliderActive(false)}
             >
               {isStressSliderActive && (
                 <div 
-                  className="absolute top-0 text-sm font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground -translate-x-1/2 pointer-events-none transition-opacity"
+                  className="absolute top-0 text-xs md:text-sm font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground -translate-x-1/2 pointer-events-none transition-opacity"
                   style={{ left: `${100 - stress}%` }}
                 >
                   {stress}
@@ -289,15 +289,15 @@ const PostExerciseTracking = ({
           </div>
 
           {/* Note field */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">
+          <div className="space-y-1.5 md:space-y-2">
+            <label className="text-xs md:text-sm font-medium text-muted-foreground">
               Anything you want to remember? (optional)
             </label>
             <Textarea
               placeholder="e.g., Feeling much calmer after a stressful morning..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="resize-none h-20 bg-background/50"
+              className="resize-none h-16 md:h-20 bg-background/50 text-sm"
             />
           </div>
         </div>
