@@ -31,17 +31,13 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className="bg-white/95 backdrop-blur border-primary/20 rounded-2xl max-w-sm mx-auto"
         overlayClassName="bg-[#77a9e8]/50"
       >
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">
-            Quick check-in
-          </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
-            How are you feeling right now?
-          </DialogDescription>
+          <DialogTitle className="text-lg font-semibold">Quick check-in</DialogTitle>
+          <DialogDescription className="text-muted-foreground">How are you feeling right now?</DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-2">
           {/* Mood Slider */}
@@ -51,24 +47,17 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
                 <Heart className="h-4 w-4 text-rose-400" />
                 Mood
               </label>
-              <span 
+              <span
                 className="text-xs font-medium px-2 py-1 rounded-full"
-                style={{ 
-                  color: currentMood.color, 
-                  backgroundColor: currentMood.bgColor 
+                style={{
+                  color: currentMood.color,
+                  backgroundColor: currentMood.bgColor,
                 }}
               >
                 {currentMood.label}
               </span>
             </div>
-            <Slider
-              value={[mood]}
-              onValueChange={(v) => setMood(v[0])}
-              min={1}
-              max={7}
-              step={1}
-              className="w-full"
-            />
+            <Slider value={[mood]} onValueChange={(v) => setMood(v[0])} min={1} max={7} step={1} className="w-full" />
             {/* Mood icons row */}
             <div className="flex justify-between px-0.5">
               {MOODS.map((m) => (
@@ -77,16 +66,10 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
                   type="button"
                   onClick={() => setMood(m.value)}
                   className={`w-8 h-8 rounded-full transition-all ${
-                    mood === m.value 
-                      ? "scale-110" 
-                      : "opacity-60 hover:opacity-100"
+                    mood === m.value ? "scale-110" : "opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <img 
-                    src={m.icon} 
-                    alt={m.label} 
-                    className="w-full h-full object-contain"
-                  />
+                  <img src={m.icon} alt={m.label} className="w-full h-full object-contain" />
                 </button>
               ))}
             </div>
@@ -99,25 +82,25 @@ const PreExerciseCheckIn = ({ open, onOpenChange, onSubmit, onSkip }: PreExercis
                 <Activity className="h-4 w-4 text-amber-400" />
                 Stress Level
               </label>
-              <span 
+              <span
                 className="text-xs font-medium px-2 py-1 rounded-full"
-                style={{ 
-                  color: getStressColor(stress), 
-                  backgroundColor: getStressBgColor(stress) 
+                style={{
+                  color: getStressColor(stress),
+                  backgroundColor: getStressBgColor(stress),
                 }}
               >
                 {getStressLabel(stress)}
               </span>
             </div>
-            <div 
+            <div
               className="relative pt-7"
               onPointerDown={() => setIsStressSliderActive(true)}
               onPointerUp={() => setIsStressSliderActive(false)}
               onPointerLeave={() => setIsStressSliderActive(false)}
             >
               {isStressSliderActive && (
-                <div 
-                  className="absolute top-0 text-sm font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground -translate-x-1/2 pointer-events-none transition-opacity"
+                <div
+                  className="text-sm font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground -translate-x-1/2 pointer-events-none transition-opacity"
                   style={{ left: `${100 - stress}%` }}
                 >
                   {stress}
