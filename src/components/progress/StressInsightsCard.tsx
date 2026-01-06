@@ -61,16 +61,11 @@ const StressInsightsCard = () => {
   return (
     <Card className="border-none shadow-md bg-white relative overflow-hidden">
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-amber-500" />
-              <span className="text-gray-800">Stress Insights</span>
-            </CardTitle>
-            <CardDescription className="text-gray-600">
-              Monitor your stress levels before & after exercises
-            </CardDescription>
-          </div>
+        <div className="flex items-center justify-between mb-1">
+          <CardTitle className="flex items-center gap-2">
+            <Activity className="h-5 w-5 text-amber-500" />
+            <span className="text-gray-800">Stress Insights</span>
+          </CardTitle>
           <TimeFilterSelect
             value={filter}
             onChange={setFilter}
@@ -78,6 +73,9 @@ const StressInsightsCard = () => {
             onCustomRangeChange={setCustomRange}
           />
         </div>
+        <CardDescription className="text-gray-600">
+          Monitor your stress levels before & after exercises
+        </CardDescription>
       </CardHeader>
       <CardContent className="relative min-h-[320px]">
         {overlayType && (

@@ -69,16 +69,11 @@ const MoodInsightsCard = () => {
   return (
     <Card className="border-none shadow-md bg-white relative overflow-hidden">
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <Heart className="h-5 w-5 text-rose-400" />
-              <span className="text-gray-800">Mood Insights</span>
-            </CardTitle>
-            <CardDescription className="text-gray-600">
-              Track your emotional patterns before & after exercises
-            </CardDescription>
-          </div>
+        <div className="flex items-center justify-between mb-1">
+          <CardTitle className="flex items-center gap-2">
+            <Heart className="h-5 w-5 text-rose-400" />
+            <span className="text-gray-800">Mood Insights</span>
+          </CardTitle>
           <TimeFilterSelect
             value={filter}
             onChange={setFilter}
@@ -86,6 +81,9 @@ const MoodInsightsCard = () => {
             onCustomRangeChange={setCustomRange}
           />
         </div>
+        <CardDescription className="text-gray-600">
+          Track your emotional patterns before & after exercises
+        </CardDescription>
       </CardHeader>
       <CardContent className="relative min-h-[320px]">
         {overlayType && (
