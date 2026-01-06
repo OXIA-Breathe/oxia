@@ -55,10 +55,10 @@ const OtherSettings = () => {
 
       setEmotionTrackingEnabled(enabled);
       toast({
-        title: enabled ? "Emotion tracking enabled" : "Emotion tracking disabled",
+        title: enabled ? "Emotional state tracking enabled" : "Emotional state tracking disabled",
         description: enabled 
           ? "You'll now see emotion check-ins before and after exercises." 
-          : "Emotion tracking has been turned off.",
+          : "Emotional state tracking has been turned off.",
         duration: 3000,
       });
     } catch (error) {
@@ -81,7 +81,7 @@ const OtherSettings = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Heart className="h-4 w-4" />
-          <Label className="text-base font-medium">Emotion Tracking</Label>
+          <Label className="text-base font-medium">Emotional State Tracking</Label>
         </div>
         <Switch
           checked={emotionTrackingEnabled}
