@@ -168,7 +168,7 @@ const ModifySessionDialog = ({ session, open, onOpenChange, onSave }: ModifySess
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] h-[85vh] flex flex-col">
+      <DialogContent className="max-w-sm h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Modify Session</DialogTitle>
           <DialogDescription>

@@ -46,7 +46,7 @@ const ExportDialog = ({
   isGenerating,
 }: ExportDialogProps) => {
   return (
-    <DialogContent className="sm:max-w-[425px]">
+    <DialogContent className="max-w-sm">
       <DialogHeader>
         <DialogTitle>Export Session History</DialogTitle>
         <DialogDescription>

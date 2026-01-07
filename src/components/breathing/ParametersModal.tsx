@@ -127,7 +127,7 @@ export const ParametersModal = ({ exercise, onSave }: ParametersModalProps) => {
           <Settings className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>Breathing Parameters</DialogTitle>
         </DialogHeader>

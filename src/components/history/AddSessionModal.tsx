@@ -150,7 +150,7 @@ const AddSessionModal = ({ open, onOpenChange, onSave }: AddSessionModalProps) =
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] h-[85vh] flex flex-col">
+      <DialogContent className="max-w-sm h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Add Custom Session</DialogTitle>
           <DialogDescription>

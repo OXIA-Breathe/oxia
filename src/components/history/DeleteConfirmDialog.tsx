@@ -28,7 +28,7 @@ const DeleteConfirmDialog = ({ session, open, onOpenChange, onConfirm }: DeleteC
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className="max-w-sm">
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Session</AlertDialogTitle>
           <AlertDialogDescription>
