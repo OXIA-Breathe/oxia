@@ -150,7 +150,7 @@ const AddSessionModal = ({ open, onOpenChange, onSave }: AddSessionModalProps) =
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] max-h-[85vh] flex flex-col">
+      <DialogContent className="sm:max-w-[425px] h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Add Custom Session</DialogTitle>
           <DialogDescription>
@@ -158,7 +158,7 @@ const AddSessionModal = ({ open, onOpenChange, onSave }: AddSessionModalProps) =
           </DialogDescription>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 pr-4 -mr-4">
+        <ScrollArea className="flex-1 min-h-0 pr-4 -mr-4">
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="exercise">Exercise</Label>
