@@ -1,5 +1,4 @@
-
-import { BreathSession } from "@/types/breath";
+import { BreathSession, EmotionData } from "@/types/breath";
 import { useAuth } from "@/context/AuthContext";
 import { useBreath } from "@/context/BreathContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +14,7 @@ export const useSessionOperations = (
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const handleUpdateSession = async (updatedSession: BreathSession) => {
+  const handleUpdateSession = async (updatedSession: BreathSession, emotionData?: EmotionData) => {
     if (user) {
       // Update in Supabase for authenticated users
       try {
@@ -30,12 +29,59 @@ export const useSessionOperations = (
           .eq("id", updatedSession.id);
 
         if (error) throw error;
+
+        // Handle emotion data if provided
+        if (emotionData) {
+          // Check if emotion tracking record exists for this session
+          const { data: existingEmotion } = await supabase
+            .from("emotion_tracking")
+            .select("id")
+            .eq("session_id", updatedSession.id)
+            .eq("user_id", user.id)
+            .single();
+
+          if (existingEmotion) {
+            // Update existing emotion record
+            const { error: emotionError } = await supabase
+              .from("emotion_tracking")
+              .update({
+                pre_valence: emotionData.preValence,
+                pre_arousal: emotionData.preStress,
+                post_valence: emotionData.postValence,
+                post_arousal: emotionData.postStress,
+                note: emotionData.note,
+              })
+              .eq("id", existingEmotion.id);
+
+            if (emotionError) {
+              console.error("Error updating emotion data:", emotionError);
+            }
+          } else {
+            // Insert new emotion record
+            const { error: emotionError } = await supabase
+              .from("emotion_tracking")
+              .insert({
+                user_id: user.id,
+                session_id: updatedSession.id,
+                pre_valence: emotionData.preValence,
+                pre_arousal: emotionData.preStress,
+                post_valence: emotionData.postValence,
+                post_arousal: emotionData.postStress,
+                note: emotionData.note,
+              });
+
+            if (emotionError) {
+              console.error("Error inserting emotion data:", emotionError);
+            }
+          }
+        }
         
         // Invalidate all related queries to refresh data immediately
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["breathSessions", user.id] }),
           queryClient.invalidateQueries({ queryKey: ["userStats", user.id] }),
-          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] })
+          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] }),
+          queryClient.invalidateQueries({ queryKey: ["emotionalStats", user.id] })
         ]);
         
         toast({
@@ -68,6 +114,13 @@ export const useSessionOperations = (
         console.log("Attempting to delete session:", session.id);
         console.log("User ID:", user.id);
         
+        // First delete any associated emotion tracking data
+        await supabase
+          .from("emotion_tracking")
+          .delete()
+          .eq("session_id", session.id)
+          .eq("user_id", user.id);
+        
         const { error } = await supabase
           .from("breath_sessions")
           .delete()
@@ -96,7 +149,8 @@ export const useSessionOperations = (
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["breathSessions", user.id] }),
           queryClient.invalidateQueries({ queryKey: ["userStats", user.id] }),
-          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] })
+          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] }),
+          queryClient.invalidateQueries({ queryKey: ["emotionalStats", user.id] })
         ]);
         
         toast({
