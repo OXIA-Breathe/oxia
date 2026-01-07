@@ -36,7 +36,7 @@ const ShareDialog = ({ onShare, onBack, isGenerating = false, onEmailSubmit }: S
   };
   
   return (
-    <DialogContent className="sm:max-w-[425px]">
+    <DialogContent className="max-w-sm">
       {!showEmailForm ? (
         <>
           <DialogHeader>
