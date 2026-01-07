@@ -87,7 +87,7 @@ const PostExerciseTracking = ({
             {formatDuration(duration)} • {breathCount} breaths{exerciseTitle ? ` • ${exerciseTitle}` : ""}
           </p>
         </CardHeader>
-        <CardContent className="space-y-6 pt-2">
+        <CardContent className="space-y-6 pt-2 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
           {/* Praise Message */}
           <div className="p-4 rounded-lg bg-primary/5 border border-primary/10 text-center">
             <p className="text-sm text-foreground leading-relaxed">{praiseMessage}</p>
@@ -203,7 +203,7 @@ const PostExerciseTracking = ({
           {formatDuration(duration)} • {breathCount} breaths{exerciseTitle ? ` • ${exerciseTitle}` : ""}
         </p>
       </CardHeader>
-      <CardContent className="space-y-6 pt-2">
+      <CardContent className="space-y-6 pt-2 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
         <div className="p-4 rounded-lg bg-card/50 space-y-5">
           <p className="text-sm font-medium text-center text-muted-foreground">How do you feel now?</p>
 
