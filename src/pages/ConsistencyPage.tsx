@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
@@ -10,7 +9,7 @@ import MoodInsightsCard from "@/components/progress/MoodInsightsCard";
 import StressInsightsCard from "@/components/progress/StressInsightsCard";
 import { Button } from "@/components/ui/button";
 import AddSessionModal from "@/components/history/AddSessionModal";
-import { BreathSession } from "@/types/breath";
+import { BreathSession, EmotionData } from "@/types/breath";
 import { useBreath } from "@/context/BreathContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -52,13 +51,15 @@ const ConsistencyPage = () => {
     enabled: !!user
   });
 
-  const handleAddSession = async (newSession: BreathSession) => {
+  const handleAddSession = async (newSession: BreathSession, emotionData?: EmotionData) => {
     if (user) {
       // Add to Supabase for authenticated users
       try {
-        const { error } = await supabase
+        // First, insert the breath session
+        const { data: sessionData, error: sessionError } = await supabase
           .from("breath_sessions")
           .insert({
+            id: newSession.id,
             user_id: user.id,
             date: newSession.date,
             breath_count: newSession.breathCount,
@@ -66,15 +67,38 @@ const ConsistencyPage = () => {
             hold_duration: newSession.holdDuration,
             exercise_title: newSession.exerciseTitle,
             repetitions: newSession.repetitions,
-          });
+          })
+          .select()
+          .single();
 
-        if (error) throw error;
+        if (sessionError) throw sessionError;
+
+        // If emotion data is provided, insert it
+        if (emotionData && sessionData) {
+          const { error: emotionError } = await supabase
+            .from("emotion_tracking")
+            .insert({
+              user_id: user.id,
+              session_id: sessionData.id,
+              pre_valence: emotionData.preValence,
+              pre_arousal: emotionData.preStress, // Map stress to arousal column
+              post_valence: emotionData.postValence,
+              post_arousal: emotionData.postStress, // Map stress to arousal column
+              note: emotionData.note,
+            });
+
+          if (emotionError) {
+            console.error("Error saving emotion data:", emotionError);
+            // Don't fail the whole operation if emotion save fails
+          }
+        }
         
         // Invalidate all related queries immediately to ensure consistent data
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["breathSessions", user.id] }),
           queryClient.invalidateQueries({ queryKey: ["userStats", user.id] }),
-          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] })
+          queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] }),
+          queryClient.invalidateQueries({ queryKey: ["emotionalStats", user.id] })
         ]);
         
         toast({
@@ -98,7 +122,6 @@ const ConsistencyPage = () => {
       });
     }
   };
-
   return (
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-4xl">

@@ -1,14 +1,13 @@
-
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BreathSession } from "@/types/breath";
+import { BreathSession, EmotionData } from "@/types/breath";
 import SessionCard from "./SessionCard";
 import ModifySessionDialog from "./ModifySessionDialog";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
 
 interface SessionListProps {
   sessions: BreathSession[];
-  onUpdateSession: (updatedSession: BreathSession) => void;
+  onUpdateSession: (updatedSession: BreathSession, emotionData?: EmotionData) => void;
   onDeleteSession: (session: BreathSession) => void;
 }
 
@@ -24,8 +23,8 @@ const SessionList = ({ sessions, onUpdateSession, onDeleteSession }: SessionList
     setDeleteSession(session);
   };
 
-  const handleSaveModification = (updatedSession: BreathSession) => {
-    onUpdateSession(updatedSession);
+  const handleSaveModification = (updatedSession: BreathSession, emotionData?: EmotionData) => {
+    onUpdateSession(updatedSession, emotionData);
   };
 
   const handleConfirmDelete = (session: BreathSession) => {
