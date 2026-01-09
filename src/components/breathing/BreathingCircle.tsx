@@ -106,7 +106,8 @@ const BreathingCircle = ({
             transformOrigin: 'center',
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(59, 130, 246, 0.3)',
+            background: 'linear-gradient(145deg, #e0edf5 0%, #77A9E8 100%)',
+            boxShadow: 'inset 0 4px 20px rgba(0, 0, 0, 0.15), inset 0 -4px 15px rgba(255, 255, 255, 0.25), 0 0 30px rgba(119, 169, 232, 0.4)',
             backdropFilter: 'blur(8px)'
           }}
         >
