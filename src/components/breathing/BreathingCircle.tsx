@@ -97,6 +97,21 @@ const BreathingCircle = ({
         className={`${sizeClasses[size]} relative cursor-pointer`}
         onClick={onCircleClick}
       >
+        {/* Ripple effects */}
+        {phase !== "idle" && !isPaused && (
+          <>
+            <div 
+              className="absolute inset-0 rounded-full border-2 border-blue-400/30 animate-ping"
+              style={{ animationDuration: '2s' }}
+            />
+            <div 
+              className="absolute inset-0 rounded-full border border-blue-300/20 animate-ping"
+              style={{ animationDuration: '2s', animationDelay: '0.5s' }}
+            />
+          </>
+        )}
+        
+        {/* Outer ring - same as original */}
         <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-30"></div>
         
         <div 
@@ -106,44 +121,65 @@ const BreathingCircle = ({
             transformOrigin: 'center',
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(59, 130, 246, 0.3)',
+            background: 'linear-gradient(180deg, rgba(96,165,250,0.7) 0%, rgba(59,130,246,0.8) 50%, rgba(37,99,235,0.9) 100%)',
+            boxShadow: `
+              0 0 30px rgba(59,130,246,0.4),
+              0 0 60px rgba(37,99,235,0.3),
+              inset 0 -20px 40px rgba(30,58,138,0.4)
+            `,
             backdropFilter: 'blur(8px)'
           }}
         >
-          {/* Fluid air-like animation layers */}
+          {/* Wave animation layers */}
           {phase !== "idle" && !isPaused && (
             <>
-              <div className="absolute inset-0 animate-fluid-1" 
+              <div 
+                className="absolute w-[150%] h-[50%] -left-[25%] rounded-[40%]"
                 style={{
-                  background: 'radial-gradient(circle at 30% 40%, rgba(255,255,255,0.4) 0%, transparent 50%)',
-                  filter: 'blur(20px)'
+                  bottom: '60%',
+                  background: 'rgba(255,255,255,0.15)',
+                  animation: 'wave 3s ease-in-out infinite',
                 }}
               />
-              <div className="absolute inset-0 animate-fluid-2" 
+              <div 
+                className="absolute w-[150%] h-[50%] -left-[25%] rounded-[45%]"
                 style={{
-                  background: 'radial-gradient(circle at 70% 60%, rgba(147,197,253,0.5) 0%, transparent 50%)',
-                  filter: 'blur(25px)'
+                  bottom: '55%',
+                  background: 'rgba(96,165,250,0.25)',
+                  animation: 'wave 4s ease-in-out infinite reverse',
                 }}
               />
-              <div className="absolute inset-0 animate-fluid-3" 
+              <div 
+                className="absolute w-[150%] h-[40%] -left-[25%] rounded-[50%]"
                 style={{
-                  background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 60%)',
-                  filter: 'blur(30px)'
+                  bottom: '65%',
+                  background: 'rgba(147,197,253,0.2)',
+                  animation: 'wave 3.5s ease-in-out infinite 0.5s',
                 }}
               />
             </>
           )}
-          <div className="text-center flex flex-col items-center justify-center">
+          
+          {/* Soft inner glow highlight */}
+          <div 
+            className="absolute top-[10%] left-[15%] w-[50%] h-[35%] rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse, rgba(255,255,255,0.35) 0%, transparent 70%)',
+              filter: 'blur(10px)',
+            }}
+          />
+          
+          <div className="text-center flex flex-col items-center justify-center relative z-10">
             {phase === "idle" ? (
-              <span className="text-[1.5rem] font-bold text-white">
+              <span className="text-[1.5rem] font-bold text-white drop-shadow-lg">
                 Breathe
               </span>
             ) : (
               <>
-                <span className="text-[1.5rem] font-bold text-white">
+                <span className="text-[1.5rem] font-bold text-white drop-shadow-lg">
                   {isPaused ? "Paused" : getPhaseDisplayName()}
                 </span>
-                <span className="text-[1.5rem] text-white mt-1">
+                <span className="text-[1.5rem] text-white mt-1 drop-shadow-lg">
                   {Math.max(0, Math.ceil(timeRemaining))}
                 </span>
               </>
@@ -151,6 +187,13 @@ const BreathingCircle = ({
           </div>
         </div>
       </div>
+      
+      <style>{`
+        @keyframes wave {
+          0%, 100% { transform: translateX(-25%) rotate(0deg); }
+          50% { transform: translateX(0%) rotate(2deg); }
+        }
+      `}</style>
     </div>
   );
 };
