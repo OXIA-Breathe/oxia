@@ -97,7 +97,7 @@ const BreathingCircle = ({
         className={`${sizeClasses[size]} relative cursor-pointer`}
         onClick={onCircleClick}
       >
-        <div className="absolute inset-0 rounded-full border-4 border-white border-opacity-30"></div>
+        <div className="absolute inset-0 rounded-full border border-white border-opacity-30"></div>
         
         <div 
           ref={innerCircleRef}
