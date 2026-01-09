@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BreathingCircle from "./BreathingCircle";
 import BreathingStats from "./BreathingStats";
 import BreathingControls from "./BreathingControls";
@@ -39,7 +39,37 @@ const BreathingExercise = () => {
     checkTrackingEnabled();
   }, [checkTrackingEnabled]);
 
+  // Get audio settings from localStorage (memoized to prevent re-creation)
+  const audioSettings = useMemo(() => {
+    try {
+      const stored = localStorage.getItem('audioSettings');
+      return stored ? JSON.parse(stored) : {
+        backgroundMusic: { enabled: true, selected: 'cosmic', volume: 0.3 }
+      };
+    } catch {
+      return { backgroundMusic: { enabled: true, selected: 'cosmic', volume: 0.3 } };
+    }
+  }, []);
+
+  // Background music hook - moved up before handleSessionComplete
+  const { startMusic, stopMusic, pauseMusic, resumeMusic } = useBackgroundMusic({
+    isEnabled: audioSettings.backgroundMusic?.enabled || false,
+    selectedMusic: audioSettings.backgroundMusic?.selected || 'cosmic',
+    volume: audioSettings.backgroundMusic?.volume || 0.3
+  });
+
+  // Track if we should stop music (only on manual reset, not on session complete)
+  const shouldStopMusicRef = useRef(true);
+
   const handleSessionComplete = useCallback((sessionData: { breathCount: number; duration: number; sessionId: string }) => {
+    // Prevent automatic music stop - let it fade out gracefully
+    shouldStopMusicRef.current = false;
+    
+    // Fade out the music after a brief delay
+    setTimeout(() => {
+      stopMusic();
+    }, 500);
+    
     // Increment trial counter when session completes (for unauthenticated users)
     if (!user) {
       incrementTrial();
@@ -61,7 +91,7 @@ const BreathingExercise = () => {
         description: `You completed ${sessionData.breathCount} breaths in ${sessionData.duration} seconds.`,
       });
     }
-  }, [user, incrementTrial, remainingSessions, isTrackingEnabled, toast]);
+  }, [user, incrementTrial, remainingSessions, isTrackingEnabled, toast, stopMusic]);
 
   const {
     phase,
@@ -77,25 +107,6 @@ const BreathingExercise = () => {
     toggleExercise,
     handlePhaseComplete,
   } = useBreathingSession(handleSessionComplete);
-
-  // Get audio settings from localStorage (memoized to prevent re-creation)
-  const audioSettings = useMemo(() => {
-    try {
-      const stored = localStorage.getItem('audioSettings');
-      return stored ? JSON.parse(stored) : {
-        backgroundMusic: { enabled: true, selected: 'cosmic', volume: 0.3 }
-      };
-    } catch {
-      return { backgroundMusic: { enabled: true, selected: 'cosmic', volume: 0.3 } };
-    }
-  }, []);
-
-  // Background music hook
-  const { startMusic, stopMusic, pauseMusic, resumeMusic } = useBackgroundMusic({
-    isEnabled: audioSettings.backgroundMusic?.enabled || false,
-    selectedMusic: audioSettings.backgroundMusic?.selected || 'cosmic',
-    volume: audioSettings.backgroundMusic?.volume || 0.3
-  });
 
   // Countdown sound hook
   const { playCountdownTick, stopCountdownTicks } = useCountdownSound();
@@ -230,7 +241,9 @@ const BreathingExercise = () => {
     if (isActive && phase === "countdown") {
       startMusic();
       playCountdownTick();
-    } else if (!isActive && phase === "idle") {
+      shouldStopMusicRef.current = true; // Reset flag when starting
+    } else if (!isActive && phase === "idle" && shouldStopMusicRef.current) {
+      // Only stop music on manual reset, session completion handles its own fade
       stopMusic();
     }
   }, [isActive, phase]);
