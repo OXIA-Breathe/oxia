@@ -101,13 +101,25 @@ const BreathingCircle = ({
         
         <div 
           ref={innerCircleRef}
-          className="absolute inset-0 m-auto rounded-full flex items-center justify-center overflow-hidden"
+          className="absolute inset-0 m-auto rounded-full flex items-center justify-center overflow-hidden transition-all duration-500"
           style={{ 
             transformOrigin: 'center',
             width: '100%',
             height: '100%',
-            background: 'linear-gradient(145deg, #e0edf5 0%, #77A9E8 100%)',
-            boxShadow: 'inset 0 4px 20px rgba(0, 0, 0, 0.15), inset 0 -4px 15px rgba(255, 255, 255, 0.25), 0 0 30px rgba(119, 169, 232, 0.4)',
+            background: phase === 'inhale' 
+              ? 'linear-gradient(145deg, #e8f4fc 0%, #8bb8ed 100%)'
+              : phase === 'exhale'
+              ? 'linear-gradient(145deg, #d4e5f0 0%, #6899d8 100%)'
+              : phase === 'hold1'
+              ? 'linear-gradient(145deg, #e0edf5 0%, #77A9E8 100%)'
+              : phase === 'hold2'
+              ? 'linear-gradient(145deg, #cfe0ed 0%, #5d8cc9 100%)'
+              : 'linear-gradient(145deg, #e0edf5 0%, #77A9E8 100%)',
+            boxShadow: phase === 'inhale'
+              ? 'inset 0 4px 25px rgba(0, 0, 0, 0.1), inset 0 -4px 20px rgba(255, 255, 255, 0.35), 0 0 40px rgba(139, 184, 237, 0.5)'
+              : phase === 'exhale'
+              ? 'inset 0 6px 20px rgba(0, 0, 0, 0.18), inset 0 -3px 12px rgba(255, 255, 255, 0.2), 0 0 25px rgba(104, 153, 216, 0.35)'
+              : 'inset 0 4px 20px rgba(0, 0, 0, 0.15), inset 0 -4px 15px rgba(255, 255, 255, 0.25), 0 0 30px rgba(119, 169, 232, 0.4)',
             backdropFilter: 'blur(8px)'
           }}
         >
