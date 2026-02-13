@@ -20,20 +20,44 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, message, type = 'contact' }: ContactEmailRequest = await req.json();
+    const body: ContactEmailRequest = await req.json();
+    const name = typeof body.name === 'string' ? body.name.trim() : '';
+    const email = typeof body.email === 'string' ? body.email.trim() : '';
+    const message = typeof body.message === 'string' ? body.message.trim() : '';
+    const type = body.type === 'feedback' ? 'feedback' : 'contact';
 
-    console.log(`Received ${type} form submission:`, { name, email });
+    console.log(`Received ${type} form submission from:`, email);
 
-    // Validate input
+    // Validate required fields
     if (!name || !email || !message) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    // Validate input lengths
+    if (name.length > 100 || email.length > 254 || message.length > 5000) {
+      return new Response(
+        JSON.stringify({ error: "Input exceeds maximum allowed length" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Validate email format and reject header injection attempts
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email) || /[\r\n]/.test(email)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid email format" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Sanitize inputs: strip control characters to prevent header injection
+    const sanitize = (str: string) => str.replace(/[\x00-\x1F\x7F]/g, '');
+    const safeName = sanitize(name);
+    const safeEmail = sanitize(email);
+    const safeMessage = sanitize(message);
 
     const smtpHost = Deno.env.get("SMTP_HOST");
     const smtpPort = Deno.env.get("SMTP_PORT");
@@ -68,13 +92,13 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     try {
-      const subject = type === 'feedback' ? `Feedback: ${name}` : `Contact Form: ${name}`;
+      const subject = type === 'feedback' ? `Feedback: ${safeName}` : `Contact Form: ${safeName}`;
       
       await client.send({
         from: smtpUser,
         to: smtpUser,
         subject,
-        content: `From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+        content: `From: ${safeName}\nEmail: ${safeEmail}\n\nMessage:\n${safeMessage}`,
       });
 
       await client.close();
