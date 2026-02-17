@@ -64,11 +64,11 @@ const WellnessJournalPage = () => {
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-3xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2">
-            <Sparkles className="h-7 w-7 text-accent-foreground" />
+          <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2 text-white">
+            <Sparkles className="h-7 w-7 text-white/80" />
             AI Wellness Journal
           </h1>
-          <p className="text-foreground/70">
+          <p className="text-white/70">
             Your personal AI analyzes your breathing & emotion data to give you tailored insights.
           </p>
         </div>

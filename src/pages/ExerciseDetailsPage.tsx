@@ -28,8 +28,8 @@ const ExerciseDetailsPage = () => {
       <MainLayout>
         <div className="container pt-24 pb-12 max-w-4xl">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground mb-4">Exercise not found</h1>
-            <Button onClick={() => navigate("/breathe")} variant="outline" className="bg-card/10 text-foreground border-border">
+            <h1 className="text-2xl font-bold text-white mb-4">Exercise not found</h1>
+            <Button onClick={() => navigate("/breathe")} variant="outline" className="bg-card/10 text-white border-border">
               Back to Exercises
             </Button>
           </div>
@@ -70,8 +70,8 @@ const ExerciseDetailsPage = () => {
         <div className="space-y-6">
           {/* Title and Description */}
           <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold text-foreground">{exercise.title}</h1>
-            <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold text-white">{exercise.title}</h1>
+            <p className="text-lg text-white/80 max-w-2xl mx-auto">
               {exercise.description}
             </p>
           </div>
