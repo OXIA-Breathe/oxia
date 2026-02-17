@@ -9,17 +9,11 @@ export const useSessionData = (user: User | null) => {
   const [onlineSessions, setOnlineSessions] = useState<BreathSession[]>([]);
 
   const fetchUserSessions = useCallback(async () => {
-    if (!user) {
-      console.log("No user, skipping session fetch");
-      return;
-    }
+    if (!user) return;
     
     try {
-      console.log("=== FETCH SESSIONS START ===");
-      console.log("Fetching sessions for user:", user.id);
       setIsLoading(true);
       
-      // Fetch breath sessions
       const { data: sessionsData, error: sessionsError } = await supabase
         .from("breath_sessions")
         .select("*")
@@ -27,22 +21,19 @@ export const useSessionData = (user: User | null) => {
         .order("date", { ascending: false });
 
       if (sessionsError) {
-        console.error("Error fetching sessions:", sessionsError);
+        console.error("Error fetching sessions");
         throw sessionsError;
       }
       
-      // Fetch emotion tracking data for all sessions
       const { data: emotionData, error: emotionError } = await supabase
         .from("emotion_tracking")
         .select("*")
         .eq("user_id", user.id);
 
       if (emotionError) {
-        console.error("Error fetching emotion data:", emotionError);
-        // Continue without emotion data
+        console.error("Error fetching emotion data");
       }
 
-      // Create a map of session_id to emotion data
       const emotionMap = new Map<string, {
         preValence: number | null;
         preStress: number | null;
@@ -52,33 +43,20 @@ export const useSessionData = (user: User | null) => {
       }>();
 
       if (emotionData) {
-        console.log("📊 Raw emotion data from DB:", emotionData);
         emotionData.forEach((emotion) => {
           if (emotion.session_id) {
-            console.log(`📊 Mapping emotion to session ${emotion.session_id}:`, {
+            emotionMap.set(emotion.session_id, {
               preValence: emotion.pre_valence,
               preStress: emotion.pre_arousal,
               postValence: emotion.post_valence,
               postStress: emotion.post_arousal,
-            });
-            emotionMap.set(emotion.session_id, {
-              preValence: emotion.pre_valence,
-              preStress: emotion.pre_arousal, // arousal stores stress
-              postValence: emotion.post_valence,
-              postStress: emotion.post_arousal, // arousal stores stress
               note: emotion.note,
             });
           }
         });
-        console.log("📊 Emotion map size:", emotionMap.size);
       }
       
-      console.log("Raw Supabase response:", sessionsData);
-      console.log("Number of sessions fetched:", sessionsData?.length || 0);
-      console.log("Emotion data entries:", emotionData?.length || 0);
-      
       if (sessionsData) {
-        // Convert Supabase data to app format
         const formattedSessions: BreathSession[] = sessionsData.map(session => {
           const emotionForSession = emotionMap.get(session.id);
           return {
@@ -93,16 +71,12 @@ export const useSessionData = (user: User | null) => {
           };
         });
         
-        console.log("Formatted sessions count:", formattedSessions.length);
-        console.log("=== FETCH SESSIONS END ===");
         setOnlineSessions(formattedSessions);
       } else {
-        console.log("No sessions found");
-        console.log("=== FETCH SESSIONS END ===");
         setOnlineSessions([]);
       }
     } catch (error) {
-      console.error("Error fetching sessions:", error);
+      console.error("Error fetching sessions");
       setOnlineSessions([]);
     } finally {
       setIsLoading(false);

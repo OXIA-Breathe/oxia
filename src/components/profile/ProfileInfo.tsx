@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,18 +23,11 @@ const ProfileInfo = () => {
   const [displayName, setDisplayName] = useState("");
   const [showPhotoModal, setShowPhotoModal] = useState(false);
 
-  console.log("ProfileInfo - User:", user?.id);
-
   // Fetch profile data
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
-      if (!user) {
-        console.log("No user, skipping profile fetch");
-        return null;
-      }
-      
-      console.log("Fetching profile for user:", user.id);
+      if (!user) return null;
       
       const { data, error } = await supabase
         .from("profiles")
@@ -44,11 +36,10 @@ const ProfileInfo = () => {
         .maybeSingle();
         
       if (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Error fetching profile");
         throw error;
       }
       
-      console.log("Profile data:", data);
       return data as Profile;
     },
     enabled: !!user
@@ -66,7 +57,7 @@ const ProfileInfo = () => {
     mutationFn: async (updates: { display_name?: string; avatar_url?: string }) => {
       if (!user) throw new Error("No user logged in");
       
-      console.log("Updating profile with:", updates);
+      
       
       const { error } = await supabase
         .from("profiles")
@@ -77,7 +68,7 @@ const ProfileInfo = () => {
         .eq("id", user.id);
         
       if (error) {
-        console.error("Error updating profile:", error);
+        console.error("Error updating profile");
         throw error;
       }
     },
@@ -90,7 +81,7 @@ const ProfileInfo = () => {
       setIsEditing(false);
     },
     onError: (error) => {
-      console.error("Profile update error:", error);
+      console.error("Profile update failed");
       toast({
         title: "Error updating profile",
         description: error.message || "An error occurred while updating your profile",
