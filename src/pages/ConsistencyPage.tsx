@@ -262,16 +262,18 @@ const ConsistencyPage = () => {
         )}
 
         {/* Floating + Button for adding custom sessions */}
-        <Button
-          onClick={() => setIsAddModalOpen(true)}
-          className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-lg"
-          style={{
-            bottom: 'calc(6rem + env(safe-area-inset-bottom))'
-          }}
-          size="icon"
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
+        {user && (
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-2 border-white/80"
+            style={{
+              bottom: 'calc(6rem + env(safe-area-inset-bottom))'
+            }}
+            size="icon"
+          >
+            <Plus className="h-6 w-6" />
+          </Button>
+        )}
 
         <AddSessionModal
           open={isAddModalOpen}

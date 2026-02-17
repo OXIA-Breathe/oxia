@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import ExerciseCard from "@/components/breathing/ExerciseCard";
@@ -10,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const BreathePage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { exercises, setCurrentExercise, deleteExercise } = useBreathingExercise();
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,16 +51,18 @@ const BreathePage = () => {
         </div>
 
         {/* Floating + Button */}
-        <Button
-          onClick={() => setIsModalOpen(true)}
-          className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-2 border-white/80"
-          style={{
-            bottom: 'calc(6rem + env(safe-area-inset-bottom))'
-          }}
-          size="icon"
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
+        {user && (
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-2 border-white/80"
+            style={{
+              bottom: 'calc(6rem + env(safe-area-inset-bottom))'
+            }}
+            size="icon"
+          >
+            <Plus className="h-6 w-6" />
+          </Button>
+        )}
 
         <CreateExerciseModal
           open={isModalOpen}
