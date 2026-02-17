@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus, Sparkles, TrendingUp, Calendar, BarChart3, History } from "lucide-react";
 import { Link } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import { useAuth } from "@/context/AuthContext";
@@ -9,8 +9,9 @@ import ProgressStats from "@/components/profile/ProgressStats";
 import MoodInsightsCard from "@/components/progress/MoodInsightsCard";
 import StressInsightsCard from "@/components/progress/StressInsightsCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddSessionModal from "@/components/history/AddSessionModal";
+import SignInEmptyState from "@/components/layout/SignInEmptyState";
 import { BreathSession, EmotionData } from "@/types/breath";
 import { useBreath } from "@/context/BreathContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -134,11 +135,88 @@ const ConsistencyPage = () => {
             <p>Loading your progress data...</p>
           </div>
         ) : !user ? (
-          <div className="text-center">
-            <p className="text-muted-foreground">
-              Please log in to view your progress data
-            </p>
-          </div>
+          <SignInEmptyState
+            title="Track Your Progress"
+            description="Sign in to see your activity calendar, session history, mood insights, and breathing streaks."
+          >
+            {/* Mock preview cards */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Mock Stats Card */}
+              <Card className="border-none shadow-md bg-card">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                    <span className="text-card-foreground">Statistics</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-4">
+                  <div><p className="text-2xl font-bold text-card-foreground">12</p><p className="text-xs text-muted-foreground">Sessions</p></div>
+                  <div><p className="text-2xl font-bold text-card-foreground">48m</p><p className="text-xs text-muted-foreground">Total Time</p></div>
+                  <div><p className="text-2xl font-bold text-card-foreground">5</p><p className="text-xs text-muted-foreground">Day Streak</p></div>
+                  <div><p className="text-2xl font-bold text-card-foreground">3</p><p className="text-xs text-muted-foreground">Exercises</p></div>
+                </CardContent>
+              </Card>
+
+              {/* Mock Calendar Card */}
+              <Card className="border-none shadow-md bg-card">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-primary" />
+                    <span className="text-card-foreground">Activity</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-7 gap-1">
+                    {Array.from({ length: 28 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`h-6 w-6 rounded-md ${
+                          [3, 4, 7, 10, 11, 14, 17, 18, 21, 24, 25].includes(i)
+                            ? "bg-breath/60"
+                            : "bg-muted"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Mock Mood Card */}
+              <Card className="border-none shadow-md bg-card">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <BarChart3 className="h-4 w-4 text-primary" />
+                    <span className="text-card-foreground">Mood Insights</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-end gap-2 h-20">
+                    {[40, 60, 35, 80, 55, 70, 90].map((h, i) => (
+                      <div key={i} className="flex-1 bg-breath/40 rounded-t-sm" style={{ height: `${h}%` }} />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Mock Sessions Card */}
+              <Card className="border-none shadow-md bg-card">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <History className="h-4 w-4 text-primary" />
+                    <span className="text-card-foreground">My Sessions</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {["Box Breathing", "4-7-8 Relaxing", "Deep Calm"].map((name) => (
+                    <div key={name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                      <span className="text-sm text-card-foreground">{name}</span>
+                      <span className="text-xs text-muted-foreground">4m 30s</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </SignInEmptyState>
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
             <ProgressStats />
