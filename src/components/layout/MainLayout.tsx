@@ -42,7 +42,7 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
             <Link 
               to="/profile" 
               state={{ from: location.pathname }}
-              className="w-12 h-12 flex items-center justify-center bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md hover:bg-card transition-colors"
+              className="w-12 h-12 flex items-center justify-center bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md hover:bg-card transition-all duration-200 active:scale-125 active:transition-none"
               aria-label="Go to profile"
             >
               <User className="h-5 w-5" />

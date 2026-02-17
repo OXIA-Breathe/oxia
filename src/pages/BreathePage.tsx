@@ -54,7 +54,7 @@ const BreathePage = () => {
         {user && (
           <Button
             onClick={() => setIsModalOpen(true)}
-            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-2 border-white/80"
+            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-2 border-white/80 transition-all duration-200 active:scale-125 active:transition-none"
             style={{
               bottom: 'calc(6rem + env(safe-area-inset-bottom))'
             }}
