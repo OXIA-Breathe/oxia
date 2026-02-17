@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 
 const AuthPage = () => {
   const { user, signIn, signUp } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +48,15 @@ const AuthPage = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen breathing-bg text-white p-4">
+      {/* Back button */}
+      <button
+        onClick={() => navigate("/")}
+        className="absolute top-8 left-6 w-12 h-12 flex items-center justify-center bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md hover:bg-card transition-colors"
+        aria-label="Go back"
+      >
+        <ArrowLeft className="h-5 w-5 text-foreground" />
+      </button>
+
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <img 
@@ -152,6 +163,13 @@ const AuthPage = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <button
+          onClick={() => navigate("/")}
+          className="w-full mt-6 text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Continue as guest →
+        </button>
       </div>
     </div>
   );
