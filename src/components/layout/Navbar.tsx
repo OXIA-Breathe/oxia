@@ -34,7 +34,7 @@ interface NavItemProps {
 
 const NavItem = ({ path, label, icon, isActive }: NavItemProps) => (
   <Link to={path} className="flex flex-col items-center justify-center">
-    <div className={`p-2 rounded-full transition-colors ${isActive ? "bg-breath text-primary-foreground" : "text-muted-foreground"}`}>
+    <div className={`p-2 rounded-full transition-all duration-200 active:scale-125 active:transition-none ${isActive ? "bg-breath text-primary-foreground" : "text-muted-foreground"}`}>
       {icon}
     </div>
     <span className={`text-xs mt-1 ${isActive ? "text-breath" : "text-muted-foreground"}`}>{label}</span>
