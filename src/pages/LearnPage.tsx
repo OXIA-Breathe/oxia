@@ -21,11 +21,11 @@ const LearnPage = () => {
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-4xl">
         <h1 className="text-3xl font-bold mb-4 text-center">Learning Resources</h1>
-        <p className="text-center text-white mb-8">
+        <p className="text-center text-foreground/80 mb-8">
           Expand your understanding of why conscious breathing transforms your life.
         </p>
         
-        <Card className="w-full max-w-3xl mx-auto bg-white/90 backdrop-blur-sm shadow-lg border-0">
+        <Card className="w-full max-w-3xl mx-auto bg-card/90 backdrop-blur-sm shadow-lg border-0">
           <CardHeader>
             <CardTitle className="text-xl flex items-center justify-center gap-2">
               <Book className="h-5 w-5 text-breath" />
@@ -37,18 +37,18 @@ const LearnPage = () => {
               We're currently preparing high-quality educational content to help you better understand the science, psychology, and benefits of breathing techniques.
             </p>
             
-            <hr className="border-gray-200" />
+            <hr className="border-border" />
             
             <div className="space-y-4">
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-card-foreground leading-relaxed">
                 In the near future, this space will grow into a knowledge hub full of bite-sized articles, guided insights, and expert-backed explanations — all designed to help you go deeper into your breathing practice and into yourself.
               </p>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-card-foreground leading-relaxed">
                 Whether you're curious about how breath impacts the nervous system, emotional wellbeing, or energy levels — we're building it for you.
               </p>
             </div>
             
-            <hr className="border-gray-200" />
+            <hr className="border-border" />
             
             <div className="text-center space-y-4">
               <h3 className="text-lg font-semibold flex items-center justify-center gap-2">

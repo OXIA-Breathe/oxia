@@ -42,7 +42,7 @@ const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
 
   return (
     <Card 
-      className="p-4 cursor-pointer hover:shadow-md transition-shadow bg-white/90 backdrop-blur-sm"
+      className="p-4 cursor-pointer hover:shadow-md transition-shadow bg-card/90 backdrop-blur-sm"
       onClick={handleCardClick}
     >
       <div className="flex items-center justify-between">
@@ -52,11 +52,11 @@ const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
           </div>
           
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-800 truncate">
+            <h3 className="text-lg font-semibold text-card-foreground truncate">
               {getDisplayTitle()}
             </h3>
             {exercise.description && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {exercise.description}
               </p>
             )}
@@ -70,14 +70,14 @@ const ExerciseCard = ({ exercise, onSelect, onDelete }: ExerciseCardProps) => {
             className="h-8 w-8 p-0"
             onClick={handleInfoClick}
           >
-            <Info className="h-4 w-4 text-gray-500" />
+            <Info className="h-4 w-4 text-muted-foreground" />
           </Button>
           
           {exercise.isCustom && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
+              className="h-8 w-8 p-0 text-destructive hover:text-destructive/80"
               onClick={handleDeleteClick}
             >
               <Trash2 className="h-4 w-4" />

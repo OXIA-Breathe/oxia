@@ -17,7 +17,7 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
   const isExerciseDetailPage = location.pathname.startsWith("/breathe/");
 
   return (
-    <div className={`flex flex-col md:flex-row min-h-screen ${fullHeight ? 'h-screen overflow-hidden' : ''} breathing-bg text-white`}>
+    <div className={`flex flex-col md:flex-row min-h-screen ${fullHeight ? 'h-screen overflow-hidden' : ''} breathing-bg text-foreground`}>
       <main 
         className="flex-1 md:pl-16 lg:pl-0 w-full max-w-screen-xl mx-auto"
         style={{ 
@@ -29,7 +29,8 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
           {(isProfilePage || isExerciseDetailPage) ? (
             <button 
               onClick={() => window.history.back()}
-              className="w-12 h-12 flex items-center justify-center border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+              className="w-12 h-12 flex items-center justify-center border border-border rounded-lg hover:bg-accent transition-colors"
+              aria-label="Go back"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
@@ -41,7 +42,8 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
             <Link 
               to="/profile" 
               state={{ from: location.pathname }}
-              className="w-12 h-12 flex items-center justify-center border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+              className="w-12 h-12 flex items-center justify-center border border-border rounded-lg hover:bg-accent transition-colors"
+              aria-label="Go to profile"
             >
               <User className="h-5 w-5" />
             </Link>
