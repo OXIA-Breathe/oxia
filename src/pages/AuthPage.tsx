@@ -77,7 +77,7 @@ const AuthPage = () => {
           </TabsList>
 
           <TabsContent value="sign-in">
-            <Card>
+            <Card className="bg-card/90 backdrop-blur-sm border-border/50">
               <CardHeader>
                 <CardTitle>Sign In</CardTitle>
                 <CardDescription>Enter your email and password to sign in to your account</CardDescription>
@@ -121,7 +121,7 @@ const AuthPage = () => {
           </TabsContent>
 
           <TabsContent value="sign-up">
-            <Card>
+            <Card className="bg-card/90 backdrop-blur-sm border-border/50">
               <CardHeader>
                 <CardTitle>Sign Up</CardTitle>
                 <CardDescription>Create a new account to track your breathing journey</CardDescription>
