@@ -53,7 +53,7 @@ const Index = () => {
             {user && (
               <div className="mt-4 text-center hidden">
                 <Link to="/progress">
-                  <Button variant="outline" className="bg-white/10 text-white border-white/20 flex items-center gap-2 w-full justify-center">
+                  <Button variant="outline" className="bg-primary/10 text-foreground border-border flex items-center gap-2 w-full justify-center">
                     Track Your Consistency
                   </Button>
                 </Link>

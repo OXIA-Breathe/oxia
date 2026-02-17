@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import LoadingSkeleton from "./components/layout/LoadingSkeleton";
 import { BreathProvider } from "./context/BreathContext";
 import { BreathingExerciseProvider } from "./context/BreathingExerciseContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -34,11 +35,7 @@ const AppContent = () => {
     <BrowserRouter>
       <ScreenTracker />
       <BreathProvider>
-        <Suspense fallback={
-          <div className="min-h-screen bg-background flex items-center justify-center">
-            <div className="animate-pulse text-muted-foreground">Loading...</div>
-          </div>
-        }>
+        <Suspense fallback={<LoadingSkeleton />}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/learn" element={<LearnPage />} />

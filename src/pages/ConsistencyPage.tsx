@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import { useAuth } from "@/context/AuthContext";
 import { ActivityCalendar } from "@/components/consistency/ActivityCalendar";
@@ -8,6 +9,7 @@ import ProgressStats from "@/components/profile/ProgressStats";
 import MoodInsightsCard from "@/components/progress/MoodInsightsCard";
 import StressInsightsCard from "@/components/progress/StressInsightsCard";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import AddSessionModal from "@/components/history/AddSessionModal";
 import { BreathSession, EmotionData } from "@/types/breath";
 import { useBreath } from "@/context/BreathContext";
@@ -157,6 +159,26 @@ const ConsistencyPage = () => {
             {/* Session History */}
             <div className="md:col-span-2">
               <SessionHistory selectedDate={selectedCalendarDate} />
+            </div>
+
+            {/* AI Wellness Journal */}
+            <div className="md:col-span-2">
+              <Card className="border-none shadow-md bg-card">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      <div>
+                        <h3 className="font-semibold text-card-foreground">AI Wellness Journal</h3>
+                        <p className="text-sm text-muted-foreground">Get personalized insights from your data</p>
+                      </div>
+                    </div>
+                    <Button asChild className="bg-breath hover:bg-breath/90">
+                      <Link to="/journal">Open</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         )}

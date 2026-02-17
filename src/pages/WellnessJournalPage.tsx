@@ -68,7 +68,7 @@ const WellnessJournalPage = () => {
             <Sparkles className="h-7 w-7 text-accent-foreground" />
             AI Wellness Journal
           </h1>
-          <p className="text-white/70">
+          <p className="text-foreground/70">
             Your personal AI analyzes your breathing & emotion data to give you tailored insights.
           </p>
         </div>
@@ -84,7 +84,7 @@ const WellnessJournalPage = () => {
         )}
 
         {/* Main insights card */}
-        <Card className="bg-white/90 backdrop-blur-sm shadow-lg border-0">
+        <Card className="bg-card/90 backdrop-blur-sm shadow-lg border-0">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
               <Brain className="h-5 w-5 text-primary" />
@@ -140,7 +140,7 @@ const WellnessJournalPage = () => {
 };
 
 const StatCard = ({ icon, label, value, small }: { icon: React.ReactNode; label: string; value: string | number; small?: boolean }) => (
-  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm">
+  <div className="bg-card/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm">
     <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
       {icon}
       <span className="text-xs">{label}</span>

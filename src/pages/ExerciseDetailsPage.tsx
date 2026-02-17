@@ -28,8 +28,8 @@ const ExerciseDetailsPage = () => {
       <MainLayout>
         <div className="container pt-24 pb-12 max-w-4xl">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-white mb-4">Exercise not found</h1>
-            <Button onClick={() => navigate("/breathe")} variant="outline">
+            <h1 className="text-2xl font-bold text-foreground mb-4">Exercise not found</h1>
+            <Button onClick={() => navigate("/breathe")} variant="outline" className="bg-card/10 text-foreground border-border">
               Back to Exercises
             </Button>
           </div>
@@ -70,18 +70,18 @@ const ExerciseDetailsPage = () => {
         <div className="space-y-6">
           {/* Title and Description */}
           <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold text-white">{exercise.title}</h1>
-            <p className="text-lg text-white/80 max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold text-foreground">{exercise.title}</h1>
+            <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
               {exercise.description}
             </p>
           </div>
 
           {/* Description Card */}
-          <Card className="p-6 bg-white/90 backdrop-blur-sm">
+          <Card className="p-6 bg-card/90 backdrop-blur-sm">
             {exercise.detailedDescription && (
               <>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Description</h3>
-                <div className="text-gray-700 leading-relaxed mb-6 text-justify whitespace-pre-line">
+                <h3 className="text-lg font-semibold text-card-foreground mb-4">Description</h3>
+                <div className="text-muted-foreground leading-relaxed mb-6 text-justify whitespace-pre-line">
                   {exercise.detailedDescription.split('small study from 2022').map((part, index, array) => (
                     <span key={index}>
                       {part}
@@ -103,12 +103,12 @@ const ExerciseDetailsPage = () => {
             
             {exercise.stepByStepInstructions && exercise.stepByStepInstructions.length > 0 && (
               <>
-                <h4 className="text-base font-semibold text-gray-800 mb-3">How to do it (step-by-step)</h4>
+                <h4 className="text-base font-semibold text-card-foreground mb-3">How to do it (step-by-step)</h4>
                 <ol className="space-y-1">
                   {exercise.stepByStepInstructions.map((step, index) => (
                     <li key={index} className="flex items-start">
                       <span className="text-breath mr-3 font-medium">{index + 1}.</span>
-                      <span className="text-gray-700">{step}</span>
+                      <span className="text-muted-foreground">{step}</span>
                     </li>
                   ))}
                 </ol>
@@ -117,14 +117,14 @@ const ExerciseDetailsPage = () => {
             
             {/* If no content at all, show message */}
             {!exercise.detailedDescription && (!exercise.stepByStepInstructions || exercise.stepByStepInstructions.length === 0) && (
-              <p className="text-gray-500 italic">No detailed description or instructions provided for this exercise.</p>
+              <p className="text-muted-foreground italic">No detailed description or instructions provided for this exercise.</p>
             )}
           </Card>
 
           {/* Breathing Parameters Card */}
-          <Card className="p-6 bg-white/90 backdrop-blur-sm">
+          <Card className="p-6 bg-card/90 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Breathing Parameters</h3>
+              <h3 className="text-lg font-semibold text-card-foreground">Breathing Parameters</h3>
               <ParametersModal 
                 exercise={exercise} 
                 onSave={(parameters) => {
@@ -134,31 +134,31 @@ const ExerciseDetailsPage = () => {
             </div>
             <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="text-center">
-                <p className="text-sm text-gray-600 mb-1">Inhale</p>
-                <p className="text-xl font-bold text-gray-800">{exercise.inhaleDuration}s</p>
+                <p className="text-sm text-muted-foreground mb-1">Inhale</p>
+                <p className="text-xl font-bold text-card-foreground">{exercise.inhaleDuration}s</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-600 mb-1">Hold 1</p>
-                <p className="text-xl font-bold text-gray-800">{exercise.firstHoldDuration}s</p>
+                <p className="text-sm text-muted-foreground mb-1">Hold 1</p>
+                <p className="text-xl font-bold text-card-foreground">{exercise.firstHoldDuration}s</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-600 mb-1">Exhale</p>
-                <p className="text-xl font-bold text-gray-800">{exercise.exhaleDuration}s</p>
+                <p className="text-sm text-muted-foreground mb-1">Exhale</p>
+                <p className="text-xl font-bold text-card-foreground">{exercise.exhaleDuration}s</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-600 mb-1">Hold 2</p>
-                <p className="text-xl font-bold text-gray-800">{exercise.secondHoldDuration}s</p>
+                <p className="text-sm text-muted-foreground mb-1">Hold 2</p>
+                <p className="text-xl font-bold text-card-foreground">{exercise.secondHoldDuration}s</p>
               </div>
             </div>
             
             {exercise.parametersNote && (
-              <p className="text-sm text-gray-600 leading-relaxed mb-6 text-justify whitespace-pre-line">
+              <p className="text-sm text-muted-foreground leading-relaxed mb-6 text-justify whitespace-pre-line">
                 {exercise.parametersNote}
               </p>
             )}
             
             <div className="space-y-4">
-              <h4 className="text-base font-semibold text-gray-800">How long would you like to breathe?</h4>
+              <h4 className="text-base font-semibold text-card-foreground">How long would you like to breathe?</h4>
               
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-3">
@@ -171,8 +171,8 @@ const ExerciseDetailsPage = () => {
                     <Minus className="h-4 w-4" />
                   </Button>
                   <div className="text-center min-w-[80px]">
-                    <p className="text-sm text-gray-600">Repetitions</p>
-                    <p className="text-xl font-bold text-gray-800">{repetitions}</p>
+                    <p className="text-sm text-muted-foreground">Repetitions</p>
+                    <p className="text-xl font-bold text-card-foreground">{repetitions}</p>
                   </div>
                   <Button
                     variant="outline"
@@ -185,8 +185,8 @@ const ExerciseDetailsPage = () => {
                 </div>
                 
                 <div className="ml-6">
-                  <p className="text-sm text-gray-600">Approximate total time</p>
-                  <p className="text-lg font-semibold text-gray-800">{formatTimeDisplay(calculateTotalTime())}</p>
+                  <p className="text-sm text-muted-foreground">Approximate total time</p>
+                  <p className="text-lg font-semibold text-card-foreground">{formatTimeDisplay(calculateTotalTime())}</p>
                 </div>
               </div>
             </div>
@@ -197,17 +197,16 @@ const ExerciseDetailsPage = () => {
             exercise.howItHelps || 
             (exercise.commonMistakes && exercise.commonMistakes.length > 0) || 
             exercise.safetyNote) && (
-            <Card className="p-6 bg-white/90 backdrop-blur-sm">
+            <Card className="p-6 bg-card/90 backdrop-blur-sm">
               <div className="space-y-6">
-                {/* When to use */}
                 {exercise.whenToUse && exercise.whenToUse.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">When to use:</h3>
+                    <h3 className="text-lg font-semibold text-card-foreground mb-3">When to use:</h3>
                     <ul className="space-y-1">
                       {exercise.whenToUse.map((use, index) => (
                         <li key={index} className="flex items-start">
                           <span className="text-breath mr-2">•</span>
-                          <span className="text-gray-700">{use}</span>
+                          <span className="text-muted-foreground">{use}</span>
                         </li>
                       ))}
                     </ul>
@@ -217,8 +216,8 @@ const ExerciseDetailsPage = () => {
                 {/* How it helps */}
                 {exercise.howItHelps && (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">How it helps</h3>
-                    <p className="text-gray-700 leading-relaxed text-justify whitespace-pre-line">
+                    <h3 className="text-lg font-semibold text-card-foreground mb-3">How it helps</h3>
+                    <p className="text-muted-foreground leading-relaxed text-justify whitespace-pre-line">
                       {exercise.howItHelps}
                     </p>
                   </div>
@@ -227,12 +226,12 @@ const ExerciseDetailsPage = () => {
                 {/* Common mistakes */}
                 {exercise.commonMistakes && exercise.commonMistakes.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">Common mistakes</h3>
+                    <h3 className="text-lg font-semibold text-card-foreground mb-3">Common mistakes</h3>
                     <ul className="space-y-1">
                       {exercise.commonMistakes.map((mistake, index) => (
                         <li key={index} className="flex items-start">
-                          <span className="text-red-500 mr-2">•</span>
-                          <span className="text-gray-700">{mistake}</span>
+                          <span className="text-destructive mr-2">•</span>
+                          <span className="text-muted-foreground">{mistake}</span>
                         </li>
                       ))}
                     </ul>
@@ -241,8 +240,8 @@ const ExerciseDetailsPage = () => {
 
                 {/* Safety note */}
                 {exercise.safetyNote && (
-                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800 text-justify">
+                  <div className="p-4 bg-accent border border-border rounded-lg">
+                    <p className="text-sm text-accent-foreground text-justify">
                       <strong>Safety note:</strong> {exercise.safetyNote}
                     </p>
                   </div>
@@ -256,7 +255,7 @@ const ExerciseDetailsPage = () => {
           <div className="text-center pt-4 space-y-3">
             <Button
               onClick={handleStartPractice}
-              className="bg-breath hover:bg-breath/90 text-white px-8 py-3 text-lg font-semibold w-64"
+              className="bg-breath hover:bg-breath/90 text-primary-foreground px-8 py-3 text-lg font-semibold w-64"
               size="lg"
             >
               Start this practice

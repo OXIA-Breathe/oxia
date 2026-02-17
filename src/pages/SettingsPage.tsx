@@ -88,9 +88,12 @@ const SettingsPage = () => {
         <div className="container pt-24 pb-12 max-w-4xl">
           <h1 className="text-3xl font-bold mb-8 text-center">Settings</h1>
           <div className="space-y-6">
-            <Card className="border-none shadow-md bg-white">
+            <Card className="border-none shadow-md bg-card">
               <CardContent className="p-6">
-                <p className="text-center text-gray-800">Loading...</p>
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <div className="h-4 w-4 animate-breathe rounded-full bg-breath/50" />
+                  <span>Loading settings...</span>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -110,11 +113,11 @@ const SettingsPage = () => {
         <h1 className="text-3xl font-bold mb-8 text-center">Settings</h1>
         <div className="space-y-6">
           {/* Audio Settings Section */}
-          <Card className="border-none shadow-md bg-white">
+          <Card className="border-none shadow-md bg-card">
             <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-2">
                 <Volume2 className="h-5 w-5 text-breath" />
-                <span className="text-gray-800">Audio Settings</span>
+                <span className="text-card-foreground">Audio Settings</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -127,11 +130,11 @@ const SettingsPage = () => {
           </Card>
           
           {/* Notification Settings Section */}
-          <Card className="border-none shadow-md bg-white">
+          <Card className="border-none shadow-md bg-card">
             <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-breath" />
-                <span className="text-gray-800">Notification Settings</span>
+                <span className="text-card-foreground">Notification Settings</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -140,11 +143,11 @@ const SettingsPage = () => {
           </Card>
 
           {/* Other Settings Section */}
-          <Card className="border-none shadow-md bg-white">
+          <Card className="border-none shadow-md bg-card">
             <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-2">
                 <Settings2 className="h-5 w-5 text-breath" />
-                <span className="text-gray-800">Other Settings</span>
+                <span className="text-card-foreground">Other Settings</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -153,11 +156,11 @@ const SettingsPage = () => {
           </Card>
 
           {/* About Us Section */}
-          <Card className="border-none shadow-md bg-white">
+          <Card className="border-none shadow-md bg-card">
             <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-2">
                 <Info className="h-5 w-5 text-breath" />
-                <span className="text-gray-800">About Us</span>
+                <span className="text-card-foreground">About Us</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -165,10 +168,10 @@ const SettingsPage = () => {
               {/* About Accordion */}
               <Accordion type="single" collapsible>
                 <AccordionItem value="about" className="border-none">
-                  <AccordionTrigger className="text-gray-800 hover:text-breath">
+                  <AccordionTrigger className="text-card-foreground hover:text-breath">
                     About
                   </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 leading-relaxed">
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
                     I've lived with depression and anxiety for many years. Crowded events made my body buzz with discomfort, everyday challenges took a lot of mental energy, and over time the anxiety and stress became overwhelming.
                     <br /><br />
                     Then a friend sent me a link to a Wim Hof Method breathing exercise. I tried it. It changed how I understood my breath—and how my nervous system works.
@@ -184,7 +187,7 @@ const SettingsPage = () => {
                 </AccordionItem>
                 
                 <AccordionItem value="feedback" className="border-none">
-                  <AccordionTrigger className="text-gray-800 hover:text-breath">
+                  <AccordionTrigger className="text-card-foreground hover:text-breath">
                     Help us improve
                   </AccordionTrigger>
                   <AccordionContent>
@@ -193,7 +196,7 @@ const SettingsPage = () => {
                 </AccordionItem>
                 
                 <AccordionItem value="contact" className="border-none">
-                  <AccordionTrigger className="text-gray-800 hover:text-breath">
+                  <AccordionTrigger className="text-card-foreground hover:text-breath">
                     Contact us
                   </AccordionTrigger>
                   <AccordionContent>
@@ -203,64 +206,66 @@ const SettingsPage = () => {
               </Accordion>
 
               {/* Links Section */}
-              <div>
-                <div 
+                <div>
+                <button 
                   onClick={() => window.open('https://oxiabreathe.eu/terms/', '_blank')}
-                  className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
+                  className="py-4 w-full text-left hover:bg-accent transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
+                  aria-label="Open Terms & Conditions"
                 >
                   Terms & Conditions
-                </div>
-                <div 
+                </button>
+                <button 
                   onClick={() => window.open('https://oxiabreathe.eu/privacy-policy/', '_blank')}
-                  className="py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
+                  className="py-4 w-full text-left hover:bg-accent transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
+                  aria-label="Open Privacy Policy"
                 >
                   Privacy Policy
-                </div>
+                </button>
               </div>
             </CardContent>
           </Card>
 
           {/* Social Media Section */}
           <div className="flex gap-3">
-            {/* Instagram */}
-            <div 
+            <button 
               onClick={() => window.open('https://instagram.com/oxia_breathe/', '_blank')}
-              className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+              className="flex-1 bg-card/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 group"
+              aria-label="Follow us on Instagram"
             >
               <div className="flex items-center justify-center">
                 <Instagram className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
               </div>
-            </div>
+            </button>
 
-            {/* TikTok */}
-            <div 
+            <button 
               onClick={() => window.open('https://www.tiktok.com/@oxia_breathe', '_blank')}
-              className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+              className="flex-1 bg-card/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 group"
+              aria-label="Follow us on TikTok"
             >
               <div className="flex items-center justify-center">
                 <Music2 className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
               </div>
-            </div>
+            </button>
 
-            {/* Rate App Button */}
-            <div 
+            <button 
               onClick={handleRateApp}
-              className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+              className="flex-1 bg-card/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 group"
+              aria-label="Rate our app"
             >
               <div className="flex items-center justify-center">
                 <MessageCircleHeart className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
               </div>
-            </div>
+            </button>
 
-            {/* Share */}
-            <div 
+            <button 
               onClick={shareApp}
-              className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+              className="flex-1 bg-card/90 backdrop-blur-sm rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200 group"
+              aria-label="Share OXIA with friends"
             >
               <div className="flex items-center justify-center">
                 <Share className="h-6 w-6 text-breath group-hover:text-breath/80 transition-colors" />
               </div>
-            </div>
+            </button>
           </div>
 
           {/* OXIA Logo and Version */}
@@ -274,7 +279,7 @@ const SettingsPage = () => {
                 e.currentTarget.style.display = 'none';
               }}
             />
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-muted-foreground">
               Version - 1.0.0
             </div>
           </div>
