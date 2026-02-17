@@ -45,10 +45,7 @@ const OtherSettings = () => {
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({ 
-          emotion_tracking_enabled: enabled,
-          is_subscribed: enabled // For testing, also enable subscription
-        })
+        .update({ emotion_tracking_enabled: enabled })
         .eq("id", user.id);
 
       if (error) throw error;
