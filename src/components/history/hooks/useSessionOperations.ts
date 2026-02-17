@@ -110,9 +110,6 @@ export const useSessionOperations = (
     if (user) {
       // Delete from Supabase for authenticated users
       try {
-        console.log("=== DELETE OPERATION START ===");
-        console.log("Attempting to delete session:", session.id);
-        console.log("User ID:", user.id);
         
         // First delete any associated emotion tracking data
         await supabase
@@ -142,8 +139,6 @@ export const useSessionOperations = (
           throw error;
         }
         
-        console.log("Delete operation completed successfully");
-        console.log("=== DELETE OPERATION END ===");
         
         // Invalidate all related queries to refresh data immediately
         await Promise.all([
@@ -167,7 +162,7 @@ export const useSessionOperations = (
       }
     } else {
       // Delete locally for non-authenticated users
-      console.log("Deleting local session:", session.id);
+      
       deleteSession(session.id);
       toast({
         title: "Session deleted",
