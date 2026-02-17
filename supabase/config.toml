@@ -2,3 +2,6 @@ project_id = "phhyfmztzgkorxhasyaw"
 
 [functions.delete-user-account]
 verify_jwt = false
+
+[functions.ai-wellness-insights]
+verify_jwt = false
