@@ -9,6 +9,7 @@ import ProgressStats from "@/components/profile/ProgressStats";
 import MoodInsightsCard from "@/components/progress/MoodInsightsCard";
 import StressInsightsCard from "@/components/progress/StressInsightsCard";
 import ExerciseEffectivenessCard from "@/components/progress/ExerciseEffectivenessCard";
+import WellnessReportButton from "@/components/progress/WellnessReportButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddSessionModal from "@/components/history/AddSessionModal";
@@ -19,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
+import { useExerciseEffectiveness } from "@/hooks/useExerciseEffectiveness";
 
 const ConsistencyPage = () => {
   const { user } = useAuth();
@@ -27,6 +29,9 @@ const ConsistencyPage = () => {
   const queryClient = useQueryClient();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<Date | undefined>(undefined);
+
+  // Exercise effectiveness data to pass to the wellness report
+  const { data: effectivenessData } = useExerciseEffectiveness("all-time");
 
   // Fetch activity dates from breath sessions - using same query key pattern
   const { data: activityDates = [], isLoading } = useQuery({
@@ -129,7 +134,12 @@ const ConsistencyPage = () => {
   return (
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-8 text-center text-white">My Progress</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-white">My Progress</h1>
+          {user && (
+            <WellnessReportButton exerciseEffectiveness={effectivenessData || []} />
+          )}
+        </div>
         
         {isLoading ? (
           <div className="flex justify-center">
