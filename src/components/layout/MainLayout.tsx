@@ -17,7 +17,10 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
   const isExerciseDetailPage = location.pathname.startsWith("/breathe/");
   const isSettingsPage = location.pathname === "/settings";
   const isPrivacyPolicyPage = location.pathname === "/privacy-policy";
-  const showBackButton = isProfilePage || isExerciseDetailPage || isSettingsPage || isPrivacyPolicyPage;
+  const isJournalPage = location.pathname === "/journal";
+  const isHealthConnectPage = location.pathname === "/health-connect-preview";
+  const isHistoryPage = location.pathname === "/history";
+  const showBackButton = isProfilePage || isExerciseDetailPage || isSettingsPage || isPrivacyPolicyPage || isJournalPage || isHealthConnectPage || isHistoryPage;
 
   return (
     <div className={`flex flex-col md:flex-row min-h-screen ${fullHeight ? 'h-screen overflow-hidden' : ''} breathing-bg text-foreground`}>
@@ -32,7 +35,7 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
           {showBackButton ? (
             <button 
               onClick={() => window.history.back()}
-              className="w-12 h-12 flex items-center justify-center border border-border rounded-lg hover:bg-accent transition-colors"
+              className="w-12 h-12 flex items-center justify-center bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md hover:bg-card transition-all duration-200 active:scale-125 active:transition-none"
               aria-label="Go back"
             >
               <ArrowLeft className="h-5 w-5" />
