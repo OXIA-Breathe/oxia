@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import MainLayout from "@/components/layout/MainLayout";
+import { APP_VERSION } from "@/version";
 import NotificationSettings from "@/components/settings/NotificationSettings";
 import AudioSettings from "@/components/settings/AudioSettings";
 import OtherSettings from "@/components/settings/OtherSettings";
@@ -280,7 +281,7 @@ const SettingsPage = () => {
               }}
             />
             <div className="text-sm text-muted-foreground">
-              Version - 1.0.0
+              Version {APP_VERSION}
             </div>
           </div>
         </div>
