@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainLayout from "@/components/layout/MainLayout";
 import { APP_VERSION } from "@/version";
 import NotificationSettings from "@/components/settings/NotificationSettings";
@@ -18,6 +19,7 @@ import { useShareTracking } from "@/components/breathing/hooks/useShareTracking"
 const SettingsPage = () => {
   const { user, isLoading } = useAuth();
   const { shareApp } = useShareTracking();
+  const navigate = useNavigate();
   
   const handleRateApp = () => {
     const userAgent = navigator.userAgent.toLowerCase();
@@ -216,7 +218,7 @@ const SettingsPage = () => {
                   Terms & Conditions
                 </button>
                 <button 
-                  onClick={() => window.open('https://oxiabreathe.eu/privacy-policy/', '_blank')}
+                  onClick={() => navigate('/privacy-policy')}
                   className="py-4 w-full text-left hover:bg-accent transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
                   aria-label="Open Privacy Policy"
                 >
