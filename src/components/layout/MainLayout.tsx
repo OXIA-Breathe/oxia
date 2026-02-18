@@ -15,6 +15,9 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
   const isMobile = useIsMobile();
   const isProfilePage = location.pathname === "/profile";
   const isExerciseDetailPage = location.pathname.startsWith("/breathe/");
+  const isSettingsPage = location.pathname === "/settings";
+  const isPrivacyPolicyPage = location.pathname === "/privacy-policy";
+  const showBackButton = isProfilePage || isExerciseDetailPage || isSettingsPage || isPrivacyPolicyPage;
 
   return (
     <div className={`flex flex-col md:flex-row min-h-screen ${fullHeight ? 'h-screen overflow-hidden' : ''} breathing-bg text-foreground`}>
@@ -26,7 +29,7 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
       >
         {/* Header with navigation icons */}
         <div className="absolute top-8 left-6 right-6 flex justify-between items-center z-10">
-          {(isProfilePage || isExerciseDetailPage) ? (
+          {showBackButton ? (
             <button 
               onClick={() => window.history.back()}
               className="w-12 h-12 flex items-center justify-center border border-border rounded-lg hover:bg-accent transition-colors"
@@ -38,7 +41,7 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
             <div />
           )}
           
-          {(!isProfilePage && !isExerciseDetailPage) && (
+          {(!showBackButton) && (
             <Link 
               to="/profile" 
               state={{ from: location.pathname }}
