@@ -8,6 +8,7 @@ import SessionHistory from "@/components/history/SessionHistory";
 import ProgressStats from "@/components/profile/ProgressStats";
 import MoodInsightsCard from "@/components/progress/MoodInsightsCard";
 import StressInsightsCard from "@/components/progress/StressInsightsCard";
+import ExerciseEffectivenessCard from "@/components/progress/ExerciseEffectivenessCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddSessionModal from "@/components/history/AddSessionModal";
@@ -232,6 +233,9 @@ const ConsistencyPage = () => {
             </div>
             <div className="md:col-span-2">
               <StressInsightsCard />
+            </div>
+            <div className="md:col-span-2">
+              <ExerciseEffectivenessCard />
             </div>
             
             {/* Session History */}
