@@ -27,6 +27,7 @@ const HealthConnectPreview = lazy(() => import("./pages/HealthConnectPreview"));
 const WellnessJournalPage = lazy(() => import("./pages/WellnessJournalPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
+const EulaPage = lazy(() => import("./pages/EulaPage"));
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ const AppContent = () => {
             <Route path="/journal" element={<WellnessJournalPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsPage />} />
+            <Route path="/eula" element={<EulaPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

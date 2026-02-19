@@ -18,10 +18,11 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
   const isSettingsPage = location.pathname === "/settings";
   const isPrivacyPolicyPage = location.pathname === "/privacy-policy";
   const isTermsPage = location.pathname === "/terms";
+  const isEulaPage = location.pathname === "/eula";
   const isJournalPage = location.pathname === "/journal";
   const isHealthConnectPage = location.pathname === "/health-connect-preview";
   const isHistoryPage = location.pathname === "/history";
-  const showBackButton = isProfilePage || isExerciseDetailPage || isSettingsPage || isPrivacyPolicyPage || isTermsPage || isJournalPage || isHealthConnectPage || isHistoryPage;
+  const showBackButton = isProfilePage || isExerciseDetailPage || isSettingsPage || isPrivacyPolicyPage || isTermsPage || isEulaPage || isJournalPage || isHealthConnectPage || isHistoryPage;
 
   return (
     <div className={`flex flex-col md:flex-row min-h-screen ${fullHeight ? 'h-screen overflow-hidden' : ''} breathing-bg text-foreground`}>
