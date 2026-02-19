@@ -218,6 +218,13 @@ const SettingsPage = () => {
                   Terms & Conditions
                 </button>
                 <button 
+                  onClick={() => navigate('/eula')}
+                  className="py-4 w-full text-left hover:bg-accent transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
+                  aria-label="Open End User License Agreement"
+                >
+                  End User License Agreement
+                </button>
+                <button 
                   onClick={() => navigate('/privacy-policy')}
                   className="py-4 w-full text-left hover:bg-accent transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
                   aria-label="Open Privacy Policy"
