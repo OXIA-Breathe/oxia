@@ -4,24 +4,59 @@ import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, RefreshCw, Brain, Wind, Heart, TrendingUp } from "lucide-react";
+import { Sparkles, RefreshCw, Brain, Wind, Heart, TrendingUp, Activity, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import ReactMarkdown from "react-markdown";
 
-interface InsightSummary {
+interface WellnessSections {
+  practiceOverview: string;
+  stressPattern: string;
+  emotionalShift: string;
+  consistencyInsight: string;
+}
+
+interface WellnessSummary {
   totalSessions: number;
-  totalBreaths: number;
   totalMinutes: number;
   favExercise: string | null;
-  avgDuration: number;
+  consistencyDays: number;
+  longestStreak: number;
+  avgStressBefore: number | null;
+  avgStressAfter: number | null;
+  stressChangePct: number | null;
+  mostCommonMoodBefore: string | null;
+  mostCommonMoodAfter: string | null;
+  period: string;
 }
+
+const SECTION_CONFIG = [
+  {
+    key: "practiceOverview" as keyof WellnessSections,
+    title: "Practice Overview",
+    icon: Wind,
+  },
+  {
+    key: "stressPattern" as keyof WellnessSections,
+    title: "Stress Pattern",
+    icon: Activity,
+  },
+  {
+    key: "emotionalShift" as keyof WellnessSections,
+    title: "Emotional Shift",
+    icon: Heart,
+  },
+  {
+    key: "consistencyInsight" as keyof WellnessSections,
+    title: "Consistency Insight",
+    icon: Calendar,
+  },
+];
 
 const WellnessJournalPage = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
-  const [insights, setInsights] = useState<string | null>(null);
-  const [summary, setSummary] = useState<InsightSummary | null>(null);
+  const [sections, setSections] = useState<WellnessSections | null>(null);
+  const [summary, setSummary] = useState<WellnessSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
 
@@ -45,14 +80,23 @@ const WellnessJournalPage = () => {
         return;
       }
 
-      setInsights(data.insights);
-      setSummary(data.summary || null);
+      if (!data.hasData) {
+        toast({
+          title: "Not enough data",
+          description: data.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSections(data.sections);
+      setSummary(data.summary ?? null);
       setHasGenerated(true);
     } catch (err) {
       console.error("Failed to generate insights:", err);
       toast({
         title: "Something went wrong",
-        description: "Could not generate your wellness insights. Please try again.",
+        description: "Could not generate your wellness reflection. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -62,90 +106,130 @@ const WellnessJournalPage = () => {
 
   return (
     <MainLayout>
-      <div className="container pt-24 pb-12 max-w-3xl">
+      <div className="container pt-24 pb-12 max-w-2xl">
+
+        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2 text-white">
             <Sparkles className="h-7 w-7 text-white/80" />
             AI Wellness Journal
           </h1>
-          <p className="text-white/70">
-            Your personal AI analyzes your breathing & emotion data to give you tailored insights.
+          <p className="text-white/70 text-sm">
+            A structured reflection based on your last 30 days of breathing &amp; emotion data.
           </p>
         </div>
 
-        {/* Summary stats */}
+        {/* Stats strip — shown after generation */}
         {summary && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-            <StatCard icon={<Wind className="h-4 w-4" />} label="Sessions" value={summary.totalSessions} />
-            <StatCard icon={<Heart className="h-4 w-4" />} label="Breaths" value={summary.totalBreaths.toLocaleString()} />
-            <StatCard icon={<TrendingUp className="h-4 w-4" />} label="Minutes" value={summary.totalMinutes} />
-            <StatCard icon={<Brain className="h-4 w-4" />} label="Favorite" value={summary.favExercise || "—"} small />
+          <div className="grid grid-cols-4 gap-2 mb-6">
+            <StatChip icon={<Wind className="h-3.5 w-3.5" />} label="Sessions" value={summary.totalSessions} />
+            <StatChip icon={<TrendingUp className="h-3.5 w-3.5" />} label="Minutes" value={summary.totalMinutes} />
+            <StatChip icon={<Calendar className="h-3.5 w-3.5" />} label="Active days" value={summary.consistencyDays} />
+            <StatChip icon={<Brain className="h-3.5 w-3.5" />} label="Best streak" value={`${summary.longestStreak}d`} />
           </div>
         )}
 
-        {/* Main insights card */}
-        <Card className="bg-card/90 backdrop-blur-sm shadow-lg border-0">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Brain className="h-5 w-5 text-primary" />
-              {hasGenerated ? "Your Insights" : "Generate Your Wellness Report"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {!hasGenerated && !isLoading && (
-              <div className="text-center py-8 space-y-4">
-                <p className="text-muted-foreground">
-                  Tap below and our AI will review your recent breathing sessions and emotional patterns to create a personalized wellness report.
-                </p>
-                <Button
-                  onClick={generateInsights}
-                  className="bg-breath hover:bg-breath/90"
-                  size="lg"
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Generate Insights
-                </Button>
-              </div>
-            )}
-
-            {isLoading && (
-              <div className="flex flex-col items-center justify-center py-12 gap-3">
-                <RefreshCw className="h-8 w-8 text-breath animate-spin" />
-                <p className="text-muted-foreground text-sm">Analyzing your wellness data…</p>
-              </div>
-            )}
-
-            {hasGenerated && insights && !isLoading && (
-              <div className="space-y-4">
-                <div className="prose prose-sm max-w-none text-foreground">
-                  <ReactMarkdown>{insights}</ReactMarkdown>
-                </div>
-                <div className="pt-4 border-t border-border flex justify-center">
+        {/* Empty / loading state */}
+        {!hasGenerated && (
+          <Card className="border-0 shadow-md bg-card/90 backdrop-blur-sm">
+            <CardContent className="py-12 flex flex-col items-center gap-4 text-center">
+              {isLoading ? (
+                <>
+                  <RefreshCw className="h-8 w-8 text-primary animate-spin" />
+                  <p className="text-muted-foreground text-sm">Analysing your breathing &amp; emotion data…</p>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-10 w-10 text-primary/60" />
+                  <div className="space-y-1">
+                    <p className="font-medium text-card-foreground">Generate your reflection</p>
+                    <p className="text-muted-foreground text-sm max-w-xs">
+                      Our AI will review your last 30 days of sessions and emotion tracking to produce a calm, data-based report.
+                    </p>
+                  </div>
                   <Button
                     onClick={generateInsights}
-                    variant="outline"
-                    size="sm"
+                    className="mt-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                    size="lg"
                   >
-                    <RefreshCw className="h-3 w-3 mr-2" />
-                    Regenerate
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate Reflection
                   </Button>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Loading state when regenerating */}
+        {hasGenerated && isLoading && (
+          <div className="flex flex-col items-center justify-center py-16 gap-3">
+            <RefreshCw className="h-8 w-8 text-primary animate-spin" />
+            <p className="text-muted-foreground text-sm">Refreshing your reflection…</p>
+          </div>
+        )}
+
+        {/* 4 section cards */}
+        {hasGenerated && sections && !isLoading && (
+          <div className="space-y-3">
+            {SECTION_CONFIG.map(({ key, title, icon: Icon }) => (
+              <Card key={key} className="border-0 shadow-md bg-card/90 backdrop-blur-sm">
+                <CardHeader className="pb-2 pt-5 px-5">
+                  <CardTitle className="text-base flex items-center gap-2 text-card-foreground">
+                    <Icon className="h-4 w-4 text-primary shrink-0" />
+                    {title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-5 pb-5">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {sections[key]}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+
+            {/* Period label + Regenerate */}
+            <div className="flex items-center justify-between pt-1 px-1">
+              {summary?.period && (
+                <p className="text-xs text-white/50">{summary.period}</p>
+              )}
+              <Button
+                onClick={generateInsights}
+                variant="ghost"
+                size="sm"
+                className="text-white/60 hover:text-white/90 ml-auto"
+              >
+                <RefreshCw className="h-3 w-3 mr-1.5" />
+                Regenerate
+              </Button>
+            </div>
+
+            {/* Disclaimer */}
+            <p className="text-center text-xs text-white/40 pt-2 pb-1 px-4">
+              This reflection is based solely on your recorded activity within OXIA and is not medical advice.
+            </p>
+          </div>
+        )}
       </div>
     </MainLayout>
   );
 };
 
-const StatCard = ({ icon, label, value, small }: { icon: React.ReactNode; label: string; value: string | number; small?: boolean }) => (
-  <div className="bg-card/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm">
+const StatChip = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+}) => (
+  <div className="bg-card/80 backdrop-blur-sm rounded-xl py-3 px-2 text-center shadow-sm">
     <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
       {icon}
-      <span className="text-xs">{label}</span>
     </div>
-    <p className={`font-bold text-foreground ${small ? "text-xs truncate" : "text-lg"}`}>{value}</p>
+    <p className="font-bold text-card-foreground text-base leading-tight">{value}</p>
+    <p className="text-muted-foreground text-[10px] mt-0.5 leading-tight">{label}</p>
   </div>
 );
 
