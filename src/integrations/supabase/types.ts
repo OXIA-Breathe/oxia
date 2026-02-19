@@ -427,6 +427,57 @@ export type Database = {
         }
         Relationships: []
       }
+      wellness_reflections: {
+        Row: {
+          consistency_days: number
+          consistency_insight: string
+          created_at: string
+          emotional_shift: string
+          generated_at: string
+          id: string
+          longest_streak: number
+          period: string
+          practice_overview: string
+          stress_pattern: string
+          total_minutes: number
+          total_sessions: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consistency_days?: number
+          consistency_insight: string
+          created_at?: string
+          emotional_shift: string
+          generated_at?: string
+          id?: string
+          longest_streak?: number
+          period: string
+          practice_overview: string
+          stress_pattern: string
+          total_minutes?: number
+          total_sessions?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consistency_days?: number
+          consistency_insight?: string
+          created_at?: string
+          emotional_shift?: string
+          generated_at?: string
+          id?: string
+          longest_streak?: number
+          period?: string
+          practice_overview?: string
+          stress_pattern?: string
+          total_minutes?: number
+          total_sessions?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

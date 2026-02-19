@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
@@ -58,7 +58,57 @@ const WellnessJournalPage = () => {
   const [sections, setSections] = useState<WellnessSections | null>(null);
   const [summary, setSummary] = useState<WellnessSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingStored, setIsFetchingStored] = useState(true);
   const [hasGenerated, setHasGenerated] = useState(false);
+  const [storedGeneratedAt, setStoredGeneratedAt] = useState<string | null>(null);
+
+  // Load any previously saved reflection on mount
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchStored = async () => {
+      setIsFetchingStored(true);
+      try {
+        const { data, error } = await supabase
+          .from("wellness_reflections")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        if (data) {
+          setSections({
+            practiceOverview: data.practice_overview,
+            stressPattern: data.stress_pattern,
+            emotionalShift: data.emotional_shift,
+            consistencyInsight: data.consistency_insight,
+          });
+          setSummary({
+            totalSessions: data.total_sessions,
+            totalMinutes: data.total_minutes,
+            favExercise: null,
+            consistencyDays: data.consistency_days,
+            longestStreak: data.longest_streak,
+            avgStressBefore: null,
+            avgStressAfter: null,
+            stressChangePct: null,
+            mostCommonMoodBefore: null,
+            mostCommonMoodAfter: null,
+            period: data.period,
+          });
+          setStoredGeneratedAt(data.generated_at);
+          setHasGenerated(true);
+        }
+      } catch (err) {
+        console.error("Failed to load stored reflection:", err);
+      } finally {
+        setIsFetchingStored(false);
+      }
+    };
+
+    fetchStored();
+  }, [user]);
 
   if (!authLoading && !user) {
     return <Navigate to="/auth" replace />;
@@ -91,6 +141,7 @@ const WellnessJournalPage = () => {
 
       setSections(data.sections);
       setSummary(data.summary ?? null);
+      setStoredGeneratedAt(new Date().toISOString());
       setHasGenerated(true);
     } catch (err) {
       console.error("Failed to generate insights:", err);
@@ -103,6 +154,15 @@ const WellnessJournalPage = () => {
       setIsLoading(false);
     }
   };
+
+  // Format the "last generated" timestamp
+  const formattedGeneratedAt = storedGeneratedAt
+    ? new Date(storedGeneratedAt).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : null;
 
   return (
     <MainLayout>
@@ -129,8 +189,16 @@ const WellnessJournalPage = () => {
           </div>
         )}
 
-        {/* Empty / loading state */}
-        {!hasGenerated && (
+        {/* Initial loading state while fetching stored reflection */}
+        {isFetchingStored && (
+          <div className="flex flex-col items-center justify-center py-16 gap-3">
+            <RefreshCw className="h-6 w-6 text-primary animate-spin" />
+            <p className="text-muted-foreground text-sm">Loading your reflection…</p>
+          </div>
+        )}
+
+        {/* Empty / first-time state */}
+        {!isFetchingStored && !hasGenerated && (
           <Card className="border-0 shadow-md bg-card/90 backdrop-blur-sm">
             <CardContent className="py-12 flex flex-col items-center gap-4 text-center">
               {isLoading ? (
@@ -170,7 +238,7 @@ const WellnessJournalPage = () => {
         )}
 
         {/* 4 section cards */}
-        {hasGenerated && sections && !isLoading && (
+        {!isFetchingStored && hasGenerated && sections && !isLoading && (
           <div className="space-y-3">
             {SECTION_CONFIG.map(({ key, title, icon: Icon }) => (
               <Card key={key} className="border-0 shadow-md bg-card/90 backdrop-blur-sm">
@@ -188,11 +256,16 @@ const WellnessJournalPage = () => {
               </Card>
             ))}
 
-            {/* Period label + Regenerate */}
+            {/* Period label + Last generated + Regenerate */}
             <div className="flex items-center justify-between pt-1 px-1">
-              {summary?.period && (
-                <p className="text-xs text-white/50">{summary.period}</p>
-              )}
+              <div className="flex flex-col gap-0.5">
+                {summary?.period && (
+                  <p className="text-xs text-white/50">{summary.period}</p>
+                )}
+                {formattedGeneratedAt && (
+                  <p className="text-xs text-white/35">Generated {formattedGeneratedAt}</p>
+                )}
+              </div>
               <Button
                 onClick={generateInsights}
                 variant="ghost"
