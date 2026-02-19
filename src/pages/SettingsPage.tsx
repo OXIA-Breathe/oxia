@@ -209,9 +209,9 @@ const SettingsPage = () => {
               </Accordion>
 
               {/* Links Section */}
-                <div>
+              <div>
                 <button 
-                  onClick={() => window.open('https://oxiabreathe.eu/terms/', '_blank')}
+                  onClick={() => navigate('/terms')}
                   className="py-4 w-full text-left hover:bg-accent transition-colors rounded-md flex items-center text-breath hover:text-breath/80 font-medium"
                   aria-label="Open Terms & Conditions"
                 >

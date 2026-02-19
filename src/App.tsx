@@ -26,6 +26,7 @@ const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const HealthConnectPreview = lazy(() => import("./pages/HealthConnectPreview"));
 const WellnessJournalPage = lazy(() => import("./pages/WellnessJournalPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const TermsPage = lazy(() => import("./pages/TermsPage"));
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const AppContent = () => {
             <Route path="/health-connect-preview" element={<HealthConnectPreview />} />
             <Route path="/journal" element={<WellnessJournalPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
