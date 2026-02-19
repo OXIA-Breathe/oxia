@@ -230,6 +230,26 @@ Structure the output in exactly 4 sections using the tool provided.`;
 
     const sections = JSON.parse(toolCall.function.arguments);
 
+    // Upsert the reflection so the user can reload it without regenerating
+    await supabase
+      .from("wellness_reflections")
+      .upsert(
+        {
+          user_id: user.id,
+          practice_overview: sections.practiceOverview,
+          stress_pattern: sections.stressPattern,
+          emotional_shift: sections.emotionalShift,
+          consistency_insight: sections.consistencyInsight,
+          total_sessions: totalSessions,
+          total_minutes: totalMinutes,
+          consistency_days: consistencyDays,
+          longest_streak: longestStreak,
+          period: periodStr,
+          generated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
+
     return new Response(JSON.stringify({
       hasData: true,
       sections,
