@@ -90,10 +90,11 @@ const ConsistencyPage = () => {
               user_id: user.id,
               session_id: sessionData.id,
               pre_valence: emotionData.preValence,
-              pre_arousal: emotionData.preStress, // Map stress to arousal column
+              pre_arousal: emotionData.preStress,
               post_valence: emotionData.postValence,
-              post_arousal: emotionData.postStress, // Map stress to arousal column
+              post_arousal: emotionData.postStress,
               note: emotionData.note,
+              created_at: newSession.date, // Use session date so insights/effectiveness filters work correctly
             });
 
           if (emotionError) {
