@@ -52,10 +52,14 @@ Breathe with awareness and ease.
 File: `feature-graphic.png` (1024 x 500)
 
 ## Screenshots
-- `screenshot-1-breathing.jpg` — Home / Guided breathing session
-- `screenshot-2-exercises.jpg` — Browse breathing techniques
-- `screenshot-3-progress.jpg` — Learning resources
-- `screenshot-4-onboarding.jpg` — Welcome / Onboarding
+- `screenshot-1-home.png` — Home / Guided breathing session
+- `screenshot-2-exercises.png` — Browse breathing techniques
+- `screenshot-3-progress.png` — Progress & activity calendar
+- `screenshot-4-mood.png` — Mood insights & emotional tracking
+- `screenshot-5-stress.png` — Stress insights & charts
+- `screenshot-6-effectiveness.png` — Exercise effectiveness & sessions
+- `screenshot-7-wellness.png` — AI Wellness Journal
+- `screenshot-8-achievements.png` — Streaks & achievements
 
 ## App Category
 Health & Fitness
