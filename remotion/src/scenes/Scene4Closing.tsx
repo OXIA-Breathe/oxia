@@ -45,7 +45,7 @@ export const Scene4Closing = () => {
         marginBottom: 30,
       }}>
         <Img
-          src={staticFile("images/oxia-logo.png")}
+          src={staticFile("images/oxia-logo-dark.png")}
           style={{ height: 80, objectFit: "contain" }}
         />
       </div>
