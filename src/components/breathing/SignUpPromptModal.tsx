@@ -27,7 +27,7 @@ export const SignUpPromptModal = ({ open, onOpenChange }: SignUpPromptModalProps
         <DialogHeader>
           <DialogTitle className="text-2xl">Trial Limit Reached</DialogTitle>
           <DialogDescription className="text-base pt-2">
-            You've completed your 5 free trial sessions. Create an account to continue
+            You've completed your 10 free trial sessions. Create an account to continue
             your breathing practice with unlimited access.
           </DialogDescription>
         </DialogHeader>
