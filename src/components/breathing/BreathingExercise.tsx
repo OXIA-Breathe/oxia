@@ -72,7 +72,9 @@ const BreathingExercise = () => {
     
     // Increment trial counter when session completes (for unauthenticated users)
     if (!user) {
-      incrementTrial();
+      incrementTrial().then(() => {
+        // remainingSessions will update via state, but check after increment
+      });
       
       // Check if this was the last free session
       if (remainingSessions === 1) {
