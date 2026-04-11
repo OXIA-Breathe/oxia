@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 const ResetPasswordPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -37,8 +37,14 @@ const ResetPasswordPage = () => {
   }, [navigate, toast]);
 
   const validatePassword = (password: string) => {
-    if (password.length < 6) {
-      return "Password must be at least 6 characters long";
+    if (password.length < 8) {
+      return "Password must be at least 8 characters long";
+    }
+    if (!/[A-Z]/.test(password)) {
+      return "Password must contain at least one uppercase letter";
+    }
+    if (!/[0-9]/.test(password)) {
+      return "Password must contain at least one number";
     }
     return null;
   };
@@ -117,7 +123,7 @@ const ResetPasswordPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <div className="w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-8">Breathify</h1>
+        <h1 className="text-3xl font-bold text-center mb-8">OXIA</h1>
         
         <Card>
           <CardHeader>
@@ -135,7 +141,7 @@ const ResetPasswordPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your new password"
                   required
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
               <div className="space-y-2">
@@ -150,7 +156,7 @@ const ResetPasswordPage = () => {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Password must be at least 6 characters long
+                Password must be at least 8 characters, with one uppercase letter and one number
               </p>
             </CardContent>
             <CardContent>
