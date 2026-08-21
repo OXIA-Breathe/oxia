@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -8,6 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { validatePassword } from "@/lib/passwordValidation";
+
 
 /** Only allow same-origin relative paths as a post-login redirect target. */
 const safeNext = (value: string | null) =>
