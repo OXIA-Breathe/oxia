@@ -57,17 +57,18 @@ const ChangePasswordModal = ({ children }: ChangePasswordModalProps) => {
       return;
     }
 
-    const passwordError = validatePassword(formData.newPassword);
-    if (passwordError) {
+    const validation = validatePassword(formData.newPassword);
+    if (!validation.isValid) {
       toast({
         title: "Error",
-        description: passwordError,
+        description: validation.errors[0],
         variant: "destructive"
       });
       return;
     }
 
     setIsLoading(true);
+
 
     try {
       // First verify current password by attempting to sign in
