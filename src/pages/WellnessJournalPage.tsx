@@ -67,6 +67,7 @@ const WellnessJournalPage = () => {
   const [isFetchingStored, setIsFetchingStored] = useState(true);
   const [hasGenerated, setHasGenerated] = useState(false);
   const [storedGeneratedAt, setStoredGeneratedAt] = useState<string | null>(null);
+  const [premiumOpen, setPremiumOpen] = useState(false);
 
   // Load any previously saved reflection on mount
   useEffect(() => {
