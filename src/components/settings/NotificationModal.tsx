@@ -95,7 +95,7 @@ const NotificationModal = ({ open, onOpenChange, notification, onSave }: Notific
                   className={`h-10 w-10 rounded-full p-0 ${
                     selectedDays.includes(index)
                       ? "bg-breath hover:bg-breath/90 text-foreground"
-                      : "border-gray-300 hover:border-breath hover:text-breath"
+                      : "border-border hover:border-breath hover:text-breath"
                   }`}
                   onClick={() => toggleDay(index)}
                   title={fullDayNames[index]}
@@ -105,7 +105,7 @@ const NotificationModal = ({ open, onOpenChange, notification, onSave }: Notific
               ))}
             </div>
             {selectedDays.length === 0 && (
-              <p className="text-sm text-red-500">Please select at least one day</p>
+              <p className="text-sm text-destructive">Please select at least one day</p>
             )}
           </div>
 

@@ -109,7 +109,7 @@ const SessionHistory = ({ selectedDate }: SessionHistoryProps) => {
   }
 
   return (
-    <Card className="w-full max-w-3xl mx-auto border-none shadow-md bg-white">
+    <Card className="w-full max-w-3xl mx-auto shadow-md">
       <SessionHistoryHeader 
         selectedDate={selectedDate} 
         displaySessions={displaySessions} 

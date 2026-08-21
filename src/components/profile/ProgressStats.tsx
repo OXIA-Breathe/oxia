@@ -82,7 +82,7 @@ const ProgressStats = () => {
 
   if (isLoading) {
     return (
-      <Card className="border-none shadow-md bg-white">
+      <Card className="shadow-md">
         <CardContent className="p-6">
           <div className="text-center">Loading stats...</div>
         </CardContent>
@@ -91,13 +91,13 @@ const ProgressStats = () => {
   }
 
   return (
-    <Card className="border-none shadow-md bg-white">
+    <Card className="shadow-md">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2">
           <Wind className="h-5 w-5 text-breath" />
-          <span className="text-gray-800">Breathing Statistics</span>
+          <span className="text-foreground">Breathing Statistics</span>
         </CardTitle>
-        <CardDescription className="text-gray-600">
+        <CardDescription className="text-muted-foreground">
           Your overall breathing practice metrics
         </CardDescription>
       </CardHeader>
@@ -107,31 +107,31 @@ const ProgressStats = () => {
             <div className="text-2xl font-bold text-breath mb-1">
               {stats?.totalSessions || 0}
             </div>
-            <div className="text-sm text-gray-600">Total Sessions</div>
+            <div className="text-sm text-muted-foreground">Total Sessions</div>
           </div>
           
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600 mb-1">
+          <div className="text-center p-4 bg-primary/10 rounded-lg">
+            <div className="text-2xl font-bold text-primary mb-1">
               {stats?.totalTime && stats?.totalSessions 
                 ? formatAverageDuration(stats.totalTime, stats.totalSessions)
                 : "0m 0s"
               }
             </div>
-            <div className="text-sm text-gray-600">Avg. Duration</div>
+            <div className="text-sm text-muted-foreground">Avg. Duration</div>
           </div>
           
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600 mb-1">
+          <div className="text-center p-4 bg-success/10 rounded-lg">
+            <div className="text-2xl font-bold text-success mb-1">
               {stats?.totalBreaths || 0}
             </div>
-            <div className="text-sm text-gray-600">Total Breaths</div>
+            <div className="text-sm text-muted-foreground">Total Breaths</div>
           </div>
           
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600 mb-1">
+          <div className="text-center p-4 bg-accent rounded-lg">
+            <div className="text-2xl font-bold text-accent-foreground mb-1">
               {stats?.totalTime ? formatTime(stats.totalTime) : "0m 0s"}
             </div>
-            <div className="text-sm text-gray-600">Total Time</div>
+            <div className="text-sm text-muted-foreground">Total Time</div>
           </div>
         </div>
       </CardContent>

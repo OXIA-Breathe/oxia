@@ -15,9 +15,9 @@ const SessionHistoryHeader = ({ selectedDate, displaySessions }: SessionHistoryH
       <div>
         <CardTitle className="flex items-center gap-2">
           <History className="h-5 w-5 text-breath" />
-          <span className="text-gray-800">My Sessions</span>
+          <span className="text-foreground">My Sessions</span>
         </CardTitle>
-        <CardDescription className="text-gray-600">
+        <CardDescription className="text-muted-foreground">
           {selectedDate 
             ? `Showing ${displaySessions.length} session${displaySessions.length !== 1 ? 's' : ''} for selected date`
             : "View and export your breathing sessions"

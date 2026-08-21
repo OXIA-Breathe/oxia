@@ -113,7 +113,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
         <Button
           variant="ghost"
           onClick={handleSkip}
-          className="absolute top-6 right-6 text-muted-foreground hover:text-foreground hover:bg-white/10 z-10"
+          className="absolute top-6 right-6 text-muted-foreground hover:text-foreground hover:bg-foreground/10 z-10"
         >
           Skip
         </Button>

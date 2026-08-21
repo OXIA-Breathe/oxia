@@ -48,7 +48,7 @@ const NotificationCard = ({ notification, onEdit, onDelete }: NotificationCardPr
 
   return (
     <Card 
-      className="p-4 cursor-pointer hover:shadow-md transition-shadow bg-white/90 backdrop-blur-sm"
+      className="p-4 cursor-pointer hover:shadow-md transition-shadow bg-card/90 backdrop-blur-sm"
       onClick={handleCardClick}
     >
       <div className="flex items-center justify-between">
@@ -58,12 +58,12 @@ const NotificationCard = ({ notification, onEdit, onDelete }: NotificationCardPr
           </div>
           
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-800 truncate">
+            <h3 className="text-lg font-semibold text-foreground truncate">
               {notification.title.length > 8 
                 ? `${notification.title.slice(0, 5)}...` 
                 : notification.title}
             </h3>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {getDaysText()}
             </p>
           </div>
@@ -71,7 +71,7 @@ const NotificationCard = ({ notification, onEdit, onDelete }: NotificationCardPr
         
         <div className="flex items-center space-x-4 flex-shrink-0">
           <div className="text-right">
-            <p className="text-lg font-semibold text-gray-800">
+            <p className="text-lg font-semibold text-foreground">
               {formatTime(notification.time)}
             </p>
           </div>
@@ -80,7 +80,7 @@ const NotificationCard = ({ notification, onEdit, onDelete }: NotificationCardPr
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                  <Settings className="h-4 w-4 text-gray-500" />
+                  <Settings className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -91,7 +91,7 @@ const NotificationCard = ({ notification, onEdit, onDelete }: NotificationCardPr
             <Button 
               variant="ghost" 
               size="sm" 
-              className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
+              className="h-8 w-8 p-0 text-destructive hover:text-destructive/80"
               onClick={handleDeleteClick}
             >
               <Trash2 className="h-4 w-4" />

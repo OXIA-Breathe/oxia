@@ -310,7 +310,7 @@ const NotificationSettings = () => {
   if (isLoading) {
     return (
       <div className="w-full">
-        <p className="text-center text-gray-800">Loading your notification preferences...</p>
+        <p className="text-center text-foreground">Loading your notification preferences...</p>
       </div>
     );
   }
@@ -318,7 +318,7 @@ const NotificationSettings = () => {
   if (error) {
     return (
       <div className="w-full">
-        <p className="text-red-500 text-sm">
+        <p className="text-destructive text-sm">
           Failed to load your notification settings. Please try refreshing the page.
         </p>
       </div>
@@ -379,7 +379,7 @@ const NotificationSettings = () => {
         {settings.enabled && (
           <div className="space-y-4">
             {schedulesLoading ? (
-              <p className="text-center text-gray-600">Loading your notification schedules...</p>
+              <p className="text-center text-muted-foreground">Loading your notification schedules...</p>
             ) : (
               <>
                 {schedules && schedules.length > 0 && (

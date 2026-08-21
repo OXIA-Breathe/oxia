@@ -25,8 +25,8 @@ const MoodInsightsCard = () => {
   const overlayType = getOverlayType();
   
   const getMoodTrendIcon = () => {
-    if (summary.moodImprovement > 0.5) return <TrendingUp className="h-4 w-4 text-green-500" />;
-    if (summary.moodImprovement < -0.5) return <TrendingDown className="h-4 w-4 text-red-500" />;
+    if (summary.moodImprovement > 0.5) return <TrendingUp className="h-4 w-4 text-success" />;
+    if (summary.moodImprovement < -0.5) return <TrendingDown className="h-4 w-4 text-destructive" />;
     return <Minus className="h-4 w-4 text-muted-foreground" />;
   };
   
@@ -65,12 +65,12 @@ const MoodInsightsCard = () => {
   );
 
   return (
-    <Card className="border-none shadow-md bg-white relative overflow-hidden">
+    <Card className="shadow-md relative overflow-hidden">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between mb-1">
           <CardTitle className="flex items-center gap-2">
             <Heart className="h-5 w-5 text-rose-400" />
-            <span className="text-gray-800">Mood Insights</span>
+            <span className="text-foreground">Mood Insights</span>
           </CardTitle>
           <TimeFilterSelect
             value={filter}
@@ -79,7 +79,7 @@ const MoodInsightsCard = () => {
             onCustomRangeChange={setCustomRange}
           />
         </div>
-        <CardDescription className="text-gray-600">
+        <CardDescription className="text-muted-foreground">
           Track your emotional patterns before & after exercises
         </CardDescription>
       </CardHeader>
@@ -105,7 +105,7 @@ const MoodInsightsCard = () => {
                     </span>
                   </div>
                   {summary.moodImprovement !== 0 && (
-                    <span className={`font-medium ${summary.moodImprovement > 0 ? "text-green-600" : "text-red-600"}`}>
+                    <span className={`font-medium ${summary.moodImprovement > 0 ? "text-success" : "text-destructive"}`}>
                       {summary.moodImprovement > 0 ? "+" : ""}{summary.moodImprovement.toFixed(1)} avg
                     </span>
                   )}
