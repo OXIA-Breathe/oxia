@@ -95,7 +95,7 @@ export const ParametersModal = ({ exercise, onSave }: ParametersModalProps) => {
     setValue: (value: number) => void;
   }) => (
     <div className="flex items-center justify-between">
-      <span className="text-sm text-gray-600 min-w-[60px]">{label}</span>
+      <span className="text-sm text-muted-foreground min-w-[60px]">{label}</span>
       <div className="flex items-center gap-3">
         <Button
           variant="outline"
@@ -106,7 +106,7 @@ export const ParametersModal = ({ exercise, onSave }: ParametersModalProps) => {
           <Minus className="h-4 w-4" />
         </Button>
         <div className="text-center min-w-[40px]">
-          <p className="text-lg font-bold text-gray-800">{value}s</p>
+          <p className="text-lg font-bold text-foreground">{value}s</p>
         </div>
         <Button
           variant="outline"

@@ -9,24 +9,24 @@ interface SessionHistoryStatesProps {
 }
 
 export const LoadingState = () => (
-  <Card className="w-full max-w-3xl mx-auto border-none shadow-md bg-white">
+  <Card className="w-full max-w-3xl mx-auto shadow-md">
     <CardHeader className="pb-2">
       <CardTitle className="flex items-center gap-2">
         <History className="h-5 w-5 text-breath" />
-        <span className="text-gray-800">Loading sessions...</span>
+        <span className="text-foreground">Loading sessions...</span>
       </CardTitle>
     </CardHeader>
   </Card>
 );
 
 export const EmptyState = () => (
-  <Card className="w-full max-w-3xl mx-auto border-none shadow-md bg-white">
+  <Card className="w-full max-w-3xl mx-auto shadow-md">
     <CardHeader className="pb-2">
       <CardTitle className="flex items-center gap-2">
         <History className="h-5 w-5 text-breath" />
-        <span className="text-gray-800">My Sessions</span>
+        <span className="text-foreground">My Sessions</span>
       </CardTitle>
-      <CardDescription className="text-gray-600">
+      <CardDescription className="text-muted-foreground">
         View and export your breathing sessions
       </CardDescription>
     </CardHeader>

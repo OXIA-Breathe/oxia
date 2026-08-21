@@ -46,7 +46,7 @@ const StressInsightsCard = () => {
           ))}
           {payload.length === 2 && (
             <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
-              Change: <span className={payload[0].value > payload[1].value ? "text-green-600" : "text-red-600"}>
+              Change: <span className={payload[0].value > payload[1].value ? "text-success" : "text-destructive"}>
                 {payload[0].value > payload[1].value ? "-" : "+"}{Math.abs(payload[0].value - payload[1].value)}
               </span>
             </div>
@@ -58,12 +58,12 @@ const StressInsightsCard = () => {
   };
 
   return (
-    <Card className="border-none shadow-md bg-white relative overflow-hidden">
+    <Card className="shadow-md relative overflow-hidden">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between mb-1">
           <CardTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5 text-amber-500" />
-            <span className="text-gray-800">Stress Insights</span>
+            <Activity className="h-5 w-5 text-warning" />
+            <span className="text-foreground">Stress Insights</span>
           </CardTitle>
           <TimeFilterSelect
             value={filter}
@@ -72,7 +72,7 @@ const StressInsightsCard = () => {
             onCustomRangeChange={setCustomRange}
           />
         </div>
-        <CardDescription className="text-gray-600">
+        <CardDescription className="text-muted-foreground">
           Monitor your stress levels before & after exercises
         </CardDescription>
       </CardHeader>
@@ -93,15 +93,15 @@ const StressInsightsCard = () => {
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     {summary.stressReduction > 0 ? (
-                      <ArrowDown className="h-4 w-4 text-green-500" />
+                      <ArrowDown className="h-4 w-4 text-success" />
                     ) : (
-                      <ArrowDown className="h-4 w-4 text-red-500 rotate-180" />
+                      <ArrowDown className="h-4 w-4 text-destructive rotate-180" />
                     )}
                     <span className="text-muted-foreground">
                       Average stress reduction
                     </span>
                   </div>
-                  <span className={`font-medium ${summary.stressReduction > 0 ? "text-green-600" : "text-red-600"}`}>
+                  <span className={`font-medium ${summary.stressReduction > 0 ? "text-success" : "text-destructive"}`}>
                     {summary.stressReduction > 0 ? "-" : "+"}{Math.abs(Math.round(summary.stressReductionPercent))}%
                   </span>
                 </div>

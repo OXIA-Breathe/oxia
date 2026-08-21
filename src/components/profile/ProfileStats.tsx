@@ -108,7 +108,7 @@ interface StatCardProps {
 const StatCard = ({ title, value, unit, isFormatted = false }: StatCardProps) => (
   <div className="bg-accent/50 p-3 sm:p-4 rounded-lg flex flex-col items-center justify-center text-center">
     <h3 className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">{title}</h3>
-    <p className="text-xl sm:text-2xl font-semibold text-gray-800">
+    <p className="text-xl sm:text-2xl font-semibold text-foreground">
       {isFormatted ? value : value.toLocaleString()}
     </p>
     {!isFormatted && unit && (

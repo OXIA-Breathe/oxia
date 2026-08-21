@@ -35,13 +35,13 @@ export const ActivityCalendar = ({ activityDates, onDateSelect, selectedDate }: 
   };
 
   return (
-    <Card className="border-none shadow-md bg-white">
+    <Card className="shadow-md">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2">
           <CalendarIcon className="h-5 w-5 text-breath" />
-          <span className="text-gray-800">Activity Calendar</span>
+          <span className="text-foreground">Activity Calendar</span>
         </CardTitle>
-        <CardDescription className="text-gray-600">
+        <CardDescription className="text-muted-foreground">
           Click on highlighted days to filter sessions
         </CardDescription>
       </CardHeader>
@@ -65,7 +65,7 @@ export const ActivityCalendar = ({ activityDates, onDateSelect, selectedDate }: 
             day_disabled: "text-muted-foreground opacity-30 cursor-not-allowed"
           }}
         />
-        <p className="text-sm text-gray-600 mt-4">
+        <p className="text-sm text-muted-foreground mt-4">
           {selectedDate 
             ? `Showing sessions for ${selectedDate.toLocaleDateString()}`
             : "Highlighted days show your completed breathing sessions. Click to filter."

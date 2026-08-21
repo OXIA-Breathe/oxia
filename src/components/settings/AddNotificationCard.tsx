@@ -8,7 +8,7 @@ interface AddNotificationCardProps {
 const AddNotificationCard = ({ onClick }: AddNotificationCardProps) => {
   return (
     <Card 
-      className="p-4 cursor-pointer hover:shadow-md transition-shadow bg-white/90 backdrop-blur-sm border-dashed border-2 border-breath/30 hover:border-breath/50"
+      className="p-4 cursor-pointer hover:shadow-md transition-shadow bg-card/90 backdrop-blur-sm border-dashed border-2 border-breath/30 hover:border-breath/50"
       onClick={onClick}
     >
       <div className="flex items-center justify-center space-x-3 text-breath">

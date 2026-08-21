@@ -47,7 +47,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
                     e.stopPropagation();
                     onModify(session);
                   }}
-                  className="h-8 w-8 p-0 hover:bg-gray-100"
+                  className="h-8 w-8 p-0 hover:bg-muted"
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -58,7 +58,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
                     e.stopPropagation();
                     onDelete(session);
                   }}
-                  className="h-8 w-8 p-0 hover:bg-gray-100 text-red-600 hover:text-red-700"
+                  className="h-8 w-8 p-0 hover:bg-muted text-destructive hover:text-destructive/80"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -146,7 +146,7 @@ const SessionCard = ({ session, onModify, onDelete }: SessionCardProps) => {
                 }}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <Activity className="h-4 w-4 text-amber-400" />
+                  <Activity className="h-4 w-4 text-warning" />
                   <span className="text-sm font-medium">Stress Level</span>
                 </div>
                 <div className="flex items-center justify-center gap-4">
