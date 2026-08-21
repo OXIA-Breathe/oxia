@@ -124,14 +124,35 @@ const AuthPage = () => {
             <TabsContent value="sign-up">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
+                  <Label htmlFor="new-name">Your name</Label>
+                  <Input id="new-name" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="e.g. Kristo" required maxLength={60} autoComplete="name" className="rounded-xl h-11" />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="new-email">Email</Label>
-                  <Input id="new-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required className="rounded-xl h-11" />
+                  <Input id="new-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required autoComplete="email" className="rounded-xl h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="new-password">Password</Label>
-                  <Input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} className="rounded-xl h-11" />
+                  <Input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} autoComplete="new-password" className="rounded-xl h-11" />
                   <p className="text-xs text-muted-foreground">At least 8 characters, with an uppercase letter and a number.</p>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password">Repeat password</Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    autoComplete="new-password"
+                    aria-invalid={!!confirmPassword && confirmPassword !== password}
+                    className="rounded-xl h-11"
+                  />
+                </div>
+                {signUpError && (
+                  <p role="alert" className="text-sm text-destructive">{signUpError}</p>
+                )}
                 <Button type="submit" className="w-full rounded-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-2" disabled={isLoading}>
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
