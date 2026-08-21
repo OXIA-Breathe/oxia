@@ -79,3 +79,30 @@ export function getStrengthLabel(strength: PasswordStrength): string {
       return "Strong";
   }
 }
+
+const MISSING_LABELS: Record<string, string> = {
+  hasLowercase: "a lowercase letter",
+  hasUppercase: "an uppercase letter",
+  hasNumber: "a number",
+  hasSymbol: "a symbol",
+};
+
+/**
+ * Concise inline message: length first, otherwise only the missing character types.
+ * Returns null when the password is valid.
+ */
+export function summarizePasswordErrors(password: string): string | null {
+  const { isValid, requirements } = validatePassword(password);
+  if (isValid) return null;
+
+  if (!requirements.minLength) {
+    return `Use at least ${PASSWORD_RULES.minLength} characters.`;
+  }
+
+  const missing = (["hasLowercase", "hasUppercase", "hasNumber", "hasSymbol"] as const)
+    .filter((key) => !requirements[key])
+    .map((key) => MISSING_LABELS[key]);
+
+  return `Password is missing: ${missing.join(", ")}.`;
+}
+
