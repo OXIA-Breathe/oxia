@@ -61,6 +61,12 @@ const AuthPage = () => {
       return;
     }
 
+    const validation = validatePassword(password);
+    if (!validation.isValid) {
+      setSignUpError(validation.errors[0]);
+      return;
+    }
+
     setIsLoading(true);
     try {
       await signUp(email, password, name);
@@ -70,6 +76,7 @@ const AuthPage = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen breathing-bg text-foreground p-4">
