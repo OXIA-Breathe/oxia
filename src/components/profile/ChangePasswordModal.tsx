@@ -14,6 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Key } from "lucide-react";
+import { validatePassword } from "@/lib/passwordValidation";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+
+
 
 interface ChangePasswordModalProps {
   children: React.ReactNode;
@@ -33,18 +37,6 @@ const ChangePasswordModal = ({ children }: ChangePasswordModalProps) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const validatePassword = (password: string) => {
-    if (password.length < 8) {
-      return "Password must be at least 8 characters long";
-    }
-    if (!/[A-Z]/.test(password)) {
-      return "Password must contain at least one uppercase letter";
-    }
-    if (!/[0-9]/.test(password)) {
-      return "Password must contain at least one number";
-    }
-    return null;
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,17 +59,18 @@ const ChangePasswordModal = ({ children }: ChangePasswordModalProps) => {
       return;
     }
 
-    const passwordError = validatePassword(formData.newPassword);
-    if (passwordError) {
+    const validation = validatePassword(formData.newPassword);
+    if (!validation.isValid) {
       toast({
         title: "Error",
-        description: passwordError,
+        description: validation.errors[0],
         variant: "destructive"
       });
       return;
     }
 
     setIsLoading(true);
+
 
     try {
       // First verify current password by attempting to sign in
@@ -167,8 +160,11 @@ const ChangePasswordModal = ({ children }: ChangePasswordModalProps) => {
               onChange={(e) => handleInputChange("newPassword", e.target.value)}
               placeholder="Enter your new password"
               required
+              minLength={10}
             />
+            <PasswordStrengthMeter password={formData.newPassword} />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="confirm-password">Confirm New Password</Label>
             <Input
