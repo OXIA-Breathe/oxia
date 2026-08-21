@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { validatePassword } from "@/lib/passwordValidation";
+import { summarizePasswordErrors } from "@/lib/passwordValidation";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { PasswordInput } from "@/components/auth/PasswordInput";
+
 
 
 
@@ -62,15 +64,16 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    const validation = validatePassword(password);
-    if (!validation.isValid) {
+    const passwordError = summarizePasswordErrors(password);
+    if (passwordError) {
       toast({
         title: "Error",
-        description: validation.errors[0],
+        description: passwordError,
         variant: "destructive"
       });
       return;
     }
+
 
     setIsLoading(true);
 
@@ -127,35 +130,39 @@ const ResetPasswordPage = () => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="new-password">New Password</Label>
-                <Input
+                <PasswordInput
                   id="new-password"
-                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your new password"
+                  autoComplete="new-password"
                   required
                   minLength={10}
+                  aria-describedby="new-password-requirements"
                 />
-                <PasswordStrengthMeter password={password} />
+                <PasswordStrengthMeter password={password} id="new-password-requirements" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Confirm Password</Label>
-                <Input
+                <PasswordInput
                   id="confirm-password"
-                  type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm your new password"
+                  autoComplete="new-password"
                   required
                   minLength={10}
+                  aria-invalid={!!confirmPassword && confirmPassword !== password}
+                  aria-describedby="confirm-password-error"
                 />
+                <p id="confirm-password-error" className="text-xs text-destructive" aria-live="polite">
+                  {confirmPassword && confirmPassword !== password ? "Passwords do not match." : ""}
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground">
-                At least 10 characters, with upper/lowercase letters, a number and a symbol.
-              </p>
 
             </CardContent>
+
             <CardContent>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Updating..." : "Update Password"}
