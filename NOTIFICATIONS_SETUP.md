@@ -61,7 +61,7 @@ select cron.schedule(
   $$
   select net.http_post(
     url:='YOUR_SUPABASE_URL/functions/v1/check-notifications',
-    headers:='{"Content-Type": "application/json", "Authorization": "Bearer YOUR_ANON_KEY"}'::jsonb,
+    headers:='{"Content-Type": "application/json", "x-cron-secret": "YOUR_NOTIFICATIONS_CRON_SECRET"}'::jsonb,
     body:='{}'::jsonb
   ) as request_id;
   $$
@@ -70,7 +70,9 @@ select cron.schedule(
 
 Replace:
 - `YOUR_SUPABASE_URL` with your Supabase project URL
-- `YOUR_ANON_KEY` with your Supabase anon key
+- `YOUR_NOTIFICATIONS_CRON_SECRET` with the value of the `NOTIFICATIONS_CRON_SECRET` edge function secret
+
+The function rejects any request without a matching `x-cron-secret` header, and never returns user IDs or notification titles in its response.
 
 ## Testing the Notifications
 
