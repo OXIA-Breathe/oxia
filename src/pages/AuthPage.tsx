@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MailCheck } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { summarizePasswordErrors } from "@/lib/passwordValidation";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 
 
