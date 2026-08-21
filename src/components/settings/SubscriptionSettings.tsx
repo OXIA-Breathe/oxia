@@ -21,6 +21,8 @@ const SubscriptionSettings = () => {
     subscriptionPlan,
     subscriptionExpiresAt,
     isLoading,
+    isRefreshing,
+    refresh,
   } = usePremiumStatus();
   const { toast } = useToast();
   const [purchasingPlan, setPurchasingPlan] = useState<SubscriptionPlan | null>(null);
