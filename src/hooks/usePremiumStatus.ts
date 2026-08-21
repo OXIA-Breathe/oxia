@@ -5,12 +5,12 @@ import { useCallback, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 /**
- * Fallback polling interval. The subscription webhook is the source of truth,
- * but if a provider event is delayed the UI would otherwise stay stale until a
- * full reload. Five minutes is cheap (one tiny row read) and React Query pauses
- * polling automatically while the tab/app is in the background.
+ * The subscription webhook is the source of truth; this is only a safety net in
+ * case a provider event is delayed. Re-check premium status once a day (React
+ * Query pauses polling while the app is backgrounded). Focus/reconnect refetches
+ * respect the same 24h staleTime, so we never poll more often than daily.
  */
-const PREMIUM_REFRESH_INTERVAL = 5 * 60 * 1000;
+const PREMIUM_REFRESH_INTERVAL = 24 * 60 * 60 * 1000;
 
 export interface PremiumStatus {
   isPremium: boolean;
