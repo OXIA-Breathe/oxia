@@ -286,7 +286,7 @@ const BreathingExercise = () => {
         {/* Exercise Title */}
         {exerciseSettings.title && (
           <div className="text-center">
-            <h2 className="text-[1.5rem] font-semibold text-white">
+            <h2 className="text-[1.5rem] font-bold text-foreground">
               {exerciseSettings.title}
             </h2>
           </div>

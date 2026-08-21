@@ -89,7 +89,7 @@ const SettingsPage = () => {
     return (
       <MainLayout>
         <div className="container pt-24 pb-12 max-w-4xl">
-          <h1 className="text-3xl font-bold mb-8 text-center text-white">Settings</h1>
+          <h1 className="text-3xl font-bold mb-8 text-center text-foreground">Settings</h1>
           <div className="space-y-6">
             <Card className="border-none shadow-md bg-card">
               <CardContent className="p-6">
@@ -113,7 +113,7 @@ const SettingsPage = () => {
   return (
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-8 text-center text-white">Settings</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center text-foreground">Settings</h1>
         <div className="space-y-6">
           {/* Audio Settings Section */}
           <Card className="border-none shadow-md bg-card">

@@ -1,25 +1,29 @@
 
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
+
+/** Only allow same-origin relative paths as a post-login redirect target. */
+const safeNext = (value: string | null) =>
+  value && value.startsWith("/") && !value.startsWith("//") ? value : "/";
 
 const AuthPage = () => {
   const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const next = safeNext(params.get("next"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if user is already logged in
   if (user) {
-    return <Navigate to="/" />;
+    return <Navigate to={next} replace />;
   }
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -47,122 +51,75 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen breathing-bg text-white p-4">
-      {/* Back button */}
+    <div className="flex items-center justify-center min-h-screen breathing-bg text-foreground p-4">
       <button
         onClick={() => navigate("/")}
-        className="absolute top-8 left-6 w-12 h-12 flex items-center justify-center bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md hover:bg-card transition-colors"
+        className="absolute top-6 left-5 w-11 h-11 flex items-center justify-center bg-card/90 backdrop-blur-md border border-border/60 rounded-full shadow-[0_4px_14px_-6px_hsl(213_81%_19%_/_0.25)] hover:bg-card transition-all active:scale-95 text-foreground"
         aria-label="Go back"
       >
-        <ArrowLeft className="h-5 w-5 text-foreground" />
+        <ArrowLeft className="h-5 w-5" />
       </button>
 
       <div className="w-full max-w-md">
-        <div className="flex justify-center mb-8">
-          <img 
-            src="/lovable-uploads/6d9cc0f0-addd-45b1-abab-238892b91dbf.png" 
-            alt="OXIA Logo" 
-            className="h-12 w-auto object-contain" 
-            onError={(e) => {
-              console.error("Logo failed to load:", e);
-              e.currentTarget.style.display = 'none';
-            }}
+        <div className="flex flex-col items-center mb-8">
+          <img
+            src="/lovable-uploads/6d9cc0f0-addd-45b1-abab-238892b91dbf.png"
+            alt="OXIA Logo"
+            className="h-12 w-auto object-contain mb-4"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
+          <h1 className="text-2xl font-bold text-foreground">Welcome to OXIA</h1>
+          <p className="text-sm text-muted-foreground mt-1">Breathe with awareness, every day.</p>
         </div>
-        
-        <Tabs defaultValue="sign-in" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="sign-in">Sign In</TabsTrigger>
-            <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
-          </TabsList>
 
-          <TabsContent value="sign-in">
-            <Card className="bg-card/90 backdrop-blur-sm border-border/50">
-              <CardHeader>
-                <CardTitle>Sign In</CardTitle>
-                <CardDescription>Enter your email and password to sign in to your account</CardDescription>
-              </CardHeader>
-              <form onSubmit={handleSignIn}>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com" 
-                      required 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required 
-                    />
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-col space-y-2">
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Signing in..." : "Sign In"}
-                  </Button>
+        <div className="bg-card rounded-3xl border border-border/60 shadow-[0_8px_24px_-12px_hsl(213_81%_19%_/_0.18)] p-6">
+          <Tabs defaultValue="sign-in" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6 bg-secondary rounded-full p-1 h-auto">
+              <TabsTrigger value="sign-in" className="rounded-full data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm py-2">Sign In</TabsTrigger>
+              <TabsTrigger value="sign-up" className="rounded-full data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm py-2">Sign Up</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="sign-in">
+              <form onSubmit={handleSignIn} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required className="rounded-xl h-11" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="rounded-xl h-11" />
+                </div>
+                <Button type="submit" className="w-full rounded-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-2" disabled={isLoading}>
+                  {isLoading ? "Signing in..." : "Sign In"}
+                </Button>
+                <div className="flex justify-center">
                   <ForgotPasswordModal>
-                    <Button variant="link" className="text-sm p-0">
+                    <Button variant="link" className="text-sm p-0 text-muted-foreground hover:text-primary">
                       Forgot password?
                     </Button>
                   </ForgotPasswordModal>
-                </CardFooter>
+                </div>
               </form>
-            </Card>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="sign-up">
-            <Card className="bg-card/90 backdrop-blur-sm border-border/50">
-              <CardHeader>
-                <CardTitle>Sign Up</CardTitle>
-                <CardDescription>Create a new account to track your breathing journey</CardDescription>
-              </CardHeader>
-              <form onSubmit={handleSignUp}>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="new-email">Email</Label>
-                    <Input 
-                      id="new-email" 
-                      type="email" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com" 
-                      required 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="new-password">Password</Label>
-                    <Input 
-                      id="new-password" 
-                      type="password" 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required 
-                      minLength={6}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Password must be at least 6 characters long
-                    </p>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Creating account..." : "Create Account"}
-                  </Button>
-                </CardFooter>
+            <TabsContent value="sign-up">
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-email">Email</Label>
+                  <Input id="new-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required className="rounded-xl h-11" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">Password</Label>
+                  <Input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} className="rounded-xl h-11" />
+                  <p className="text-xs text-muted-foreground">At least 8 characters, with an uppercase letter and a number.</p>
+                </div>
+                <Button type="submit" className="w-full rounded-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-2" disabled={isLoading}>
+                  {isLoading ? "Creating account..." : "Create Account"}
+                </Button>
               </form>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        </div>
 
         <button
           onClick={() => navigate("/")}

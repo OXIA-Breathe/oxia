@@ -34,21 +34,25 @@ const SECTION_CONFIG = [
     key: "practiceOverview" as keyof WellnessSections,
     title: "Practice Overview",
     icon: Wind,
+    accent: "bg-[hsl(204_47%_77%)]", // Glacier
   },
   {
     key: "stressPattern" as keyof WellnessSections,
     title: "Stress Pattern",
     icon: Activity,
+    accent: "bg-[hsl(206_30%_53%)]", // Slate
   },
   {
     key: "emotionalShift" as keyof WellnessSections,
     title: "Emotional Shift",
     icon: Heart,
+    accent: "bg-[hsl(211_60%_33%)]", // Lapis
   },
   {
     key: "consistencyInsight" as keyof WellnessSections,
     title: "Consistency Insight",
     icon: Calendar,
+    accent: "bg-[hsl(213_81%_19%)]", // Abyss
   },
 ];
 
@@ -170,11 +174,11 @@ const WellnessJournalPage = () => {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2 text-white">
-            <Sparkles className="h-7 w-7 text-white/80" />
+          <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2 text-foreground">
+            <Sparkles className="h-7 w-7 text-muted-foreground" />
             AI Wellness Journal
           </h1>
-          <p className="text-white/70 text-sm">
+          <p className="text-muted-foreground text-sm">
             A structured reflection based on your last 30 days of breathing &amp; emotion data.
           </p>
         </div>
@@ -240,15 +244,16 @@ const WellnessJournalPage = () => {
         {/* 4 section cards */}
         {!isFetchingStored && hasGenerated && sections && !isLoading && (
           <div className="space-y-3">
-            {SECTION_CONFIG.map(({ key, title, icon: Icon }) => (
-              <Card key={key} className="border-0 shadow-md bg-card/90 backdrop-blur-sm">
-                <CardHeader className="pb-2 pt-5 px-5">
+            {SECTION_CONFIG.map(({ key, title, icon: Icon, accent }) => (
+              <Card key={key} className="border-0 shadow-md bg-card overflow-hidden relative">
+                <span className={`absolute left-0 top-0 bottom-0 w-1.5 ${accent}`} aria-hidden />
+                <CardHeader className="pb-2 pt-5 px-5 pl-6">
                   <CardTitle className="text-base flex items-center gap-2 text-card-foreground">
                     <Icon className="h-4 w-4 text-primary shrink-0" />
                     {title}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="px-5 pb-5">
+                <CardContent className="px-5 pl-6 pb-5">
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {sections[key]}
                   </p>
@@ -260,17 +265,17 @@ const WellnessJournalPage = () => {
             <div className="flex items-center justify-between pt-1 px-1">
               <div className="flex flex-col gap-0.5">
                 {summary?.period && (
-                  <p className="text-xs text-white/50">{summary.period}</p>
+                  <p className="text-xs text-muted-foreground/70">{summary.period}</p>
                 )}
                 {formattedGeneratedAt && (
-                  <p className="text-xs text-white/35">Generated {formattedGeneratedAt}</p>
+                  <p className="text-xs text-foreground/35">Generated {formattedGeneratedAt}</p>
                 )}
               </div>
               <Button
                 onClick={generateInsights}
                 variant="ghost"
                 size="sm"
-                className="text-white/60 hover:text-white/90 ml-auto"
+                className="text-muted-foreground hover:text-foreground ml-auto"
               >
                 <RefreshCw className="h-3 w-3 mr-1.5" />
                 Regenerate
@@ -278,7 +283,7 @@ const WellnessJournalPage = () => {
             </div>
 
             {/* Disclaimer */}
-            <p className="text-center text-xs text-white/40 pt-2 pb-1 px-4">
+            <p className="text-center text-xs text-foreground/40 pt-2 pb-1 px-4">
               This reflection is based solely on your recorded activity within OXIA and is not medical advice.
             </p>
           </div>

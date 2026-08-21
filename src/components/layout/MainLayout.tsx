@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { User, ArrowLeft } from "lucide-react";
@@ -13,31 +12,26 @@ interface MainLayoutProps {
 const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
   const location = useLocation();
   const isMobile = useIsMobile();
-  const isProfilePage = location.pathname === "/profile";
+  const backRoutes = [
+    "/profile", "/settings", "/privacy-policy", "/terms",
+    "/eula", "/journal", "/health-connect-preview", "/history",
+  ];
   const isExerciseDetailPage = location.pathname.startsWith("/breathe/");
-  const isSettingsPage = location.pathname === "/settings";
-  const isPrivacyPolicyPage = location.pathname === "/privacy-policy";
-  const isTermsPage = location.pathname === "/terms";
-  const isEulaPage = location.pathname === "/eula";
-  const isJournalPage = location.pathname === "/journal";
-  const isHealthConnectPage = location.pathname === "/health-connect-preview";
-  const isHistoryPage = location.pathname === "/history";
-  const showBackButton = isProfilePage || isExerciseDetailPage || isSettingsPage || isPrivacyPolicyPage || isTermsPage || isEulaPage || isJournalPage || isHealthConnectPage || isHistoryPage;
+  const showBackButton = backRoutes.includes(location.pathname) || isExerciseDetailPage;
 
   return (
     <div className={`flex flex-col md:flex-row min-h-screen ${fullHeight ? 'h-screen overflow-hidden' : ''} breathing-bg text-foreground`}>
-      <main 
-        className="flex-1 md:pl-16 lg:pl-0 w-full max-w-screen-xl mx-auto"
-        style={{ 
-          paddingBottom: isMobile ? 'calc(5rem + env(safe-area-inset-bottom))' : '0'
+      <main
+        className="flex-1 md:pl-16 lg:pl-0 w-full max-w-screen-xl mx-auto relative"
+        style={{
+          paddingBottom: isMobile ? 'calc(5.5rem + env(safe-area-inset-bottom))' : '0'
         }}
       >
-        {/* Header with navigation icons */}
-        <div className="absolute top-8 left-6 right-6 flex justify-between items-center z-10">
+        <div className="absolute top-6 left-5 right-5 flex justify-between items-center z-10">
           {showBackButton ? (
-            <button 
+            <button
               onClick={() => window.history.back()}
-              className="w-12 h-12 flex items-center justify-center bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md hover:bg-card transition-all duration-200 active:scale-125 active:transition-none"
+              className="w-11 h-11 flex items-center justify-center bg-card/90 backdrop-blur-md border border-border/60 rounded-full shadow-[0_4px_14px_-6px_hsl(213_81%_19%_/_0.25)] hover:bg-card transition-all active:scale-95 text-foreground"
               aria-label="Go back"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -45,19 +39,19 @@ const MainLayout = ({ children, fullHeight = false }: MainLayoutProps) => {
           ) : (
             <div />
           )}
-          
-          {(!showBackButton) && (
-            <Link 
-              to="/profile" 
+
+          {!showBackButton && (
+            <Link
+              to="/profile"
               state={{ from: location.pathname }}
-              className="w-12 h-12 flex items-center justify-center bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-md hover:bg-card transition-all duration-200 active:scale-125 active:transition-none"
+              className="ml-auto w-11 h-11 flex items-center justify-center bg-card/90 backdrop-blur-md border border-border/60 rounded-full shadow-[0_4px_14px_-6px_hsl(213_81%_19%_/_0.25)] hover:bg-card transition-all active:scale-95 text-foreground"
               aria-label="Go to profile"
             >
               <User className="h-5 w-5" />
             </Link>
           )}
         </div>
-        
+
         {children}
       </main>
       <Navbar />

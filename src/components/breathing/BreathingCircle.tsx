@@ -93,58 +93,59 @@ const BreathingCircle = ({
   
   return (
     <div className="relative flex flex-col items-center justify-center">
-      <div 
+      <div
         className={`${sizeClasses[size]} relative cursor-pointer`}
         onClick={onCircleClick}
       >
-        <div className="absolute inset-0 rounded-full border border-white border-opacity-30"></div>
-        
-        <div 
+        {/* Outer ring track (Glacier) */}
+        <div className="absolute inset-0 rounded-full border-[3px] border-glacier/60"></div>
+
+        <div
           ref={innerCircleRef}
           className="absolute inset-0 m-auto rounded-full flex items-center justify-center overflow-hidden"
-          style={{ 
+          style={{
             transformOrigin: 'center',
             width: '100%',
             height: '100%',
-            background: 'linear-gradient(145deg, #e0edf5 0%, #77A9E8 100%)',
-            boxShadow: 'inset 0 4px 20px rgba(0, 0, 0, 0.15), inset 0 -4px 15px rgba(255, 255, 255, 0.25), 0 0 30px rgba(119, 169, 232, 0.4)',
-            backdropFilter: 'blur(8px)'
+            background: 'linear-gradient(145deg, #A9CBE0 0%, #225688 100%)',
+            boxShadow: 'inset 0 4px 24px rgba(9, 44, 86, 0.20), inset 0 -4px 18px rgba(240, 245, 244, 0.30), 0 12px 40px -8px rgba(34, 86, 136, 0.45)',
           }}
         >
           {/* Fluid air-like animation layers */}
           {phase !== "idle" && !isPaused && (
             <>
-              <div className="absolute inset-0 animate-fluid-1" 
+              <div
+                className="absolute inset-0 animate-fluid-1"
                 style={{
-                  background: 'radial-gradient(circle at 30% 40%, rgba(255,255,255,0.4) 0%, transparent 50%)',
+                  background: 'radial-gradient(circle at 30% 40%, rgba(240,245,244,0.45) 0%, transparent 55%)',
                   filter: 'blur(20px)'
                 }}
               />
-              <div className="absolute inset-0 animate-fluid-2" 
+              <div
+                className="absolute inset-0 animate-fluid-2"
                 style={{
-                  background: 'radial-gradient(circle at 70% 60%, rgba(147,197,253,0.5) 0%, transparent 50%)',
+                  background: 'radial-gradient(circle at 70% 60%, rgba(169,203,224,0.55) 0%, transparent 55%)',
                   filter: 'blur(25px)'
                 }}
               />
-              <div className="absolute inset-0 animate-fluid-3" 
+              <div
+                className="absolute inset-0 animate-fluid-3"
                 style={{
-                  background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 60%)',
+                  background: 'radial-gradient(circle at 50% 50%, rgba(240,245,244,0.35) 0%, transparent 60%)',
                   filter: 'blur(30px)'
                 }}
               />
             </>
           )}
-          <div className="text-center flex flex-col items-center justify-center">
+          <div className="text-center flex flex-col items-center justify-center text-primary-foreground">
             {phase === "idle" ? (
-              <span className="text-[1.5rem] font-bold text-white">
-                Breathe
-              </span>
+              <span className="text-[1.5rem] font-bold">Breathe</span>
             ) : (
               <>
-                <span className="text-[1.5rem] font-bold text-white">
+                <span className="text-[1.5rem] font-bold">
                   {isPaused ? "Paused" : getPhaseDisplayName()}
                 </span>
-                <span className="text-[1.5rem] text-white mt-1">
+                <span className="text-[1.5rem] mt-1 tabular-nums opacity-90">
                   {Math.max(0, Math.ceil(timeRemaining))}
                 </span>
               </>

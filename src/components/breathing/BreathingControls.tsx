@@ -23,34 +23,33 @@ const BreathingControls = ({
 }: BreathingControlsProps) => {
   return (
     <div className="flex flex-col items-center gap-3">
-      {/* Trial info for unauthenticated users */}
       {!isAuthenticated && (
-        <p className="text-sm text-white/70">
-          {remainingSessions > 0 
+        <p className="text-sm text-muted-foreground">
+          {remainingSessions > 0
             ? `${remainingSessions} free ${remainingSessions === 1 ? 'session' : 'sessions'} remaining`
             : 'Sign up to continue'}
         </p>
       )}
-      
-      <div className="flex gap-8 sm:gap-10 px-4">
-      <Button 
-        onClick={onToggle} 
-        variant="default"
-        size="icon"
-        className="h-16 w-16 rounded-full"
-      >
-        {isActive ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-      </Button>
-      
-      <Button 
-        onClick={onReset} 
-        variant="outline"
-        size="icon"
-        className="h-16 w-16 rounded-full border-red-400 hover:bg-red-100 hover:text-red-600 text-red-500"
-        disabled={(phase === "idle" || phase === "countdown") && currentRepetition === 0}
-      >
-        <RotateCcw className="w-6 h-6" />
-      </Button>
+
+      <div className="flex gap-6 sm:gap-8 px-4">
+        <Button
+          onClick={onToggle}
+          variant="default"
+          size="icon"
+          className="h-16 w-16 rounded-full bg-primary text-primary-foreground shadow-[0_8px_24px_-8px_hsl(211_60%_33%_/_0.5)] hover:bg-primary/90"
+        >
+          {isActive ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
+        </Button>
+
+        <Button
+          onClick={onReset}
+          variant="outline"
+          size="icon"
+          className="h-16 w-16 rounded-full bg-card/80 backdrop-blur-sm border-border text-muted-foreground hover:text-foreground hover:bg-card"
+          disabled={(phase === "idle" || phase === "countdown") && currentRepetition === 0}
+        >
+          <RotateCcw className="w-6 h-6" />
+        </Button>
       </div>
     </div>
   );

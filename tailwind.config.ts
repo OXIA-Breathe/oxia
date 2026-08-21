@@ -20,8 +20,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Nunito', 'sans-serif'],
-				nunito: ['Nunito', 'sans-serif'],
+				sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+				jakarta: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -58,11 +58,17 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				// Custom breathing app colors
+				// OXIA palette
 				breath: {
-					light: '#e0edf5',
-					DEFAULT: '#77A9E8',
-					dark: '#5b8ed8',
+					light: '#F0F5F4',   // Quartz
+					DEFAULT: '#225688', // Lapis (primary brand)
+					dark: '#092C56',    // Abyss
 				},
+				quartz: '#F0F5F4',
+				glacier: '#A9CBE0',
+				slate: '#668CA9',
+				lapis: '#225688',
+				abyss: '#092C56',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

@@ -57,7 +57,7 @@ export const ActivityCalendar = ({ activityDates, onDateSelect, selectedDate }: 
           }}
           modifiersClassNames={{
             hasActivity: "bg-breath/20 text-breath font-semibold hover:bg-breath/30 cursor-pointer",
-            selected: "bg-breath text-white hover:bg-breath-dark hover:text-white"
+            selected: "bg-breath text-foreground hover:bg-breath-dark hover:text-foreground"
           }}
           classNames={{
             day_today: "bg-accent text-accent-foreground border border-accent-foreground/20",

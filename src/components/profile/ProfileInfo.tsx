@@ -124,9 +124,9 @@ const ProfileInfo = () => {
             onClick={() => setShowPhotoModal(true)}
             title="Click to change photo"
           >
-            <Avatar className="w-24 h-24 border">
+            <Avatar className="w-24 h-24 border-2 border-secondary shadow-[0_8px_24px_-12px_hsl(213_81%_19%_/_0.25)]">
               <AvatarImage src={profile?.avatar_url || ""} />
-              <AvatarFallback className="text-2xl">
+              <AvatarFallback className="text-2xl bg-secondary text-primary font-semibold">
                 {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -155,7 +155,7 @@ const ProfileInfo = () => {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <p className="text-lg font-medium text-gray-800">{profile?.display_name || "No name set"}</p>
+                <p className="text-lg font-semibold text-foreground">{profile?.display_name || "No name set"}</p>
                 <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} title="Edit name">
                   <Edit size={16} />
                 </Button>
@@ -167,7 +167,7 @@ const ProfileInfo = () => {
             <h3 className="text-sm font-medium text-muted-foreground mb-1">Email</h3>
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-muted-foreground" />
-              <p className="text-gray-800">{user?.email}</p>
+              <p className="text-foreground">{user?.email}</p>
             </div>
           </div>
         </div>

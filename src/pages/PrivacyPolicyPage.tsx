@@ -42,8 +42,8 @@ const PrivacyPolicyPage = () => {
       <div className="container pt-24 pb-12 max-w-2xl">
         {/* Title — outside card */}
         <div className="mb-6 space-y-1">
-          <h1 className="text-3xl font-bold text-white">Privacy Policy</h1>
-          <p className="text-white/60 text-sm">Effective: February 19, 2026</p>
+          <h1 className="text-3xl font-bold text-foreground">Privacy Policy</h1>
+          <p className="text-muted-foreground text-sm">Effective: February 19, 2026</p>
         </div>
 
         {/* Big card wrapping all content */}
@@ -297,7 +297,7 @@ const PrivacyPolicyPage = () => {
               e.currentTarget.style.display = "none";
             }}
           />
-          <div className="text-sm text-white/50">© 2026 Epner Solutions OÜ · Version {APP_VERSION}</div>
+          <div className="text-sm text-muted-foreground/70">© 2026 Epner Solutions OÜ · Version {APP_VERSION}</div>
         </div>
       </div>
     </MainLayout>

@@ -136,7 +136,7 @@ const ConsistencyPage = () => {
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-4xl">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-white">My Progress</h1>
+          <h1 className="text-3xl font-bold text-foreground">My Progress</h1>
           {user && (
             <WellnessReportButton exerciseEffectiveness={effectivenessData || []} />
           )}
@@ -266,7 +266,7 @@ const ConsistencyPage = () => {
                         <p className="text-sm text-muted-foreground">Get personalized insights from your data</p>
                       </div>
                     </div>
-                    <Button asChild className="bg-breath hover:bg-breath/90">
+                    <Button asChild className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground">
                       <Link to="/journal">Open</Link>
                     </Button>
                   </div>
@@ -280,7 +280,7 @@ const ConsistencyPage = () => {
         {user && (
           <Button
             onClick={() => setIsAddModalOpen(true)}
-            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-2 border-white/80 transition-all duration-200 active:scale-125 active:transition-none"
+            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_12px_28px_-8px_hsl(213_81%_19%_/_0.45)] transition-all duration-200 active:scale-95"
             style={{
               bottom: 'calc(6rem + env(safe-area-inset-bottom))'
             }}

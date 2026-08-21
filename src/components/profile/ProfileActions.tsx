@@ -16,7 +16,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Trash2, Key, RotateCcw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { LogOut, Trash2, Key, RotateCcw, ShieldAlert } from "lucide-react";
 import ChangePasswordModal from "./ChangePasswordModal";
 
 const ProfileActions = () => {
@@ -25,7 +27,12 @@ const ProfileActions = () => {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
   const [isResetting, setIsResetting] = useState(false);
+
+  const CONFIRM_PHRASE = "DELETE";
+  const canDelete = confirmText.trim().toUpperCase() === CONFIRM_PHRASE;
 
   const handleLogout = async () => {
     try {
@@ -47,32 +54,45 @@ const ProfileActions = () => {
     }
   };
 
+  const closeDeleteDialog = () => {
+    if (isDeleting) return;
+    setDeleteOpen(false);
+    setConfirmText("");
+  };
+
   const handleDeleteAccount = async () => {
+    if (!canDelete) return;
     try {
       setIsDeleting(true);
-      
-      // Call the secure edge function to delete the account
-      const { data, error } = await supabase.functions.invoke('delete-user-account');
-      
+
+      // Immediate acknowledgement that the server has the request.
+      toast({
+        title: "Request received",
+        description: "We're processing your account deletion…",
+      });
+
+      const { data, error } = await supabase.functions.invoke("delete-user-account");
       if (error) throw error;
-      
-      if (data?.error) {
-        throw new Error(data.error);
-      }
-      
-      // Sign out the user after deletion
-      await signOut();
-      navigate("/auth");
-      
+      if (data?.error) throw new Error(data.error);
+
       toast({
         title: "Account deleted",
-        description: "Your account has been successfully deleted"
+        description: "Your account and all related data have been removed.",
       });
+
+      setDeleteOpen(false);
+      setConfirmText("");
+
+      // Sign out and send the user back to the landing page in a signed-out state.
+      await signOut();
+      navigate("/", { replace: true });
     } catch (error: any) {
       toast({
-        title: "Error deleting account",
-        description: error.message || "An error occurred while deleting your account",
-        variant: "destructive"
+        title: "Couldn't delete your account",
+        description:
+          error.message ||
+          "Something went wrong on our side. Please try again in a moment.",
+        variant: "destructive",
       });
     } finally {
       setIsDeleting(false);
@@ -146,32 +166,32 @@ const ProfileActions = () => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <ChangePasswordModal>
-        <Button variant="outline" className="flex items-center gap-2">
-          <Key className="w-4 h-4" />
+        <Button variant="outline" className="w-full justify-start gap-2 rounded-full border-border/70 bg-secondary/40 hover:bg-secondary text-foreground">
+          <Key className="w-4 h-4 text-primary" />
           <span>Change Password</span>
         </Button>
       </ChangePasswordModal>
-      
-      <Button 
-        variant="outline" 
-        className="flex items-center gap-2" 
+
+      <Button
+        variant="outline"
+        className="w-full justify-start gap-2 rounded-full border-border/70 bg-secondary/40 hover:bg-secondary text-foreground"
         onClick={handleLogout}
         disabled={isLoggingOut}
       >
-        <LogOut className="w-4 h-4" />
+        <LogOut className="w-4 h-4 text-primary" />
         <span>{isLoggingOut ? "Logging out..." : "Log Out"}</span>
       </Button>
-      
+
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-2 text-orange-600 border-orange-200 hover:bg-orange-50"
+          <Button
+            variant="outline"
+            className="w-full justify-start gap-2 rounded-full border-border/70 bg-secondary/40 hover:bg-secondary text-foreground"
             disabled={isResetting}
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-4 h-4 text-primary" />
             <span>{isResetting ? "Resetting..." : "Reset Stats"}</span>
           </Button>
         </AlertDialogTrigger>
@@ -188,38 +208,97 @@ const ProfileActions = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleResetStats} className="bg-orange-600 hover:bg-orange-700">
+            <AlertDialogAction onClick={handleResetStats} className="bg-primary hover:bg-primary/90">
               Reset Stats
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      
-      <AlertDialog>
+
+      <AlertDialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          if (!open && isDeleting) return;
+          setDeleteOpen(open);
+          if (!open) setConfirmText("");
+        }}
+      >
         <AlertDialogTrigger asChild>
-          <Button 
-            variant="destructive" 
-            className="flex items-center gap-2"
+          <Button
+            variant="outline"
+            className="w-full justify-start gap-2 rounded-full border-destructive/30 bg-destructive/5 text-destructive hover:bg-destructive/10 hover:text-destructive"
             disabled={isDeleting}
+            aria-haspopup="dialog"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-4 h-4" aria-hidden="true" />
             <span>{isDeleting ? "Deleting..." : "Delete Account"}</span>
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent
+          className="rounded-3xl border-border/60"
+          aria-labelledby="delete-account-title"
+          aria-describedby="delete-account-description"
+          onEscapeKeyDown={(e) => {
+            if (isDeleting) e.preventDefault();
+          }}
+        >
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove all your data from our servers.
+            <div
+              className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 text-destructive mb-2"
+              aria-hidden="true"
+            >
+              <ShieldAlert className="h-6 w-6" />
+            </div>
+            <AlertDialogTitle id="delete-account-title" className="text-center text-foreground">
+              Delete your OXIA account?
+            </AlertDialogTitle>
+            <AlertDialogDescription
+              id="delete-account-description"
+              className="text-center text-muted-foreground"
+            >
+              This permanently removes your profile, sessions, streaks, achievements,
+              and journal reflections. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteAccount}>
-              Delete Account
+
+          <div className="space-y-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-4">
+            <Label htmlFor="confirm-delete" className="text-sm text-foreground">
+              Type <span className="font-semibold text-destructive">{CONFIRM_PHRASE}</span> to confirm
+            </Label>
+            <Input
+              id="confirm-delete"
+              value={confirmText}
+              onChange={(e) => setConfirmText(e.target.value)}
+              placeholder={CONFIRM_PHRASE}
+              autoComplete="off"
+              aria-label={`Type ${CONFIRM_PHRASE} to confirm account deletion`}
+              aria-required="true"
+              aria-invalid={confirmText.length > 0 && !canDelete}
+              className="rounded-xl bg-card"
+            />
+          </div>
+
+          <AlertDialogFooter className="gap-2 sm:gap-2">
+            <AlertDialogCancel
+              onClick={closeDeleteDialog}
+              disabled={isDeleting}
+              className="rounded-full"
+              aria-label="Cancel and keep my account"
+            >
+              Cancel — keep my account
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleDeleteAccount();
+              }}
+              disabled={!canDelete || isDeleting}
+              aria-label="Permanently delete my account"
+              className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              {isDeleting ? "Deleting..." : "Delete forever"}
             </AlertDialogAction>
-            </AlertDialogFooter>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>

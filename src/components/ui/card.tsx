@@ -1,4 +1,3 @@
-
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -10,7 +9,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      "rounded-3xl border border-border/60 bg-card text-card-foreground shadow-[0_8px_24px_-12px_hsl(213_81%_19%_/_0.18)]",
       className
     )}
     {...props}
@@ -37,7 +36,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "text-2xl font-bold leading-none tracking-tight text-foreground",
       className
     )}
     {...props}
@@ -77,7 +76,7 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-// Adding StatsCard for the breathing app stats display
+// Tile-style stats card used on the home/breathing screen and stat strips.
 const StatsCard = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
@@ -89,14 +88,14 @@ const StatsCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "flex flex-col items-center justify-center text-center",
+      "flex flex-col items-center justify-center text-center rounded-2xl bg-card/90 backdrop-blur-sm border border-border/50 px-3 py-3 shadow-[0_4px_14px_-8px_hsl(213_81%_19%_/_0.20)]",
       fullWidth ? "w-full" : "flex-1",
       className
     )}
     {...props}
   >
-    <p className="text-2xl font-bold text-white font-nunito">{value}</p>
-    <p className="text-base font-semibold text-white/70 mt-1 font-nunito">{label}</p>
+    <p className="text-xl font-bold text-foreground tabular-nums">{value}</p>
+    <p className="text-xs font-medium text-muted-foreground mt-0.5 uppercase tracking-wide">{label}</p>
   </div>
 ))
 StatsCard.displayName = "StatsCard"

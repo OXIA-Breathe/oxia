@@ -87,8 +87,8 @@ const LearnPage = () => {
   return (
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-4 text-center text-white">Learning Resources</h1>
-        <p className="text-center text-white/80 mb-8">
+        <h1 className="text-3xl font-bold mb-4 text-center text-foreground">Learning Resources</h1>
+        <p className="text-center text-muted-foreground mb-8">
           Expand your understanding of why conscious breathing transforms your life.
         </p>
         
