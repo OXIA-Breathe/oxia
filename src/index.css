@@ -4,83 +4,51 @@
 
 @layer base {
   :root {
-    --background: 217 70% 95%;
-    --foreground: 217 80% 15%;
+    /* OXIA palette
+       Quartz  #F0F5F4 — 170 18% 96%
+       Glacier #A9CBE0 — 204 47% 77%
+       Slate   #668CA9 — 206 30% 53%
+       Lapis   #225688 — 211 60% 33%
+       Abyss   #092C56 — 213 81% 19% */
+
+    --background: 170 18% 96%;       /* Quartz */
+    --foreground: 213 81% 19%;        /* Abyss */
 
     --card: 0 0% 100%;
-    --card-foreground: 217 80% 15%;
+    --card-foreground: 213 81% 19%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 217 80% 15%;
+    --popover-foreground: 213 81% 19%;
 
-    --primary: 217 70% 69%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 211 60% 33%;           /* Lapis */
+    --primary-foreground: 170 18% 96%;/* Quartz */
 
-    --secondary: 217 50% 92%;
-    --secondary-foreground: 217 70% 30%;
+    --secondary: 204 47% 92%;         /* Glacier tint */
+    --secondary-foreground: 211 60% 33%;
 
-    --muted: 217 50% 92%;
-    --muted-foreground: 217 30% 40%;
+    --muted: 204 30% 94%;
+    --muted-foreground: 206 30% 40%;  /* Slate-ish */
 
-    --accent: 217 50% 92%;
-    --accent-foreground: 217 70% 30%;
+    --accent: 204 47% 88%;
+    --accent-foreground: 211 60% 33%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 170 18% 96%;
 
-    --border: 217 30% 85%;
-    --input: 217 30% 85%;
-    --ring: 217 70% 69%;
+    --border: 204 35% 86%;
+    --input: 204 35% 86%;
+    --ring: 211 60% 33%;
 
     --radius: 1.5rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 217 50% 10%;
-    --foreground: 217 30% 95%;
-
-    --card: 217 50% 15%;
-    --card-foreground: 217 30% 95%;
-
-    --popover: 217 50% 15%;
-    --popover-foreground: 217 30% 95%;
-
-    --primary: 217 70% 60%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 217 50% 20%;
-    --secondary-foreground: 217 30% 95%;
-
-    --muted: 217 50% 20%;
-    --muted-foreground: 217 30% 70%;
-
-    --accent: 217 50% 20%;
-    --accent-foreground: 217 30% 95%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217 50% 20%;
-    --input: 217 50% 20%;
-    --ring: 217 70% 60%;
-
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 170 18% 96%;
+    --sidebar-foreground: 213 81% 19%;
+    --sidebar-primary: 211 60% 33%;
+    --sidebar-primary-foreground: 170 18% 96%;
+    --sidebar-accent: 204 47% 92%;
+    --sidebar-accent-foreground: 211 60% 33%;
+    --sidebar-border: 204 35% 86%;
+    --sidebar-ring: 211 60% 33%;
   }
 }
 
@@ -90,7 +58,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-nunito;
+    @apply bg-background text-foreground font-sans;
   }
 
   /* Ensure text doesn't get too small on tiny screens */
@@ -137,8 +105,8 @@
 /* Custom styles for the breathing app */
 .breathing-circle {
   @apply transition-all rounded-full flex items-center justify-center relative;
-  background-color: rgba(59, 130, 246, 0.3);
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+  background-color: hsl(211 60% 33% / 0.28);
+  background-image: linear-gradient(180deg, hsl(170 18% 96% / 0.45) 0%, hsl(170 18% 96% / 0) 100%);
 }
 
 .breathing-circle.inhale {
@@ -167,7 +135,7 @@
 }
 
 .breathing-bg {
-  background: linear-gradient(to bottom right, #77a9e8 0%, #e0edf5 100%);
+  background: linear-gradient(to bottom, #F0F5F4 0%, #A9CBE0 100%);
   background-attachment: fixed;
 }
 

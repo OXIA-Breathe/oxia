@@ -113,7 +113,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
         <Button
           variant="ghost"
           onClick={handleSkip}
-          className="absolute top-6 right-6 text-white/80 hover:text-white hover:bg-white/10 z-10"
+          className="absolute top-6 right-6 text-muted-foreground hover:text-foreground hover:bg-white/10 z-10"
         >
           Skip
         </Button>
@@ -135,29 +135,29 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
                   )}
 
                   {/* Animated Icon */}
-                  <div className="text-white mb-8">{slide.icon}</div>
+                  <div className="text-foreground mb-8">{slide.icon}</div>
 
                   {/* Heading */}
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{slide.heading}</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">{slide.heading}</h2>
 
                   {/* Paragraph */}
-                  <p className="text-lg md:text-xl text-white/90 whitespace-pre-line max-w-xl leading-relaxed">
+                  <p className="text-lg md:text-xl text-foreground whitespace-pre-line max-w-xl leading-relaxed">
                     {slide.paragraph}
                   </p>
 
                   {/* Final slide buttons */}
                   {slide.isFinal && (
-                    <div className="flex flex-col sm:flex-row gap-4 mt-8 w-full max-w-md">
+                    <div className="flex flex-col sm:flex-row gap-3 mt-8 w-full max-w-md">
                       <Button
                         onClick={handleCreateAccount}
-                        className="flex-1 bg-white text-breath hover:bg-white/90 font-semibold text-lg py-6"
+                        className="flex-1 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-base py-6"
                       >
                         Create account
                       </Button>
                       <Button
                         onClick={handleTry}
                         variant="outline"
-                        className="flex-1 border-2 border-white text-white bg-transparent hover:bg-white/10 font-semibold text-lg py-6"
+                        className="flex-1 rounded-full border border-primary/30 text-primary bg-card hover:bg-secondary font-semibold text-base py-6"
                       >
                         Try
                       </Button>
@@ -168,7 +168,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
                   {!slide.isFinal && (
                     <Button
                       onClick={handleNext}
-                      className="mt-8 bg-white/20 text-white border border-white/30 hover:bg-white/30 px-8 py-6 text-lg"
+                      className="mt-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-10 py-6 text-base font-semibold"
                     >
                       Next
                     </Button>
@@ -185,8 +185,8 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === current ? "bg-white w-8" : "bg-white/40 hover:bg-white/60"
+              className={`h-2 rounded-full transition-all ${
+                index === current ? "bg-primary w-8" : "bg-primary/25 hover:bg-primary/40 w-2"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />

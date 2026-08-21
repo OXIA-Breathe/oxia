@@ -41,26 +41,26 @@ const ProfileStreaks = () => {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
-        <StreakCard 
-          title="Current Breath Streak" 
-          value={streakData.current_breath_streak || 0} 
-          color="bg-breath/10 text-breath"
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StreakCard
+          title="Current Breath"
+          value={streakData.current_breath_streak || 0}
+          tone="primary"
         />
-        <StreakCard 
-          title="Current Login Streak" 
-          value={streakData.current_login_streak || 0} 
-          color="bg-blue-50 text-blue-600"
+        <StreakCard
+          title="Current Login"
+          value={streakData.current_login_streak || 0}
+          tone="secondary"
         />
-        <StreakCard 
-          title="Longest Breath Streak" 
-          value={streakData.longest_breath_streak || 0} 
-          color="bg-green-50 text-green-600"
+        <StreakCard
+          title="Longest Breath"
+          value={streakData.longest_breath_streak || 0}
+          tone="secondary"
         />
-        <StreakCard 
-          title="Longest Login Streak" 
-          value={streakData.longest_login_streak || 0} 
-          color="bg-purple-50 text-purple-600"
+        <StreakCard
+          title="Longest Login"
+          value={streakData.longest_login_streak || 0}
+          tone="primary"
         />
       </div>
     </div>
@@ -70,16 +70,32 @@ const ProfileStreaks = () => {
 interface StreakCardProps {
   title: string;
   value: number;
-  color: string;
+  tone: "primary" | "secondary";
 }
 
-const StreakCard = ({ title, value, color }: StreakCardProps) => (
-  <div className={`p-3 sm:p-4 rounded-lg flex flex-col items-center justify-center text-center ${color}`}>
-    <h3 className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">{title}</h3>
-    <p className="text-xl sm:text-2xl font-semibold">
-      {value}
+const StreakCard = ({ title, value, tone }: StreakCardProps) => (
+  <div
+    className={`p-4 rounded-2xl flex flex-col items-center justify-center text-center border border-border/50 ${
+      tone === "primary"
+        ? "bg-primary text-primary-foreground"
+        : "bg-secondary text-secondary-foreground"
+    }`}
+  >
+    <p className="text-2xl font-bold tabular-nums">{value}</p>
+    <p
+      className={`text-[10px] uppercase tracking-wide mt-1 font-medium ${
+        tone === "primary" ? "text-primary-foreground/80" : "text-secondary-foreground/70"
+      }`}
+    >
+      {title}
     </p>
-    <p className="text-xs text-muted-foreground mt-1">days</p>
+    <p
+      className={`text-[10px] mt-0.5 ${
+        tone === "primary" ? "text-primary-foreground/60" : "text-secondary-foreground/60"
+      }`}
+    >
+      days
+    </p>
   </div>
 );
 

@@ -1,8 +1,6 @@
-
 import { useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 import MainLayout from "@/components/layout/MainLayout";
 import ProfileInfo from "@/components/profile/ProfileInfo";
 import ProfileActions from "@/components/profile/ProfileActions";
@@ -13,89 +11,54 @@ import { User, Flame, Award, Settings } from "lucide-react";
 
 const ProfilePage = () => {
   const { user, isLoading } = useAuth();
-  const { toast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // Store the previous page for back navigation
+
   const fromPage = location.state?.from || "/";
-  
-  // Override the default back behavior
+
   useEffect(() => {
-    const handleBackButton = () => {
-      navigate(fromPage);
-    };
-    
-    // Update the back button behavior
-    window.history.replaceState({ from: fromPage }, '');
-    
-    return () => {
-      // Cleanup if needed
-    };
+    window.history.replaceState({ from: fromPage }, "");
   }, [fromPage, navigate]);
-  
-  // If not loading and no user, redirect to auth page
+
   if (!isLoading && !user) {
     return <Navigate to="/auth" />;
   }
-  
+
+  const sections: Array<{
+    title: string;
+    icon: typeof User;
+    children: React.ReactNode;
+  }> = [
+    { title: "Profile Information", icon: User, children: <ProfileInfo /> },
+    { title: "My Streaks", icon: Flame, children: <ProfileStreaks /> },
+    { title: "Achievements", icon: Award, children: <ProfileBadges /> },
+    { title: "Account Actions", icon: Settings, children: <ProfileActions /> },
+  ];
+
   return (
     <MainLayout>
-      <div className="container pt-24 pb-12 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-8 text-center text-white">My Profile</h1>
-        
-        <div className="space-y-6">
-          {/* Profile Information Section */}
-          <Card className="border-none shadow-md bg-card">
-            <CardHeader className="pb-6">
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 text-breath" />
-                <span className="text-card-foreground">Profile Information</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProfileInfo />
-            </CardContent>
-          </Card>
-          
-          {/* My Streaks Section */}
-          <Card className="border-none shadow-md bg-card">
-            <CardHeader className="pb-6">
-              <CardTitle className="flex items-center gap-2">
-                <Flame className="h-5 w-5 text-orange-500" />
-                <span className="text-card-foreground">My Streaks</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProfileStreaks />
-            </CardContent>
-          </Card>
-          
-          {/* Achievements and Badges Section */}
-          <Card className="border-none shadow-md bg-card">
-            <CardHeader className="pb-6">
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5 text-yellow-500" />
-                <span className="text-card-foreground">Achievements</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProfileBadges />
-            </CardContent>
-          </Card>
-          
-          {/* Account Actions Section */}
-          <Card className="border-none shadow-md bg-card">
-            <CardHeader className="pb-6">
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5 text-muted-foreground" />
-                <span className="text-card-foreground">Account Actions</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProfileActions />
-            </CardContent>
-          </Card>
+      <div className="container pt-20 pb-12 max-w-4xl">
+        <div className="text-center mb-8">
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">
+            Your space
+          </p>
+          <h1 className="text-3xl font-bold text-foreground">My Profile</h1>
+        </div>
+
+        <div className="space-y-5">
+          {sections.map(({ title, icon: Icon, children }) => (
+            <Card key={title} className="bg-card">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-lg">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-primary">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <span className="text-foreground">{title}</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>{children}</CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </MainLayout>

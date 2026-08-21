@@ -157,7 +157,7 @@ const HealthConnectPreview = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-md">
-                      <Heart className="w-5 h-5 text-white" />
+                      <Heart className="w-5 h-5 text-foreground" />
                     </div>
                     <div>
                       <CardTitle className="text-base">Health Connect</CardTitle>
@@ -190,7 +190,7 @@ const HealthConnectPreview = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-md">
-                      <Heart className="w-5 h-5 text-white" />
+                      <Heart className="w-5 h-5 text-foreground" />
                     </div>
                     <div>
                       <CardTitle className="text-base flex items-center gap-2">

@@ -94,7 +94,7 @@ const NotificationModal = ({ open, onOpenChange, notification, onSave }: Notific
                   size="sm"
                   className={`h-10 w-10 rounded-full p-0 ${
                     selectedDays.includes(index)
-                      ? "bg-breath hover:bg-breath/90 text-white"
+                      ? "bg-breath hover:bg-breath/90 text-foreground"
                       : "border-gray-300 hover:border-breath hover:text-breath"
                   }`}
                   onClick={() => toggleDay(index)}

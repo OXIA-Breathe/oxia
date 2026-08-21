@@ -32,14 +32,17 @@ const BreathePage = () => {
   return (
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-4xl">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-4 text-white">Breathing Exercises</h1>
-          <p className="text-center text-white/80 mb-8">
+        <div className="mb-8 px-1">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/70 mb-2">
+            Library
+          </p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Breathing exercises</h1>
+          <p className="text-sm text-muted-foreground max-w-md">
             Choose a technique, calm your mind, and begin your journey inward.
           </p>
         </div>
-        
-        <div className="space-y-4 pb-20">
+
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 pb-20">
           {exercises.map((exercise) => (
             <ExerciseCard
               key={exercise.id}
@@ -54,7 +57,7 @@ const BreathePage = () => {
         {user && (
           <Button
             onClick={() => setIsModalOpen(true)}
-            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-breath hover:bg-breath/90 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border-2 border-white/80 transition-all duration-200 active:scale-125 active:transition-none"
+            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_12px_28px_-8px_hsl(213_81%_19%_/_0.45)] transition-all duration-200 active:scale-95"
             style={{
               bottom: 'calc(6rem + env(safe-area-inset-bottom))'
             }}
