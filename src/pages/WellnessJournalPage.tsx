@@ -4,9 +4,10 @@ import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, RefreshCw, Brain, Wind, Heart, TrendingUp, Activity, Calendar } from "lucide-react";
+import { Sparkles, RefreshCw, Brain, Wind, Heart, TrendingUp, Activity, Calendar, Crown, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 interface WellnessSections {
   practiceOverview: string;
