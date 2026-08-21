@@ -2,7 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-cron-secret',
 };
 
 interface NotificationSchedule {
@@ -16,6 +16,16 @@ interface NotificationSchedule {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Scheduler-only endpoint: require a shared secret before doing any work.
+  const cronSecret = Deno.env.get('NOTIFICATIONS_CRON_SECRET');
+  const provided = req.headers.get('x-cron-secret');
+  if (!cronSecret || !provided || provided !== cronSecret) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 
   try {
@@ -84,15 +94,15 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ 
-        message: `Checked schedules, found ${matchingSchedules.length} to notify`,
-        notifications 
+        success: true,
+        count: matchingSchedules.length,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: 'Internal server error' }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
