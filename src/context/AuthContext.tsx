@@ -4,6 +4,7 @@ import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useFirebaseAnalytics } from "@/hooks/useFirebaseAnalytics";
+import { clearPersistedQueryCache } from "@/lib/queryClient";
 
 interface AuthContextType {
   user: User | null;
@@ -99,9 +100,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      // Drop any cached (and persisted) user data so the next account starts clean
+      await clearPersistedQueryCache();
+
     } catch (error: any) {
       console.error("Sign out error:", error);
       toast({
