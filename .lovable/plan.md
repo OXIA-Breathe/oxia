@@ -4,7 +4,9 @@
 Make the subscription model explicit and consistent across the app:
 - **Free (no account)**: 10 breathing sessions, then registration required.
 - **Free (registered)**: unlimited built-in exercises, learning content, session history, basic streaks, and custom exercises.
-- **Premium (€4.99/mo, 7-day trial)**: emotion tracking, AI Wellness Journal, effectiveness ranking, mood/stress insights, optimal-time analysis, and PDF wellness reports.
+- **Premium**: emotion tracking, AI Wellness Journal, effectiveness ranking, mood/stress insights, optimal-time analysis, and PDF wellness reports.
+  - Monthly: €2.99/mo with a 7-day free trial.
+  - Yearly: €26.99/year (25% off monthly) with a 7-day free trial.
 
 ## Current state
 - Project memory already defines the above tiers, but the code is inconsistent.
@@ -38,7 +40,7 @@ Make the subscription model explicit and consistent across the app:
 
 5. **Payment provider setup**
    - Run `payments--recommend_payment_provider` to confirm provider choice.
-   - Use the native store billing systems: Google Play Billing (Android) and Apple App Store In-App Purchase (iOS), via a Capacitor in-app-purchase plugin. Create an auto-renewing subscription product at €4.99/month with a 7-day introductory free trial in both Play Console and App Store Connect, using the same product identifier (e.g. `oxia_premium_monthly`).
+   - Use the native store billing systems: Google Play Billing (Android) and Apple App Store In-App Purchase (iOS), via a Capacitor in-app-purchase plugin. Create two auto-renewing subscription products in both Play Console and App Store Connect: a monthly base plan at €2.99/month and a yearly base plan at €26.99/year (25% off), each with a 7-day introductory free trial. Use matching product identifiers (e.g. `oxia_premium_monthly` and `oxia_premium_yearly`).
 
 6. **Subscription lifecycle**
    - Edge function to verify current subscription/trial state and refresh `profiles.is_subscribed` / `subscription_expires_at` from provider webhooks.
@@ -63,4 +65,4 @@ Make the subscription model explicit and consistent across the app:
 
 ## Out of scope for this plan
 - Actual payment-provider-specific checkout code will be implemented after provider selection.
-- Pricing changes beyond the agreed €4.99/month + 7-day trial.
+- Pricing changes beyond the agreed €2.99/month, €26.99/year, and 7-day trial.
