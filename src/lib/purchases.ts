@@ -19,24 +19,30 @@ export interface PurchaseProduct {
   currency: string;
   billingPeriod?: string;
   trialPeriod?: string;
-  type: "paid subscription" | "subscription" | string;
-  state: "valid" | "invalid" | string;
+  type: string;
+  state: string;
+}
+
+interface CordovaTransaction {
+  id?: string;
+  transactionId?: string;
+  products?: Array<{ id: string }>;
+  receipt?: string;
+  signature?: string;
+  originalTransactionId?: string;
+  finish?: () => void;
+  verify?: () => void;
 }
 
 interface CordovaStore {
-  register(product: {
-    id: string;
-    type: "paid subscription";
-    platform?: string;
-  }): void;
+  register(product: { id: string; type: string; platform?: string }): void;
   refresh(): void;
   get(productId: string): PurchaseProduct | undefined;
-  order(productId: string): Promise<void>;
-  when(productId?: string): any;
-  validator?: string;
-  verbosity?: number;
+  order(productId: string): Promise<CordovaTransaction>;
+  when(): any;
   ready(callback: () => void): void;
   error(callback: (error: any) => void): void;
+  verbosity?: number;
 }
 
 declare global {
@@ -62,41 +68,36 @@ export const initPurchases = async (): Promise<void> => {
   if (!isNative()) return;
   if (initPromise) return initPromise;
 
-  initPromise = new Promise((resolve, reject) => {
+  initPromise = new Promise((resolve) => {
     const store = getStore();
     if (!store) {
-      reject(new Error("cordova-plugin-purchase store not available"));
+      console.warn("cordova-plugin-purchase store not available");
+      resolve();
       return;
     }
 
-    store.verbosity = 0;
+    try {
+      store.verbosity = 0;
 
-    // Register both subscription products
-    store.register({ id: PRODUCT_IDS.monthly, type: "paid subscription" });
-    store.register({ id: PRODUCT_IDS.yearly, type: "paid subscription" });
+      // Register both subscription products
+      store.register({ id: PRODUCT_IDS.monthly, type: "paid subscription" });
+      store.register({ id: PRODUCT_IDS.yearly, type: "paid subscription" });
 
-    // Refresh products from the stores
-    store.refresh();
+      // Refresh products from the stores
+      store.refresh();
 
-    // Listen for ownership / validation events
-    store.when()
-      .approved((transaction: any) => {
-        // Server-side validation happens here; do not finish locally until verified.
-        transaction.verify();
-      })
-      .verified(async (transaction: any) => {
-        try {
-          await verifyPurchaseOnServer(transaction);
-          transaction.finish();
-        } catch (err) {
-          console.error("Purchase verification failed", err);
-        }
-      })
-      .unverified((transaction: any) => {
-        console.warn("Purchase could not be verified", transaction);
+      // Listen for verified transactions
+      store.when().verified?.((transaction: CordovaTransaction) => {
+        verifyPurchaseOnServer(transaction)
+          .then(() => transaction.finish?.())
+          .catch((err) => console.error("Purchase verification failed", err));
       });
 
-    store.ready(() => resolve());
+      store.ready(() => resolve());
+    } catch (err) {
+      console.error("Failed to initialise purchase store", err);
+      resolve();
+    }
 
     // Fallback timeout so the promise doesn't hang forever
     setTimeout(() => resolve(), 3000);
@@ -132,21 +133,29 @@ export const purchaseSubscription = async (plan: SubscriptionPlan): Promise<void
   if (!store) throw new Error("Purchase store not initialised");
 
   const productId = PRODUCT_IDS[plan];
-  await store.order(productId);
+  const transaction = await store.order(productId);
+
+  // If the order resolves with a verified transaction, send it to the server.
+  if (transaction) {
+    await verifyPurchaseOnServer(transaction);
+    transaction.finish?.();
+  }
 };
 
 /**
  * Send the purchase receipt to the Edge Function for validation
  * and profile update.
  */
-const verifyPurchaseOnServer = async (transaction: any): Promise<void> => {
+const verifyPurchaseOnServer = async (transaction: CordovaTransaction): Promise<void> => {
+  const productId = transaction.products?.[0]?.id ?? transaction.id ?? "";
+
   const payload = {
     platform: Capacitor.getPlatform(), // "ios" | "android"
-    productId: transaction.products?.[0]?.id ?? transaction.id,
-    transactionId: transaction.transactionId ?? transaction.id,
-    receipt: transaction.receipt,
-    signature: transaction.signature,
-    originalTransactionId: transaction.originalTransactionId,
+    productId,
+    transactionId: transaction.transactionId ?? transaction.id ?? "",
+    receipt: transaction.receipt ?? "",
+    signature: transaction.signature ?? "",
+    originalTransactionId: transaction.originalTransactionId ?? "",
   };
 
   const { error } = await supabase.functions.invoke("verify-purchase", {
