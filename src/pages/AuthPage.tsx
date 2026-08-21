@@ -21,6 +21,9 @@ const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [signUpError, setSignUpError] = useState<string | null>(null);
 
   if (user) {
     return <Navigate to={next} replace />;
@@ -40,9 +43,25 @@ const AuthPage = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSignUpError(null);
+
+    const name = fullName.trim();
+    if (name.length < 2) {
+      setSignUpError("Please enter your name (at least 2 characters).");
+      return;
+    }
+    if (name.length > 60) {
+      setSignUpError("Name must be less than 60 characters.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setSignUpError("Passwords do not match.");
+      return;
+    }
+
     setIsLoading(true);
     try {
-      await signUp(email, password);
+      await signUp(email, password, name);
     } catch (error) {
       console.error("Registration error:", error);
     } finally {
