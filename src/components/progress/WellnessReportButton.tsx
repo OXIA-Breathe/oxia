@@ -143,16 +143,32 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
 
   if (!user) return null;
 
+  if (isPremiumLoading) {
+    return (
+      <Button variant="outline" size="sm" disabled className="flex items-center gap-2">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        Loading…
+      </Button>
+    );
+  }
+
   return (
     <>
       <Button
         variant="outline"
         size="sm"
         className="flex items-center gap-2"
-        onClick={() => setOpen(true)}
+        onClick={() => isPremium ? setOpen(true) : undefined}
+        disabled={!isPremium}
+        aria-label={isPremium ? "Open wellness report dialog" : "Wellness report is a premium feature"}
       >
-        <FileText className="h-4 w-4" />
+        {isPremium ? (
+          <FileText className="h-4 w-4" />
+        ) : (
+          <Lock className="h-4 w-4" />
+        )}
         Wellness Report
+        {!isPremium && <Crown className="h-3 w-3 text-amber-500" />}
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
