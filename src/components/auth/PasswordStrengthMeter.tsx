@@ -8,7 +8,9 @@ import {
 
 interface PasswordStrengthMeterProps {
   password: string;
+  id?: string;
 }
+
 
 const strengthConfig = {
   weak: { color: "bg-destructive", width: "w-1/4", text: "text-destructive" },
