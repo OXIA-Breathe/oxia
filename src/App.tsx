@@ -32,12 +32,16 @@ const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
 const EulaPage = lazy(() => import("./pages/EulaPage"));
 
-const queryClient = new QueryClient();
-
 const AppContent = () => {
   useDailyStreakTracker();
-  
+
+  // Warm the other tab bundles while idle so switching pages is instant
+  useEffect(() => {
+    preloadMainRoutes();
+  }, []);
+
   return (
+
     <BrowserRouter>
       <ScreenTracker />
       <BreathProvider>
