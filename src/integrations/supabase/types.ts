@@ -340,6 +340,54 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_receipts: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          last_event: string | null
+          latest_transaction_id: string | null
+          original_transaction_id: string | null
+          plan: string | null
+          platform: string
+          product_id: string
+          purchase_token: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          last_event?: string | null
+          latest_transaction_id?: string | null
+          original_transaction_id?: string | null
+          plan?: string | null
+          platform: string
+          product_id: string
+          purchase_token?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          last_event?: string | null
+          latest_transaction_id?: string | null
+          original_transaction_id?: string | null
+          plan?: string | null
+          platform?: string
+          product_id?: string
+          purchase_token?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_id: string
