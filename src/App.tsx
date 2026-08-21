@@ -56,6 +56,7 @@ const AppContent = () => {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/progress" element={<ConsistencyPage />} />
             <Route path="/health-connect-preview" element={<HealthConnectPreview />} />
