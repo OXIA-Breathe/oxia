@@ -158,9 +158,8 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
         variant="outline"
         size="sm"
         className="flex items-center gap-2"
-        onClick={() => isPremium ? setOpen(true) : undefined}
-        disabled={!isPremium}
-        aria-label={isPremium ? "Open wellness report dialog" : "Wellness report is a premium feature"}
+        onClick={() => (isPremium ? setOpen(true) : setPremiumOpen(true))}
+        aria-label={isPremium ? "Open wellness report dialog" : "Upgrade to unlock the wellness report"}
       >
         {isPremium ? (
           <FileText className="h-4 w-4" />
@@ -170,6 +169,14 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
         Wellness Report
         {!isPremium && <Crown className="h-3 w-3 text-amber-500" />}
       </Button>
+
+      {!isPremium && (
+        <PremiumModal
+          open={premiumOpen}
+          onOpenChange={setPremiumOpen}
+          highlight="Unlock monthly PDF wellness reports."
+        />
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-sm">
