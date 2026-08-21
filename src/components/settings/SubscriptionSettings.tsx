@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Crown, Sparkles, FileText, Calendar, Loader2, RefreshCw } from "lucide-react";
+import { Crown, Sparkles, FileText, Calendar, Loader2, RefreshCw, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
