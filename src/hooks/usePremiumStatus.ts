@@ -47,7 +47,7 @@ export const usePremiumStatus = (): PremiumStatus => {
       return data;
     },
     enabled: !!user,
-    staleTime: 60 * 1000,
+    staleTime: PREMIUM_REFRESH_INTERVAL,
     // Fallback in case the store webhook is delayed.
     refetchInterval: PREMIUM_REFRESH_INTERVAL,
     refetchIntervalInBackground: false,
