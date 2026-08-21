@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MailCheck } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { summarizePasswordErrors } from "@/lib/passwordValidation";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 
 
@@ -28,6 +30,31 @@ const AuthPage = () => {
   const [fullName, setFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [signUpError, setSignUpError] = useState<string | null>(null);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState(false);
+  const { toast } = useToast();
+
+  const handleResend = async () => {
+    if (!pendingEmail) return;
+    setIsResending(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: pendingEmail,
+        options: { emailRedirectTo: `${window.location.origin}/verify-email` },
+      });
+      if (error) throw error;
+      toast({ title: "Email sent", description: "Check your inbox for the new link" });
+    } catch (error: any) {
+      toast({
+        title: "Could not resend email",
+        description: error?.message || "Please try again in a moment",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   if (user) {
     return <Navigate to={next} replace />;
@@ -73,12 +100,41 @@ const AuthPage = () => {
     setIsLoading(true);
     try {
       await signUp(email, password, name);
+      setPendingEmail(email);
     } catch (error) {
       console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (pendingEmail) {
+    return (
+      <div className="flex items-center justify-center min-h-screen breathing-bg text-foreground p-4">
+        <div className="w-full max-w-sm bg-card rounded-3xl border border-border/60 shadow-[0_8px_24px_-12px_hsl(213_81%_19%_/_0.18)] p-6 text-center">
+          <MailCheck className="h-10 w-10 mx-auto mb-4 text-primary" />
+          <h1 className="text-lg font-semibold">Confirm your email</h1>
+          <p className="text-sm text-muted-foreground mt-2">
+            We sent a confirmation link to <span className="font-medium text-foreground">{pendingEmail}</span>.
+            Open it on this device to activate your account and sign in.
+          </p>
+          <Button
+            className="w-full rounded-full h-11 mt-5 font-semibold"
+            onClick={handleResend}
+            disabled={isResending}
+          >
+            {isResending ? "Sending…" : "Resend confirmation email"}
+          </Button>
+          <button
+            onClick={() => setPendingEmail(null)}
+            className="w-full mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Back to sign in
+          </button>
+        </div>
+      </div>
+    );
+  }
 
 
   return (

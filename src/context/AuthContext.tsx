@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email, 
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}/verify-email`,
           data: trimmedName ? { full_name: trimmedName } : undefined
         }
       });
@@ -86,8 +86,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       logEvent('sign_up', { method: 'email' });
       
       toast({
-        title: "Account created",
-        description: "Check your email for the confirmation link",
+        title: "Confirm your email",
+        description: "We sent you a confirmation link to activate your account",
       });
     } catch (error: any) {
       console.error("Sign up error:", error);

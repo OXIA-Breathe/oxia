@@ -26,6 +26,7 @@ const BreathePage = lazy(() => import("./pages/BreathePage"));
 const ExerciseDetailsPage = lazy(() => import("./pages/ExerciseDetailsPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage"));
 const HealthConnectPreview = lazy(() => import("./pages/HealthConnectPreview"));
 const WellnessJournalPage = lazy(() => import("./pages/WellnessJournalPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
@@ -55,6 +56,7 @@ const AppContent = () => {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/progress" element={<ConsistencyPage />} />
             <Route path="/health-connect-preview" element={<HealthConnectPreview />} />
