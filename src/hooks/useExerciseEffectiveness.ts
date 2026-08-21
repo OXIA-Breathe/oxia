@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { TimeFilter, DateRange, getDateRange } from "./useEmotionalStatistics";
+import { usePremiumStatus } from "./usePremiumStatus";
 import { format, parseISO } from "date-fns";
 
 export interface ExerciseEffectivenessData {
