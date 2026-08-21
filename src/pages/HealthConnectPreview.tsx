@@ -20,12 +20,35 @@ import {
   ChevronRight,
   RefreshCw
 } from "lucide-react";
+import TrackerSelector from "@/components/health/TrackerSelector";
+import {
+  DEFAULT_TRACKER_ID,
+  getTracker,
+  METRIC_LABELS,
+  attributionLabel,
+  type HealthTrackerId,
+  type StressReading,
+} from "@/types/healthTracker";
 
 const HealthConnectPreview = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [stressLevel, setStressLevel] = useState(50); // 0-100 scale
   const [isStressSliderActive, setIsStressSliderActive] = useState(false);
+  const [trackerId, setTrackerId] = useState<HealthTrackerId>(DEFAULT_TRACKER_ID);
+
+  const tracker = getTracker(trackerId);
+  const primaryMetric = tracker.metrics[0];
+  const sampleReading: StressReading = {
+    value: 32,
+    provider: tracker.id,
+    sourceApp: tracker.id === "health_connect" ? "Samsung Health" : undefined,
+    derivedFrom: primaryMetric,
+    measuredAt: new Date().toISOString(),
+  };
+  const readsLabel = tracker.metrics.length > 0
+    ? "We'll read: " + tracker.metrics.map((m) => METRIC_LABELS[m]).join(", ")
+    : "No wearable data is read";
 
   // 0-100 scale mapping to 5 categories
   const getStressLabel = (value: number) => {
@@ -62,6 +85,17 @@ const HealthConnectPreview = () => {
           </Badge>
           <h1 className="text-2xl font-bold text-slate-800">Health Connect Integration</h1>
           <p className="text-sm text-slate-500 mt-1">Preview of proposed designs</p>
+        </div>
+
+        {/* SECTION 0: Tracker selector */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-sm font-bold text-primary">0</span>
+            </div>
+            <h2 className="font-semibold text-slate-700">Tracker Source</h2>
+          </div>
+          <TrackerSelector value={trackerId} onChange={setTrackerId} />
         </div>
 
         {/* SECTION 1: Onboarding Slide Preview */}
@@ -160,7 +194,7 @@ const HealthConnectPreview = () => {
                       <Heart className="w-5 h-5 text-foreground" />
                     </div>
                     <div>
-                      <CardTitle className="text-base">Health Connect</CardTitle>
+                      <CardTitle className="text-base">{tracker.name}</CardTitle>
                       <CardDescription className="text-xs">Sync stress data from your wearable</CardDescription>
                     </div>
                   </div>
@@ -173,7 +207,7 @@ const HealthConnectPreview = () => {
                   </p>
                   <div className="flex items-center gap-2 text-xs text-slate-500">
                     <Info className="w-3 h-3" />
-                    <span>We'll only read heart rate variability (HRV) data</span>
+                    <span>{readsLabel}</span>
                   </div>
                 </div>
                 
@@ -194,7 +228,7 @@ const HealthConnectPreview = () => {
                     </div>
                     <div>
                       <CardTitle className="text-base flex items-center gap-2">
-                        Health Connect
+                        {tracker.name}
                         <Badge className="bg-emerald-100 text-emerald-700 text-xs">
                           <CheckCircle2 className="w-3 h-3 mr-1" />
                           Connected
@@ -209,7 +243,7 @@ const HealthConnectPreview = () => {
                 {/* Sync Toggle */}
                 <div className="flex items-center justify-between bg-white rounded-lg p-3 border border-slate-100">
                   <div>
-                    <p className="text-sm font-medium text-slate-700">Sync with Health Connect</p>
+                    <p className="text-sm font-medium text-slate-700">Sync with {tracker.name}</p>
                     <p className="text-xs text-slate-500">Pause or resume data sync</p>
                   </div>
                   <Switch checked={true} />
@@ -220,7 +254,7 @@ const HealthConnectPreview = () => {
                   <p className="text-xs font-medium text-slate-500 mb-2">DATA WE READ</p>
                   <div className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-emerald-500" />
-                    <span className="text-sm text-slate-700">Heart Rate Variability (HRV)</span>
+                    <span className="text-sm text-slate-700">{primaryMetric ? METRIC_LABELS[primaryMetric] : "Manual entry"}</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1 ml-6">Used to calculate your stress level</p>
                 </div>
@@ -298,7 +332,7 @@ const HealthConnectPreview = () => {
                     </div>
                     <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
                       <Heart className="w-3 h-3" />
-                      <span>From Samsung Health via Health Connect</span>
+                      <span>{attributionLabel(sampleReading)}</span>
                     </div>
                   </div>
                 ) : (
@@ -346,7 +380,7 @@ const HealthConnectPreview = () => {
                     </div>
                     <div className="flex items-center gap-2 text-xs text-blue-500 bg-blue-50 rounded-lg p-2 mt-2">
                       <Heart className="w-3 h-3" />
-                      <span>Connect Health Connect to auto-detect stress level</span>
+                      <span>Connect {tracker.name} to auto-detect stress level</span>
                       <ChevronRight className="w-3 h-3 ml-auto" />
                     </div>
                   </>
@@ -419,7 +453,7 @@ const HealthConnectPreview = () => {
                 {/* Data Attribution */}
                 <div className="flex items-center justify-center gap-1 text-xs text-slate-400 pt-2 border-t border-slate-100">
                   <Activity className="w-3 h-3" />
-                  <span>HRV data from Samsung Health via Health Connect</span>
+                  <span>{attributionLabel(sampleReading)}</span>
                 </div>
               </div>
 
