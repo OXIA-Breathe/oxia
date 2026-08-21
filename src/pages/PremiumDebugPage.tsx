@@ -57,6 +57,11 @@ const PremiumDebugPage = () => {
   const status = usePremiumStatus();
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Internal tool only — never reachable in production builds.
+  if (!import.meta.env.DEV) {
+    return <Navigate to="/" replace />;
+  }
+
   const fmt = (value: unknown) =>
     value === null || value === undefined || value === "" ? "—" : String(value);
 
