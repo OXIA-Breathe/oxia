@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
-import { validatePassword } from "@/lib/passwordValidation";
+import { PasswordInput } from "@/components/auth/PasswordInput";
+import { summarizePasswordErrors } from "@/lib/passwordValidation";
+
 
 
 /** Only allow same-origin relative paths as a post-login redirect target. */
@@ -61,11 +63,12 @@ const AuthPage = () => {
       return;
     }
 
-    const validation = validatePassword(password);
-    if (!validation.isValid) {
-      setSignUpError(validation.errors[0]);
+    const passwordError = summarizePasswordErrors(password);
+    if (passwordError) {
+      setSignUpError(passwordError);
       return;
     }
+
 
     setIsLoading(true);
     try {
