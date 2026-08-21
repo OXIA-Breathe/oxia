@@ -83,27 +83,11 @@ export const useExerciseEffectiveness = (filter: TimeFilter, customRange?: DateR
     enabled: !!user,
   });
 
-  // Emotion tracking preference (only meaningful for premium users)
-  const { data: profile } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("emotion_tracking_enabled")
-        .eq("id", user.id)
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!user,
-  });
-
   return {
     data: data || [],
     isLoading: isLoading || isPremiumLoading,
     isPremium,
-    isTrackingEnabled: isPremium && (profile?.emotion_tracking_enabled ?? false),
+    isTrackingEnabled: isPremium && isEmotionTrackingEnabled,
     hasData: (data?.length ?? 0) > 0,
   };
 };
