@@ -30,6 +30,31 @@ const AuthPage = () => {
   const [fullName, setFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [signUpError, setSignUpError] = useState<string | null>(null);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState(false);
+  const { toast } = useToast();
+
+  const handleResend = async () => {
+    if (!pendingEmail) return;
+    setIsResending(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: pendingEmail,
+        options: { emailRedirectTo: `${window.location.origin}/verify-email` },
+      });
+      if (error) throw error;
+      toast({ title: "Email sent", description: "Check your inbox for the new link" });
+    } catch (error: any) {
+      toast({
+        title: "Could not resend email",
+        description: error?.message || "Please try again in a moment",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   if (user) {
     return <Navigate to={next} replace />;
