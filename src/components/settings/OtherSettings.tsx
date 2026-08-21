@@ -106,6 +106,21 @@ const OtherSettings = () => {
           </span>
         )}
       </p>
+      {!isPremium && (
+        <Button
+          size="sm"
+          className="min-h-[44px] bg-amber-500 hover:bg-amber-500/90 text-white"
+          onClick={() => setPremiumOpen(true)}
+        >
+          <Crown className="h-4 w-4 mr-2" />
+          Upgrade to Premium
+        </Button>
+      )}
+      <PremiumModal
+        open={premiumOpen}
+        onOpenChange={setPremiumOpen}
+        highlight="Unlock emotional state tracking and the insights built on it."
+      />
     </div>
   );
 };
