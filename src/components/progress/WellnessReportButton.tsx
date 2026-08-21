@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { FileText, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { FileText, Loader2, ChevronLeft, ChevronRight, Crown, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { format, startOfMonth, endOfMonth, subMonths, addMonths } from "date-fns";
 import { generateWellnessPDF } from "./wellness-pdf/generateWellnessPDF";
 import { WellnessEmotionRecord } from "./wellness-pdf/wellnessPdfTypes";
