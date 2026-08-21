@@ -38,7 +38,7 @@ Make the subscription model explicit and consistent across the app:
 
 5. **Payment provider setup**
    - Run `payments--recommend_payment_provider` to confirm provider choice.
-   - Enable the chosen provider (Paddle/Stripe/Shopify) and create the subscription product at €4.99/month with a 7-day trial.
+   - Use the native store billing systems: Google Play Billing (Android) and Apple App Store In-App Purchase (iOS), via a Capacitor in-app-purchase plugin. Create an auto-renewing subscription product at €4.99/month with a 7-day introductory free trial in both Play Console and App Store Connect, using the same product identifier (e.g. `oxia_premium_monthly`).
 
 6. **Subscription lifecycle**
    - Edge function to verify current subscription/trial state and refresh `profiles.is_subscribed` / `subscription_expires_at` from provider webhooks.
