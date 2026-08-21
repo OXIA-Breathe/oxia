@@ -11,6 +11,7 @@ export interface PremiumStatus {
   trialStartedAt: string | null;
   subscriptionPlan: "monthly" | "yearly" | null;
   subscriptionExpiresAt: string | null;
+  isEmotionTrackingEnabled: boolean;
   isLoading: boolean;
 }
 
