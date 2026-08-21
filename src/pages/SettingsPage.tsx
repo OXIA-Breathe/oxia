@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { Volume2, Bell, Info, Instagram, MessageCircleHeart, Share, Music2, Settings2, Crown } from "lucide-react";
 import FeedbackForm from "@/components/settings/FeedbackForm";
 import ContactForm from "@/components/settings/ContactForm";
-import { useShareTracking } from "@/components/settings/../breathing/hooks/useShareTracking";
+import { useShareTracking } from "@/components/breathing/hooks/useShareTracking";
 
 const SettingsPage = () => {
   const { user, isLoading } = useAuth();
