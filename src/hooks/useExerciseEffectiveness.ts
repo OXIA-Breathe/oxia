@@ -16,6 +16,7 @@ export interface ExerciseEffectivenessData {
 
 export const useExerciseEffectiveness = (filter: TimeFilter, customRange?: DateRange) => {
   const { user } = useAuth();
+  const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
 
   const { data, isLoading } = useQuery({
     queryKey: ["exerciseEffectiveness", user?.id, filter, customRange?.start?.toISOString(), customRange?.end?.toISOString()],
@@ -82,14 +83,14 @@ export const useExerciseEffectiveness = (filter: TimeFilter, customRange?: DateR
     enabled: !!user,
   });
 
-  // Profile check for premium/tracking
+  // Emotion tracking preference (only meaningful for premium users)
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
       if (!user) return null;
       const { data, error } = await supabase
         .from("profiles")
-        .select("emotion_tracking_enabled, is_subscribed")
+        .select("emotion_tracking_enabled")
         .eq("id", user.id)
         .single();
       if (error) throw error;
@@ -100,9 +101,9 @@ export const useExerciseEffectiveness = (filter: TimeFilter, customRange?: DateR
 
   return {
     data: data || [],
-    isLoading,
-    isPremium: profile?.is_subscribed ?? false,
-    isTrackingEnabled: profile?.emotion_tracking_enabled ?? false,
+    isLoading: isLoading || isPremiumLoading,
+    isPremium,
+    isTrackingEnabled: isPremium && (profile?.emotion_tracking_enabled ?? false),
     hasData: (data?.length ?? 0) > 0,
   };
 };

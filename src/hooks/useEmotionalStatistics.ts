@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { usePremiumStatus } from "./usePremiumStatus";
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, format, parseISO, isWithinInterval } from "date-fns";
 
 export type TimeFilter = "weekly" | "monthly" | "quarterly" | "yearly" | "all-time" | "custom";
