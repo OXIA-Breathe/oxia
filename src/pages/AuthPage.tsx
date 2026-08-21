@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
-import { validatePassword } from "@/lib/passwordValidation";
+import { PasswordInput } from "@/components/auth/PasswordInput";
+import { summarizePasswordErrors } from "@/lib/passwordValidation";
+
 
 
 /** Only allow same-origin relative paths as a post-login redirect target. */
@@ -61,11 +63,12 @@ const AuthPage = () => {
       return;
     }
 
-    const validation = validatePassword(password);
-    if (!validation.isValid) {
-      setSignUpError(validation.errors[0]);
+    const passwordError = summarizePasswordErrors(password);
+    if (passwordError) {
+      setSignUpError(passwordError);
       return;
     }
+
 
     setIsLoading(true);
     try {
@@ -115,7 +118,7 @@ const AuthPage = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="rounded-xl h-11" />
+                  <PasswordInput id="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" className="rounded-xl h-11" />
                 </div>
                 <Button type="submit" className="w-full rounded-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-2" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign In"}
@@ -142,27 +145,31 @@ const AuthPage = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="new-password">Password</Label>
-                  <Input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={10} autoComplete="new-password" className="rounded-xl h-11" />
-                  <PasswordStrengthMeter password={password} />
+                  <PasswordInput id="new-password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={10} autoComplete="new-password" className="rounded-xl h-11" aria-describedby="new-password-requirements" />
+                  <PasswordStrengthMeter password={password} id="new-password-requirements" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password">Repeat password</Label>
-                  <Input
+                  <PasswordInput
                     id="confirm-password"
-                    type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     minLength={10}
                     autoComplete="new-password"
                     aria-invalid={!!confirmPassword && confirmPassword !== password}
+                    aria-describedby="confirm-password-error"
                     className="rounded-xl h-11"
                   />
+                  <p id="confirm-password-error" className="text-xs text-destructive min-h-0" aria-live="polite">
+                    {confirmPassword && confirmPassword !== password ? "Passwords do not match." : ""}
+                  </p>
                 </div>
 
                 {signUpError && (
                   <p role="alert" className="text-sm text-destructive">{signUpError}</p>
                 )}
+
                 <Button type="submit" className="w-full rounded-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold mt-2" disabled={isLoading}>
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>

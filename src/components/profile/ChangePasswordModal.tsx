@@ -11,11 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Key } from "lucide-react";
-import { validatePassword } from "@/lib/passwordValidation";
+import { summarizePasswordErrors } from "@/lib/passwordValidation";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { PasswordInput } from "@/components/auth/PasswordInput";
+
 
 
 
@@ -59,15 +60,16 @@ const ChangePasswordModal = ({ children }: ChangePasswordModalProps) => {
       return;
     }
 
-    const validation = validatePassword(formData.newPassword);
-    if (!validation.isValid) {
+    const passwordError = summarizePasswordErrors(formData.newPassword);
+    if (passwordError) {
       toast({
         title: "Error",
-        description: validation.errors[0],
+        description: passwordError,
         variant: "destructive"
       });
       return;
     }
+
 
     setIsLoading(true);
 
@@ -142,40 +144,49 @@ const ChangePasswordModal = ({ children }: ChangePasswordModalProps) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="current-password">Current Password</Label>
-            <Input
+            <PasswordInput
               id="current-password"
-              type="password"
               value={formData.currentPassword}
               onChange={(e) => handleInputChange("currentPassword", e.target.value)}
               placeholder="Enter your current password"
+              autoComplete="current-password"
               required
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="new-password">New Password</Label>
-            <Input
+            <PasswordInput
               id="new-password"
-              type="password"
               value={formData.newPassword}
               onChange={(e) => handleInputChange("newPassword", e.target.value)}
               placeholder="Enter your new password"
+              autoComplete="new-password"
               required
               minLength={10}
+              aria-describedby="new-password-requirements"
             />
-            <PasswordStrengthMeter password={formData.newPassword} />
+            <PasswordStrengthMeter password={formData.newPassword} id="new-password-requirements" />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="confirm-password">Confirm New Password</Label>
-            <Input
+            <PasswordInput
               id="confirm-password"
-              type="password"
               value={formData.confirmPassword}
               onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
               placeholder="Confirm your new password"
+              autoComplete="new-password"
               required
+              aria-invalid={!!formData.confirmPassword && formData.confirmPassword !== formData.newPassword}
+              aria-describedby="confirm-password-error"
             />
+            <p id="confirm-password-error" className="text-xs text-destructive" aria-live="polite">
+              {formData.confirmPassword && formData.confirmPassword !== formData.newPassword
+                ? "Passwords do not match."
+                : ""}
+            </p>
           </div>
+
           <DialogFooter className="gap-2">
             <Button
               type="button"
