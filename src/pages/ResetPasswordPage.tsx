@@ -136,7 +136,9 @@ const ResetPasswordPage = () => {
                   required
                   minLength={10}
                 />
+                <PasswordStrengthMeter password={password} />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Confirm Password</Label>
                 <Input
