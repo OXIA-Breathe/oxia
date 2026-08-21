@@ -16,7 +16,7 @@ export interface ExerciseEffectivenessData {
 
 export const useExerciseEffectiveness = (filter: TimeFilter, customRange?: DateRange) => {
   const { user } = useAuth();
-  const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
+  const { isPremium, isEmotionTrackingEnabled, isLoading: isPremiumLoading } = usePremiumStatus();
 
   const { data, isLoading } = useQuery({
     queryKey: ["exerciseEffectiveness", user?.id, filter, customRange?.start?.toISOString(), customRange?.end?.toISOString()],
