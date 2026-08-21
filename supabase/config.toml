@@ -10,3 +10,6 @@ verify_jwt = false
 verify_jwt = false
 [functions.check-notifications]
 verify_jwt = false
+
+[functions.verify-purchase]
+verify_jwt = false
