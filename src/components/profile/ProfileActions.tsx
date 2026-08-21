@@ -291,8 +291,8 @@ const ProfileActions = () => {
               disabled={!canDelete || isDeleting}
               aria-label="Permanently delete my account"
               className="rounded-full min-h-11 bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none"
-            
             >
+
               {isDeleting ? "Deleting..." : "Delete forever"}
             </AlertDialogAction>
           </AlertDialogFooter>
