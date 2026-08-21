@@ -323,6 +323,8 @@ const WellnessJournalPage = () => {
             </p>
           </div>
         )}
+          </>
+        )}
       </div>
     </MainLayout>
   );
