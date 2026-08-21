@@ -160,8 +160,11 @@ const ChangePasswordModal = ({ children }: ChangePasswordModalProps) => {
               onChange={(e) => handleInputChange("newPassword", e.target.value)}
               placeholder="Enter your new password"
               required
+              minLength={10}
             />
+            <PasswordStrengthMeter password={formData.newPassword} />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="confirm-password">Confirm New Password</Label>
             <Input
