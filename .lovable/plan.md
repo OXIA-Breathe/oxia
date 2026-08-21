@@ -1,33 +1,35 @@
+## Status check + delete-account audit trail
 
+### What is already applied
 
-## Authentication Audit Fix Plan
+Redesign: new palette tokens (Quartz/Glacier/Lapis/Abyss) are in `src/index.css`, and Plus Jakarta Sans is installed and imported in `src/main.tsx`.
 
-### Fix Order (by risk and effort)
+Delete account flow (`src/components/profile/ProfileActions.tsx`) — all five items are in place:
+- Radix `AlertDialog` with focus trap, ESC guarded while deleting, `aria-labelledby` / `aria-describedby` / `aria-invalid`
+- Type-to-confirm "DELETE" input, action button disabled until it matches
+- Explicit "Cancel — keep my account" button that only closes the dialog
+- On success: toast, then `signOut()`, then `navigate("/", { replace: true })`
+- "Request received" toast fires immediately on submit
 
-**1. Fix branding on Reset Password page**
-Change "Breathify" to "OXIA" in `src/pages/ResetPasswordPage.tsx`. Remove unused `useSearchParams` import. Quick win, no risk.
+Edge function (`supabase/functions/delete-user-account/index.ts`): origin-locked CORS, `getUser()` JWT validation, service-role deletion, no user-ID logging.
 
-**2. Remove duplicate RLS policies on `breath_sessions`**
-Drop the redundant INSERT and SELECT policies (two identical pairs exist). Database migration, low risk.
+### What is missing
 
-**3. Remove production logging of user IDs in `delete-user-account`**
-Strip `console.log` lines that output `userId` from `supabase/functions/delete-user-account/index.ts`. Per your security architecture memory, sensitive data must not be logged.
+1. No audit logging in the edge function — nothing is written before deletion.
+2. No `account_deletion_audit` table (confirmed: it does not exist in the database) and no migration file for it.
 
-**4. Restrict CORS in `delete-user-account`**
-Replace `Access-Control-Allow-Origin: *` with the actual app domain. Prevents cross-origin abuse of the deletion endpoint.
+### Plan
 
-**5. Fix `delete-user-account` auth — replace `getClaims` with `getUser`**
-`getClaims` is not a standard Supabase JS method. Replace with `supabase.auth.getUser()` which properly validates the JWT server-side. This is a correctness bug that could cause the function to fail entirely.
+**1. Create the audit table via migration**
 
-**6. Strengthen password policy**
-Update minimum length from 6 to 8 characters in both `ResetPasswordPage.tsx` and `ChangePasswordModal.tsx`. Add complexity hints (uppercase, number). Low effort, meaningful security improvement.
+`account_deletion_audit` with: `id uuid pk`, `user_id uuid`, `user_email text`, `ip_address text`, `user_agent text`, `status text`, `created_at timestamptz default now()`.
 
-**7. Harden the trial counter (longer-term)**
-`useTrialCounter.ts` uses `localStorage` only — trivially bypassed. This requires a backend-backed solution if the trial limit is meant to be enforced. Flag for future work unless it's a priority now.
+Security: grants to `service_role` only (no `anon`/`authenticated` grants), RLS enabled with no permissive user policies, so the table is reachable only from the edge function. This keeps deletion records intact after the user row is gone (no FK to `auth.users`).
 
-### Technical Details
+**2. Write the audit row in the edge function**
 
-- Steps 1, 3, 4, 5, 6 are code-only changes (no migrations)
-- Step 2 requires a database migration to drop duplicate policies
-- Step 7 requires architectural discussion before implementation
+After `getUser()` succeeds and before `admin.deleteUser()`, insert a row using the service-role client with `status: 'requested'`, capturing `user.email`, `x-forwarded-for` (first hop) and `user-agent`. After the delete resolves, update the row to `completed` or `failed`. Audit insert failures must never block the deletion — wrap in try/catch.
 
+### Notes
+
+The migration runs against the connected Supabase project (`phhyfmztzgkorxhasyaw`) through the migration tool, so no manual SQL-editor step is needed here. If you also want the table in the remix project, run the same SQL there manually.
