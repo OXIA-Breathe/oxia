@@ -79,24 +79,6 @@ export const useEmotionalStatistics = (filter: TimeFilter, customRange?: DateRan
     enabled: !!user
   });
 
-  // Check if user has emotion tracking enabled
-  const { data: profile } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("emotion_tracking_enabled, is_subscribed")
-        .eq("id", user.id)
-        .single();
-      
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!user
-  });
-
   // Calculate unique days with data
   const uniqueDays = new Set(
     data?.map(record => format(parseISO(record.created_at), "yyyy-MM-dd")) || []
@@ -104,16 +86,14 @@ export const useEmotionalStatistics = (filter: TimeFilter, customRange?: DateRan
   
   // Only require data to exist - no minimum days requirement
   const hasEnoughData = uniqueDays.size > 0;
-  const isTrackingEnabled = profile?.emotion_tracking_enabled ?? false;
-  const isPremium = profile?.is_subscribed ?? false;
 
   return {
     records: data || [],
-    isLoading,
+    isLoading: isLoading || isPremiumLoading,
     error,
     hasEnoughData,
     uniqueDaysCount: uniqueDays.size,
-    isTrackingEnabled,
+    isTrackingEnabled: isPremium,
     isPremium
   };
 };
