@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
+import { usePremiumStatus } from "./usePremiumStatus";
 
 interface EmotionData {
   preValence: number | null;
