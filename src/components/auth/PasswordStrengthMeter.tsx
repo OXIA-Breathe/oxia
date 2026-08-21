@@ -70,6 +70,7 @@ export function PasswordStrengthMeter({ password, id }: PasswordStrengthMeterPro
                   <X className="w-2.5 h-2.5 text-muted-foreground" strokeWidth={3} />
                 )}
               </span>
+              <span className="sr-only">{met ? "Met:" : "Not met:"}</span>
               <span>{label}</span>
             </li>
           );
