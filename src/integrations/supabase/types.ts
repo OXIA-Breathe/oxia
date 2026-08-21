@@ -307,6 +307,9 @@ export type Database = {
           id: string
           is_subscribed: boolean
           subscription_expires_at: string | null
+          subscription_plan: string | null
+          trial_ends_at: string | null
+          trial_started_at: string | null
           updated_at: string
         }
         Insert: {
@@ -317,6 +320,9 @@ export type Database = {
           id: string
           is_subscribed?: boolean
           subscription_expires_at?: string | null
+          subscription_plan?: string | null
+          trial_ends_at?: string | null
+          trial_started_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -327,6 +333,9 @@ export type Database = {
           id?: string
           is_subscribed?: boolean
           subscription_expires_at?: string | null
+          subscription_plan?: string | null
+          trial_ends_at?: string | null
+          trial_started_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -540,7 +549,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_premium: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

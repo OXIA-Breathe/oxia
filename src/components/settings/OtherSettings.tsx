@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Heart } from "lucide-react";
+import { Heart, Crown, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 const OtherSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { isPremium, isEmotionTrackingEnabled, isLoading: isPremiumLoading } = usePremiumStatus();
   const [emotionTrackingEnabled, setEmotionTrackingEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,14 +22,12 @@ const OtherSettings = () => {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("emotion_tracking_enabled, is_subscribed")
+          .select("emotion_tracking_enabled")
           .eq("id", user.id)
           .single();
 
         if (error) throw error;
         
-        // For now, we'll allow toggling regardless of subscription
-        // Later this will be gated behind subscription
         setEmotionTrackingEnabled(data?.emotion_tracking_enabled || false);
       } catch (error) {
         console.error("Error fetching emotion tracking settings:", error);
@@ -39,8 +39,13 @@ const OtherSettings = () => {
     fetchSettings();
   }, [user]);
 
+  // Sync local toggle with premium-aware canonical state
+  useEffect(() => {
+    setEmotionTrackingEnabled(isEmotionTrackingEnabled);
+  }, [isEmotionTrackingEnabled]);
+
   const handleToggleEmotionTracking = async (enabled: boolean) => {
-    if (!user) return;
+    if (!user || !isPremium) return;
 
     try {
       const { error } = await supabase
@@ -69,7 +74,7 @@ const OtherSettings = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isPremiumLoading) {
     return <div className="text-sm text-muted-foreground">Loading...</div>;
   }
 
@@ -80,13 +85,26 @@ const OtherSettings = () => {
           <Heart className="h-4 w-4" />
           <Label className="text-base font-medium">Emotional State Tracking</Label>
         </div>
-        <Switch
-          checked={emotionTrackingEnabled}
-          onCheckedChange={handleToggleEmotionTracking}
-        />
+        {isPremium ? (
+          <Switch
+            checked={emotionTrackingEnabled}
+            onCheckedChange={handleToggleEmotionTracking}
+            aria-label="Toggle emotional state tracking"
+          />
+        ) : (
+          <div className="flex items-center gap-2 text-amber-500">
+            <Lock className="h-4 w-4" />
+            <Crown className="h-4 w-4" />
+          </div>
+        )}
       </div>
       <p className="text-sm text-muted-foreground">
         Track your emotional state before and after breathing exercises to see how they affect your mood.
+        {!isPremium && (
+          <span className="block mt-1 text-amber-500 font-medium">
+            Premium feature — subscribe to unlock.
+          </span>
+        )}
       </p>
     </div>
   );

@@ -6,12 +6,13 @@ import { APP_VERSION } from "@/version";
 import NotificationSettings from "@/components/settings/NotificationSettings";
 import AudioSettings from "@/components/settings/AudioSettings";
 import OtherSettings from "@/components/settings/OtherSettings";
+import SubscriptionSettings from "@/components/settings/SubscriptionSettings";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
-import { Volume2, Bell, Info, Instagram, MessageCircleHeart, Share, Music2, Settings2 } from "lucide-react";
+import { Volume2, Bell, Info, Instagram, MessageCircleHeart, Share, Music2, Settings2, Crown } from "lucide-react";
 import FeedbackForm from "@/components/settings/FeedbackForm";
 import ContactForm from "@/components/settings/ContactForm";
 import { useShareTracking } from "@/components/breathing/hooks/useShareTracking";
@@ -115,6 +116,9 @@ const SettingsPage = () => {
       <div className="container pt-24 pb-12 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8 text-center text-foreground">Settings</h1>
         <div className="space-y-6">
+          {/* Subscription Section */}
+          <SubscriptionSettings />
+
           {/* Audio Settings Section */}
           <Card className="border-none shadow-md bg-card">
             <CardHeader className="pb-6">

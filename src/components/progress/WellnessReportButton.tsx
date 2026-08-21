@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { FileText, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { FileText, Loader2, ChevronLeft, ChevronRight, Crown, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { format, startOfMonth, endOfMonth, subMonths, addMonths } from "date-fns";
 import { generateWellnessPDF } from "./wellness-pdf/generateWellnessPDF";
 import { WellnessEmotionRecord } from "./wellness-pdf/wellnessPdfTypes";
@@ -24,6 +25,7 @@ interface WellnessReportButtonProps {
 const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
   const [open, setOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   // Default to previous month so there's likely data
@@ -141,16 +143,32 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
 
   if (!user) return null;
 
+  if (isPremiumLoading) {
+    return (
+      <Button variant="outline" size="sm" disabled className="flex items-center gap-2">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        Loading…
+      </Button>
+    );
+  }
+
   return (
     <>
       <Button
         variant="outline"
         size="sm"
         className="flex items-center gap-2"
-        onClick={() => setOpen(true)}
+        onClick={() => isPremium ? setOpen(true) : undefined}
+        disabled={!isPremium}
+        aria-label={isPremium ? "Open wellness report dialog" : "Wellness report is a premium feature"}
       >
-        <FileText className="h-4 w-4" />
+        {isPremium ? (
+          <FileText className="h-4 w-4" />
+        ) : (
+          <Lock className="h-4 w-4" />
+        )}
         Wellness Report
+        {!isPremium && <Crown className="h-3 w-3 text-amber-500" />}
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>

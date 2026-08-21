@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { TimeFilter, DateRange, getDateRange } from "./useEmotionalStatistics";
+import { usePremiumStatus } from "./usePremiumStatus";
 import { format, parseISO } from "date-fns";
 
 export interface ExerciseEffectivenessData {
@@ -15,6 +16,7 @@ export interface ExerciseEffectivenessData {
 
 export const useExerciseEffectiveness = (filter: TimeFilter, customRange?: DateRange) => {
   const { user } = useAuth();
+  const { isPremium, isEmotionTrackingEnabled, isLoading: isPremiumLoading } = usePremiumStatus();
 
   const { data, isLoading } = useQuery({
     queryKey: ["exerciseEffectiveness", user?.id, filter, customRange?.start?.toISOString(), customRange?.end?.toISOString()],
@@ -81,27 +83,11 @@ export const useExerciseEffectiveness = (filter: TimeFilter, customRange?: DateR
     enabled: !!user,
   });
 
-  // Profile check for premium/tracking
-  const { data: profile } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("emotion_tracking_enabled, is_subscribed")
-        .eq("id", user.id)
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!user,
-  });
-
   return {
     data: data || [],
-    isLoading,
-    isPremium: profile?.is_subscribed ?? false,
-    isTrackingEnabled: profile?.emotion_tracking_enabled ?? false,
+    isLoading: isLoading || isPremiumLoading,
+    isPremium,
+    isTrackingEnabled: isPremium && isEmotionTrackingEnabled,
     hasData: (data?.length ?? 0) > 0,
   };
 };

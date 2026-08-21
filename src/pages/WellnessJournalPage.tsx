@@ -4,9 +4,10 @@ import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, RefreshCw, Brain, Wind, Heart, TrendingUp, Activity, Calendar } from "lucide-react";
+import { Sparkles, RefreshCw, Brain, Wind, Heart, TrendingUp, Activity, Calendar, Crown, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 interface WellnessSections {
   practiceOverview: string;
@@ -59,6 +60,7 @@ const SECTION_CONFIG = [
 const WellnessJournalPage = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
   const [sections, setSections] = useState<WellnessSections | null>(null);
   const [summary, setSummary] = useState<WellnessSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -168,6 +170,17 @@ const WellnessJournalPage = () => {
       })
     : null;
 
+  if (authLoading || isPremiumLoading) {
+    return (
+      <MainLayout>
+        <div className="container pt-24 pb-12 max-w-2xl flex flex-col items-center justify-center min-h-[60vh]">
+          <RefreshCw className="h-8 w-8 text-primary animate-spin mb-4" />
+          <p className="text-muted-foreground text-sm">Loading…</p>
+        </div>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <div className="container pt-24 pb-12 max-w-2xl">
@@ -183,8 +196,30 @@ const WellnessJournalPage = () => {
           </p>
         </div>
 
-        {/* Stats strip — shown after generation */}
-        {summary && (
+        {/* Premium gate */}
+        {!isPremium && (
+          <Card className="border-0 shadow-md bg-card/90 backdrop-blur-sm">
+            <CardContent className="py-12 flex flex-col items-center gap-4 text-center">
+              <div className="w-14 h-14 rounded-full bg-amber-500/10 flex items-center justify-center">
+                <Lock className="h-6 w-6 text-amber-500" />
+              </div>
+              <div className="space-y-1">
+                <p className="font-medium text-card-foreground flex items-center justify-center gap-2">
+                  <Crown className="h-4 w-4 text-amber-500" />
+                  Premium Feature
+                </p>
+                <p className="text-muted-foreground text-sm max-w-xs">
+                  Subscribe to OXIA Premium to unlock AI-generated wellness reflections based on your breathing and emotion data.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {isPremium && (
+          <>
+            {/* Stats strip — shown after generation */}
+            {summary && (
           <div className="grid grid-cols-4 gap-2 mb-6">
             <StatChip icon={<Wind className="h-3.5 w-3.5" />} label="Sessions" value={summary.totalSessions} />
             <StatChip icon={<TrendingUp className="h-3.5 w-3.5" />} label="Minutes" value={summary.totalMinutes} />
@@ -287,6 +322,8 @@ const WellnessJournalPage = () => {
               This reflection is based solely on your recorded activity within OXIA and is not medical advice.
             </p>
           </div>
+        )}
+          </>
         )}
       </div>
     </MainLayout>
