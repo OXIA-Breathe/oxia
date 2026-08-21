@@ -17,6 +17,7 @@ import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { format, startOfMonth, endOfMonth, subMonths, addMonths } from "date-fns";
 import { generateWellnessPDF } from "./wellness-pdf/generateWellnessPDF";
 import { WellnessEmotionRecord } from "./wellness-pdf/wellnessPdfTypes";
+import PremiumModal from "@/components/premium/PremiumModal";
 
 interface WellnessReportButtonProps {
   exerciseEffectiveness: any[];
@@ -27,6 +28,7 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
   const { toast } = useToast();
   const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
   const [open, setOpen] = useState(false);
+  const [premiumOpen, setPremiumOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   // Default to previous month so there's likely data
   const [selectedMonth, setSelectedMonth] = useState<Date>(subMonths(startOfMonth(new Date()), 1));
@@ -158,9 +160,8 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
         variant="outline"
         size="sm"
         className="flex items-center gap-2"
-        onClick={() => isPremium ? setOpen(true) : undefined}
-        disabled={!isPremium}
-        aria-label={isPremium ? "Open wellness report dialog" : "Wellness report is a premium feature"}
+        onClick={() => (isPremium ? setOpen(true) : setPremiumOpen(true))}
+        aria-label={isPremium ? "Open wellness report dialog" : "Upgrade to unlock the wellness report"}
       >
         {isPremium ? (
           <FileText className="h-4 w-4" />
@@ -170,6 +171,14 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
         Wellness Report
         {!isPremium && <Crown className="h-3 w-3 text-amber-500" />}
       </Button>
+
+      {!isPremium && (
+        <PremiumModal
+          open={premiumOpen}
+          onOpenChange={setPremiumOpen}
+          highlight="Unlock monthly PDF wellness reports."
+        />
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-sm">

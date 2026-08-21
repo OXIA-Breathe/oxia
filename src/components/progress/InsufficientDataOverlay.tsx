@@ -1,4 +1,7 @@
-import { Lock } from "lucide-react";
+import { useState } from "react";
+import { Lock, Crown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import PremiumModal from "@/components/premium/PremiumModal";
 
 interface InsufficientDataOverlayProps {
   daysCount: number;
@@ -7,6 +10,8 @@ interface InsufficientDataOverlayProps {
 }
 
 const InsufficientDataOverlay = ({ daysCount, minDays = 3, type = "data" }: InsufficientDataOverlayProps) => {
+  const [premiumOpen, setPremiumOpen] = useState(false);
+
   const getMessage = () => {
     switch (type) {
       case "premium":
@@ -29,17 +34,42 @@ const InsufficientDataOverlay = ({ daysCount, minDays = 3, type = "data" }: Insu
   };
 
   const { title, description } = getMessage();
+  const isPremiumUpsell = type === "premium";
 
   return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg">
-      <div className="text-center p-6 max-w-xs">
-        <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
-          <Lock className="h-5 w-5 text-muted-foreground" />
+    <>
+      <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg">
+        <div className="text-center p-6 max-w-xs">
+          <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+            {isPremiumUpsell ? (
+              <Crown className="h-5 w-5 text-amber-500" />
+            ) : (
+              <Lock className="h-5 w-5 text-muted-foreground" />
+            )}
+          </div>
+          <h4 className="font-semibold text-foreground mb-1">{title}</h4>
+          <p className="text-sm text-muted-foreground">{description}</p>
+          {isPremiumUpsell && (
+            <Button
+              size="sm"
+              className="mt-4 min-h-[44px] bg-amber-500 hover:bg-amber-500/90 text-white"
+              onClick={() => setPremiumOpen(true)}
+            >
+              <Crown className="h-4 w-4 mr-2" />
+              Upgrade to Premium
+            </Button>
+          )}
         </div>
-        <h4 className="font-semibold text-foreground mb-1">{title}</h4>
-        <p className="text-sm text-muted-foreground">{description}</p>
       </div>
-    </div>
+
+      {isPremiumUpsell && (
+        <PremiumModal
+          open={premiumOpen}
+          onOpenChange={setPremiumOpen}
+          highlight="Unlock mood, stress and exercise effectiveness insights."
+        />
+      )}
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ import { Sparkles, RefreshCw, Brain, Wind, Heart, TrendingUp, Activity, Calendar
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import PremiumModal from "@/components/premium/PremiumModal";
 
 interface WellnessSections {
   practiceOverview: string;
@@ -67,6 +68,7 @@ const WellnessJournalPage = () => {
   const [isFetchingStored, setIsFetchingStored] = useState(true);
   const [hasGenerated, setHasGenerated] = useState(false);
   const [storedGeneratedAt, setStoredGeneratedAt] = useState<string | null>(null);
+  const [premiumOpen, setPremiumOpen] = useState(false);
 
   // Load any previously saved reflection on mount
   useEffect(() => {
@@ -198,22 +200,49 @@ const WellnessJournalPage = () => {
 
         {/* Premium gate */}
         {!isPremium && (
-          <Card className="border-0 shadow-md bg-card/90 backdrop-blur-sm">
-            <CardContent className="py-12 flex flex-col items-center gap-4 text-center">
-              <div className="w-14 h-14 rounded-full bg-amber-500/10 flex items-center justify-center">
-                <Lock className="h-6 w-6 text-amber-500" />
+          <>
+            <Card className="relative border-0 shadow-md bg-card/90 backdrop-blur-sm overflow-hidden">
+              {/* Blurred preview of what premium unlocks */}
+              <div className="blur-sm pointer-events-none select-none p-6 space-y-3" aria-hidden="true">
+                <div className="h-4 w-2/3 rounded bg-muted" />
+                <div className="h-3 w-full rounded bg-muted/70" />
+                <div className="h-3 w-5/6 rounded bg-muted/70" />
+                <div className="h-3 w-4/6 rounded bg-muted/70" />
+                <div className="h-4 w-1/2 rounded bg-muted mt-6" />
+                <div className="h-3 w-full rounded bg-muted/70" />
+                <div className="h-3 w-3/4 rounded bg-muted/70" />
               </div>
-              <div className="space-y-1">
-                <p className="font-medium text-card-foreground flex items-center justify-center gap-2">
-                  <Crown className="h-4 w-4 text-amber-500" />
-                  Premium Feature
-                </p>
-                <p className="text-muted-foreground text-sm max-w-xs">
-                  Subscribe to OXIA Premium to unlock AI-generated wellness reflections based on your breathing and emotion data.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+
+              <CardContent className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center bg-background/70">
+                <div className="w-14 h-14 rounded-full bg-amber-500/10 flex items-center justify-center">
+                  <Lock className="h-6 w-6 text-amber-500" />
+                </div>
+                <div className="space-y-1">
+                  <p className="font-medium text-card-foreground flex items-center justify-center gap-2">
+                    <Crown className="h-4 w-4 text-amber-500" />
+                    Premium Feature
+                  </p>
+                  <p className="text-muted-foreground text-sm max-w-xs">
+                    Subscribe to OXIA Premium to unlock AI-generated wellness reflections based on your breathing and emotion data.
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  className="min-h-[44px] bg-amber-500 hover:bg-amber-500/90 text-white"
+                  onClick={() => setPremiumOpen(true)}
+                >
+                  <Crown className="h-4 w-4 mr-2" />
+                  Upgrade to Premium
+                </Button>
+              </CardContent>
+            </Card>
+
+            <PremiumModal
+              open={premiumOpen}
+              onOpenChange={setPremiumOpen}
+              highlight="Unlock the AI Wellness Journal — a 30-day reflection on your practice."
+            />
+          </>
         )}
 
         {isPremium && (

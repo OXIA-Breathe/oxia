@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Heart, Crown, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import PremiumModal from "@/components/premium/PremiumModal";
 
 const OtherSettings = () => {
   const { user } = useAuth();
@@ -13,6 +15,7 @@ const OtherSettings = () => {
   const { isPremium, isEmotionTrackingEnabled, isLoading: isPremiumLoading } = usePremiumStatus();
   const [emotionTrackingEnabled, setEmotionTrackingEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [premiumOpen, setPremiumOpen] = useState(false);
 
   // Fetch current setting
   useEffect(() => {
@@ -106,6 +109,21 @@ const OtherSettings = () => {
           </span>
         )}
       </p>
+      {!isPremium && (
+        <Button
+          size="sm"
+          className="min-h-[44px] bg-amber-500 hover:bg-amber-500/90 text-white"
+          onClick={() => setPremiumOpen(true)}
+        >
+          <Crown className="h-4 w-4 mr-2" />
+          Upgrade to Premium
+        </Button>
+      )}
+      <PremiumModal
+        open={premiumOpen}
+        onOpenChange={setPremiumOpen}
+        highlight="Unlock emotional state tracking and the insights built on it."
+      />
     </div>
   );
 };
