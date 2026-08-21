@@ -8,6 +8,7 @@ import { Sparkles, RefreshCw, Brain, Wind, Heart, TrendingUp, Activity, Calendar
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import PremiumModal from "@/components/premium/PremiumModal";
 
 interface WellnessSections {
   practiceOverview: string;
