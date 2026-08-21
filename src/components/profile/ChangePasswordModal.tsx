@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Key } from "lucide-react";
 import { validatePassword } from "@/lib/passwordValidation";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+
 
 
 interface ChangePasswordModalProps {
