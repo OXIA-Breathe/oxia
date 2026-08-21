@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Heart } from "lucide-react";
+import { Heart, Crown, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 const OtherSettings = () => {
   const { user } = useAuth();
