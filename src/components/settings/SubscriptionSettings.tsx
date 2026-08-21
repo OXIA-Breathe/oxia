@@ -1,7 +1,10 @@
-import { Crown, Sparkles, FileText, Calendar, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Crown, Sparkles, FileText, Calendar, Loader2, RefreshCw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { purchaseSubscription, restorePurchases, SubscriptionPlan } from "@/lib/purchases";
+import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
 const SubscriptionSettings = () => {
@@ -14,6 +17,9 @@ const SubscriptionSettings = () => {
     subscriptionExpiresAt,
     isLoading,
   } = usePremiumStatus();
+  const { toast } = useToast();
+  const [purchasingPlan, setPurchasingPlan] = useState<SubscriptionPlan | null>(null);
+  const [isRestoring, setIsRestoring] = useState(false);
 
   if (isLoading) {
     return (
