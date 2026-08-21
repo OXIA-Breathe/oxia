@@ -14,7 +14,7 @@ interface EmotionData {
 
 export const useEmotionTracking = () => {
   const { user } = useAuth();
-  const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
+  const { isPremium, isEmotionTrackingEnabled, isLoading: isPremiumLoading } = usePremiumStatus();
   const [emotionData, setEmotionData] = useState<EmotionData>({
     preValence: null,
     preStress: null,
@@ -23,33 +23,13 @@ export const useEmotionTracking = () => {
     note: null,
     sessionId: null,
   });
-  const [isTrackingEnabled, setIsTrackingEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const isTrackingEnabled = isPremium && isEmotionTrackingEnabled;
+
   const checkTrackingEnabled = useCallback(async () => {
-    if (!user || !isPremium) {
-      setIsTrackingEnabled(false);
-      return false;
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("emotion_tracking_enabled")
-        .eq("id", user.id)
-        .single();
-
-      if (error) throw error;
-
-      const enabled = data?.emotion_tracking_enabled ?? false;
-      setIsTrackingEnabled(enabled);
-      return enabled;
-    } catch (error) {
-      console.error("Error checking emotion tracking status");
-      setIsTrackingEnabled(false);
-      return false;
-    }
-  }, [user, isPremium]);
+    return isTrackingEnabled;
+  }, [isTrackingEnabled]);
 
   const setPreEmotion = useCallback((valence: number, stress: number) => {
     setEmotionData((prev) => ({
