@@ -93,7 +93,7 @@ export const useEmotionalStatistics = (filter: TimeFilter, customRange?: DateRan
     error,
     hasEnoughData,
     uniqueDaysCount: uniqueDays.size,
-    isTrackingEnabled: isPremium,
+    isTrackingEnabled: isPremium && isEmotionTrackingEnabled,
     isPremium
   };
 };
