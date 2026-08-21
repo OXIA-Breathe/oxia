@@ -32,14 +32,7 @@ interface CordovaStore {
   refresh(): void;
   get(productId: string): PurchaseProduct | undefined;
   order(productId: string): Promise<void>;
-  when(productId?: string): {
-    updated(callback: (product: PurchaseProduct) => void): void;
-    approved(callback: (transaction: any) => void): void;
-    verified(callback: (transaction: any) => void): void;
-    unverified(callback: (transaction: any) => void): void;
-    owned(callback: (product: PurchaseProduct) => void): void;
-    error(callback: (error: any) => void): void;
-  };
+  when(productId?: string): any;
   validator?: string;
   verbosity?: number;
   ready(callback: () => void): void;
