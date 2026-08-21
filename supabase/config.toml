@@ -8,3 +8,5 @@ verify_jwt = false
 
 [functions.check-trial]
 verify_jwt = false
+[functions.check-notifications]
+verify_jwt = false
