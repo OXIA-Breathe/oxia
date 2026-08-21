@@ -28,13 +28,14 @@ export const preloadRoute = (path: string) => {
 
 /** Warm every main tab chunk once the app is idle. */
 export const preloadMainRoutes = () => {
-  const run = () => Object.keys(loaders).forEach(preloadRoute);
   if (typeof window === "undefined") return;
-  if ("requestIdleCallback" in window) {
-    (window as Window & {
-      requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number;
-    }).requestIdleCallback(run, { timeout: 3000 });
+  const run = () => Object.keys(loaders).forEach(preloadRoute);
+  const idle = (window as unknown as {
+    requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+  }).requestIdleCallback;
+  if (idle) {
+    idle(run, { timeout: 3000 });
   } else {
-    window.setTimeout(run, 1500);
+    setTimeout(run, 1500);
   }
 };
