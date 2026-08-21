@@ -132,7 +132,7 @@ const ResetPasswordPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your new password"
                   required
-                  minLength={8}
+                  minLength={10}
                 />
               </div>
               <div className="space-y-2">
@@ -144,11 +144,13 @@ const ResetPasswordPage = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm your new password"
                   required
+                  minLength={10}
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Password must be at least 8 characters, with one uppercase letter and one number
+                At least 10 characters, with upper/lowercase letters, a number and a symbol.
               </p>
+
             </CardContent>
             <CardContent>
               <Button type="submit" className="w-full" disabled={isLoading}>
