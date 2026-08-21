@@ -45,6 +45,7 @@ export const usePremiumStatus = (): PremiumStatus => {
         trialStartedAt: null,
         subscriptionPlan: null,
         subscriptionExpiresAt: null,
+        isEmotionTrackingEnabled: false,
         isLoading,
       };
     }
