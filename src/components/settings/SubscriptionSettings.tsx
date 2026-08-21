@@ -154,12 +154,48 @@ const SubscriptionSettings = () => {
                 Monthly PDF wellness reports
               </li>
             </ul>
-            <Button className="w-full bg-amber-500 hover:bg-amber-500/90 text-white">
-              <Crown className="h-4 w-4 mr-2" />
-              Upgrade to Premium
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                className="bg-amber-500 hover:bg-amber-500/90 text-white"
+                onClick={() => handlePurchase("monthly")}
+                disabled={purchasingPlan !== null}
+              >
+                {purchasingPlan === "monthly" ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Crown className="h-4 w-4 mr-2" />
+                )}
+                €2.99/mo
+              </Button>
+              <Button
+                className="bg-amber-500 hover:bg-amber-500/90 text-white"
+                onClick={() => handlePurchase("yearly")}
+                disabled={purchasingPlan !== null}
+              >
+                {purchasingPlan === "yearly" ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Crown className="h-4 w-4 mr-2" />
+                )}
+                €26.99/yr
+              </Button>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-muted-foreground hover:text-foreground"
+              onClick={handleRestore}
+              disabled={isRestoring}
+            >
+              {isRestoring ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4 mr-2" />
+              )}
+              Restore purchases
             </Button>
             <p className="text-xs text-center text-muted-foreground">
-              €2.99/month or €26.99/year (25% off) with a 7-day free trial.
+              7-day free trial, then €2.99/month or €26.99/year (25% off).
             </p>
           </div>
         )}
