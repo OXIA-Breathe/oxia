@@ -70,7 +70,10 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <PersistQueryClientProvider
+    client={queryClient}
+    persistOptions={{ persister: queryPersister, maxAge: 24 * 60 * 60 * 1000 }}
+  >
     <AuthProvider>
       <TooltipProvider>
         <Toaster />
@@ -80,7 +83,8 @@ const App = () => (
         </BreathingExerciseProvider>
       </TooltipProvider>
     </AuthProvider>
-  </QueryClientProvider>
+  </PersistQueryClientProvider>
+
 );
 
 export default App;
