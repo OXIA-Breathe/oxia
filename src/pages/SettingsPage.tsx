@@ -116,6 +116,9 @@ const SettingsPage = () => {
       <div className="container pt-24 pb-12 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8 text-center text-foreground">Settings</h1>
         <div className="space-y-6">
+          {/* Subscription Section */}
+          <SubscriptionSettings />
+
           {/* Audio Settings Section */}
           <Card className="border-none shadow-md bg-card">
             <CardHeader className="pb-6">
