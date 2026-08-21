@@ -55,6 +55,7 @@ export const getDateRange = (filter: TimeFilter, customRange?: DateRange): DateR
 
 export const useEmotionalStatistics = (filter: TimeFilter, customRange?: DateRange) => {
   const { user } = useAuth();
+  const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
   
   const { data, isLoading, error } = useQuery({
     queryKey: ["emotionalStatistics", user?.id, filter, customRange?.start?.toISOString(), customRange?.end?.toISOString()],
