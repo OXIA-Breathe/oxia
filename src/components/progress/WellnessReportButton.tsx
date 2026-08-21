@@ -17,6 +17,7 @@ import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { format, startOfMonth, endOfMonth, subMonths, addMonths } from "date-fns";
 import { generateWellnessPDF } from "./wellness-pdf/generateWellnessPDF";
 import { WellnessEmotionRecord } from "./wellness-pdf/wellnessPdfTypes";
+import PremiumModal from "@/components/premium/PremiumModal";
 
 interface WellnessReportButtonProps {
   exerciseEffectiveness: any[];
@@ -27,6 +28,7 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
   const { toast } = useToast();
   const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
   const [open, setOpen] = useState(false);
+  const [premiumOpen, setPremiumOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   // Default to previous month so there's likely data
   const [selectedMonth, setSelectedMonth] = useState<Date>(subMonths(startOfMonth(new Date()), 1));
