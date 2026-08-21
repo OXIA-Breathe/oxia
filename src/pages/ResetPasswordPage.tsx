@@ -60,17 +60,18 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    const passwordError = validatePassword(password);
-    if (passwordError) {
+    const validation = validatePassword(password);
+    if (!validation.isValid) {
       toast({
         title: "Error",
-        description: passwordError,
+        description: validation.errors[0],
         variant: "destructive"
       });
       return;
     }
 
     setIsLoading(true);
+
 
     try {
       const { error } = await supabase.auth.updateUser({
