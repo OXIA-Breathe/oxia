@@ -48,6 +48,7 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cmdk": "^1.0.0",
+        "cordova-plugin-purchase": "^13.18.0",
         "date-fns": "^3.6.0",
         "embla-carousel-react": "^8.3.0",
         "firebase": "^11.10.0",
@@ -717,6 +718,8 @@
     "commander": ["commander@12.1.0", "", {}, "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA=="],
 
     "concat-map": ["concat-map@0.0.1", "", {}, "sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg=="],
+
+    "cordova-plugin-purchase": ["cordova-plugin-purchase@13.18.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/cordova-plugin-purchase/-/cordova-plugin-purchase-13.18.0.tgz", {}, "sha512-1wDTQxBDS+JYwUN5+0Ivs8MjG2s5HXB4UXnm84pc/WGIdx/K0/fBme20l4C0H0102Iohwvuf77u8FkRXRJaPSA=="],
 
     "core-js": ["core-js@3.41.0", "", {}, "sha512-SJ4/EHwS36QMJd6h/Rg+GyR4A5xE0FSI3eZ+iBVpfqf1x0eTSg1smWLHrA+2jQThZSh97fmSgFSU8B61nxosxA=="],
 
