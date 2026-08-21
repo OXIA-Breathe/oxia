@@ -175,11 +175,8 @@ async function claimEvent(
 
   if (!error && data) return { shouldProcess: true, id: data.id };
 
-  // Unique violation => duplicate delivery.
-  if (error?.code === "23505" || error?.code === "23505".toString() || error?.code === "23505") {
-    // fallthrough below
-  }
-
+  // Insert failed — most commonly a unique violation (23505) from a duplicate
+  // provider delivery. Look up the existing ledger row to decide what to do.
   const { data: existing } = await admin
     .from("subscription_webhook_events")
     .select("id, status, trace_id")
@@ -234,7 +231,7 @@ async function finishEvent(
 /* Google Play                                                                */
 /* -------------------------------------------------------------------------- */
 
-async function handleGoogleNotification(admin: any, notification: any) {
+async function handleGoogleNotification(admin: any, notification: any, ctx: WebhookCtx) {
   const sub = notification.subscriptionNotification;
   const voided = notification.voidedPurchaseNotification;
 
@@ -243,12 +240,12 @@ async function handleGoogleNotification(admin: any, notification: any) {
       isActive: false,
       expiresAt: new Date(),
       event: "voided",
-    });
+    }, ctx);
     return;
   }
 
   if (!sub?.purchaseToken) {
-    console.log("Ignoring Google notification without subscription payload");
+    ctx.log("google_notification_without_subscription");
     return;
   }
 
@@ -274,7 +271,8 @@ async function handleGoogleNotification(admin: any, notification: any) {
       expiresAt: verified?.expiresAt ?? null,
       plan: mapProductToPlan(productId),
       event: `google:${notificationType}`,
-    }
+    },
+    ctx
   );
 }
 
@@ -368,7 +366,7 @@ function decodeJws(jws: string): any {
   return JSON.parse(atob(padded));
 }
 
-async function handleAppleNotification(admin: any, signedPayload: string) {
+async function handleAppleNotification(admin: any, signedPayload: string, ctx: WebhookCtx) {
   const payload = decodeJws(signedPayload);
   const notificationType: string = payload.notificationType ?? "";
   const subtype: string = payload.subtype ?? "";
@@ -382,7 +380,7 @@ async function handleAppleNotification(admin: any, signedPayload: string) {
     transactionInfo?.originalTransactionId ?? renewalInfo?.originalTransactionId;
 
   if (!originalTransactionId) {
-    console.log("Ignoring Apple notification without originalTransactionId");
+    ctx.log("apple_notification_without_original_transaction_id");
     return;
   }
 
@@ -406,7 +404,8 @@ async function handleAppleNotification(admin: any, signedPayload: string) {
       plan: mapProductToPlan(transactionInfo?.productId ?? ""),
       event: subtype ? `apple:${notificationType}:${subtype}` : `apple:${notificationType}`,
       latestTransactionId: transactionInfo?.transactionId ?? null,
-    }
+    },
+    ctx
   );
 }
 
@@ -434,7 +433,7 @@ interface StateUpdate {
   latestTransactionId?: string | null;
 }
 
-async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate) {
+async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate, ctx: WebhookCtx) {
   let query = admin.from("subscription_receipts").select("*").eq("platform", lookup.platform);
 
   if (lookup.purchaseToken) {
@@ -446,14 +445,14 @@ async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate
   const { data: receipt, error } = await query.maybeSingle();
 
   if (error) {
-    console.error("Receipt lookup error:", error.message);
+    ctx.logError("receipt_lookup_failed", { error: error.message, event: update.event });
     throw error;
   }
 
   if (!receipt) {
     // Unknown purchase — most often an event that arrived before the client
     // finished verifying the purchase. Nothing to sync yet.
-    console.log("No matching receipt for notification", update.event);
+    ctx.log("no_matching_receipt", { event: update.event, platform: lookup.platform });
     return;
   }
 
@@ -471,7 +470,7 @@ async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate
     .eq("id", receipt.id);
 
   if (receiptError) {
-    console.error("Receipt update error:", receiptError.message);
+    ctx.logError("receipt_update_failed", { error: receiptError.message, event: update.event });
     throw receiptError;
   }
 
@@ -484,9 +483,20 @@ async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate
   const { error: profileError } = await admin.from("profiles").update(profileUpdate).eq("id", receipt.user_id);
 
   if (profileError) {
-    console.error("Profile update error:", profileError.message);
+    ctx.logError("profile_update_failed", { error: profileError.message, user_id: receipt.user_id });
     throw profileError;
   }
 
-  console.log("Synced subscription state", { event: update.event, isActive: update.isActive });
+  await admin
+    .from("subscription_webhook_events")
+    .update({ user_id: receipt.user_id })
+    .eq("trace_id", ctx.traceId);
+
+  ctx.log("subscription_state_synced", {
+    event: update.event,
+    user_id: receipt.user_id,
+    is_active: update.isActive,
+    expires_at: update.expiresAt ? update.expiresAt.toISOString() : null,
+    plan: update.plan ?? null,
+  });
 }
