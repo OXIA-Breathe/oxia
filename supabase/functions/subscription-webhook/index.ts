@@ -47,37 +47,188 @@ serve(async (req) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
+  const traceId = crypto.randomUUID();
+  const log = (message: string, extra?: Record<string, unknown>) =>
+    console.log(JSON.stringify({ trace_id: traceId, fn: "subscription-webhook", message, ...extra }));
+  const logError = (message: string, extra?: Record<string, unknown>) =>
+    console.error(JSON.stringify({ trace_id: traceId, fn: "subscription-webhook", message, ...extra }));
+
+  const ctx: WebhookCtx = { traceId, log, logError };
+
+  let eventRowId: string | null = null;
+
   try {
     const body = await req.json().catch(() => null);
     if (!body) {
+      logError("invalid_body");
       return new Response(JSON.stringify({ error: "Invalid body" }), { status: 400, headers: jsonHeaders });
     }
 
     // ---- Google Play RTDN (Pub/Sub push envelope) ----
     if (body.message?.data) {
       const decoded = JSON.parse(atob(body.message.data));
-      await handleGoogleNotification(admin, decoded);
+      const sub = decoded.subscriptionNotification;
+      const voided = decoded.voidedPurchaseNotification;
+      const eventType = voided
+        ? "google:voided"
+        : `google:${sub?.notificationType ?? "unknown"}`;
+      const eventKey =
+        body.message.messageId ??
+        `${sub?.purchaseToken ?? voided?.purchaseToken ?? "unknown"}:${decoded.eventTimeMillis ?? ""}:${eventType}`;
+
+      const claim = await claimEvent(admin, ctx, "google", eventKey, eventType, decoded);
+      if (!claim.shouldProcess) {
+        log("duplicate_event_skipped", { event_key: eventKey, event_type: eventType });
+        return new Response(JSON.stringify({ success: true, duplicate: true, traceId }), {
+          status: 200,
+          headers: jsonHeaders,
+        });
+      }
+      eventRowId = claim.id;
+
+      log("processing_event", { provider: "google", event_key: eventKey, event_type: eventType });
+      await handleGoogleNotification(admin, decoded, ctx);
+      await finishEvent(admin, ctx, eventRowId, "processed");
+
       // Always 200 so Pub/Sub does not redeliver indefinitely.
-      return new Response(JSON.stringify({ success: true }), { status: 200, headers: jsonHeaders });
+      return new Response(JSON.stringify({ success: true, traceId }), { status: 200, headers: jsonHeaders });
     }
 
     // ---- Apple App Store Server Notifications V2 ----
     if (body.signedPayload) {
-      await handleAppleNotification(admin, body.signedPayload);
-      return new Response(JSON.stringify({ success: true }), { status: 200, headers: jsonHeaders });
+      const payload = decodeJws(body.signedPayload);
+      const eventType = payload.subtype
+        ? `apple:${payload.notificationType}:${payload.subtype}`
+        : `apple:${payload.notificationType}`;
+      const eventKey = payload.notificationUUID ?? `${eventType}:${payload.signedDate ?? ""}`;
+
+      const claim = await claimEvent(admin, ctx, "apple", eventKey, eventType, payload);
+      if (!claim.shouldProcess) {
+        log("duplicate_event_skipped", { event_key: eventKey, event_type: eventType });
+        return new Response(JSON.stringify({ success: true, duplicate: true, traceId }), {
+          status: 200,
+          headers: jsonHeaders,
+        });
+      }
+      eventRowId = claim.id;
+
+      log("processing_event", { provider: "apple", event_key: eventKey, event_type: eventType });
+      await handleAppleNotification(admin, body.signedPayload, ctx);
+      await finishEvent(admin, ctx, eventRowId, "processed");
+
+      return new Response(JSON.stringify({ success: true, traceId }), { status: 200, headers: jsonHeaders });
     }
 
+    logError("unrecognised_payload");
     return new Response(JSON.stringify({ error: "Unrecognised notification payload" }), {
       status: 400,
       headers: jsonHeaders,
     });
   } catch (error) {
-    console.error("subscription-webhook error:", error);
-    // Return 200 for provider retries only when the payload was understood;
-    // unexpected failures return 500 so the provider retries later.
-    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: jsonHeaders });
+    logError("unhandled_error", { error: error instanceof Error ? error.message : String(error) });
+    if (eventRowId) {
+      await finishEvent(admin, ctx, eventRowId, "failed", error instanceof Error ? error.message : String(error));
+    }
+    // Unexpected failures return 500 so the provider retries later.
+    return new Response(JSON.stringify({ error: "Internal server error", traceId }), {
+      status: 500,
+      headers: jsonHeaders,
+    });
   }
 });
+
+/* -------------------------------------------------------------------------- */
+/* Idempotency + tracing                                                      */
+/* -------------------------------------------------------------------------- */
+
+interface WebhookCtx {
+  traceId: string;
+  log: (message: string, extra?: Record<string, unknown>) => void;
+  logError: (message: string, extra?: Record<string, unknown>) => void;
+}
+
+/**
+ * Reserve an event row. Returns shouldProcess = false when this provider event
+ * key was already handled (or is currently being handled), which makes repeated
+ * provider deliveries a no-op instead of re-applying profile updates.
+ */
+async function claimEvent(
+  admin: any,
+  ctx: WebhookCtx,
+  provider: string,
+  eventKey: string,
+  eventType: string,
+  payload: unknown
+): Promise<{ shouldProcess: boolean; id: string | null }> {
+  const { data, error } = await admin
+    .from("subscription_webhook_events")
+    .insert({
+      provider,
+      event_key: eventKey,
+      event_type: eventType,
+      trace_id: ctx.traceId,
+      payload,
+      status: "processing",
+    })
+    .select("id")
+    .maybeSingle();
+
+  if (!error && data) return { shouldProcess: true, id: data.id };
+
+  // Unique violation => duplicate delivery.
+  if (error?.code === "23505" || error?.code === "23505".toString() || error?.code === "23505") {
+    // fallthrough below
+  }
+
+  const { data: existing } = await admin
+    .from("subscription_webhook_events")
+    .select("id, status, trace_id")
+    .eq("provider", provider)
+    .eq("event_key", eventKey)
+    .maybeSingle();
+
+  if (existing) {
+    ctx.log("existing_event_found", {
+      event_key: eventKey,
+      status: existing.status,
+      original_trace_id: existing.trace_id,
+    });
+    if (existing.status === "failed") {
+      // Allow a retry of a previously failed event.
+      await admin
+        .from("subscription_webhook_events")
+        .update({ status: "processing", trace_id: ctx.traceId, error_message: null })
+        .eq("id", existing.id);
+      return { shouldProcess: true, id: existing.id };
+    }
+    return { shouldProcess: false, id: existing.id };
+  }
+
+  ctx.logError("claim_event_failed", { error: error?.message ?? "unknown" });
+  // Do not block processing when the ledger itself is unavailable.
+  return { shouldProcess: true, id: null };
+}
+
+async function finishEvent(
+  admin: any,
+  ctx: WebhookCtx,
+  id: string | null,
+  status: "processed" | "failed",
+  errorMessage?: string
+) {
+  if (!id) return;
+  const { error } = await admin
+    .from("subscription_webhook_events")
+    .update({
+      status,
+      error_message: errorMessage ?? null,
+      processed_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+  if (error) ctx.logError("finish_event_failed", { error: error.message });
+  else ctx.log("event_finished", { status });
+}
+
 
 /* -------------------------------------------------------------------------- */
 /* Google Play                                                                */
