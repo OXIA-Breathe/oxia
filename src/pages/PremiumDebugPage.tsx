@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Crown, RefreshCw, Check, X, Loader2 } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,6 +56,11 @@ const PremiumDebugPage = () => {
   const { user } = useAuth();
   const status = usePremiumStatus();
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Internal tool only — never reachable in production builds.
+  if (!import.meta.env.DEV) {
+    return <Navigate to="/" replace />;
+  }
 
   const fmt = (value: unknown) =>
     value === null || value === undefined || value === "" ? "—" : String(value);

@@ -174,3 +174,25 @@ export const restorePurchases = async (): Promise<void> => {
   if (!store) return;
   store.refresh();
 };
+
+/** Android application id — required by the Play subscription deep link. */
+const ANDROID_PACKAGE_NAME = "app.lovable.d3590b81c81449329e6d4fbda085725b";
+
+/**
+ * Open the platform subscription management screen, where the user can cancel
+ * or change their plan. Cancelling is always handled by the store (Google Play
+ * or Apple), never in-app — the store then notifies our webhook, which clears
+ * `is_subscribed`. The user's practice data is never touched.
+ */
+export const openSubscriptionManagement = (plan?: SubscriptionPlan): void => {
+  const platform = Capacitor.getPlatform();
+
+  const url =
+    platform === "ios"
+      ? "https://apps.apple.com/account/subscriptions"
+      : `https://play.google.com/store/account/subscriptions?package=${ANDROID_PACKAGE_NAME}${
+          plan ? `&sku=${PRODUCT_IDS[plan]}` : ""
+        }`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+};

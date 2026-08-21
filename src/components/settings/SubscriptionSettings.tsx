@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { Crown, Sparkles, FileText, Calendar, Loader2, RefreshCw } from "lucide-react";
+import { Crown, Sparkles, FileText, Calendar, Loader2, RefreshCw, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
-import { purchaseSubscription, restorePurchases, SubscriptionPlan } from "@/lib/purchases";
+import {
+  purchaseSubscription,
+  restorePurchases,
+  openSubscriptionManagement,
+  SubscriptionPlan,
+} from "@/lib/purchases";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
@@ -16,6 +21,8 @@ const SubscriptionSettings = () => {
     subscriptionPlan,
     subscriptionExpiresAt,
     isLoading,
+    isRefreshing,
+    refresh,
   } = usePremiumStatus();
   const { toast } = useToast();
   const [purchasingPlan, setPurchasingPlan] = useState<SubscriptionPlan | null>(null);
@@ -135,8 +142,40 @@ const SubscriptionSettings = () => {
                 )}
               </>
             )}
+
+            <div className="pt-2 space-y-2">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => openSubscriptionManagement(subscriptionPlan ?? undefined)}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage or cancel subscription
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-muted-foreground hover:text-foreground"
+                onClick={() => refresh()}
+                disabled={isRefreshing}
+              >
+                {isRefreshing ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                )}
+                Re-check subscription status
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Your subscription renews automatically. Cancelling in the store keeps
+                Premium active until the end of the paid period, after which OXIA
+                returns to the free plan. All your sessions, history and insights stay
+                saved on your account.
+              </p>
+            </div>
           </div>
         )}
+
 
         {!isPremium && (
           <div className="space-y-3">
