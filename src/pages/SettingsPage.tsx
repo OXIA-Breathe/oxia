@@ -296,6 +296,13 @@ const SettingsPage = () => {
             <div className="text-sm text-muted-foreground">
               Version {APP_VERSION}
             </div>
+            <button
+              type="button"
+              onClick={() => navigate('/premium-debug')}
+              className="text-xs text-muted-foreground/70 underline underline-offset-2"
+            >
+              Premium debug
+            </button>
           </div>
         </div>
       </div>

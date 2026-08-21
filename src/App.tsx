@@ -31,6 +31,7 @@ const WellnessJournalPage = lazy(() => import("./pages/WellnessJournalPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
 const EulaPage = lazy(() => import("./pages/EulaPage"));
+const PremiumDebugPage = lazy(() => import("./pages/PremiumDebugPage"));
 
 const AppContent = () => {
   useDailyStreakTracker();
@@ -61,6 +62,7 @@ const AppContent = () => {
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/eula" element={<EulaPage />} />
+            <Route path="/premium-debug" element={<PremiumDebugPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
