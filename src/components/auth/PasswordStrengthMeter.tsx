@@ -19,7 +19,7 @@ const strengthConfig = {
   strong: { color: "bg-success", width: "w-full", text: "text-success" },
 };
 
-export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
+export function PasswordStrengthMeter({ password, id }: PasswordStrengthMeterProps) {
   const { requirements } = validatePassword(password);
   const strength = getPasswordStrength(password);
   const config = strengthConfig[strength];
@@ -29,7 +29,8 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
   ][];
 
   return (
-    <div className="space-y-3" aria-live="polite">
+    <div id={id} className="space-y-3" aria-live="polite" aria-atomic="true">
+
       <div className="space-y-1.5">
         <div className="flex items-center justify-between text-xs">
           <span className="text-muted-foreground">Password strength</span>
