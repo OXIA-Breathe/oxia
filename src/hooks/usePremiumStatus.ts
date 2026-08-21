@@ -67,6 +67,7 @@ export const usePremiumStatus = (): PremiumStatus => {
       trialStartedAt: profile.trial_started_at || null,
       subscriptionPlan: profile.subscription_plan === "yearly" ? "yearly" : profile.subscription_plan === "monthly" ? "monthly" : null,
       subscriptionExpiresAt: profile.subscription_expires_at || null,
+      isEmotionTrackingEnabled: profile.emotion_tracking_enabled ?? false,
       isLoading,
     };
   }, [profile, user, isLoading]);
