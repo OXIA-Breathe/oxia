@@ -60,6 +60,7 @@ const SECTION_CONFIG = [
 const WellnessJournalPage = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
   const [sections, setSections] = useState<WellnessSections | null>(null);
   const [summary, setSummary] = useState<WellnessSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
