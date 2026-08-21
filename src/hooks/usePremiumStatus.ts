@@ -1,7 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
+/**
+ * Fallback polling interval. The subscription webhook is the source of truth,
+ * but if a provider event is delayed the UI would otherwise stay stale until a
+ * full reload. Five minutes is cheap (one tiny row read) and React Query pauses
+ * polling automatically while the tab/app is in the background.
+ */
+const PREMIUM_REFRESH_INTERVAL = 5 * 60 * 1000;
 
 export interface PremiumStatus {
   isPremium: boolean;
@@ -13,12 +22,18 @@ export interface PremiumStatus {
   subscriptionExpiresAt: string | null;
   isEmotionTrackingEnabled: boolean;
   isLoading: boolean;
+  isRefreshing: boolean;
+  lastCheckedAt: number | null;
+  /** Force an immediate re-check, e.g. right after a purchase completes. */
+  refresh: () => Promise<void>;
 }
 
 export const usePremiumStatus = (): PremiumStatus => {
   const { user } = useAuth();
 
-  const { data: profile, isLoading } = useQuery({
+  const queryClient = useQueryClient();
+
+  const { data: profile, isLoading, isFetching, dataUpdatedAt } = useQuery({
     queryKey: ["premiumStatus", user?.id],
     queryFn: async () => {
       if (!user) return null;
@@ -32,8 +47,17 @@ export const usePremiumStatus = (): PremiumStatus => {
       return data;
     },
     enabled: !!user,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
+    // Fallback in case the store webhook is delayed.
+    refetchInterval: PREMIUM_REFRESH_INTERVAL,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
+
+  const refresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["premiumStatus", user?.id] });
+  }, [queryClient, user?.id]);
 
   return useMemo((): PremiumStatus => {
     if (!profile || !user) {
@@ -47,6 +71,9 @@ export const usePremiumStatus = (): PremiumStatus => {
         subscriptionExpiresAt: null,
         isEmotionTrackingEnabled: false,
         isLoading,
+        isRefreshing: isFetching,
+        lastCheckedAt: dataUpdatedAt || null,
+        refresh,
       };
     }
 
@@ -69,6 +96,9 @@ export const usePremiumStatus = (): PremiumStatus => {
       subscriptionExpiresAt: profile.subscription_expires_at || null,
       isEmotionTrackingEnabled: profile.emotion_tracking_enabled ?? false,
       isLoading,
+      isRefreshing: isFetching,
+      lastCheckedAt: dataUpdatedAt || null,
+      refresh,
     };
-  }, [profile, user, isLoading]);
+  }, [profile, user, isLoading, isFetching, dataUpdatedAt, refresh]);
 };
