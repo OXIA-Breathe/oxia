@@ -236,8 +236,6 @@ const ProfileActions = () => {
         </AlertDialogTrigger>
         <AlertDialogContent
           className="rounded-3xl border-border/60"
-          aria-labelledby="delete-account-title"
-          aria-describedby="delete-account-description"
           onEscapeKeyDown={(e) => {
             if (isDeleting) e.preventDefault();
           }}
@@ -249,17 +247,15 @@ const ProfileActions = () => {
             >
               <ShieldAlert className="h-6 w-6" />
             </div>
-            <AlertDialogTitle id="delete-account-title" className="text-center text-foreground">
+            <AlertDialogTitle className="text-center text-foreground">
               Delete your OXIA account?
             </AlertDialogTitle>
-            <AlertDialogDescription
-              id="delete-account-description"
-              className="text-center text-muted-foreground"
-            >
+            <AlertDialogDescription className="text-center text-muted-foreground">
               This permanently removes your profile, sessions, streaks, achievements,
               and journal reflections. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
+
 
           <div className="space-y-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-4">
             <Label htmlFor="confirm-delete" className="text-sm text-foreground">
