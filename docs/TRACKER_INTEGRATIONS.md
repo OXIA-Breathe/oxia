@@ -232,3 +232,21 @@ supabase/functions/stress-derivation-engine/
 | WHOOP | High (OAuth) | Derived | Medium |
 | Oura | High (OAuth) | Derived | Medium |
 | Polar | High (OAuth + rate limits) | Derived | Low |
+
+## 6. Stress importer (implemented)
+
+`src/lib/stressImporter.ts` is the connector-agnostic mapping layer. Connectors only fetch;
+the importer normalises and attributes.
+
+- `normaliseReading(raw)` maps any vendor scale onto OXIA's canonical 0-100 (0 = calm) using
+  `scale.min/max` and `scale.direction` (`higher_is_better` values such as Fitbit's Stress
+  Management Score are inverted), and stamps `stressSource` (`native` / `derived` / `manual`)
+  from the tracker definition plus `rawValue` for auditing.
+- `importStressReadings(sessions, rawReadings, options)` attaches readings to existing sessions:
+  readings at/before session end become `pre`, readings after the end become `post`, both within
+  `windowMinutes` (default 30). The closest reading wins each slot.
+- Non-destructive by default: existing readings are kept unless `overwriteExisting`, and manual
+  entries require the explicit `overwriteManual` flag.
+- `sessionStressDelta(session)` and `describeImport(summary)` are the read helpers for charts/toasts.
+
+Adding a tracker needs no importer change — only a new entry in `HEALTH_TRACKERS`.
