@@ -32,8 +32,9 @@
     --accent: 204 47% 88%;
     --accent-foreground: 211 60% 33%;
 
-    --destructive: 0 70% 50%;
+    --destructive: 0 72% 38%;         /* darkened for WCAG AA text contrast */
     --destructive-foreground: 170 18% 96%;
+
 
     --border: 204 35% 86%;
     --input: 204 35% 86%;
