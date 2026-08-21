@@ -50,14 +50,55 @@ serve(async (req) => {
       },
     });
 
+    // Audit the request BEFORE deleting. Never let audit failures block deletion.
+    const ipAddress =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      req.headers.get("cf-connecting-ip") ??
+      null;
+    const userAgent = req.headers.get("user-agent") ?? null;
+
+    let auditId: string | null = null;
+    try {
+      const { data: auditRow } = await supabaseAdmin
+        .from("account_deletion_audit")
+        .insert({
+          user_id: userId,
+          user_email: user.email ?? null,
+          ip_address: ipAddress,
+          user_agent: userAgent,
+          status: "requested",
+        })
+        .select("id")
+        .single();
+      auditId = auditRow?.id ?? null;
+    } catch (_auditError) {
+      // Intentionally ignored — auditing must not prevent account deletion.
+    }
+
+    const updateAudit = async (status: string) => {
+      if (!auditId) return;
+      try {
+        await supabaseAdmin
+          .from("account_deletion_audit")
+          .update({ status })
+          .eq("id", auditId);
+      } catch (_auditError) {
+        // Intentionally ignored.
+      }
+    };
+
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
 
     if (deleteError) {
+      await updateAudit("failed");
       return new Response(
         JSON.stringify({ error: deleteError.message || "Failed to delete account" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    await updateAudit("completed");
+
 
     return new Response(
       JSON.stringify({ success: true, message: "Account deleted successfully" }),
