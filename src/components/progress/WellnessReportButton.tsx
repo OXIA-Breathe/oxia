@@ -25,6 +25,7 @@ interface WellnessReportButtonProps {
 const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { isPremium, isLoading: isPremiumLoading } = usePremiumStatus();
   const [open, setOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   // Default to previous month so there's likely data
