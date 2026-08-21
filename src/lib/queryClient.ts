@@ -38,3 +38,13 @@ export const queryPersister = createSyncStoragePersister({
   key: "OXIA_QUERY_CACHE",
   throttleTime: 1000,
 });
+
+/** Wipe in-memory and persisted cache (used on sign out). */
+export const clearPersistedQueryCache = async () => {
+  queryClient.clear();
+  try {
+    await queryPersister.removeClient();
+  } catch {
+    // storage unavailable — nothing to clean up
+  }
+};
