@@ -51,8 +51,7 @@ const InsufficientDataOverlay = ({ daysCount, minDays = 3, type = "data" }: Insu
           <p className="text-sm text-muted-foreground">{description}</p>
           {isPremiumUpsell && (
             <Button
-              size="sm"
-              className="mt-4 min-h-[44px] bg-amber-500 hover:bg-amber-500/90 text-white"
+              className="mt-4 bg-amber-500 hover:bg-amber-500/90 text-white"
               onClick={() => setPremiumOpen(true)}
             >
               <Crown className="h-4 w-4 mr-2" />
