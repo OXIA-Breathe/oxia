@@ -142,8 +142,8 @@ const AuthPage = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="new-password">Password</Label>
-                  <Input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} autoComplete="new-password" className="rounded-xl h-11" />
-                  <p className="text-xs text-muted-foreground">At least 8 characters, with an uppercase letter and a number.</p>
+                  <Input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={10} autoComplete="new-password" className="rounded-xl h-11" />
+                  <PasswordStrengthMeter password={password} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password">Repeat password</Label>
@@ -153,12 +153,13 @@ const AuthPage = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    minLength={8}
+                    minLength={10}
                     autoComplete="new-password"
                     aria-invalid={!!confirmPassword && confirmPassword !== password}
                     className="rounded-xl h-11"
                   />
                 </div>
+
                 {signUpError && (
                   <p role="alert" className="text-sm text-destructive">{signUpError}</p>
                 )}
