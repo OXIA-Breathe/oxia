@@ -3,7 +3,12 @@ import { Crown, Sparkles, FileText, Calendar, Loader2, RefreshCw, ExternalLink }
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
-import { purchaseSubscription, restorePurchases, SubscriptionPlan } from "@/lib/purchases";
+import {
+  purchaseSubscription,
+  restorePurchases,
+  openSubscriptionManagement,
+  SubscriptionPlan,
+} from "@/lib/purchases";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
