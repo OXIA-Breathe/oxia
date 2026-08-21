@@ -24,7 +24,7 @@ export const usePremiumStatus = (): PremiumStatus => {
       if (!user) return null;
       const { data, error } = await supabase
         .from("profiles")
-        .select("is_subscribed, subscription_expires_at, trial_started_at, trial_ends_at, subscription_plan")
+        .select("is_subscribed, subscription_expires_at, trial_started_at, trial_ends_at, subscription_plan, emotion_tracking_enabled")
         .eq("id", user.id)
         .single();
 
