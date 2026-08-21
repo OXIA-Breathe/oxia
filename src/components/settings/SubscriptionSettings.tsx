@@ -21,6 +21,46 @@ const SubscriptionSettings = () => {
   const [purchasingPlan, setPurchasingPlan] = useState<SubscriptionPlan | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
 
+  const handlePurchase = async (plan: SubscriptionPlan) => {
+    setPurchasingPlan(plan);
+    try {
+      await purchaseSubscription(plan);
+      toast({
+        title: "Purchase started",
+        description: "Complete the checkout in the store dialog.",
+      });
+    } catch (error: any) {
+      console.error("Purchase error:", error);
+      toast({
+        title: "Purchase unavailable",
+        description: error?.message || "Could not start purchase. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setPurchasingPlan(null);
+    }
+  };
+
+  const handleRestore = async () => {
+    setIsRestoring(true);
+    try {
+      await restorePurchases();
+      toast({
+        title: "Restored",
+        description: "Any previous purchases have been restored.",
+      });
+    } catch (error) {
+      console.error("Restore error:", error);
+      toast({
+        title: "Restore failed",
+        description: "Could not restore purchases. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRestoring(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <Card className="border-none shadow-md bg-card">
