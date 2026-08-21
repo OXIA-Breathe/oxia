@@ -270,7 +270,7 @@ const ProfileActions = () => {
               aria-label={`Type ${CONFIRM_PHRASE} to confirm account deletion`}
               aria-required="true"
               aria-invalid={confirmText.length > 0 && !canDelete}
-              className="rounded-xl bg-card"
+              className="rounded-xl bg-card min-h-11"
             />
           </div>
 
@@ -278,7 +278,7 @@ const ProfileActions = () => {
             <AlertDialogCancel
               onClick={closeDeleteDialog}
               disabled={isDeleting}
-              className="rounded-full"
+              className="rounded-full min-h-11"
               aria-label="Cancel and keep my account"
             >
               Cancel — keep my account
@@ -290,7 +290,8 @@ const ProfileActions = () => {
               }}
               disabled={!canDelete || isDeleting}
               aria-label="Permanently delete my account"
-              className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none"
+              className="rounded-full min-h-11 bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none"
+            
             >
               {isDeleting ? "Deleting..." : "Delete forever"}
             </AlertDialogAction>
