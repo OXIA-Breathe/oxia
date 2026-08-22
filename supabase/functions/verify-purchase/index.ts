@@ -84,6 +84,50 @@ serve(async (req) => {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
+    // Persist the store receipt so provider webhooks (renewal / cancellation /
+    // refund) can resolve this purchase back to the user.
+    const receiptRow: Record<string, unknown> = {
+      user_id: user.id,
+      platform,
+      product_id: productId,
+      plan,
+      expires_at: expiresAt.toISOString(),
+      is_active: true,
+      last_event: "client_verified",
+      latest_transaction_id: transactionId,
+    };
+
+    let receiptQuery = supabaseAdmin
+      .from("subscription_receipts")
+      .select("id")
+      .eq("platform", platform);
+
+    if (platform === "android") {
+      receiptRow.purchase_token = receipt;
+      receiptQuery = receiptQuery.eq("purchase_token", receipt);
+    } else {
+      receiptRow.original_transaction_id = transactionId;
+      receiptQuery = receiptQuery.eq("original_transaction_id", transactionId);
+    }
+
+    const { data: existingReceipt, error: receiptLookupError } = await receiptQuery.maybeSingle();
+
+    if (receiptLookupError) {
+      console.error("Receipt lookup error:", receiptLookupError);
+    }
+
+    const { error: receiptError } = existingReceipt
+      ? await supabaseAdmin.from("subscription_receipts").update(receiptRow).eq("id", existingReceipt.id)
+      : await supabaseAdmin.from("subscription_receipts").insert(receiptRow);
+
+    if (receiptError) {
+      console.error("Receipt persist error:", receiptError);
+      return new Response(
+        JSON.stringify({ error: "Failed to record purchase" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const { error: updateError } = await supabaseAdmin
       .from("profiles")
       .update({
@@ -100,6 +144,7 @@ serve(async (req) => {
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
 
     return new Response(
       JSON.stringify({ success: true, plan, expiresAt: expiresAt.toISOString() }),
@@ -192,13 +237,13 @@ async function createGoogleJwt(serviceAccount: any): Promise<string> {
   const cryptoKey = await crypto.subtle.importKey(
     "pkcs8",
     binaryKey.buffer,
-    { name: "RSA-PSS", hash: "SHA-256" },
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
     false,
     ["sign"]
   );
 
   const signature = await crypto.subtle.sign(
-    { name: "RSA-PSS", saltLength: 32 },
+    "RSASSA-PKCS1-v1_5",
     cryptoKey,
     new TextEncoder().encode(signingInput)
   );
