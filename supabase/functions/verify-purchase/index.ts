@@ -192,13 +192,13 @@ async function createGoogleJwt(serviceAccount: any): Promise<string> {
   const cryptoKey = await crypto.subtle.importKey(
     "pkcs8",
     binaryKey.buffer,
-    { name: "RSA-PSS", hash: "SHA-256" },
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
     false,
     ["sign"]
   );
 
   const signature = await crypto.subtle.sign(
-    { name: "RSA-PSS", saltLength: 32 },
+    "RSASSA-PKCS1-v1_5",
     cryptoKey,
     new TextEncoder().encode(signingInput)
   );
