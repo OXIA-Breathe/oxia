@@ -22,8 +22,6 @@ import { createLogger, fingerprint } from "../_shared/logging.ts";
 
 const PACKAGE_NAME = "app.lovable.d3590b81c81449329e6d4fbda085725b";
 
-const jsonHeaders = { "Content-Type": "application/json" };
-
 // Google Play notificationType values
 const GOOGLE_ACTIVE_TYPES = new Set([1, 2, 4, 7]); // recovered, renewed, purchased, restarted
 const GOOGLE_INACTIVE_TYPES = new Set([3, 5, 10, 12, 13]); // cancelled, on hold, paused, revoked, expired
@@ -592,6 +590,4 @@ async function applyState(
     outcome: "synced",
     note: `${update.event} → is_subscribed=${update.isActive}`,
   };
-}
-
 }
