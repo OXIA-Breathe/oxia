@@ -424,7 +424,11 @@ function decodeJws(jws: string): any {
   return JSON.parse(atob(padded));
 }
 
-async function handleAppleNotification(admin: any, signedPayload: string, ctx: WebhookCtx) {
+async function handleAppleNotification(
+  admin: any,
+  signedPayload: string,
+  ctx: WebhookCtx
+): Promise<EventOutcome> {
   const payload = decodeJws(signedPayload);
   const notificationType: string = payload.notificationType ?? "";
   const subtype: string = payload.subtype ?? "";
@@ -438,8 +442,11 @@ async function handleAppleNotification(admin: any, signedPayload: string, ctx: W
     transactionInfo?.originalTransactionId ?? renewalInfo?.originalTransactionId;
 
   if (!originalTransactionId) {
-    ctx.log("apple_notification_without_original_transaction_id");
-    return;
+    ctx.log("apple_notification_without_original_transaction_id", {
+      notification_type: notificationType,
+      subtype: subtype || null,
+    });
+    return { outcome: "ignored", note: "no originalTransactionId in payload" };
   }
 
   const expiresAt = transactionInfo?.expiresDate ? new Date(Number(transactionInfo.expiresDate)) : null;
@@ -453,7 +460,15 @@ async function handleAppleNotification(admin: any, signedPayload: string, ctx: W
     isActive = true;
   }
 
-  await applyState(
+  ctx.log("apple_state_resolved", {
+    notification_type: notificationType,
+    subtype: subtype || null,
+    is_active: isActive,
+    expires_at: expiresAt?.toISOString() ?? null,
+    original_transaction_fingerprint: fingerprint(originalTransactionId),
+  });
+
+  return await applyState(
     admin,
     { platform: "ios", originalTransactionId },
     {
@@ -466,6 +481,7 @@ async function handleAppleNotification(admin: any, signedPayload: string, ctx: W
     ctx
   );
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Shared state application                                                   */
