@@ -26,6 +26,8 @@ interface StoreFailure {
 interface StoreResult {
   isValid: boolean;
   expiresAt: Date | null;
+  /** Apple's stable subscription identifier, used to match webhook events. */
+  originalTransactionId?: string | null;
   failure?: StoreFailure;
 }
 
@@ -65,6 +67,11 @@ serve(async (req) => {
     }
 
     const { platform, productId, transactionId, receipt } = body as Record<string, string>;
+    const clientOriginalTransactionId =
+      typeof (body as Record<string, unknown>).originalTransactionId === "string"
+        ? ((body as Record<string, string>).originalTransactionId || null)
+        : null;
+
 
     const missing = ["platform", "productId", "transactionId", "receipt"].filter(
       (field) => !(body as Record<string, unknown>)[field],
@@ -160,8 +167,13 @@ serve(async (req) => {
       receiptRow.purchase_token = receipt;
       receiptQuery = receiptQuery.eq("purchase_token", receipt);
     } else {
-      receiptRow.original_transaction_id = transactionId;
-      receiptQuery = receiptQuery.eq("original_transaction_id", transactionId);
+      // Apple matches webhook events by originalTransactionId (stable across
+      // renewals), never by the per-transaction id. Prefer the value Apple
+      // returned during receipt verification, then the client-supplied one.
+      const appleOriginalId =
+        result.originalTransactionId || clientOriginalTransactionId || transactionId;
+      receiptRow.original_transaction_id = appleOriginalId;
+      receiptQuery = receiptQuery.eq("original_transaction_id", appleOriginalId);
     }
 
     const { data: existingReceipt, error: receiptLookupError } = await receiptQuery.maybeSingle();
@@ -441,8 +453,14 @@ async function verifyAppleReceipt(
     }
 
     const expiresAt = new Date(Number(matching.expires_date_ms));
-    logger.log("apple_verify_ok", { expires_at: expiresAt.toISOString() });
-    return { isValid: true, expiresAt };
+    const originalTransactionId: string | null = matching.original_transaction_id ?? null;
+    logger.log("apple_verify_ok", {
+      expires_at: expiresAt.toISOString(),
+      original_transaction_fingerprint: originalTransactionId
+        ? fingerprint(originalTransactionId)
+        : null,
+    });
+    return { isValid: true, expiresAt, originalTransactionId };
   } catch (error) {
     logger.logError("apple_verification_error", {
       error: error instanceof Error ? error.message : String(error),
