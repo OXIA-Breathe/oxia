@@ -94,19 +94,27 @@ serve(async (req) => {
       const claim = await claimEvent(admin, ctx, "google", eventKey, eventType, decoded);
       if (!claim.shouldProcess) {
         log("duplicate_event_skipped", { event_key: eventKey, event_type: eventType });
-        return new Response(JSON.stringify({ success: true, duplicate: true, traceId }), {
-          status: 200,
-          headers: jsonHeaders,
-        });
+        log("webhook_completed", { provider: "google", event_type: eventType, outcome: "duplicate" });
+        return ok({ success: true, duplicate: true });
       }
       eventRowId = claim.id;
 
-      log("processing_event", { provider: "google", event_key: eventKey, event_type: eventType });
-      await handleGoogleNotification(admin, decoded, ctx);
-      await finishEvent(admin, ctx, eventRowId, "processed");
+      log("processing_event", {
+        provider: "google",
+        event_key: eventKey,
+        event_type: eventType,
+        token_fingerprint: fingerprint(sub?.purchaseToken ?? voided?.purchaseToken),
+      });
+      const outcome = await handleGoogleNotification(admin, decoded, ctx);
+      await finishEvent(admin, ctx, eventRowId, "processed", outcome.note);
 
+      log("webhook_completed", {
+        provider: "google",
+        event_type: eventType,
+        outcome: outcome.outcome,
+      });
       // Always 200 so Pub/Sub does not redeliver indefinitely.
-      return new Response(JSON.stringify({ success: true, traceId }), { status: 200, headers: jsonHeaders });
+      return ok({ success: true, outcome: outcome.outcome });
     }
 
     // ---- Apple App Store Server Notifications V2 ----
@@ -120,36 +128,41 @@ serve(async (req) => {
       const claim = await claimEvent(admin, ctx, "apple", eventKey, eventType, payload);
       if (!claim.shouldProcess) {
         log("duplicate_event_skipped", { event_key: eventKey, event_type: eventType });
-        return new Response(JSON.stringify({ success: true, duplicate: true, traceId }), {
-          status: 200,
-          headers: jsonHeaders,
-        });
+        log("webhook_completed", { provider: "apple", event_type: eventType, outcome: "duplicate" });
+        return ok({ success: true, duplicate: true });
       }
       eventRowId = claim.id;
 
       log("processing_event", { provider: "apple", event_key: eventKey, event_type: eventType });
-      await handleAppleNotification(admin, body.signedPayload, ctx);
-      await finishEvent(admin, ctx, eventRowId, "processed");
+      const outcome = await handleAppleNotification(admin, body.signedPayload, ctx);
+      await finishEvent(admin, ctx, eventRowId, "processed", outcome.note);
 
-      return new Response(JSON.stringify({ success: true, traceId }), { status: 200, headers: jsonHeaders });
+      log("webhook_completed", {
+        provider: "apple",
+        event_type: eventType,
+        outcome: outcome.outcome,
+      });
+      return ok({ success: true, outcome: outcome.outcome });
     }
 
-    logError("unrecognised_payload");
-    return new Response(JSON.stringify({ error: "Unrecognised notification payload" }), {
-      status: 400,
-      headers: jsonHeaders,
-    });
+    return fail(
+      "unrecognised_payload",
+      400,
+      "Unrecognised notification payload — expected a Pub/Sub envelope or an Apple signedPayload.",
+      { top_level_keys: Object.keys(body).slice(0, 10) },
+    );
   } catch (error) {
-    logError("unhandled_error", { error: error instanceof Error ? error.message : String(error) });
+    logError("unhandled_error", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack?.split("\n").slice(0, 4).join(" | ") : undefined,
+    });
     if (eventRowId) {
       await finishEvent(admin, ctx, eventRowId, "failed", error instanceof Error ? error.message : String(error));
     }
     // Unexpected failures return 500 so the provider retries later.
-    return new Response(JSON.stringify({ error: "Internal server error", traceId }), {
-      status: 500,
-      headers: jsonHeaders,
-    });
+    return fail("internal_error", 500, "Internal server error.");
   }
+
 });
 
 /* -------------------------------------------------------------------------- */
