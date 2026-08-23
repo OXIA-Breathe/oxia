@@ -67,6 +67,11 @@ serve(async (req) => {
     }
 
     const { platform, productId, transactionId, receipt } = body as Record<string, string>;
+    const clientOriginalTransactionId =
+      typeof (body as Record<string, unknown>).originalTransactionId === "string"
+        ? ((body as Record<string, string>).originalTransactionId || null)
+        : null;
+
 
     const missing = ["platform", "productId", "transactionId", "receipt"].filter(
       (field) => !(body as Record<string, unknown>)[field],
