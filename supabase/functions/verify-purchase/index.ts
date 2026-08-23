@@ -167,8 +167,13 @@ serve(async (req) => {
       receiptRow.purchase_token = receipt;
       receiptQuery = receiptQuery.eq("purchase_token", receipt);
     } else {
-      receiptRow.original_transaction_id = transactionId;
-      receiptQuery = receiptQuery.eq("original_transaction_id", transactionId);
+      // Apple matches webhook events by originalTransactionId (stable across
+      // renewals), never by the per-transaction id. Prefer the value Apple
+      // returned during receipt verification, then the client-supplied one.
+      const appleOriginalId =
+        result.originalTransactionId || clientOriginalTransactionId || transactionId;
+      receiptRow.original_transaction_id = appleOriginalId;
+      receiptQuery = receiptQuery.eq("original_transaction_id", appleOriginalId);
     }
 
     const { data: existingReceipt, error: receiptLookupError } = await receiptQuery.maybeSingle();
