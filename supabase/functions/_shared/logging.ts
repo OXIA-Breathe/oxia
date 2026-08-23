@@ -74,8 +74,10 @@ export function createLogger(
         message,
         ...extra,
       });
+      // Diagnostic extras stay in the logs only — the client gets the stable
+      // code, a friendly message and the trace ID to quote in a bug report.
       return new Response(
-        JSON.stringify({ error: message, code, traceId, ...(extra ?? {}) }),
+        JSON.stringify({ error: message, code, traceId }),
         { status, headers },
       );
     },
