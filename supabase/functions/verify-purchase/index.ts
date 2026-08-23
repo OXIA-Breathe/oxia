@@ -26,6 +26,8 @@ interface StoreFailure {
 interface StoreResult {
   isValid: boolean;
   expiresAt: Date | null;
+  /** Apple's stable subscription identifier, used to match webhook events. */
+  originalTransactionId?: string | null;
   failure?: StoreFailure;
 }
 
