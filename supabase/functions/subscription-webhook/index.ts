@@ -259,22 +259,25 @@ async function finishEvent(
 /* Google Play                                                                */
 /* -------------------------------------------------------------------------- */
 
-async function handleGoogleNotification(admin: any, notification: any, ctx: WebhookCtx) {
+async function handleGoogleNotification(
+  admin: any,
+  notification: any,
+  ctx: WebhookCtx
+): Promise<EventOutcome> {
   const sub = notification.subscriptionNotification;
   const voided = notification.voidedPurchaseNotification;
 
   if (voided?.purchaseToken) {
-    await applyState(admin, { platform: "android", purchaseToken: voided.purchaseToken }, {
+    return await applyState(admin, { platform: "android", purchaseToken: voided.purchaseToken }, {
       isActive: false,
       expiresAt: new Date(),
       event: "voided",
     }, ctx);
-    return;
   }
 
   if (!sub?.purchaseToken) {
     ctx.log("google_notification_without_subscription");
-    return;
+    return { outcome: "ignored", note: "no subscriptionNotification.purchaseToken" };
   }
 
   const notificationType = Number(sub.notificationType);
@@ -282,16 +285,21 @@ async function handleGoogleNotification(admin: any, notification: any, ctx: Webh
   const productId: string = sub.subscriptionId ?? "";
 
   // Fetch authoritative state from Google so we never trust the event alone.
-  const verified = await getGoogleSubscriptionState(productId, purchaseToken);
+  const verified = await getGoogleSubscriptionState(productId, purchaseToken, ctx);
 
   let isActive: boolean;
   if (verified) {
     isActive = verified.expiresAt.getTime() > Date.now();
   } else {
     isActive = GOOGLE_ACTIVE_TYPES.has(notificationType) && !GOOGLE_INACTIVE_TYPES.has(notificationType);
+    ctx.log("google_state_from_event_type", {
+      notification_type: notificationType,
+      is_active: isActive,
+      reason: "store lookup unavailable — falling back to notificationType",
+    });
   }
 
-  await applyState(
+  return await applyState(
     admin,
     { platform: "android", purchaseToken },
     {
@@ -306,10 +314,17 @@ async function handleGoogleNotification(admin: any, notification: any, ctx: Webh
 
 async function getGoogleSubscriptionState(
   productId: string,
-  purchaseToken: string
+  purchaseToken: string,
+  ctx: WebhookCtx
 ): Promise<{ expiresAt: Date } | null> {
   const serviceAccountJson = Deno.env.get("GOOGLE_PLAY_SERVICE_ACCOUNT_JSON");
-  if (!serviceAccountJson || !productId) return null;
+  if (!serviceAccountJson || !productId) {
+    ctx.logError("google_lookup_skipped", {
+      secret_configured: Boolean(serviceAccountJson),
+      product_id: productId || null,
+    });
+    return null;
+  }
 
   try {
     const serviceAccount = JSON.parse(serviceAccountJson);
@@ -323,27 +338,42 @@ async function getGoogleSubscriptionState(
         assertion: jwt,
       }),
     });
-    const tokenData = await tokenRes.json();
+    const tokenData = await tokenRes.json().catch(() => ({}));
     if (!tokenData.access_token) {
-      console.error("Google OAuth failed");
+      ctx.logError("google_oauth_failed", {
+        http_status: tokenRes.status,
+        google_error: tokenData.error ?? null,
+      });
       return null;
     }
 
     const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/purchases/subscriptions/${productId}/tokens/${purchaseToken}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${tokenData.access_token}` } });
     if (!res.ok) {
-      console.error("Google subscription lookup failed:", res.status);
+      ctx.logError("google_lookup_failed", {
+        http_status: res.status,
+        product_id: productId,
+        token_fingerprint: fingerprint(purchaseToken),
+      });
       return null;
     }
 
     const data = await res.json();
-    if (!data.expiryTimeMillis) return null;
-    return { expiresAt: new Date(Number(data.expiryTimeMillis)) };
+    if (!data.expiryTimeMillis) {
+      ctx.logError("google_lookup_without_expiry", { product_id: productId });
+      return null;
+    }
+    const expiresAt = new Date(Number(data.expiryTimeMillis));
+    ctx.log("google_lookup_ok", { expires_at: expiresAt.toISOString() });
+    return { expiresAt };
   } catch (error) {
-    console.error("Google subscription lookup error:", error);
+    ctx.logError("google_lookup_error", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return null;
   }
 }
+
 
 async function createGoogleJwt(serviceAccount: any): Promise<string> {
   const header = { alg: "RS256", typ: "JWT" };
