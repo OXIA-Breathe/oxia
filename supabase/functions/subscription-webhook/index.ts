@@ -507,7 +507,18 @@ interface StateUpdate {
   latestTransactionId?: string | null;
 }
 
-async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate, ctx: WebhookCtx) {
+/** What the webhook actually did with an event — recorded in the ledger row. */
+interface EventOutcome {
+  outcome: "synced" | "ignored";
+  note?: string;
+}
+
+async function applyState(
+  admin: any,
+  lookup: ReceiptLookup,
+  update: StateUpdate,
+  ctx: WebhookCtx
+): Promise<EventOutcome> {
   let query = admin.from("subscription_receipts").select("*").eq("platform", lookup.platform);
 
   if (lookup.purchaseToken) {
@@ -527,7 +538,10 @@ async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate
     // Unknown purchase — most often an event that arrived before the client
     // finished verifying the purchase. Nothing to sync yet.
     ctx.log("no_matching_receipt", { event: update.event, platform: lookup.platform });
-    return;
+    return {
+      outcome: "ignored",
+      note: `no matching ${lookup.platform} receipt for event ${update.event}`,
+    };
   }
 
   const receiptUpdate: Record<string, unknown> = {
@@ -573,4 +587,11 @@ async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate
     expires_at: update.expiresAt ? update.expiresAt.toISOString() : null,
     plan: update.plan ?? null,
   });
+
+  return {
+    outcome: "synced",
+    note: `${update.event} → is_subscribed=${update.isActive}`,
+  };
+}
+
 }
