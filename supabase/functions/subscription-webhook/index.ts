@@ -32,15 +32,21 @@ const GOOGLE_INACTIVE_TYPES = new Set([3, 5, 10, 12, 13]); // cancelled, on hold
 const APPLE_INACTIVE_TYPES = new Set(["EXPIRED", "REVOKE", "REFUND", "GRACE_PERIOD_EXPIRED"]);
 
 serve(async (req) => {
+  const logger = createLogger("subscription-webhook");
+  const { traceId, log, logError, ok, fail } = logger;
+
   if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: jsonHeaders });
+    return fail("method_not_allowed", 405, "Method not allowed.", { method: req.method });
   }
 
   const secret = Deno.env.get("SUBSCRIPTION_WEBHOOK_SECRET");
   const token = new URL(req.url).searchParams.get("token");
 
   if (!secret || !token || token !== secret) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: jsonHeaders });
+    return fail("unauthorized", 401, "Unauthorized.", {
+      secret_configured: Boolean(secret),
+      token_supplied: Boolean(token),
+    });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -49,22 +55,29 @@ serve(async (req) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  const traceId = crypto.randomUUID();
-  const log = (message: string, extra?: Record<string, unknown>) =>
-    console.log(JSON.stringify({ trace_id: traceId, fn: "subscription-webhook", message, ...extra }));
-  const logError = (message: string, extra?: Record<string, unknown>) =>
-    console.error(JSON.stringify({ trace_id: traceId, fn: "subscription-webhook", message, ...extra }));
-
   const ctx: WebhookCtx = { traceId, log, logError };
 
   let eventRowId: string | null = null;
 
   try {
-    const body = await req.json().catch(() => null);
-    if (!body) {
-      logError("invalid_body");
-      return new Response(JSON.stringify({ error: "Invalid body" }), { status: 400, headers: jsonHeaders });
+    const raw = await req.text();
+    let body: any = null;
+    try {
+      body = raw ? JSON.parse(raw) : null;
+    } catch {
+      body = null;
     }
+    if (!body) {
+      return fail("invalid_body", 400, "Request body must be valid JSON.", {
+        body_bytes: raw.length,
+      });
+    }
+
+    log("webhook_received", {
+      provider: body.message?.data ? "google" : body.signedPayload ? "apple" : "unknown",
+      body_bytes: raw.length,
+    });
+
 
     // ---- Google Play RTDN (Pub/Sub push envelope) ----
     if (body.message?.data) {
