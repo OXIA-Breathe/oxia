@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createLogger, fingerprint, type Logger } from "../_shared/logging.ts";
 
 const ALLOWED_ORIGIN = "https://d3590b81-c814-4932-9e6d-4fbda085725b.lovable.app";
 
@@ -10,18 +11,36 @@ const corsHeaders = {
 
 const PACKAGE_NAME = "app.lovable.d3590b81c81449329e6d4fbda085725b";
 
+/** Reason returned by a store verifier when a purchase could not be confirmed. */
+interface StoreFailure {
+  /** Machine-readable reason code surfaced to the client. */
+  code:
+    | "store_not_configured"
+    | "store_rejected"
+    | "store_unreachable"
+    | "no_matching_transaction";
+  /** Short, non-sensitive detail for QA (HTTP status, Apple status number, …). */
+  reason: string;
+}
+
+interface StoreResult {
+  isValid: boolean;
+  expiresAt: Date | null;
+  failure?: StoreFailure;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const logger = createLogger("verify-purchase", corsHeaders);
+  const { log, logError, ok, fail } = logger;
+
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized - No valid authorization header" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return fail("missing_auth", 401, "Missing or malformed authorization header.");
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -35,48 +54,83 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized - Invalid token" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return fail("invalid_token", 401, "Your session is no longer valid. Please sign in again.", {
+        auth_error: userError?.message ?? null,
+      });
     }
 
-    const body = await req.json().catch(() => ({}));
-    const { platform, productId, transactionId, receipt, signature } = body;
-
-    if (!platform || !productId || !transactionId || !receipt) {
-      return new Response(
-        JSON.stringify({ error: "Missing required purchase fields" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    const body = await req.json().catch(() => null);
+    if (!body || typeof body !== "object") {
+      return fail("invalid_body", 400, "Request body must be valid JSON.", { user_id: user.id });
     }
 
-    let isValid = false;
-    let expiresAt: Date | null = null;
-    let plan: "monthly" | "yearly" | null = null;
+    const { platform, productId, transactionId, receipt } = body as Record<string, string>;
 
+    const missing = ["platform", "productId", "transactionId", "receipt"].filter(
+      (field) => !(body as Record<string, unknown>)[field],
+    );
+    if (missing.length > 0) {
+      return fail("missing_fields", 400, `Missing purchase fields: ${missing.join(", ")}.`, {
+        user_id: user.id,
+        missing_fields: missing,
+      });
+    }
+
+    log("request_received", {
+      user_id: user.id,
+      platform,
+      product_id: productId,
+      transaction_id: fingerprint(transactionId),
+      receipt_fingerprint: fingerprint(receipt),
+      receipt_length: receipt.length,
+    });
+
+    const plan = mapProductToPlan(productId);
+    if (!plan) {
+      return fail("unknown_product", 400, "This product is not a known OXIA subscription.", {
+        user_id: user.id,
+        product_id: productId,
+      });
+    }
+
+    let result: StoreResult;
     if (platform === "android") {
-      const result = await verifyGooglePlayPurchase(productId, receipt);
-      isValid = result.isValid;
-      expiresAt = result.expiresAt;
-      plan = mapProductToPlan(productId);
+      result = await verifyGooglePlayPurchase(productId, receipt, logger);
     } else if (platform === "ios") {
-      const result = await verifyAppleReceipt(receipt, productId);
-      isValid = result.isValid;
-      expiresAt = result.expiresAt;
-      plan = mapProductToPlan(productId);
+      result = await verifyAppleReceipt(receipt, productId, logger);
     } else {
-      return new Response(
-        JSON.stringify({ error: "Unsupported platform" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      return fail("unsupported_platform", 400, `Unsupported platform "${platform}".`, {
+        user_id: user.id,
+      });
+    }
+
+    if (!result.isValid || !result.expiresAt) {
+      const failure = result.failure ?? { code: "store_rejected" as const, reason: "unknown" };
+      const status = failure.code === "store_not_configured"
+        ? 503
+        : failure.code === "store_unreachable"
+        ? 502
+        : 402;
+      return fail(
+        failure.code,
+        status,
+        failure.code === "store_not_configured"
+          ? "Purchase verification is not configured on the server yet."
+          : failure.code === "store_unreachable"
+          ? "The store could not be reached. Please try again shortly."
+          : "The store could not confirm this purchase.",
+        { user_id: user.id, platform, product_id: productId, store_reason: failure.reason },
       );
     }
 
-    if (!isValid || !expiresAt || !plan) {
-      return new Response(
-        JSON.stringify({ error: "Purchase verification failed" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    const expiresAt = result.expiresAt;
+
+    if (expiresAt.getTime() <= Date.now()) {
+      return fail("subscription_expired", 402, "This subscription has already expired.", {
+        user_id: user.id,
+        platform,
+        expires_at: expiresAt.toISOString(),
+      });
     }
 
     // Update profile using service role (bypasses RLS and subscription field protection)
@@ -113,7 +167,11 @@ serve(async (req) => {
     const { data: existingReceipt, error: receiptLookupError } = await receiptQuery.maybeSingle();
 
     if (receiptLookupError) {
-      console.error("Receipt lookup error:", receiptLookupError);
+      logError("receipt_lookup_failed", {
+        user_id: user.id,
+        platform,
+        error: receiptLookupError.message,
+      });
     }
 
     const { error: receiptError } = existingReceipt
@@ -121,12 +179,18 @@ serve(async (req) => {
       : await supabaseAdmin.from("subscription_receipts").insert(receiptRow);
 
     if (receiptError) {
-      console.error("Receipt persist error:", receiptError);
-      return new Response(
-        JSON.stringify({ error: "Failed to record purchase" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return fail("receipt_persist_failed", 500, "Failed to record the purchase.", {
+        user_id: user.id,
+        platform,
+        db_error: receiptError.message,
+      });
     }
+
+    log("receipt_persisted", {
+      user_id: user.id,
+      platform,
+      mode: existingReceipt ? "updated" : "inserted",
+    });
 
     const { error: updateError } = await supabaseAdmin
       .from("profiles")
@@ -138,24 +202,28 @@ serve(async (req) => {
       .eq("id", user.id);
 
     if (updateError) {
-      console.error("Profile update error:", updateError);
-      return new Response(
-        JSON.stringify({ error: "Failed to activate subscription" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return fail("profile_update_failed", 500, "Failed to activate the subscription.", {
+        user_id: user.id,
+        db_error: updateError.message,
+      });
     }
 
+    log("subscription_activated", {
+      user_id: user.id,
+      platform,
+      plan,
+      expires_at: expiresAt.toISOString(),
+      receipt_mode: existingReceipt ? "updated" : "inserted",
+    });
+    log("request_completed", { status: 200, user_id: user.id });
 
-    return new Response(
-      JSON.stringify({ success: true, plan, expiresAt: expiresAt.toISOString() }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return ok({ success: true, plan, expiresAt: expiresAt.toISOString() });
   } catch (error) {
-    console.error("verify-purchase error:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    logError("unhandled_error", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack?.split("\n").slice(0, 4).join(" | ") : undefined,
+    });
+    return fail("internal_error", 500, "Internal server error.");
   }
 });
 
@@ -165,11 +233,19 @@ function mapProductToPlan(productId: string): "monthly" | "yearly" | null {
   return null;
 }
 
-async function verifyGooglePlayPurchase(productId: string, purchaseToken: string): Promise<{ isValid: boolean; expiresAt: Date | null }> {
+async function verifyGooglePlayPurchase(
+  productId: string,
+  purchaseToken: string,
+  logger: Logger,
+): Promise<StoreResult> {
   const serviceAccountJson = Deno.env.get("GOOGLE_PLAY_SERVICE_ACCOUNT_JSON");
   if (!serviceAccountJson) {
-    console.error("GOOGLE_PLAY_SERVICE_ACCOUNT_JSON not configured");
-    return { isValid: false, expiresAt: null };
+    logger.logError("google_config_missing", { secret: "GOOGLE_PLAY_SERVICE_ACCOUNT_JSON" });
+    return {
+      isValid: false,
+      expiresAt: null,
+      failure: { code: "store_not_configured", reason: "GOOGLE_PLAY_SERVICE_ACCOUNT_JSON missing" },
+    };
   }
 
   try {
@@ -185,11 +261,23 @@ async function verifyGooglePlayPurchase(productId: string, purchaseToken: string
       }),
     });
 
-    const tokenData = await tokenRes.json();
+    const tokenData = await tokenRes.json().catch(() => ({}));
     if (!tokenData.access_token) {
-      console.error("Google OAuth failed:", tokenData);
-      return { isValid: false, expiresAt: null };
+      logger.logError("google_oauth_failed", {
+        http_status: tokenRes.status,
+        google_error: tokenData.error ?? null,
+        google_error_description: tokenData.error_description ?? null,
+      });
+      return {
+        isValid: false,
+        expiresAt: null,
+        failure: {
+          code: "store_rejected",
+          reason: `oauth ${tokenRes.status} ${tokenData.error ?? "no_access_token"}`,
+        },
+      };
     }
+    logger.log("google_oauth_ok");
 
     const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/purchases/subscriptions/${productId}/tokens/${purchaseToken}`;
     const verifyRes = await fetch(url, {
@@ -197,20 +285,53 @@ async function verifyGooglePlayPurchase(productId: string, purchaseToken: string
     });
 
     if (!verifyRes.ok) {
-      console.error("Google Play verification failed:", await verifyRes.text());
-      return { isValid: false, expiresAt: null };
+      const detail = (await verifyRes.text().catch(() => "")).slice(0, 300);
+      logger.logError("google_lookup_failed", {
+        http_status: verifyRes.status,
+        product_id: productId,
+        token_fingerprint: fingerprint(purchaseToken),
+        google_response: detail,
+      });
+      return {
+        isValid: false,
+        expiresAt: null,
+        failure: { code: "store_rejected", reason: `lookup http ${verifyRes.status}` },
+      };
     }
 
     const verifyData = await verifyRes.json();
     const expiryMillis = verifyData.expiryTimeMillis;
     if (!expiryMillis) {
-      return { isValid: false, expiresAt: null };
+      logger.logError("google_lookup_without_expiry", {
+        payment_state: verifyData.paymentState ?? null,
+        acknowledgement_state: verifyData.acknowledgementState ?? null,
+      });
+      return {
+        isValid: false,
+        expiresAt: null,
+        failure: { code: "no_matching_transaction", reason: "no expiryTimeMillis in response" },
+      };
     }
 
-    return { isValid: true, expiresAt: new Date(Number(expiryMillis)) };
+    const expiresAt = new Date(Number(expiryMillis));
+    logger.log("google_lookup_ok", {
+      expires_at: expiresAt.toISOString(),
+      payment_state: verifyData.paymentState ?? null,
+      auto_renewing: verifyData.autoRenewing ?? null,
+    });
+    return { isValid: true, expiresAt };
   } catch (error) {
-    console.error("Google Play verification error:", error);
-    return { isValid: false, expiresAt: null };
+    logger.logError("google_verification_error", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return {
+      isValid: false,
+      expiresAt: null,
+      failure: {
+        code: "store_unreachable",
+        reason: error instanceof Error ? error.message : String(error),
+      },
+    };
   }
 }
 
@@ -256,11 +377,19 @@ async function createGoogleJwt(serviceAccount: any): Promise<string> {
   return `${signingInput}.${signatureBase64}`;
 }
 
-async function verifyAppleReceipt(receipt: string, productId: string): Promise<{ isValid: boolean; expiresAt: Date | null }> {
+async function verifyAppleReceipt(
+  receipt: string,
+  productId: string,
+  logger: Logger,
+): Promise<StoreResult> {
   const sharedSecret = Deno.env.get("APPLE_SHARED_SECRET");
   if (!sharedSecret) {
-    console.error("APPLE_SHARED_SECRET not configured");
-    return { isValid: false, expiresAt: null };
+    logger.logError("apple_config_missing", { secret: "APPLE_SHARED_SECRET" });
+    return {
+      isValid: false,
+      expiresAt: null,
+      failure: { code: "store_not_configured", reason: "APPLE_SHARED_SECRET missing" },
+    };
   }
 
   try {
@@ -269,17 +398,27 @@ async function verifyAppleReceipt(receipt: string, productId: string): Promise<{
       ? "https://sandbox.itunes.apple.com/verifyReceipt"
       : "https://buy.itunes.apple.com/verifyReceipt";
 
+    logger.log("apple_verify_started", { environment: isSandbox ? "sandbox" : "production" });
+
     const res = await fetch(verifyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ "receipt-data": receipt, password: sharedSecret }),
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
     if (data.status !== 0 || !Array.isArray(data.latest_receipt_info)) {
-      console.error("Apple verification failed:", data);
-      return { isValid: false, expiresAt: null };
+      logger.logError("apple_verify_rejected", {
+        http_status: res.status,
+        apple_status: data.status ?? null,
+        environment: data.environment ?? (isSandbox ? "sandbox" : "production"),
+      });
+      return {
+        isValid: false,
+        expiresAt: null,
+        failure: { code: "store_rejected", reason: `apple status ${data.status ?? "unknown"}` },
+      };
     }
 
     const matching = data.latest_receipt_info
@@ -287,15 +426,34 @@ async function verifyAppleReceipt(receipt: string, productId: string): Promise<{
       .sort((a: any, b: any) => Number(b.expires_date_ms) - Number(a.expires_date_ms))[0];
 
     if (!matching) {
-      return { isValid: false, expiresAt: null };
+      logger.logError("apple_no_matching_transaction", {
+        product_id: productId,
+        transaction_count: data.latest_receipt_info.length,
+      });
+      return {
+        isValid: false,
+        expiresAt: null,
+        failure: {
+          code: "no_matching_transaction",
+          reason: `no transaction for ${productId}`,
+        },
+      };
     }
 
-    return {
-      isValid: true,
-      expiresAt: new Date(Number(matching.expires_date_ms)),
-    };
+    const expiresAt = new Date(Number(matching.expires_date_ms));
+    logger.log("apple_verify_ok", { expires_at: expiresAt.toISOString() });
+    return { isValid: true, expiresAt };
   } catch (error) {
-    console.error("Apple verification error:", error);
-    return { isValid: false, expiresAt: null };
+    logger.logError("apple_verification_error", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return {
+      isValid: false,
+      expiresAt: null,
+      failure: {
+        code: "store_unreachable",
+        reason: error instanceof Error ? error.message : String(error),
+      },
+    };
   }
 }
