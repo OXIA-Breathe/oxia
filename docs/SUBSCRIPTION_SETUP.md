@@ -142,3 +142,61 @@ receipt), the event is logged and ignored; the next renewal event or a
 - [ ] Sandbox purchase on iOS flips `profiles.is_subscribed`.
 - [ ] Cancelling in the store eventually flips it back to `false` at expiry.
 - [ ] A free account sees blurred premium cards with the upgrade CTA.
+
+---
+
+## 6. Tracing failures (QA)
+
+Both `verify-purchase` and `subscription-webhook` emit **single-line JSON logs**
+with a `trace_id` per request. Every response — success or failure — includes
+that same `traceId`, and failures also include a stable `code`.
+
+### Finding a request in the logs
+
+1. In the app, a failed purchase shows `Ref: <traceId>` in the error box, and
+   `/premium-debug` (dev builds) shows the last verification's code + trace ID.
+2. Open the function logs and search for that ID:
+   `https://supabase.com/dashboard/project/phhyfmztzgkorxhasyaw/functions/verify-purchase/logs`
+3. Every step of the request shares the ID, in order, e.g.
+   `request_received` → `google_oauth_ok` → `google_lookup_ok` →
+   `receipt_persisted` → `subscription_activated` → `request_completed`.
+
+Store webhooks additionally write a row to `subscription_webhook_events` with
+`trace_id`, `event_key`, `status` and `error_message` (which now also holds the
+outcome note, e.g. `no matching android receipt for event google:2`).
+
+Logs never contain receipts, purchase tokens, JWTs or emails — tokens appear
+only as a `…abc123` fingerprint (last 6 chars).
+
+### `verify-purchase` reason codes
+
+| Code | HTTP | Likely cause / fix |
+| --- | --- | --- |
+| `missing_auth` | 401 | Called without a Bearer token — client is signed out. |
+| `invalid_token` | 401 | Expired/invalid session; sign in again. |
+| `invalid_body` | 400 | Body was not JSON. |
+| `missing_fields` | 400 | Client sent no receipt/transaction ID; check the store plugin returned a transaction. |
+| `unknown_product` | 400 | Product ID doesn't contain `monthly`/`yearly` — check `PRODUCT_IDS` vs store config. |
+| `unsupported_platform` | 400 | Ran on web; IAP is native-only. |
+| `store_not_configured` | 503 | `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` or `APPLE_SHARED_SECRET` secret missing. |
+| `store_rejected` | 402 | Store refused the receipt. See `store_reason`: `oauth …` (service-account permissions), `lookup http 400/404` (wrong package/product/token), `apple status 21007` (sandbox receipt sent to production). |
+| `no_matching_transaction` | 402 | Receipt is valid but has no transaction for this product. |
+| `store_unreachable` | 502 | Network/store outage — retry. |
+| `subscription_expired` | 402 | Store confirmed the purchase but it already expired. |
+| `receipt_persist_failed` | 500 | DB write to `subscription_receipts` failed; see `db_error`. |
+| `profile_update_failed` | 500 | `profiles` update blocked — check the `protect_subscription_fields` trigger allows `service_role`. |
+| `internal_error` | 500 | Unhandled exception; see `unhandled_error` log line. |
+
+### `subscription-webhook` reason codes
+
+| Code | HTTP | Likely cause / fix |
+| --- | --- | --- |
+| `method_not_allowed` | 405 | Non-POST call. |
+| `unauthorized` | 401 | Missing/incorrect `?token=` — must equal `SUBSCRIPTION_WEBHOOK_SECRET`. |
+| `invalid_body` | 400 | Provider body was not JSON. |
+| `unrecognised_payload` | 400 | Neither a Pub/Sub envelope nor an Apple `signedPayload`. |
+| `internal_error` | 500 | Unhandled error — the provider will retry; the ledger row is marked `failed`. |
+
+Successful webhook responses report `outcome`: `synced` (profile updated),
+`ignored` (no matching receipt yet — reconciles on the next event or
+`restorePurchases()`), or `duplicate` (event already processed).
