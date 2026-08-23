@@ -453,8 +453,14 @@ async function verifyAppleReceipt(
     }
 
     const expiresAt = new Date(Number(matching.expires_date_ms));
-    logger.log("apple_verify_ok", { expires_at: expiresAt.toISOString() });
-    return { isValid: true, expiresAt };
+    const originalTransactionId: string | null = matching.original_transaction_id ?? null;
+    logger.log("apple_verify_ok", {
+      expires_at: expiresAt.toISOString(),
+      original_transaction_fingerprint: originalTransactionId
+        ? fingerprint(originalTransactionId)
+        : null,
+    });
+    return { isValid: true, expiresAt, originalTransactionId };
   } catch (error) {
     logger.logError("apple_verification_error", {
       error: error instanceof Error ? error.message : String(error),
