@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createLogger, fingerprint } from "../_shared/logging.ts";
+
 
 /**
  * Subscription webhook.
@@ -20,8 +22,6 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const PACKAGE_NAME = "app.lovable.d3590b81c81449329e6d4fbda085725b";
 
-const jsonHeaders = { "Content-Type": "application/json" };
-
 // Google Play notificationType values
 const GOOGLE_ACTIVE_TYPES = new Set([1, 2, 4, 7]); // recovered, renewed, purchased, restarted
 const GOOGLE_INACTIVE_TYPES = new Set([3, 5, 10, 12, 13]); // cancelled, on hold, paused, revoked, expired
@@ -30,15 +30,21 @@ const GOOGLE_INACTIVE_TYPES = new Set([3, 5, 10, 12, 13]); // cancelled, on hold
 const APPLE_INACTIVE_TYPES = new Set(["EXPIRED", "REVOKE", "REFUND", "GRACE_PERIOD_EXPIRED"]);
 
 serve(async (req) => {
+  const logger = createLogger("subscription-webhook");
+  const { traceId, log, logError, ok, fail } = logger;
+
   if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: jsonHeaders });
+    return fail("method_not_allowed", 405, "Method not allowed.", { method: req.method });
   }
 
   const secret = Deno.env.get("SUBSCRIPTION_WEBHOOK_SECRET");
   const token = new URL(req.url).searchParams.get("token");
 
   if (!secret || !token || token !== secret) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: jsonHeaders });
+    return fail("unauthorized", 401, "Unauthorized.", {
+      secret_configured: Boolean(secret),
+      token_supplied: Boolean(token),
+    });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -47,22 +53,29 @@ serve(async (req) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  const traceId = crypto.randomUUID();
-  const log = (message: string, extra?: Record<string, unknown>) =>
-    console.log(JSON.stringify({ trace_id: traceId, fn: "subscription-webhook", message, ...extra }));
-  const logError = (message: string, extra?: Record<string, unknown>) =>
-    console.error(JSON.stringify({ trace_id: traceId, fn: "subscription-webhook", message, ...extra }));
-
   const ctx: WebhookCtx = { traceId, log, logError };
 
   let eventRowId: string | null = null;
 
   try {
-    const body = await req.json().catch(() => null);
-    if (!body) {
-      logError("invalid_body");
-      return new Response(JSON.stringify({ error: "Invalid body" }), { status: 400, headers: jsonHeaders });
+    const raw = await req.text();
+    let body: any = null;
+    try {
+      body = raw ? JSON.parse(raw) : null;
+    } catch {
+      body = null;
     }
+    if (!body) {
+      return fail("invalid_body", 400, "Request body must be valid JSON.", {
+        body_bytes: raw.length,
+      });
+    }
+
+    log("webhook_received", {
+      provider: body.message?.data ? "google" : body.signedPayload ? "apple" : "unknown",
+      body_bytes: raw.length,
+    });
+
 
     // ---- Google Play RTDN (Pub/Sub push envelope) ----
     if (body.message?.data) {
@@ -79,19 +92,27 @@ serve(async (req) => {
       const claim = await claimEvent(admin, ctx, "google", eventKey, eventType, decoded);
       if (!claim.shouldProcess) {
         log("duplicate_event_skipped", { event_key: eventKey, event_type: eventType });
-        return new Response(JSON.stringify({ success: true, duplicate: true, traceId }), {
-          status: 200,
-          headers: jsonHeaders,
-        });
+        log("webhook_completed", { provider: "google", event_type: eventType, outcome: "duplicate" });
+        return ok({ success: true, duplicate: true });
       }
       eventRowId = claim.id;
 
-      log("processing_event", { provider: "google", event_key: eventKey, event_type: eventType });
-      await handleGoogleNotification(admin, decoded, ctx);
-      await finishEvent(admin, ctx, eventRowId, "processed");
+      log("processing_event", {
+        provider: "google",
+        event_key: eventKey,
+        event_type: eventType,
+        token_fingerprint: fingerprint(sub?.purchaseToken ?? voided?.purchaseToken),
+      });
+      const outcome = await handleGoogleNotification(admin, decoded, ctx);
+      await finishEvent(admin, ctx, eventRowId, "processed", outcome.note);
 
+      log("webhook_completed", {
+        provider: "google",
+        event_type: eventType,
+        outcome: outcome.outcome,
+      });
       // Always 200 so Pub/Sub does not redeliver indefinitely.
-      return new Response(JSON.stringify({ success: true, traceId }), { status: 200, headers: jsonHeaders });
+      return ok({ success: true, outcome: outcome.outcome });
     }
 
     // ---- Apple App Store Server Notifications V2 ----
@@ -105,36 +126,41 @@ serve(async (req) => {
       const claim = await claimEvent(admin, ctx, "apple", eventKey, eventType, payload);
       if (!claim.shouldProcess) {
         log("duplicate_event_skipped", { event_key: eventKey, event_type: eventType });
-        return new Response(JSON.stringify({ success: true, duplicate: true, traceId }), {
-          status: 200,
-          headers: jsonHeaders,
-        });
+        log("webhook_completed", { provider: "apple", event_type: eventType, outcome: "duplicate" });
+        return ok({ success: true, duplicate: true });
       }
       eventRowId = claim.id;
 
       log("processing_event", { provider: "apple", event_key: eventKey, event_type: eventType });
-      await handleAppleNotification(admin, body.signedPayload, ctx);
-      await finishEvent(admin, ctx, eventRowId, "processed");
+      const outcome = await handleAppleNotification(admin, body.signedPayload, ctx);
+      await finishEvent(admin, ctx, eventRowId, "processed", outcome.note);
 
-      return new Response(JSON.stringify({ success: true, traceId }), { status: 200, headers: jsonHeaders });
+      log("webhook_completed", {
+        provider: "apple",
+        event_type: eventType,
+        outcome: outcome.outcome,
+      });
+      return ok({ success: true, outcome: outcome.outcome });
     }
 
-    logError("unrecognised_payload");
-    return new Response(JSON.stringify({ error: "Unrecognised notification payload" }), {
-      status: 400,
-      headers: jsonHeaders,
-    });
+    return fail(
+      "unrecognised_payload",
+      400,
+      "Unrecognised notification payload — expected a Pub/Sub envelope or an Apple signedPayload.",
+      { top_level_keys: Object.keys(body).slice(0, 10) },
+    );
   } catch (error) {
-    logError("unhandled_error", { error: error instanceof Error ? error.message : String(error) });
+    logError("unhandled_error", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack?.split("\n").slice(0, 4).join(" | ") : undefined,
+    });
     if (eventRowId) {
       await finishEvent(admin, ctx, eventRowId, "failed", error instanceof Error ? error.message : String(error));
     }
     // Unexpected failures return 500 so the provider retries later.
-    return new Response(JSON.stringify({ error: "Internal server error", traceId }), {
-      status: 500,
-      headers: jsonHeaders,
-    });
+    return fail("internal_error", 500, "Internal server error.");
   }
+
 });
 
 /* -------------------------------------------------------------------------- */
@@ -231,22 +257,25 @@ async function finishEvent(
 /* Google Play                                                                */
 /* -------------------------------------------------------------------------- */
 
-async function handleGoogleNotification(admin: any, notification: any, ctx: WebhookCtx) {
+async function handleGoogleNotification(
+  admin: any,
+  notification: any,
+  ctx: WebhookCtx
+): Promise<EventOutcome> {
   const sub = notification.subscriptionNotification;
   const voided = notification.voidedPurchaseNotification;
 
   if (voided?.purchaseToken) {
-    await applyState(admin, { platform: "android", purchaseToken: voided.purchaseToken }, {
+    return await applyState(admin, { platform: "android", purchaseToken: voided.purchaseToken }, {
       isActive: false,
       expiresAt: new Date(),
       event: "voided",
     }, ctx);
-    return;
   }
 
   if (!sub?.purchaseToken) {
     ctx.log("google_notification_without_subscription");
-    return;
+    return { outcome: "ignored", note: "no subscriptionNotification.purchaseToken" };
   }
 
   const notificationType = Number(sub.notificationType);
@@ -254,16 +283,21 @@ async function handleGoogleNotification(admin: any, notification: any, ctx: Webh
   const productId: string = sub.subscriptionId ?? "";
 
   // Fetch authoritative state from Google so we never trust the event alone.
-  const verified = await getGoogleSubscriptionState(productId, purchaseToken);
+  const verified = await getGoogleSubscriptionState(productId, purchaseToken, ctx);
 
   let isActive: boolean;
   if (verified) {
     isActive = verified.expiresAt.getTime() > Date.now();
   } else {
     isActive = GOOGLE_ACTIVE_TYPES.has(notificationType) && !GOOGLE_INACTIVE_TYPES.has(notificationType);
+    ctx.log("google_state_from_event_type", {
+      notification_type: notificationType,
+      is_active: isActive,
+      reason: "store lookup unavailable — falling back to notificationType",
+    });
   }
 
-  await applyState(
+  return await applyState(
     admin,
     { platform: "android", purchaseToken },
     {
@@ -278,10 +312,17 @@ async function handleGoogleNotification(admin: any, notification: any, ctx: Webh
 
 async function getGoogleSubscriptionState(
   productId: string,
-  purchaseToken: string
+  purchaseToken: string,
+  ctx: WebhookCtx
 ): Promise<{ expiresAt: Date } | null> {
   const serviceAccountJson = Deno.env.get("GOOGLE_PLAY_SERVICE_ACCOUNT_JSON");
-  if (!serviceAccountJson || !productId) return null;
+  if (!serviceAccountJson || !productId) {
+    ctx.logError("google_lookup_skipped", {
+      secret_configured: Boolean(serviceAccountJson),
+      product_id: productId || null,
+    });
+    return null;
+  }
 
   try {
     const serviceAccount = JSON.parse(serviceAccountJson);
@@ -295,27 +336,42 @@ async function getGoogleSubscriptionState(
         assertion: jwt,
       }),
     });
-    const tokenData = await tokenRes.json();
+    const tokenData = await tokenRes.json().catch(() => ({}));
     if (!tokenData.access_token) {
-      console.error("Google OAuth failed");
+      ctx.logError("google_oauth_failed", {
+        http_status: tokenRes.status,
+        google_error: tokenData.error ?? null,
+      });
       return null;
     }
 
     const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PACKAGE_NAME}/purchases/subscriptions/${productId}/tokens/${purchaseToken}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${tokenData.access_token}` } });
     if (!res.ok) {
-      console.error("Google subscription lookup failed:", res.status);
+      ctx.logError("google_lookup_failed", {
+        http_status: res.status,
+        product_id: productId,
+        token_fingerprint: fingerprint(purchaseToken),
+      });
       return null;
     }
 
     const data = await res.json();
-    if (!data.expiryTimeMillis) return null;
-    return { expiresAt: new Date(Number(data.expiryTimeMillis)) };
+    if (!data.expiryTimeMillis) {
+      ctx.logError("google_lookup_without_expiry", { product_id: productId });
+      return null;
+    }
+    const expiresAt = new Date(Number(data.expiryTimeMillis));
+    ctx.log("google_lookup_ok", { expires_at: expiresAt.toISOString() });
+    return { expiresAt };
   } catch (error) {
-    console.error("Google subscription lookup error:", error);
+    ctx.logError("google_lookup_error", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return null;
   }
 }
+
 
 async function createGoogleJwt(serviceAccount: any): Promise<string> {
   const header = { alg: "RS256", typ: "JWT" };
@@ -366,7 +422,11 @@ function decodeJws(jws: string): any {
   return JSON.parse(atob(padded));
 }
 
-async function handleAppleNotification(admin: any, signedPayload: string, ctx: WebhookCtx) {
+async function handleAppleNotification(
+  admin: any,
+  signedPayload: string,
+  ctx: WebhookCtx
+): Promise<EventOutcome> {
   const payload = decodeJws(signedPayload);
   const notificationType: string = payload.notificationType ?? "";
   const subtype: string = payload.subtype ?? "";
@@ -380,8 +440,11 @@ async function handleAppleNotification(admin: any, signedPayload: string, ctx: W
     transactionInfo?.originalTransactionId ?? renewalInfo?.originalTransactionId;
 
   if (!originalTransactionId) {
-    ctx.log("apple_notification_without_original_transaction_id");
-    return;
+    ctx.log("apple_notification_without_original_transaction_id", {
+      notification_type: notificationType,
+      subtype: subtype || null,
+    });
+    return { outcome: "ignored", note: "no originalTransactionId in payload" };
   }
 
   const expiresAt = transactionInfo?.expiresDate ? new Date(Number(transactionInfo.expiresDate)) : null;
@@ -395,7 +458,15 @@ async function handleAppleNotification(admin: any, signedPayload: string, ctx: W
     isActive = true;
   }
 
-  await applyState(
+  ctx.log("apple_state_resolved", {
+    notification_type: notificationType,
+    subtype: subtype || null,
+    is_active: isActive,
+    expires_at: expiresAt?.toISOString() ?? null,
+    original_transaction_fingerprint: fingerprint(originalTransactionId),
+  });
+
+  return await applyState(
     admin,
     { platform: "ios", originalTransactionId },
     {
@@ -408,6 +479,7 @@ async function handleAppleNotification(admin: any, signedPayload: string, ctx: W
     ctx
   );
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Shared state application                                                   */
@@ -433,7 +505,18 @@ interface StateUpdate {
   latestTransactionId?: string | null;
 }
 
-async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate, ctx: WebhookCtx) {
+/** What the webhook actually did with an event — recorded in the ledger row. */
+interface EventOutcome {
+  outcome: "synced" | "ignored";
+  note?: string;
+}
+
+async function applyState(
+  admin: any,
+  lookup: ReceiptLookup,
+  update: StateUpdate,
+  ctx: WebhookCtx
+): Promise<EventOutcome> {
   let query = admin.from("subscription_receipts").select("*").eq("platform", lookup.platform);
 
   if (lookup.purchaseToken) {
@@ -453,7 +536,10 @@ async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate
     // Unknown purchase — most often an event that arrived before the client
     // finished verifying the purchase. Nothing to sync yet.
     ctx.log("no_matching_receipt", { event: update.event, platform: lookup.platform });
-    return;
+    return {
+      outcome: "ignored",
+      note: `no matching ${lookup.platform} receipt for event ${update.event}`,
+    };
   }
 
   const receiptUpdate: Record<string, unknown> = {
@@ -499,4 +585,9 @@ async function applyState(admin: any, lookup: ReceiptLookup, update: StateUpdate
     expires_at: update.expiresAt ? update.expiresAt.toISOString() : null,
     plan: update.plan ?? null,
   });
+
+  return {
+    outcome: "synced",
+    note: `${update.event} → is_subscribed=${update.isActive}`,
+  };
 }

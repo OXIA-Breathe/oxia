@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { getLastVerification } from "@/lib/purchases";
 import PremiumModal from "@/components/premium/PremiumModal";
 
 /**
@@ -56,6 +57,7 @@ const PremiumDebugPage = () => {
   const { user } = useAuth();
   const status = usePremiumStatus();
   const [modalOpen, setModalOpen] = useState(false);
+  const lastVerification = getLastVerification();
 
   // Internal tool only — never reachable in production builds.
   if (!import.meta.env.DEV) {
@@ -92,6 +94,28 @@ const PremiumDebugPage = () => {
               label="last checked"
               value={status.lastCheckedAt ? new Date(status.lastCheckedAt).toLocaleTimeString() : "—"}
             />
+          </CardContent>
+        </Card>
+
+        <Card className="border-none shadow-md bg-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Last purchase verification</CardTitle>
+          </CardHeader>
+          <CardContent className="divide-y divide-border">
+            {lastVerification ? (
+              <>
+                <Row label="status" value={lastVerification.status} />
+                <Row label="code" value={fmt(lastVerification.code)} />
+                <Row label="trace id" value={fmt(lastVerification.traceId)} />
+                <Row label="plan" value={fmt(lastVerification.plan)} />
+                <Row label="message" value={fmt(lastVerification.message)} />
+                <Row label="at" value={new Date(lastVerification.at).toLocaleString()} />
+              </>
+            ) : (
+              <p className="py-2 text-sm text-muted-foreground">
+                No purchase has been verified on this device yet.
+              </p>
+            )}
           </CardContent>
         </Card>
 

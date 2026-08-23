@@ -142,6 +142,49 @@ export const purchaseSubscription = async (plan: SubscriptionPlan): Promise<void
   }
 };
 
+/** Result of the last verify-purchase call, kept so QA can quote a trace ID. */
+export interface VerificationRecord {
+  at: string;
+  status: "success" | "error";
+  code: string;
+  traceId: string | null;
+  message: string;
+  plan?: SubscriptionPlan | null;
+}
+
+const VERIFICATION_STORAGE_KEY = "oxia:last-purchase-verification";
+
+/** Error thrown when the server refuses a purchase; carries the QA trace ID. */
+export class PurchaseVerificationError extends Error {
+  code: string;
+  traceId: string | null;
+
+  constructor(message: string, code: string, traceId: string | null) {
+    super(message);
+    this.name = "PurchaseVerificationError";
+    this.code = code;
+    this.traceId = traceId;
+  }
+}
+
+const recordVerification = (record: VerificationRecord) => {
+  try {
+    localStorage.setItem(VERIFICATION_STORAGE_KEY, JSON.stringify(record));
+  } catch {
+    // Storage unavailable (private mode) — tracing then relies on the logs only.
+  }
+};
+
+/** Read the last verification attempt (used by the internal premium debug view). */
+export const getLastVerification = (): VerificationRecord | null => {
+  try {
+    const raw = localStorage.getItem(VERIFICATION_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as VerificationRecord) : null;
+  } catch {
+    return null;
+  }
+};
+
 /**
  * Send the purchase receipt to the Edge Function for validation
  * and profile update.
@@ -158,12 +201,38 @@ const verifyPurchaseOnServer = async (transaction: CordovaTransaction): Promise<
     originalTransactionId: transaction.originalTransactionId ?? "",
   };
 
-  const { error } = await supabase.functions.invoke("verify-purchase", {
+  const { data, error } = await supabase.functions.invoke("verify-purchase", {
     body: payload,
   });
 
-  if (error) throw error;
+  if (error) {
+    // The Edge Function returns { error, code, traceId } — read it from the
+    // FunctionsHttpError response body so the trace ID is not lost.
+    let body: any = null;
+    try {
+      body = await (error as any)?.context?.json?.();
+    } catch {
+      body = null;
+    }
+
+    const code = body?.code ?? "unknown_error";
+    const traceId = body?.traceId ?? null;
+    const message = body?.error ?? error.message ?? "Purchase verification failed.";
+
+    recordVerification({ at: new Date().toISOString(), status: "error", code, traceId, message });
+    throw new PurchaseVerificationError(message, code, traceId);
+  }
+
+  recordVerification({
+    at: new Date().toISOString(),
+    status: "success",
+    code: "verified",
+    traceId: (data as any)?.traceId ?? null,
+    message: "Subscription activated.",
+    plan: (data as any)?.plan ?? null,
+  });
 };
+
 
 /**
  * Restore previous purchases / subscriptions.

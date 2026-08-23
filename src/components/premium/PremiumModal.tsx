@@ -8,7 +8,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { purchaseSubscription, restorePurchases, SubscriptionPlan } from "@/lib/purchases";
+import {
+  purchaseSubscription,
+  restorePurchases,
+  PurchaseVerificationError,
+  SubscriptionPlan,
+} from "@/lib/purchases";
 import { useToast } from "@/hooks/use-toast";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
@@ -29,6 +34,9 @@ interface PurchaseError {
   plan: SubscriptionPlan;
   message: string;
   cancelled: boolean;
+  /** Server trace ID, shown so testers can quote it in a bug report. */
+  traceId?: string | null;
+  code?: string | null;
 }
 
 const isCancellation = (error: any) => {
@@ -66,9 +74,12 @@ const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
     } catch (error: any) {
       console.error("Purchase error:", error);
       const cancelled = isCancellation(error);
+      const verification = error instanceof PurchaseVerificationError ? error : null;
       setPurchaseError({
         plan,
         cancelled,
+        traceId: verification?.traceId ?? null,
+        code: verification?.code ?? null,
         message: cancelled
           ? "Checkout was cancelled. You can try again or pick the other plan."
           : error?.message || "Could not start the purchase. Please try again.",
@@ -142,6 +153,12 @@ const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
               <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-destructive" />
               <div className="space-y-2">
                 <p className="text-card-foreground">{purchaseError.message}</p>
+                {purchaseError.traceId && (
+                  <p className="font-mono text-[11px] text-muted-foreground break-all">
+                    Ref: {purchaseError.traceId}
+                    {purchaseError.code ? ` · ${purchaseError.code}` : ""}
+                  </p>
+                )}
                 <div className="flex flex-wrap gap-2">
                   <Button
                     size="sm"
