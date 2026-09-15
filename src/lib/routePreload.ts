@@ -23,6 +23,8 @@ export const preloadRoute = (path: string) => {
   const loader = loaders[path];
   if (!loader || started.has(path)) return;
   started.add(path);
+  // Preloading is best-effort: a stale chunk URL must never surface as an
+  // unhandled rejection, the route-level retry handles recovery.
   void loader().catch(() => started.delete(path));
 };
 

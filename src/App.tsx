@@ -4,7 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense, useEffect } from "react";
+import { Suspense, useEffect } from "react";
+import { lazyWithRetry } from "./lib/lazyWithRetry";
 import LoadingSkeleton from "./components/layout/LoadingSkeleton";
 import { BreathProvider } from "./context/BreathContext";
 import { BreathingExerciseProvider } from "./context/BreathingExerciseContext";
@@ -16,23 +17,23 @@ import { preloadMainRoutes } from "./lib/routePreload";
 
 
 // Lazy load all pages for code splitting
-const Index = lazy(() => import("./pages/Index"));
-const LearnPage = lazy(() => import("./pages/LearnPage"));
-const SettingsPage = lazy(() => import("./pages/SettingsPage"));
-const AuthPage = lazy(() => import("./pages/AuthPage"));
-const ProfilePage = lazy(() => import("./pages/ProfilePage"));
-const ConsistencyPage = lazy(() => import("./pages/ConsistencyPage"));
-const BreathePage = lazy(() => import("./pages/BreathePage"));
-const ExerciseDetailsPage = lazy(() => import("./pages/ExerciseDetailsPage"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
-const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage"));
-const HealthConnectPreview = lazy(() => import("./pages/HealthConnectPreview"));
-const WellnessJournalPage = lazy(() => import("./pages/WellnessJournalPage"));
-const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
-const TermsPage = lazy(() => import("./pages/TermsPage"));
-const EulaPage = lazy(() => import("./pages/EulaPage"));
-const PremiumDebugPage = lazy(() => import("./pages/PremiumDebugPage"));
+const Index = lazyWithRetry(() => import("./pages/Index"));
+const LearnPage = lazyWithRetry(() => import("./pages/LearnPage"));
+const SettingsPage = lazyWithRetry(() => import("./pages/SettingsPage"));
+const AuthPage = lazyWithRetry(() => import("./pages/AuthPage"));
+const ProfilePage = lazyWithRetry(() => import("./pages/ProfilePage"));
+const ConsistencyPage = lazyWithRetry(() => import("./pages/ConsistencyPage"));
+const BreathePage = lazyWithRetry(() => import("./pages/BreathePage"));
+const ExerciseDetailsPage = lazyWithRetry(() => import("./pages/ExerciseDetailsPage"));
+const NotFound = lazyWithRetry(() => import("./pages/NotFound"));
+const ResetPasswordPage = lazyWithRetry(() => import("./pages/ResetPasswordPage"));
+const VerifyEmailPage = lazyWithRetry(() => import("./pages/VerifyEmailPage"));
+const HealthConnectPreview = lazyWithRetry(() => import("./pages/HealthConnectPreview"));
+const WellnessJournalPage = lazyWithRetry(() => import("./pages/WellnessJournalPage"));
+const PrivacyPolicyPage = lazyWithRetry(() => import("./pages/PrivacyPolicyPage"));
+const TermsPage = lazyWithRetry(() => import("./pages/TermsPage"));
+const EulaPage = lazyWithRetry(() => import("./pages/EulaPage"));
+const PremiumDebugPage = lazyWithRetry(() => import("./pages/PremiumDebugPage"));
 
 const AppContent = () => {
   useDailyStreakTracker();
