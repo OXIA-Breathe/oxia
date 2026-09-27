@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => ({
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select', '@radix-ui/react-tabs'],
           'supabase': ['@supabase/supabase-js'],
           'charts': ['recharts'],
-          'pdf': ['jspdf', 'jspdf-autotable', 'html2pdf.js'],
+          'pdf': ['jspdf', 'html2pdf.js'],
         },
       },
     },
