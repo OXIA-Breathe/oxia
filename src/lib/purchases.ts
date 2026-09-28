@@ -23,6 +23,7 @@ export interface PurchaseProduct {
   state: string;
 }
 
+// Normalised transaction shape sent to the server.
 interface CordovaTransaction {
   id?: string;
   transactionId?: string;
@@ -30,34 +31,37 @@ interface CordovaTransaction {
   receipt?: string;
   signature?: string;
   originalTransactionId?: string;
-  finish?: () => void;
-  verify?: () => void;
 }
 
-interface CordovaStore {
-  register(product: { id: string; type: string; platform?: string }): void;
-  refresh(): void;
-  get(productId: string): PurchaseProduct | undefined;
-  order(productId: string): Promise<CordovaTransaction>;
-  when(): any;
-  ready(callback: () => void): void;
-  error(callback: (error: any) => void): void;
-  verbosity?: number;
-}
-
+// cordova-plugin-purchase v13 exposes its API on window.CdvPurchase.
 declare global {
   interface Window {
-    store?: CordovaStore;
+    CdvPurchase?: any;
   }
 }
 
 let initPromise: Promise<void> | null = null;
+let pending: { resolve: () => void; reject: (e: unknown) => void } | null = null;
 
 const isNative = () => Capacitor.isNativePlatform();
 
-const getStore = (): CordovaStore | undefined => {
-  if (typeof window === "undefined") return undefined;
-  return window.store;
+const getCdv = () => (typeof window === "undefined" ? undefined : window.CdvPurchase);
+const getStore = () => getCdv()?.store;
+
+/** Convert a v13 transaction into the payload our server expects. */
+const normaliseTransaction = (t: any): CordovaTransaction => {
+  const native = t?.nativePurchase ?? {};
+  const isApple = Capacitor.getPlatform() === "ios";
+  return {
+    id: t?.products?.[0]?.id,
+    products: t?.products,
+    transactionId: t?.transactionId ?? native.orderId ?? "",
+    receipt: isApple
+      ? t?.parentReceipt?.nativeData?.appStoreReceipt ?? ""
+      : native.purchaseToken ?? t?.purchaseId ?? "",
+    signature: native.signature ?? t?.parentReceipt?.signature ?? "",
+    originalTransactionId: native.originalTransactionId ?? t?.originalTransactionId ?? "",
+  };
 };
 
 /**
@@ -68,42 +72,60 @@ export const initPurchases = async (): Promise<void> => {
   if (!isNative()) return;
   if (initPromise) return initPromise;
 
-  initPromise = new Promise((resolve) => {
+  initPromise = (async () => {
+    const Cdv = getCdv();
     const store = getStore();
-    if (!store) {
+    if (!Cdv || !store) {
       console.warn("cordova-plugin-purchase store not available");
-      resolve();
       return;
     }
+    const platform =
+      Capacitor.getPlatform() === "ios" ? Cdv.Platform.APPLE_APPSTORE : Cdv.Platform.GOOGLE_PLAY;
 
     try {
-      store.verbosity = 0;
+      store.verbosity = Cdv.LogLevel?.WARNING ?? 1;
+      store.register([
+        { id: PRODUCT_IDS.monthly, type: Cdv.ProductType.PAID_SUBSCRIPTION, platform },
+        { id: PRODUCT_IDS.yearly, type: Cdv.ProductType.PAID_SUBSCRIPTION, platform },
+      ]);
 
-      // Register both subscription products
-      store.register({ id: PRODUCT_IDS.monthly, type: "paid subscription" });
-      store.register({ id: PRODUCT_IDS.yearly, type: "paid subscription" });
-
-      // Refresh products from the stores
-      store.refresh();
-
-      // Listen for verified transactions
-      store.when().verified?.((transaction: CordovaTransaction) => {
-        verifyPurchaseOnServer(transaction)
-          .then(() => transaction.finish?.())
-          .catch((err) => console.error("Purchase verification failed", err));
+      store.when().approved(async (t: any) => {
+        try {
+          await verifyPurchaseOnServer(normaliseTransaction(t));
+          await t.finish();
+          pending?.resolve();
+        } catch (err) {
+          console.error("Purchase verification failed", err);
+          pending?.reject(err);
+        } finally {
+          pending = null;
+        }
       });
 
-      store.ready(() => resolve());
+      store.error((err: any) => console.warn("Store error", err));
+
+      await Promise.race([
+        store.initialize([platform]),
+        new Promise((r) => setTimeout(r, 5000)),
+      ]);
     } catch (err) {
       console.error("Failed to initialise purchase store", err);
-      resolve();
     }
-
-    // Fallback timeout so the promise doesn't hang forever
-    setTimeout(() => resolve(), 3000);
-  });
+  })();
 
   return initPromise;
+};
+
+/** Localised recurring price of a v13 product (skips the free-trial phase). */
+const productPrice = (p: any): { price: string; micros: number; currency: string; period?: string } => {
+  const phases: any[] = p?.getOffer?.()?.pricingPhases ?? p?.offers?.[0]?.pricingPhases ?? [];
+  const paid = [...phases].reverse().find((ph) => ph.priceMicros > 0) ?? phases[0] ?? p?.pricing ?? {};
+  return {
+    price: paid.price ?? "",
+    micros: paid.priceMicros ?? 0,
+    currency: paid.currency ?? "",
+    period: paid.billingPeriod,
+  };
 };
 
 /**
@@ -117,7 +139,22 @@ export const getProducts = async (): Promise<PurchaseProduct[]> => {
 
   return [PRODUCT_IDS.monthly, PRODUCT_IDS.yearly]
     .map((id) => store.get(id))
-    .filter((p): p is PurchaseProduct => !!p && p.state === "valid");
+    .filter((p: any) => !!p)
+    .map((p: any) => {
+      const pr = productPrice(p);
+      return {
+        id: p.id,
+        title: p.title ?? "",
+        description: p.description ?? "",
+        price: pr.price,
+        priceMicros: pr.micros,
+        currency: pr.currency,
+        billingPeriod: pr.period,
+        type: String(p.type ?? ""),
+        state: "valid",
+      };
+    })
+    .filter((p) => !!p.price);
 };
 
 /**
@@ -132,14 +169,26 @@ export const purchaseSubscription = async (plan: SubscriptionPlan): Promise<void
   const store = getStore();
   if (!store) throw new Error("Purchase store not initialised");
 
-  const productId = PRODUCT_IDS[plan];
-  const transaction = await store.order(productId);
-
-  // If the order resolves with a verified transaction, send it to the server.
-  if (transaction) {
-    await verifyPurchaseOnServer(transaction);
-    transaction.finish?.();
+  const product = store.get(PRODUCT_IDS[plan]);
+  const offer = product?.getOffer?.();
+  if (!offer) {
+    throw new Error("This plan isn't available right now. Please try again later.");
   }
+
+  const done = new Promise<void>((resolve, reject) => {
+    pending = { resolve, reject };
+  });
+
+  const err = await offer.order();
+  if (err) {
+    pending = null;
+    if (err.code === getCdv()?.ErrorCode?.PAYMENT_CANCELLED) {
+      throw new Error("Purchase cancelled.");
+    }
+    throw new Error(err.message ?? "Purchase failed.");
+  }
+
+  await done;
 };
 
 /** Result of the last verify-purchase call, kept so QA can quote a trace ID. */
@@ -239,9 +288,10 @@ const verifyPurchaseOnServer = async (transaction: CordovaTransaction): Promise<
  */
 export const restorePurchases = async (): Promise<void> => {
   if (!isNative()) return;
+  await initPurchases();
   const store = getStore();
   if (!store) return;
-  store.refresh();
+  await store.restorePurchases?.();
 };
 
 /** Android application id — required by the Play subscription deep link. */
