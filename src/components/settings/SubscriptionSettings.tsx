@@ -10,6 +10,7 @@ import {
   SubscriptionPlan,
 } from "@/lib/purchases";
 import { useToast } from "@/hooks/use-toast";
+import { useLocalizedPrices } from "@/hooks/useLocalizedPrices";
 import { format } from "date-fns";
 
 const SubscriptionSettings = () => {
@@ -25,6 +26,7 @@ const SubscriptionSettings = () => {
     refresh,
   } = usePremiumStatus();
   const { toast } = useToast();
+  const prices = useLocalizedPrices();
   const [purchasingPlan, setPurchasingPlan] = useState<SubscriptionPlan | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
 
@@ -204,7 +206,7 @@ const SubscriptionSettings = () => {
                 ) : (
                   <Crown className="h-4 w-4 mr-2" />
                 )}
-                €2.99/mo
+                {prices.monthly}/mo
               </Button>
               <Button
                 className="bg-amber-500 hover:bg-amber-500/90 text-white"
@@ -216,7 +218,7 @@ const SubscriptionSettings = () => {
                 ) : (
                   <Crown className="h-4 w-4 mr-2" />
                 )}
-                €26.99/yr
+                {prices.yearly}/yr
               </Button>
             </div>
             <Button
@@ -234,7 +236,7 @@ const SubscriptionSettings = () => {
               Restore purchases
             </Button>
             <p className="text-xs text-center text-muted-foreground">
-              7-day free trial, then €2.99/month or €26.99/year (25% off).
+              7-day free trial, then {prices.monthly}/month or €26.99/year (25% off).
             </p>
           </div>
         )}
