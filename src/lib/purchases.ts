@@ -288,9 +288,10 @@ const verifyPurchaseOnServer = async (transaction: CordovaTransaction): Promise<
  */
 export const restorePurchases = async (): Promise<void> => {
   if (!isNative()) return;
+  await initPurchases();
   const store = getStore();
   if (!store) return;
-  store.refresh();
+  await store.restorePurchases?.();
 };
 
 /** Android application id — required by the Play subscription deep link. */
