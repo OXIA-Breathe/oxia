@@ -15,6 +15,7 @@ import {
   SubscriptionPlan,
 } from "@/lib/purchases";
 import { useToast } from "@/hooks/use-toast";
+import { useLocalizedPrices } from "@/hooks/useLocalizedPrices";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
 interface PremiumModalProps {
@@ -47,6 +48,7 @@ const isCancellation = (error: any) => {
 const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
   const { toast } = useToast();
   const { refresh } = usePremiumStatus();
+  const prices = useLocalizedPrices();
   const [purchasingPlan, setPurchasingPlan] = useState<SubscriptionPlan | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
   const [purchaseError, setPurchaseError] = useState<PurchaseError | null>(null);
@@ -194,7 +196,7 @@ const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
             {purchasingPlan === "monthly" ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             ) : null}
-            €2.99/mo
+            {prices.monthly}/mo
           </Button>
           <Button
             className="min-h-[44px] bg-amber-500 hover:bg-amber-500/90 text-white"
@@ -204,7 +206,7 @@ const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
             {purchasingPlan === "yearly" ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             ) : null}
-            €26.99/yr
+            {prices.yearly}/yr
           </Button>
         </div>
 
@@ -230,7 +232,7 @@ const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
         )}
 
         <p className="text-xs text-center text-muted-foreground">
-          7-day free trial, then €2.99/month or €26.99/year (25% off). Billed through Google Play or the App Store, cancel anytime.
+          7-day free trial, then {prices.monthly}/month or €26.99/year (25% off). Billed through Google Play or the App Store, cancel anytime.
         </p>
       </DialogContent>
     </Dialog>
