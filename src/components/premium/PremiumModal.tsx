@@ -232,7 +232,7 @@ const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
         )}
 
         <p className="text-xs text-center text-muted-foreground">
-          7-day free trial, then {prices.monthly}/month or €26.99/year (25% off). Billed through Google Play or the App Store, cancel anytime.
+          7-day free trial, then {prices.monthly}/month or {prices.yearly}/year (25% off). Billed through Google Play or the App Store, cancel anytime.
         </p>
       </DialogContent>
     </Dialog>
