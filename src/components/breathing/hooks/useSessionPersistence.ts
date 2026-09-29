@@ -88,7 +88,7 @@ export const useSessionPersistence = () => {
         
         // Check for breath achievements after successfully saving the session
         await Promise.all(
-          ["breathSessions", "userStats", "activityDates", "emotionalStats"].map((k) =>
+          ["breathSessions", "userStats", "activityDates", "emotionalStats", "sessionCount"].map((k) =>
             queryClient.invalidateQueries({ queryKey: [k, user.id] })
           )
         );
