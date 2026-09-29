@@ -25,7 +25,7 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
     firstHoldDuration: 4,
     exhaleDuration: 4,
     secondHoldDuration: 4,
-    repetitions: 20,
+    repetitions: 15,
     isCustom: false,
   };
 
