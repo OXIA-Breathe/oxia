@@ -239,7 +239,7 @@ const WellnessJournalPage = () => {
             <PremiumModal
               open={premiumOpen}
               onOpenChange={setPremiumOpen}
-              highlight="Unlock the AI Wellness Journal — a 30-day reflection on your practice."
+              highlight="Imagine a journal that reads your last 30 days of breathing and writes you a personal reflection — that's the AI Wellness Journal."
             />
           </>
         )}

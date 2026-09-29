@@ -176,7 +176,7 @@ const WellnessReportButton = ({ exerciseEffectiveness }: WellnessReportButtonPro
         <PremiumModal
           open={premiumOpen}
           onOpenChange={setPremiumOpen}
-          highlight="Unlock monthly PDF wellness reports."
+          highlight="Keep a record of your month — a downloadable summary of your practice and progress, ready to share with a therapist or coach."
         />
       )}
 

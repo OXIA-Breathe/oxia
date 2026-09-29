@@ -65,7 +65,7 @@ const InsufficientDataOverlay = ({ daysCount, minDays = 3, type = "data" }: Insu
         <PremiumModal
           open={premiumOpen}
           onOpenChange={setPremiumOpen}
-          highlight="Unlock mood, stress and exercise effectiveness insights."
+          highlight="You're already collecting moments — Premium turns them into insight: how your mood and stress change, and which technique works best for you."
         />
       )}
     </>

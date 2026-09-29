@@ -372,7 +372,7 @@ const BreathingExercise = () => {
         open={showTrackingUpsell}
         onOpenChange={handleUpsellOpenChange}
         onPurchased={handleUpsellPurchased}
-        highlight="Track how breathing changes you. Premium asks how you feel before and after each session and shows your stress and mood trends over time."
+        highlight="Now that you're breathing with OXIA, Premium helps you see what it's doing for you — how your mood and stress shift, session by session."
       />
       <PreExerciseCheckIn
         open={showPreCheckIn}
