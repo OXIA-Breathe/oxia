@@ -5,8 +5,10 @@
     "": {
       "name": "vite_react_shadcn_ts",
       "dependencies": {
+        "@capacitor-community/keep-awake": "^7",
         "@capacitor-firebase/analytics": "^7.3.1",
         "@capacitor/android": "^7.4.3",
+        "@capacitor/app": "^7",
         "@capacitor/cli": "^7.4.3",
         "@capacitor/core": "^7.4.3",
         "@capacitor/ios": "^7.4.3",
@@ -120,9 +122,13 @@
 
     "@bramus/specificity": ["@bramus/specificity@2.4.2", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@bramus/specificity/-/specificity-2.4.2.tgz", { "dependencies": { "css-tree": "^3.0.0" }, "bin": { "specificity": "bin/cli.js" } }, "sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw=="],
 
+    "@capacitor-community/keep-awake": ["@capacitor-community/keep-awake@7.1.0", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@capacitor-community/keep-awake/-/keep-awake-7.1.0.tgz", { "peerDependencies": { "@capacitor/core": ">=7.0.0" } }, "sha512-4Hj6OKnBd/DAOeiMnqBy74tg1rwC+qLYWQbWJmysMZm2e2nptz43hxaKu22Xlyyw5O71CwwskLCM0skDFMPpQQ=="],
+
     "@capacitor-firebase/analytics": ["@capacitor-firebase/analytics@7.3.1", "", { "peerDependencies": { "@capacitor/core": ">=7.0.0", "firebase": "^11.2.0" } }, "sha512-RfNeB8BqMaLiNee8s2Fgt0Qrt/YLDE2Owl5W616Hj9mhR5eXAS+900szSZa95ynXilw1ZuSYwR/DC1c8VnMUAg=="],
 
     "@capacitor/android": ["@capacitor/android@7.4.3", "", { "peerDependencies": { "@capacitor/core": "^7.4.0" } }, "sha512-VpjvnOcmYGPLgvXRhe3CGLs62Cg7sxOyp77NddCr+Y06qqgnoaj6OGeBVTc2DZlqZ6bSmh15JvFu82pkvmdgfQ=="],
+
+    "@capacitor/app": ["@capacitor/app@7.1.2", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@capacitor/app/-/app-7.1.2.tgz", { "peerDependencies": { "@capacitor/core": ">=7.0.0" } }, "sha512-d4I/oF/PRu4megL7/IGKYfe5j7yzSON1FRFgq6kH+m5kH6g7V+wyjHRLauCzGNjdRx4S+nWOumINds0qcRBtKg=="],
 
     "@capacitor/cli": ["@capacitor/cli@7.4.3", "", { "dependencies": { "@ionic/cli-framework-output": "^2.2.8", "@ionic/utils-subprocess": "^3.0.1", "@ionic/utils-terminal": "^2.3.5", "commander": "^12.1.0", "debug": "^4.4.0", "env-paths": "^2.2.0", "fs-extra": "^11.2.0", "kleur": "^4.1.5", "native-run": "^2.0.1", "open": "^8.4.0", "plist": "^3.1.0", "prompts": "^2.4.2", "rimraf": "^6.0.1", "semver": "^7.6.3", "tar": "^6.1.11", "tslib": "^2.8.1", "xml2js": "^0.6.2" }, "bin": { "cap": "bin/capacitor", "capacitor": "bin/capacitor" } }, "sha512-SWozpdDgrbQ/ry1nIapugDFvE9z+l22BmU/+fpgL2Zv5487hGdXvCX5+1SluuFBP3IPpx6b4LjsKnBigyJoUWg=="],
 
