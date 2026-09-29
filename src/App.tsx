@@ -12,6 +12,8 @@ import { BreathingExerciseProvider } from "./context/BreathingExerciseContext";
 import { AuthProvider } from "./context/AuthContext";
 import { useDailyStreakTracker } from "./hooks/useDailyStreakTracker";
 import { ScreenTracker } from "./components/layout/ScreenTracker";
+import DeepLinkHandler from "./components/layout/DeepLinkHandler";
+import WelcomeModal from "./components/onboarding/WelcomeModal";
 import { queryClient, queryPersister } from "./lib/queryClient";
 import { preloadMainRoutes } from "./lib/routePreload";
 
@@ -47,6 +49,8 @@ const AppContent = () => {
 
     <BrowserRouter>
       <ScreenTracker />
+      <DeepLinkHandler />
+      <WelcomeModal />
       <BreathProvider>
         <Suspense fallback={<LoadingSkeleton />}>
           <Routes>

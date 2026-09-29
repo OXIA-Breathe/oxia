@@ -6,6 +6,7 @@ import { APP_VERSION } from "@/version";
 import NotificationSettings from "@/components/settings/NotificationSettings";
 import AudioSettings from "@/components/settings/AudioSettings";
 import OtherSettings from "@/components/settings/OtherSettings";
+import KeepScreenOnSetting from "@/components/settings/KeepScreenOnSetting";
 import SubscriptionSettings from "@/components/settings/SubscriptionSettings";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router-dom";
@@ -158,6 +159,7 @@ const SettingsPage = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
+              <KeepScreenOnSetting />
               <OtherSettings />
             </CardContent>
           </Card>

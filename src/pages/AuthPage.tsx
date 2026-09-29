@@ -11,6 +11,7 @@ import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { summarizePasswordErrors } from "@/lib/passwordValidation";
 import { supabase } from "@/integrations/supabase/client";
+import { getVerifyEmailRedirect } from "@/lib/authRedirect";
 import { useToast } from "@/hooks/use-toast";
 
 
@@ -41,7 +42,7 @@ const AuthPage = () => {
       const { error } = await supabase.auth.resend({
         type: "signup",
         email: pendingEmail,
-        options: { emailRedirectTo: `${window.location.origin}/verify-email` },
+        options: { emailRedirectTo: getVerifyEmailRedirect() },
       });
       if (error) throw error;
       toast({ title: "Email sent", description: "Check your inbox for the new link" });

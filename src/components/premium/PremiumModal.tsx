@@ -24,6 +24,8 @@ interface PremiumModalProps {
   onOpenChange: (open: boolean) => void;
   /** Optional context line, e.g. "Unlock mood insights". */
   highlight?: string;
+  /** Called after a successful purchase. */
+  onPurchased?: () => void;
 }
 
 const BENEFITS = [
@@ -43,7 +45,7 @@ interface PurchaseError {
 
 const isCancellation = isPurchaseCancellation;
 
-const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
+const PremiumModal = ({ open, onOpenChange, highlight, onPurchased }: PremiumModalProps) => {
   const { toast } = useToast();
   const { refresh } = usePremiumStatus();
   const prices = useLocalizedPrices();
@@ -71,6 +73,7 @@ const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
       });
       await refresh();
       onOpenChange(false);
+      onPurchased?.();
     } catch (error: any) {
       console.error("Purchase error:", error);
       const cancelled = isCancellation(error);
