@@ -2,6 +2,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { useStreakManager } from "./useStreakManager";
 import { useAchievements } from "./useAchievements";
 import { useExerciseTracking } from "./useExerciseTracking";
@@ -9,6 +10,7 @@ import { useAchievementNotifications } from "./useAchievementNotifications";
 
 export const useSessionPersistence = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { queueNotifications } = useNotificationQueue();
   const { updateBreathStreak } = useStreakManager();
   const { checkForNewAchievements } = useAchievements();
@@ -85,6 +87,12 @@ export const useSessionPersistence = () => {
         await updateBreathStreak(user.id);
         
         // Check for breath achievements after successfully saving the session
+        await Promise.all(
+          ["breathSessions", "userStats", "activityDates", "emotionalStats"].map((k) =>
+            queryClient.invalidateQueries({ queryKey: [k, user.id] })
+          )
+        );
+
         if (allSessions) {
           const newTotalBreaths = allSessions.reduce((sum, session) => sum + session.breath_count, 0);
           await checkForNewAchievements(newTotalBreaths);
