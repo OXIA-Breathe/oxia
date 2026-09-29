@@ -121,7 +121,7 @@ const OtherSettings = () => {
       <PremiumModal
         open={premiumOpen}
         onOpenChange={setPremiumOpen}
-        highlight="Unlock emotional state tracking and the insights built on it."
+        highlight="Premium lets you check in with yourself before and after each session — and shows you the trends that follow."
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Crown, Sparkles, FileText, BarChart3, Loader2, RefreshCw, AlertTriangle } from "lucide-react";
+import { Crown, Sparkles, FileText, BarChart3, HeartPulse, Loader2, RefreshCw, AlertTriangle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -29,9 +29,26 @@ interface PremiumModalProps {
 }
 
 const BENEFITS = [
-  { icon: Sparkles, label: "AI Wellness Journal" },
-  { icon: BarChart3, label: "Mood, stress & effectiveness insights" },
-  { icon: FileText, label: "Monthly PDF wellness reports" },
+  {
+    icon: Sparkles,
+    label: "AI Wellness Journal",
+    description: "A personal journal that looks over your last 30 days of breathing and check-ins, and writes you a gentle reflection — with one small thing worth trying.",
+  },
+  {
+    icon: HeartPulse,
+    label: "Stress & mood tracking",
+    description: "A quick check-in before and after each session, so you can see how your mood and stress actually shift when you breathe.",
+  },
+  {
+    icon: BarChart3,
+    label: "What works for you",
+    description: "Not generic advice — a ranking of which technique truly calms you: box breathing, 4-7-8, or something else entirely.",
+  },
+  {
+    icon: FileText,
+    label: "Monthly wellness report",
+    description: "A downloadable summary of your month. Keep it for yourself, or bring it along to a therapist, physician or coach.",
+  },
 ];
 
 interface PurchaseError {
@@ -125,24 +142,37 @@ const PremiumModal = ({ open, onOpenChange, highlight, onPurchased }: PremiumMod
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm rounded-2xl bg-white/95 backdrop-blur">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-card-foreground">
-            <Crown className="h-5 w-5 text-amber-500" />
-            OXIA Premium
-          </DialogTitle>
-          <DialogDescription>
-            {highlight || "Unlock deeper insight into how your practice changes how you feel."}
-          </DialogDescription>
-        </DialogHeader>
+        <div className="flex flex-col items-center text-center pt-1">
+          <div className="relative h-24 w-24 mb-3 animate-scale-in">
+            <div className="absolute inset-0 rounded-full bg-amber-500/10 animate-pulse" />
+            <div className="absolute inset-2 rounded-full border-4 border-amber-500 flex items-center justify-center bg-card">
+              <Crown className="h-10 w-10 text-amber-500" />
+            </div>
+          </div>
+          <DialogHeader className="space-y-2">
+            <DialogTitle className="text-3xl font-bold text-card-foreground">
+              OXIA Premium
+            </DialogTitle>
+            <DialogDescription>
+              {highlight ||
+                "You've already built the habit — now see what it's doing for you. Notice how your mood lifts and your stress settles, session by session."}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
 
-        <ul className="space-y-2 text-sm">
-          {BENEFITS.map(({ icon: Icon, label }) => (
-            <li key={label} className="flex items-center gap-2 text-muted-foreground">
-              <Icon className="h-4 w-4 text-amber-500 shrink-0" />
-              <span>{label}</span>
-            </li>
+        <div className="rounded-xl bg-secondary/60 p-4 space-y-3">
+          {BENEFITS.map(({ icon: Icon, label, description }) => (
+            <div key={label} className="flex items-start gap-3 text-left">
+              <div className="mt-0.5 rounded-full bg-amber-500/10 p-1.5 shrink-0">
+                <Icon className="h-3.5 w-3.5 text-amber-500" />
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-sm font-semibold text-card-foreground">{label}</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">{description}</p>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
 
         {purchaseError && (
           <div
@@ -231,7 +261,7 @@ const PremiumModal = ({ open, onOpenChange, highlight, onPurchased }: PremiumMod
         )}
 
         <p className="text-xs text-center text-muted-foreground">
-          7-day free trial, then {prices.monthly}/month or {prices.yearly}/year (25% off). Billed through Google Play or the App Store, cancel anytime.
+          Start with 7 days free — then {prices.monthly}/month or {prices.yearly}/year (25% off). Billed through Google Play or the App Store, cancel anytime.
         </p>
       </DialogContent>
     </Dialog>
