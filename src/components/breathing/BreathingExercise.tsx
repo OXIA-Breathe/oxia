@@ -280,7 +280,7 @@ const BreathingExercise = () => {
     }
 
     // Registered free users: invite to Premium before their 2nd session.
-    if (user && !isPremium && !isActive && phase === "idle" && sessions.length === 1 && !wasShown(user.id, "premium-before-2")) {
+    if (user && !isPremium && !isActive && phase === "idle" && savedSessionCount >= 1 && !wasShown(user.id, "premium-before-2")) {
       markShown(user.id, "premium-before-2");
       startAfterUpsellRef.current = true;
       setShowTrackingUpsell(true);
@@ -305,7 +305,7 @@ const BreathingExercise = () => {
     }
     
     toggleExercise();
-  }, [user, isPremium, sessions.length, isActive, phase, hasReachedLimit, isTrackingEnabled, phaseTimeRemaining, timeRemaining, setPhaseTimeRemaining, pauseMusic, resumeMusic, toggleExercise]);
+  }, [user, isPremium, savedSessionCount, isActive, phase, hasReachedLimit, isTrackingEnabled, phaseTimeRemaining, timeRemaining, setPhaseTimeRemaining, pauseMusic, resumeMusic, toggleExercise]);
 
   const handleCircleClick = () => {
     handleStartOrToggle();
