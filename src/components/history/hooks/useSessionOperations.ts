@@ -140,12 +140,16 @@ export const useSessionOperations = (
         }
         
         
+        // Keep the local copy in sync so session counts stay correct
+        deleteSession(session.id);
+
         // Invalidate all related queries to refresh data immediately
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["breathSessions", user.id] }),
           queryClient.invalidateQueries({ queryKey: ["userStats", user.id] }),
           queryClient.invalidateQueries({ queryKey: ["activityDates", user.id] }),
-          queryClient.invalidateQueries({ queryKey: ["emotionalStats", user.id] })
+          queryClient.invalidateQueries({ queryKey: ["emotionalStats", user.id] }),
+          queryClient.invalidateQueries({ queryKey: ["sessionCount", user.id] })
         ]);
         
         toast({

@@ -1,5 +1,6 @@
 /** Remembers which sign-up / Premium prompts were already shown, per user (or guest). */
-const key = (userId?: string | null) => `oxia.upsell.${userId ?? "guest"}`;
+// Bumping the version resets previously recorded prompts once.
+const key = (userId?: string | null) => `oxia.upsell.v2.${userId ?? "guest"}`;
 
 const read = (userId?: string | null): string[] => {
   try {

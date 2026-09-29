@@ -15,7 +15,7 @@ import { useEmotionTracking } from "@/hooks/useEmotionTracking";
 import { useAuth } from "@/context/AuthContext";
 import { useTrialCounter } from "@/hooks/useTrialCounter";
 import { useToast } from "@/hooks/use-toast";
-import { useBreath } from "@/context/BreathContext";
+import { useSavedSessionCount } from "@/hooks/useSavedSessionCount";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { supabase } from "@/integrations/supabase/client";
 import { keepScreenAwake, allowScreenSleep } from "@/lib/keepAwake";
@@ -39,7 +39,7 @@ const BreathingExercise = () => {
   const [showTrackingUpsell, setShowTrackingUpsell] = useState(false);
   const startAfterUpsellRef = useRef(false);
   const purchasedRef = useRef(false);
-  const { sessions } = useBreath();
+  const savedSessionCount = useSavedSessionCount();
   const { isPremium, refresh: refreshPremium } = usePremiumStatus();
   const [completedSessionData, setCompletedSessionData] = useState<{ breathCount: number; duration: number; sessionId?: string } | null>(null);
   
@@ -149,7 +149,7 @@ const BreathingExercise = () => {
 
     // Registered free users: Premium reminder after the 10th, 20th and 100th session.
     if (user && !isPremium) {
-      const total = sessions.length + 1;
+      const total = savedSessionCount + 1;
       const milestone = PREMIUM_REMINDER_MILESTONES.find((m) => m === total);
       if (milestone && !wasShown(user.id, `premium-${milestone}`)) {
         markShown(user.id, `premium-${milestone}`);
@@ -279,7 +279,7 @@ const BreathingExercise = () => {
     }
 
     // Registered free users: invite to Premium before their 2nd session.
-    if (user && !isPremium && !isActive && phase === "idle" && sessions.length === 1 && !wasShown(user.id, "premium-before-2")) {
+    if (user && !isPremium && !isActive && phase === "idle" && savedSessionCount >= 1 && !wasShown(user.id, "premium-before-2")) {
       markShown(user.id, "premium-before-2");
       startAfterUpsellRef.current = true;
       setShowTrackingUpsell(true);
@@ -304,7 +304,7 @@ const BreathingExercise = () => {
     }
     
     toggleExercise();
-  }, [user, isPremium, sessions.length, isActive, phase, hasReachedLimit, isTrackingEnabled, phaseTimeRemaining, timeRemaining, setPhaseTimeRemaining, pauseMusic, resumeMusic, toggleExercise]);
+  }, [user, isPremium, savedSessionCount, isActive, phase, hasReachedLimit, isTrackingEnabled, phaseTimeRemaining, timeRemaining, setPhaseTimeRemaining, pauseMusic, resumeMusic, toggleExercise]);
 
   const handleCircleClick = () => {
     handleStartOrToggle();
