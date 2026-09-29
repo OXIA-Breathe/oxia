@@ -150,7 +150,7 @@ const BreathingExercise = () => {
 
     // Registered free users: Premium reminder after the 10th, 20th and 100th session.
     if (user && !isPremium) {
-      const total = sessions.length + 1;
+      const total = savedSessionCount + 1;
       const milestone = PREMIUM_REMINDER_MILESTONES.find((m) => m === total);
       if (milestone && !wasShown(user.id, `premium-${milestone}`)) {
         markShown(user.id, `premium-${milestone}`);
