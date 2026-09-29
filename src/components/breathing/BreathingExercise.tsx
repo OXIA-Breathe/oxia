@@ -16,6 +16,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useTrialCounter } from "@/hooks/useTrialCounter";
 import { useToast } from "@/hooks/use-toast";
 import { useBreath } from "@/context/BreathContext";
+import { useSavedSessionCount } from "@/hooks/useSavedSessionCount";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { supabase } from "@/integrations/supabase/client";
 import { keepScreenAwake, allowScreenSleep } from "@/lib/keepAwake";
@@ -39,7 +40,7 @@ const BreathingExercise = () => {
   const [showTrackingUpsell, setShowTrackingUpsell] = useState(false);
   const startAfterUpsellRef = useRef(false);
   const purchasedRef = useRef(false);
-  const { sessions } = useBreath();
+  const savedSessionCount = useSavedSessionCount();
   const { isPremium, refresh: refreshPremium } = usePremiumStatus();
   const [completedSessionData, setCompletedSessionData] = useState<{ breathCount: number; duration: number; sessionId?: string } | null>(null);
   
