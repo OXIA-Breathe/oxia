@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Loader2, MailWarning } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { WELCOME_PENDING_KEY } from "@/lib/authRedirect";
 
 type Status = "checking" | "confirmed" | "error";
 
@@ -36,6 +37,18 @@ const VerifyEmailPage = () => {
           if (error) throw error;
         }
 
+        // Implicit style link opened inside the phone app: set the session manually,
+        // since the client only reads the URL on first load.
+        const accessToken = hash.get("access_token");
+        const refreshToken = hash.get("refresh_token");
+        if (accessToken && refreshToken) {
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          if (error) throw error;
+        }
+
         // Implicit style link (#access_token=...) is picked up automatically by
         // the Supabase client, so we just need to read the resulting session.
         const { data } = await supabase.auth.getSession();
@@ -44,6 +57,7 @@ const VerifyEmailPage = () => {
 
         if (data.session) {
           setStatus("confirmed");
+          localStorage.setItem(WELCOME_PENDING_KEY, data.session.user.id);
           // Clean the tokens out of the address bar
           window.history.replaceState({}, "", "/verify-email");
           setTimeout(() => navigate("/", { replace: true }), 1800);

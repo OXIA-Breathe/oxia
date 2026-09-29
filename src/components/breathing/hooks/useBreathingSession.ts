@@ -8,7 +8,19 @@ import { useNotificationQueue } from "@/hooks/useNotificationQueue";
 import { useSessionPersistence } from "./useSessionPersistence";
 import { useFirebaseAnalytics } from "@/hooks/useFirebaseAnalytics";
 
-export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCount: number; duration: number; sessionId: string }) => void) => {
+export interface PendingSession {
+  id: string;
+  date: string;
+  repetitions: number;
+  holdDuration: number;
+  totalDuration: number;
+  breathCount: number;
+  exerciseTitle: string;
+  exerciseId: string;
+  isCustom: boolean;
+}
+
+export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCount: number; duration: number; sessionId: string; session: PendingSession }) => void) => {
   const { addSession } = useBreath();
   const { currentExercise } = useBreathingExercise();
   const { user } = useAuth();
@@ -25,7 +37,7 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
     firstHoldDuration: 4,
     exhaleDuration: 4,
     secondHoldDuration: 4,
-    repetitions: 20,
+    repetitions: 15,
     isCustom: false,
   };
 
@@ -42,14 +54,13 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
   const isCompletingRef = useRef(false);
   const completionDataRef = useRef<{ breathCount: number } | null>(null);
 
+  // Build the finished session; it is only stored when the user taps Save.
   const completeSession = useCallback((finalBreathCount: number) => {
     const sessionEndTime = Date.now();
     const totalDuration = sessionStartTimeRef.current ? Math.floor((sessionEndTime - sessionStartTimeRef.current) / 1000) : 0;
-    
-    console.log(`🕐 Session completion - Start: ${sessionStartTimeRef.current}, End: ${sessionEndTime}, Duration: ${totalDuration} seconds`);
-    
+
     const sessionId = uuidv4();
-    const newSession = {
+    const newSession: PendingSession = {
       id: sessionId,
       date: new Date().toISOString(),
       repetitions: exerciseSettings.repetitions,
@@ -60,38 +71,33 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
       exerciseId: exerciseSettings.id,
       isCustom: exerciseSettings.isCustom || false,
     };
-    
-    addSession(newSession);
-    
-    if (user) {
-      saveSessionToSupabase(newSession);
-    }
-    
-    logEvent('breathing_session_completed', {
-      exercise_name: exerciseSettings.title,
-      breath_count: finalBreathCount,
-      duration_seconds: totalDuration,
-      is_custom: exerciseSettings.isCustom || false,
-    });
-    
-    // Call the callback with session data for emotion tracking
+
     if (onSessionComplete) {
-      onSessionComplete({
-        breathCount: finalBreathCount,
-        duration: totalDuration,
-        sessionId,
-      });
+      onSessionComplete({ breathCount: finalBreathCount, duration: totalDuration, sessionId, session: newSession });
     } else {
-      // If no callback, show default notification
+      saveSession(newSession);
       queueNotifications([{
         title: "Session completed!",
         description: `You completed ${finalBreathCount} breaths in ${totalDuration} seconds.`,
         duration: 3000
       }]);
     }
-    
+
     resetExercise();
-  }, [addSession, exerciseSettings, queueNotifications, user, saveSessionToSupabase, onSessionComplete]);
+  }, [exerciseSettings, queueNotifications, onSessionComplete]);
+
+  const saveSession = useCallback(async (session: PendingSession) => {
+    addSession(session);
+    if (user) {
+      await saveSessionToSupabase(session);
+    }
+    logEvent('breathing_session_completed', {
+      exercise_name: session.exerciseTitle,
+      breath_count: session.breathCount,
+      duration_seconds: session.totalDuration,
+      is_custom: session.isCustom,
+    });
+  }, [addSession, user, saveSessionToSupabase, logEvent]);
 
   const resetExercise = () => {
     setPhase("idle");
@@ -178,5 +184,6 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
     resetExercise,
     toggleExercise,
     handlePhaseComplete,
+    saveSession,
   };
 };

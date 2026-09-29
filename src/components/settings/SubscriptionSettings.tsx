@@ -10,6 +10,7 @@ import {
   SubscriptionPlan,
 } from "@/lib/purchases";
 import { useToast } from "@/hooks/use-toast";
+import { purchaseErrorToast } from "@/lib/purchaseMessages";
 import { useLocalizedPrices } from "@/hooks/useLocalizedPrices";
 import { format } from "date-fns";
 
@@ -40,11 +41,7 @@ const SubscriptionSettings = () => {
       });
     } catch (error: any) {
       console.error("Purchase error:", error);
-      toast({
-        title: "Purchase unavailable",
-        description: error?.message || "Could not start purchase. Please try again.",
-        variant: "destructive",
-      });
+      toast(purchaseErrorToast(error));
     } finally {
       setPurchasingPlan(null);
     }
@@ -101,10 +98,10 @@ const SubscriptionSettings = () => {
               {isPremium ? (
                 <>
                   <Crown className="h-4 w-4 text-amber-500" />
-                  OXIA Premium
+                  Current plan: {planLabel ? `Premium ${planLabel}` : isTrialActive ? "Premium Trial" : "Premium"}
                 </>
               ) : (
-                "Free Plan"
+                "Current plan: Free"
               )}
             </h3>
             <p className="text-sm text-muted-foreground">

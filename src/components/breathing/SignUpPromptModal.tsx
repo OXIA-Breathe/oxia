@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Check } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -7,13 +8,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ACCOUNT_BENEFITS } from "@/constants/planBenefits";
 
 interface SignUpPromptModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** "limit" = all 10 free sessions used; "invite" = friendly suggestion. */
+  variant?: "limit" | "invite";
 }
 
-export const SignUpPromptModal = ({ open, onOpenChange }: SignUpPromptModalProps) => {
+export const SignUpPromptModal = ({ open, onOpenChange, variant = "limit" }: SignUpPromptModalProps) => {
   const navigate = useNavigate();
 
   const handleSignUp = () => {
@@ -23,15 +27,26 @@ export const SignUpPromptModal = ({ open, onOpenChange }: SignUpPromptModalProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-w-sm rounded-2xl bg-white/95 backdrop-blur">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Trial Limit Reached</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {variant === "limit" ? "Trial Limit Reached" : "Nice first session!"}
+          </DialogTitle>
           <DialogDescription className="text-base pt-2">
-            You've completed your 10 free trial sessions. Create an account to continue
-            your breathing practice with unlimited access.
+            {variant === "limit"
+              ? "You've completed your 10 free trial sessions. Create a free account to keep breathing with unlimited access."
+              : "Create a free account to keep your progress and get more out of OXIA."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-3 pt-4">
+        <ul className="space-y-1.5">
+          {ACCOUNT_BENEFITS.map((b) => (
+            <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
+              <Check className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+              {b}
+            </li>
+          ))}
+        </ul>
+        <div className="flex flex-col gap-3 pt-2">
           <Button onClick={handleSignUp} className="w-full">
             Create Free Account
           </Button>

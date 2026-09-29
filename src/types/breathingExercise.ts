@@ -135,7 +135,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 1,
     exhaleDuration: 5,
     secondHoldDuration: 0,
-    repetitions: 20,
+    repetitions: 30,
     isCustom: false,
     detailedDescription:
       "Diaphragmatic breathing is a technique that helps you focus on your diaphragm, a muscle in your belly. It's sometimes called belly breathing or abdominal breathing. By \"training\" your diaphragm to open up your lungs, you can help your body breathe more efficiently.\n\nWhen you breathe normally, you don't use your lungs to their full capacity. Diaphragmatic breathing allows you to use your lungs at 100% capacity to increase lung efficiency.",
@@ -175,7 +175,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 0,
     exhaleDuration: 6,
     secondHoldDuration: 0,
-    repetitions: 10,
+    repetitions: 30,
     isCustom: false,
     detailedDescription:
       "A simple, mindful practice of gently placing attention on the breath - often paired with anchor words or imagery - to cultivate calm, clarity, and steady focus.\n\nChoose a word that makes you smile, feel relaxed or is simply neutral. For example, some use peace, let go, relax or simply breathe in and breathe out.",
@@ -217,7 +217,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 0,
     exhaleDuration: 2,
     secondHoldDuration: 0,
-    repetitions: 5,
+    repetitions: 10,
     isCustom: false,
     detailedDescription:
       "Lion's Breath (Simha Pranayama) is a powerful yogic breathing technique that releases physical tension and emotional blockages through an expressive exhalation. You inhale deeply through the nose, open your mouth wide, stretch out your tongue, and exhale with a strong \"haaa\" sound - like a lion's roar.\n\nUnlike most quiet breathing practices, this one is bold and freeing, engaging the diaphragm, vocal cords, and facial muscles. It brings awareness to the throat and upper chest, activates circulation, and invites a sense of openness, courage, and authentic expression.",
@@ -260,7 +260,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 0,
     exhaleDuration: 4,
     secondHoldDuration: 0,
-    repetitions: 24,
+    repetitions: 30,
     isCustom: false,
     detailedDescription:
       "Alternate Nostril Breathing (Nadi Shodhana) is a traditional yogic pranayama technique where you gently breathe in through one nostril, close it with your fingers, and exhale through the other - then repeat in the opposite direction. The Sanskrit term Nadi Shodhana means \"channel purification,\" referring to the idea that breath moves through subtle energy pathways (nadis), clearing mental and physical blockages.\n\nIt's more than a simple breathing rhythm - it's a mindful balancing act between the left and right sides of the body and brain. The left nostril is linked to calm, introspective energy (the parasympathetic system), while the right nostril activates alertness and focus (the sympathetic system). By alternating between them, you bring both hemispheres into harmony, creating inner equilibrium.",
@@ -304,7 +304,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 0,
     exhaleDuration: 4,
     secondHoldDuration: 0,
-    repetitions: 12,
+    repetitions: 15,
     isCustom: false,
     detailedDescription:
       "Equal Breathing (Sama Vritti Pranayama) is a steady and rhythmic breathing technique where the length of your inhale matches the length of your exhale - for example, 4 seconds in and 4 seconds out.\n\n\"Sama\" means equal and \"vritti\" means fluctuation or movement, describing the balanced rhythm this technique creates between body and mind.\n\nIt's a foundational breath practice used in yoga and meditation to develop control, focus, and a calm nervous system.",
@@ -344,7 +344,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 0,
     exhaleDuration: 6,
     secondHoldDuration: 0,
-    repetitions: 10,
+    repetitions: 15,
     isCustom: false,
     detailedDescription:
       "Sitali Breath, or Cooling Breath, is a yogic pranayama technique that involves inhaling air through a rolled tongue or pursed lips and exhaling smoothly through the nose. As the air passes over the tongue, it creates a cooling effect on the body and soothes the nervous system.\n\nThe Sanskrit word sitali means \"cool\" or \"soothing,\" reflecting the breath's purpose - to lower internal heat, calm emotional intensity, and restore balance after physical or mental strain.",
@@ -388,7 +388,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     firstHoldDuration: 0,
     exhaleDuration: 6,
     secondHoldDuration: 0,
-    repetitions: 10,
+    repetitions: 30,
     isCustom: false,
     detailedDescription:
       "Bee Breathing, known in Sanskrit as Bhramari Pranayama, is a calming yogic breathing technique where you make a gentle humming sound during exhalation — like the soft buzz of a bee. You inhale deeply through the nose and exhale with lips closed, producing a low, steady vibration in the throat and head.\n\nThe name Bhramari comes from the Sanskrit word for \"bee.\" The practice uses sound resonance to quiet the mind, ease tension, and bring awareness inward. The subtle vibration creates a soothing massage effect on the brain and nervous system, making it one of the most grounding and meditative breath practices.",

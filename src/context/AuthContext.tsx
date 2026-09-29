@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { getVerifyEmailRedirect } from "@/lib/authRedirect";
 import { useToast } from "@/hooks/use-toast";
 import { useFirebaseAnalytics } from "@/hooks/useFirebaseAnalytics";
 import { clearPersistedQueryCache } from "@/lib/queryClient";
@@ -77,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email, 
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/verify-email`,
+          emailRedirectTo: getVerifyEmailRedirect(),
           data: trimmedName ? { full_name: trimmedName } : undefined
         }
       });

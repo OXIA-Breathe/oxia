@@ -15,6 +15,16 @@ import { useEmotionTracking } from "@/hooks/useEmotionTracking";
 import { useAuth } from "@/context/AuthContext";
 import { useTrialCounter } from "@/hooks/useTrialCounter";
 import { useToast } from "@/hooks/use-toast";
+import { useBreath } from "@/context/BreathContext";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { supabase } from "@/integrations/supabase/client";
+import { keepScreenAwake, allowScreenSleep } from "@/lib/keepAwake";
+import { wasShown, markShown, PREMIUM_REMINDER_MILESTONES } from "@/lib/upsellPrompts";
+import SessionCompleteModal from "./SessionCompleteModal";
+import PremiumModal from "@/components/premium/PremiumModal";
+import type { PendingSession } from "./hooks/useBreathingSession";
+
+const TRIAL_LIMIT = 10;
 
 const BreathingExercise = () => {
   const { user } = useAuth();
@@ -23,6 +33,14 @@ const BreathingExercise = () => {
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showPreCheckIn, setShowPreCheckIn] = useState(false);
   const [showPostTracking, setShowPostTracking] = useState(false);
+  const [pendingSession, setPendingSession] = useState<PendingSession | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [signUpVariant, setSignUpVariant] = useState<"limit" | "invite">("limit");
+  const [showTrackingUpsell, setShowTrackingUpsell] = useState(false);
+  const startAfterUpsellRef = useRef(false);
+  const purchasedRef = useRef(false);
+  const { sessions } = useBreath();
+  const { isPremium, refresh: refreshPremium } = usePremiumStatus();
   const [completedSessionData, setCompletedSessionData] = useState<{ breathCount: number; duration: number; sessionId?: string } | null>(null);
   
   const {
@@ -61,39 +79,16 @@ const BreathingExercise = () => {
   // Track if we should stop music (only on manual reset, not on session complete)
   const shouldStopMusicRef = useRef(true);
 
-  const handleSessionComplete = useCallback((sessionData: { breathCount: number; duration: number; sessionId: string }) => {
+  const handleSessionComplete = useCallback((sessionData: { breathCount: number; duration: number; sessionId: string; session: PendingSession }) => {
     // Prevent automatic music stop - let it fade out gracefully
     shouldStopMusicRef.current = false;
-    
-    // Fade out the music after a brief delay
     setTimeout(() => {
       stopMusic();
     }, 500);
-    
-    // Increment trial counter when session completes (for unauthenticated users)
-    if (!user) {
-      incrementTrial().then(() => {
-        // remainingSessions will update via state, but check after increment
-      });
-      
-      // Check if this was the last free session
-      if (remainingSessions === 1) {
-        setTimeout(() => setShowSignUpModal(true), 1000);
-      }
-    }
-    
-    // If emotion tracking is enabled, show post-exercise tracking
-    if (isTrackingEnabled) {
-      setCompletedSessionData(sessionData);
-      setShowPostTracking(true);
-    } else {
-      // Show default completion toast
-      toast({
-        title: "Session completed!",
-        description: `You completed ${sessionData.breathCount} breaths in ${sessionData.duration} seconds.`,
-      });
-    }
-  }, [user, incrementTrial, remainingSessions, isTrackingEnabled, toast, stopMusic]);
+
+    // Show the "Well done!" screen; nothing is stored until the user taps Save.
+    setPendingSession(sessionData.session);
+  }, [stopMusic]);
 
   const {
     phase,
@@ -108,7 +103,91 @@ const BreathingExercise = () => {
     resetExercise,
     toggleExercise,
     handlePhaseComplete,
+    saveSession,
   } = useBreathingSession(handleSessionComplete);
+
+  // Keep the screen awake while an exercise is running (user setting).
+  useEffect(() => {
+    if (isActive) keepScreenAwake();
+    else allowScreenSleep();
+  }, [isActive]);
+  useEffect(() => () => { allowScreenSleep(); }, []);
+
+  const handleSaveSession = async () => {
+    if (!pendingSession) return;
+    const session = pendingSession;
+    setIsSaving(true);
+    try {
+      await saveSession(session);
+    } finally {
+      setIsSaving(false);
+      setPendingSession(null);
+    }
+
+    if (!user) {
+      // Guests: each saved session uses one of the free trial sessions.
+      const wasLast = remainingSessions <= 1;
+      const isFirst = remainingSessions === TRIAL_LIMIT;
+      incrementTrial();
+      if (wasLast) {
+        setSignUpVariant("limit");
+        setTimeout(() => setShowSignUpModal(true), 400);
+      } else if (isFirst && !wasShown(null, "signup-first")) {
+        markShown(null, "signup-first");
+        setSignUpVariant("invite");
+        setTimeout(() => setShowSignUpModal(true), 400);
+      }
+    }
+
+    if (isTrackingEnabled) {
+      setCompletedSessionData({ breathCount: session.breathCount, duration: session.totalDuration, sessionId: session.id });
+      setShowPostTracking(true);
+      return;
+    }
+
+    toast({ title: "Session saved", description: "You'll find it in your Progress." });
+
+    // Registered free users: Premium reminder after the 10th, 20th and 100th session.
+    if (user && !isPremium) {
+      const total = sessions.length + 1;
+      const milestone = PREMIUM_REMINDER_MILESTONES.find((m) => m === total);
+      if (milestone && !wasShown(user.id, `premium-${milestone}`)) {
+        markShown(user.id, `premium-${milestone}`);
+        startAfterUpsellRef.current = false;
+        setTimeout(() => setShowTrackingUpsell(true), 400);
+      }
+    }
+  };
+
+  const handleDiscardSession = () => {
+    setPendingSession(null);
+    handleReset();
+  };
+
+  const handleUpsellOpenChange = (open: boolean) => {
+    setShowTrackingUpsell(open);
+    if (!open) {
+      // Wait a tick so onPurchased (if any) runs first.
+      setTimeout(() => {
+        if (!purchasedRef.current && startAfterUpsellRef.current) {
+          startAfterUpsellRef.current = false;
+          toggleExercise();
+        }
+        purchasedRef.current = false;
+      }, 0);
+    }
+  };
+
+  const handleUpsellPurchased = async () => {
+    purchasedRef.current = true;
+    startAfterUpsellRef.current = false;
+    if (user) {
+      await supabase.from("profiles").update({ emotion_tracking_enabled: true }).eq("id", user.id);
+      await refreshPremium();
+    }
+    // Go straight to the before-session check-in.
+    setShowPreCheckIn(true);
+  };
 
   // Countdown sound hook
   const { playCountdownTick, stopCountdownTicks } = useCountdownSound();
@@ -187,19 +266,23 @@ const BreathingExercise = () => {
     setShowPostTracking(false);
     setCompletedSessionData(null);
     resetEmotionTracking();
-    toast({
-      title: "Session completed!",
-      description: completedSessionData 
-        ? `You completed ${completedSessionData.breathCount} breaths in ${completedSessionData.duration} seconds.`
-        : "Great work!",
-    });
+    toast({ title: "Session saved", description: "You'll find it in your Progress." });
   };
 
   // Common logic for starting/toggling exercise
   const handleStartOrToggle = useCallback(() => {
     // Check trial limit for unauthenticated users
     if (!user && !isActive && phase === "idle" && hasReachedLimit) {
+      setSignUpVariant("limit");
       setShowSignUpModal(true);
+      return;
+    }
+
+    // Registered free users: invite to Premium before their 2nd session.
+    if (user && !isPremium && !isActive && phase === "idle" && sessions.length === 1 && !wasShown(user.id, "premium-before-2")) {
+      markShown(user.id, "premium-before-2");
+      startAfterUpsellRef.current = true;
+      setShowTrackingUpsell(true);
       return;
     }
 
@@ -221,7 +304,7 @@ const BreathingExercise = () => {
     }
     
     toggleExercise();
-  }, [user, isActive, phase, hasReachedLimit, isTrackingEnabled, phaseTimeRemaining, timeRemaining, setPhaseTimeRemaining, pauseMusic, resumeMusic, toggleExercise]);
+  }, [user, isPremium, sessions.length, isActive, phase, hasReachedLimit, isTrackingEnabled, phaseTimeRemaining, timeRemaining, setPhaseTimeRemaining, pauseMusic, resumeMusic, toggleExercise]);
 
   const handleCircleClick = () => {
     handleStartOrToggle();
@@ -275,7 +358,22 @@ const BreathingExercise = () => {
 
   return (
     <>
-      <SignUpPromptModal open={showSignUpModal} onOpenChange={setShowSignUpModal} />
+      <SignUpPromptModal open={showSignUpModal} onOpenChange={setShowSignUpModal} variant={signUpVariant} />
+      <SessionCompleteModal
+        open={!!pendingSession}
+        exerciseTitle={pendingSession?.exerciseTitle ?? ""}
+        repetitions={pendingSession?.repetitions ?? 0}
+        durationSeconds={pendingSession?.totalDuration ?? 0}
+        saving={isSaving}
+        onSave={handleSaveSession}
+        onDiscard={handleDiscardSession}
+      />
+      <PremiumModal
+        open={showTrackingUpsell}
+        onOpenChange={handleUpsellOpenChange}
+        onPurchased={handleUpsellPurchased}
+        highlight="Track how breathing changes you. Premium asks how you feel before and after each session and shows your stress and mood trends over time."
+      />
       <PreExerciseCheckIn
         open={showPreCheckIn}
         onOpenChange={setShowPreCheckIn}

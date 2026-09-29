@@ -280,7 +280,7 @@ const ConsistencyPage = () => {
         {user && (
           <Button
             onClick={() => setIsAddModalOpen(true)}
-            className="fixed md:bottom-6 right-6 h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_12px_28px_-8px_hsl(213_81%_19%_/_0.45)] transition-all duration-200 active:scale-95"
+            className="fixed z-30 md:bottom-6 right-6 h-14 w-14 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_12px_28px_-8px_hsl(213_81%_19%_/_0.45)] transition-all duration-200 active:scale-95"
             style={{
               bottom: 'calc(6rem + env(safe-area-inset-bottom))'
             }}

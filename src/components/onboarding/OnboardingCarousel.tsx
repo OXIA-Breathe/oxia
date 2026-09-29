@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
-import { Hand, Wind, TrendingUp, Users, Sparkles, Smile } from "lucide-react";
+import { Hand, Wind, TrendingUp, Users, Sparkles, Smile, Crown } from "lucide-react";
+import { PREMIUM_INTENT_KEY } from "@/lib/authRedirect";
 import { useNavigate } from "react-router-dom";
 
 interface OnboardingCarouselProps {
@@ -34,6 +35,12 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
   };
 
   const handleCreateAccount = () => {
+    onComplete();
+    navigate("/auth");
+  };
+
+  const handleWantPremium = () => {
+    localStorage.setItem(PREMIUM_INTENT_KEY, "premium");
     onComplete();
     navigate("/auth");
   };
@@ -96,12 +103,19 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
       icon: <Sparkles className="w-16 h-16 animate-[spin_3s_linear_infinite]" />,
       heading: "Feel free to use",
       paragraph:
-        "For now, all OXIA content is available completely free. You can try up to 5 sessions per month without signing in.\nCreate an account to unlock unlimited access — freely, just like your breath.",
+        "For now, all OXIA content is available completely free. You can try up to 10 sessions without signing in.\nCreate an account to unlock unlimited access — freely, just like your breath.",
+    },
+    {
+      icon: <Crown className="w-16 h-16 text-amber-500 animate-[bounce_1.5s_ease-in-out_infinite]" />,
+      heading: "OXIA Premium",
+      paragraph:
+        "Go deeper with a 7-day free trial:\n• AI Wellness Journal\n• Stress & mood tracking before and after sessions\n• Mood, stress and exercise-effectiveness insights\n• Monthly PDF wellness report",
+      isPremium: true,
     },
     {
       icon: <Smile className="w-16 h-16 animate-[bounce_1.5s_ease-in-out_infinite]" />,
       heading: "Ready to begin?",
-      paragraph: "You can start with 5 free sessions,\nor create your account to explore without limits.",
+      paragraph: "You can start with 10 free sessions,\nor create your account to explore without limits.",
       isFinal: true,
     },
   ];
@@ -164,8 +178,28 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
                     </div>
                   )}
 
+                  {/* Premium slide: sign up first, then subscribe after confirming the email */}
+                  {slide.isPremium && (
+                    <div className="flex flex-col gap-3 mt-8 w-full max-w-md">
+                      <Button
+                        onClick={handleWantPremium}
+                        className="rounded-full bg-amber-500 hover:bg-amber-500/90 text-white font-semibold text-base py-6"
+                      >
+                        <Crown className="h-4 w-4 mr-2" />
+                        I want Premium
+                      </Button>
+                      <Button
+                        onClick={handleNext}
+                        variant="outline"
+                        className="rounded-full border border-primary/30 text-primary bg-card hover:bg-secondary font-semibold text-base py-6"
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  )}
+
                   {/* Next Button for non-final slides */}
-                  {!slide.isFinal && (
+                  {!slide.isFinal && !slide.isPremium && (
                     <Button
                       onClick={handleNext}
                       className="mt-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-10 py-6 text-base font-semibold"

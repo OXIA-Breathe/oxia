@@ -67,7 +67,7 @@ const loadLocalCustomExercises = (): BreathingExercise[] => {
 // Load default exercise repetitions overrides from localStorage
 const loadLocalDefaults = (): BreathingExercise[] => {
   try {
-    const currentVersion = "2.5";
+    const currentVersion = "2.6";
     const savedVersion = localStorage.getItem("breathingExercisesVersion");
     const saved = localStorage.getItem("breathingExercises");
 
@@ -75,16 +75,23 @@ const loadLocalDefaults = (): BreathingExercise[] => {
       localStorage.setItem("breathingExercisesVersion", currentVersion);
     }
 
-    if (!saved || savedVersion !== currentVersion) {
-      return defaultBreathingExercises;
-    }
+    if (!saved) return defaultBreathingExercises;
+
+    // Previous built-in defaults (v2.5). On upgrade, an exercise still at its old
+    // default moves to the new recommended value; user-chosen values are kept.
+    const OLD_DEFAULTS: Record<string, number> = {
+      "diaphragmatic-breathing": 20, "breathe-focus": 10, "lions-breath": 5,
+      "alternate-nostril": 24, "equal-breathing": 12, "sitali-breath": 10, "bee-breath": 10,
+    };
+    const upgrading = savedVersion !== currentVersion;
+    if (upgrading && savedVersion !== "2.5") return defaultBreathingExercises;
 
     const parsed = JSON.parse(saved);
     return defaultBreathingExercises.map(defaultEx => {
       const savedEx = parsed.find((ex: BreathingExercise) => ex.id === defaultEx.id);
-      return savedEx && !savedEx.isCustom
-        ? { ...defaultEx, repetitions: savedEx.repetitions }
-        : defaultEx;
+      if (!savedEx || savedEx.isCustom) return defaultEx;
+      if (upgrading && OLD_DEFAULTS[defaultEx.id] === savedEx.repetitions) return defaultEx;
+      return { ...defaultEx, repetitions: savedEx.repetitions };
     });
   } catch {
     return defaultBreathingExercises;

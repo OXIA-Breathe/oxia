@@ -15,6 +15,7 @@ import {
   SubscriptionPlan,
 } from "@/lib/purchases";
 import { useToast } from "@/hooks/use-toast";
+import { CANCEL_TOAST, isPurchaseCancellation, purchaseErrorToast } from "@/lib/purchaseMessages";
 import { useLocalizedPrices } from "@/hooks/useLocalizedPrices";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 
@@ -23,6 +24,8 @@ interface PremiumModalProps {
   onOpenChange: (open: boolean) => void;
   /** Optional context line, e.g. "Unlock mood insights". */
   highlight?: string;
+  /** Called after a successful purchase. */
+  onPurchased?: () => void;
 }
 
 const BENEFITS = [
@@ -40,12 +43,9 @@ interface PurchaseError {
   code?: string | null;
 }
 
-const isCancellation = (error: any) => {
-  const raw = `${error?.code ?? ""} ${error?.message ?? ""}`.toLowerCase();
-  return raw.includes("cancel") || raw.includes("aborted") || error?.code === 6500;
-};
+const isCancellation = isPurchaseCancellation;
 
-const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
+const PremiumModal = ({ open, onOpenChange, highlight, onPurchased }: PremiumModalProps) => {
   const { toast } = useToast();
   const { refresh } = usePremiumStatus();
   const prices = useLocalizedPrices();
@@ -73,26 +73,25 @@ const PremiumModal = ({ open, onOpenChange, highlight }: PremiumModalProps) => {
       });
       await refresh();
       onOpenChange(false);
+      onPurchased?.();
     } catch (error: any) {
       console.error("Purchase error:", error);
       const cancelled = isCancellation(error);
+      if (cancelled) {
+        // A cancel is a normal choice, not an error.
+        toast(CANCEL_TOAST);
+        return;
+      }
       const verification = error instanceof PurchaseVerificationError ? error : null;
+      const t = purchaseErrorToast(error);
       setPurchaseError({
         plan,
-        cancelled,
+        cancelled: false,
         traceId: verification?.traceId ?? null,
         code: verification?.code ?? null,
-        message: cancelled
-          ? "Checkout was cancelled. You can try again or pick the other plan."
-          : error?.message || "Could not start the purchase. Please try again.",
+        message: t.description,
       });
-      toast({
-        title: cancelled ? "Purchase cancelled" : "Purchase unavailable",
-        description: cancelled
-          ? "Nothing was charged — you can try again any time."
-          : error?.message || "Could not start purchase. Please try again.",
-        variant: cancelled ? "default" : "destructive",
-      });
+      toast(t);
     } finally {
       setPurchasingPlan(null);
     }
