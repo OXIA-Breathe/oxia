@@ -15,7 +15,6 @@ import { useEmotionTracking } from "@/hooks/useEmotionTracking";
 import { useAuth } from "@/context/AuthContext";
 import { useTrialCounter } from "@/hooks/useTrialCounter";
 import { useToast } from "@/hooks/use-toast";
-import { useBreath } from "@/context/BreathContext";
 import { useSavedSessionCount } from "@/hooks/useSavedSessionCount";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { supabase } from "@/integrations/supabase/client";
