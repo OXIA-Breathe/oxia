@@ -65,9 +65,13 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
     },
     {
       icon: (
-        <img
-          src="/lovable-uploads/breathing_exercises.gif"
-          alt="Breathing exercises animation"
+        <video
+          src={breathingExercisesVideo.url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-label="Breathing exercises animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
       ),
@@ -77,9 +81,13 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
     },
     {
       icon: (
-        <img
-          src="/lovable-uploads/progress.gif"
-          alt="Progress tracking animation"
+        <video
+          src={progressVideo.url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-label="Progress tracking animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
       ),
@@ -89,9 +97,13 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
     },
     {
       icon: (
-        <img
-          src="/lovable-uploads/feedback.gif"
-          alt="Feedback and community animation"
+        <video
+          src={feedbackVideo.url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-label="Feedback and community animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
       ),
