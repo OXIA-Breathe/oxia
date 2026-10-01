@@ -4,6 +4,9 @@ import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/componen
 import { Hand, Wind, TrendingUp, Users, Sparkles, Smile, Crown } from "lucide-react";
 import { PREMIUM_INTENT_KEY } from "@/lib/authRedirect";
 import { useNavigate } from "react-router-dom";
+import breathingExercisesVideo from "@/assets/breathing_exercises_new.webm.asset.json";
+import progressVideo from "@/assets/progress_new.webm.asset.json";
+import feedbackVideo from "@/assets/feedback_new.webm.asset.json";
 
 interface OnboardingCarouselProps {
   onComplete: () => void;
