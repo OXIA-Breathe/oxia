@@ -6,6 +6,7 @@ import { PREMIUM_INTENT_KEY } from "@/lib/authRedirect";
 import { useNavigate } from "react-router-dom";
 
 // Bundled in public/ so they ship inside the installed app (no network needed).
+const welcomeVideo = "/onboarding/woman_breathing.webm";
 const breathingExercisesVideo = "/onboarding/breathing_exercises.webm";
 const progressVideo = "/onboarding/progress.webm";
 const feedbackVideo = "/onboarding/feedback.webm";
@@ -80,12 +81,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
   const slides = [
     {
       icon: (
-        <img
-          src="/lovable-uploads/woman_breathing_in_the_forest.gif"
-          loading="lazy"
-          alt="Breathing animation"
-          className="w-48 h-auto object-contain rounded-lg shadow-lg"
-        />
+        <SlideVideo src={welcomeVideo} label="Breathing animation" active={current === 0} />
       ),
       heading: "Welcome to OXIA",
       paragraph:
