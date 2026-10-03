@@ -28,7 +28,7 @@ const SlideVideo = ({ src, label, active }: { src: string; label: string; active
       playsInline
       preload="none"
       aria-label={label}
-      className="w-48 aspect-[9/19] object-contain rounded-lg shadow-lg bg-card"
+      className="w-48 h-48 object-contain rounded-lg shadow-lg bg-card"
     />
   );
 };
