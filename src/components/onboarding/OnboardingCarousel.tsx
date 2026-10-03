@@ -1,12 +1,37 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
 import { Hand, Wind, TrendingUp, Users, Sparkles, Smile, Crown } from "lucide-react";
 import { PREMIUM_INTENT_KEY } from "@/lib/authRedirect";
 import { useNavigate } from "react-router-dom";
-import breathingExercisesVideo from "@/assets/breathing_exercises_new.webm.asset.json";
-import progressVideo from "@/assets/progress_new.webm.asset.json";
-import feedbackVideo from "@/assets/feedback_new.webm.asset.json";
+
+// Bundled in public/ so they ship inside the installed app (no network needed).
+const breathingExercisesVideo = "/onboarding/breathing_exercises.webm";
+const progressVideo = "/onboarding/progress.webm";
+const feedbackVideo = "/onboarding/feedback.webm";
+
+/** Only loads and plays while its slide is visible, to save data and battery. */
+const SlideVideo = ({ src, label, active }: { src: string; label: string; active: boolean }) => {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    if (active) v.play().catch(() => {});
+    else v.pause();
+  }, [active]);
+  return (
+    <video
+      ref={ref}
+      src={active ? src : undefined}
+      loop
+      muted
+      playsInline
+      preload="none"
+      aria-label={label}
+      className="w-48 h-48 object-contain rounded-lg shadow-lg bg-card"
+    />
+  );
+};
 
 interface OnboardingCarouselProps {
   onComplete: () => void;
@@ -57,6 +82,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
       icon: (
         <img
           src="/lovable-uploads/woman_breathing_in_the_forest.gif"
+          loading="lazy"
           alt="Breathing animation"
           className="w-48 h-auto object-contain rounded-lg shadow-lg"
         />
@@ -68,15 +94,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
     },
     {
       icon: (
-        <video
-          src={breathingExercisesVideo.url}
-          autoPlay
-          loop
-          muted
-          playsInline
-          aria-label="Breathing exercises animation"
-          className="w-48 h-auto object-contain rounded-lg shadow-lg"
-        />
+        <SlideVideo src={breathingExercisesVideo} label="Breathing exercises animation" active={current === 1} />
       ),
       heading: "Just breathe and feel the calm",
       paragraph:
@@ -84,15 +102,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
     },
     {
       icon: (
-        <video
-          src={progressVideo.url}
-          autoPlay
-          loop
-          muted
-          playsInline
-          aria-label="Progress tracking animation"
-          className="w-48 h-auto object-contain rounded-lg shadow-lg"
-        />
+        <SlideVideo src={progressVideo} label="Progress tracking animation" active={current === 2} />
       ),
       heading: "Track your journey",
       paragraph:
@@ -100,15 +110,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
     },
     {
       icon: (
-        <video
-          src={feedbackVideo.url}
-          autoPlay
-          loop
-          muted
-          playsInline
-          aria-label="Feedback and community animation"
-          className="w-48 h-auto object-contain rounded-lg shadow-lg"
-        />
+        <SlideVideo src={feedbackVideo} label="Feedback and community animation" active={current === 3} />
       ),
       heading: "We grow together",
       paragraph:
