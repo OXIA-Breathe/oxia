@@ -162,7 +162,7 @@ serve(async (req) => {
 
     let receiptQuery = supabaseAdmin
       .from("subscription_receipts")
-      .select("id")
+      .select("id, user_id")
       .eq("platform", platform);
 
     if (platform === "android") {
@@ -186,6 +186,17 @@ serve(async (req) => {
         platform,
         error: receiptLookupError.message,
       });
+    }
+
+    // One store purchase belongs to one OXIA account. The phone's Google/Apple
+    // account can be signed into several OXIA accounts, so never move it.
+    if (existingReceipt && existingReceipt.user_id !== user.id) {
+      return fail(
+        "linked_to_other_account",
+        409,
+        "This subscription is already linked to another OXIA account on this phone.",
+        { user_id: user.id, platform },
+      );
     }
 
     const { error: receiptError } = existingReceipt

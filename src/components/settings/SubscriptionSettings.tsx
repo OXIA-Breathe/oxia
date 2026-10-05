@@ -51,17 +51,22 @@ const SubscriptionSettings = () => {
     setIsRestoring(true);
     try {
       await restorePurchases();
+      await refresh();
       toast({
-        title: "Restored",
-        description: "Any previous purchases have been restored.",
+        title: "Restore complete",
+        description: "If this account has a subscription, Premium is now active.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Restore error:", error);
+      const linkedElsewhere = error?.code === "linked_to_other_account";
       toast({
-        title: "Restore failed",
-        description: "Could not restore purchases. Please try again.",
+        title: linkedElsewhere ? "Linked to another account" : "Restore failed",
+        description: linkedElsewhere
+          ? "This phone's subscription belongs to a different OXIA account. Sign in with that account to use Premium."
+          : "Could not restore purchases. Please try again.",
         variant: "destructive",
       });
+      await refresh();
     } finally {
       setIsRestoring(false);
     }
