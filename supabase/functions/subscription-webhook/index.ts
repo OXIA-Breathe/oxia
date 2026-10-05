@@ -41,6 +41,13 @@ serve(async (req) => {
   const token = new URL(req.url).searchParams.get("token");
 
   if (!secret || !token || token !== secret) {
+    // TEMP DEBUG: fingerprint comparison to diagnose token mismatch (remove after).
+    const fp = (s: string) => {
+      const digest = new Uint8Array(
+        new crypto.subtle.digest ? 0 : 0,
+      );
+      return digest.length; // placeholder, replaced below
+    };
     return fail("unauthorized", 401, "Unauthorized.", {
       secret_configured: Boolean(secret),
       token_supplied: Boolean(token),
