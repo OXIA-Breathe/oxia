@@ -13,6 +13,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { useDailyStreakTracker } from "./hooks/useDailyStreakTracker";
 import { ScreenTracker } from "./components/layout/ScreenTracker";
 import DeepLinkHandler from "./components/layout/DeepLinkHandler";
+import PurchaseSync from "./components/layout/PurchaseSync";
 import WelcomeModal from "./components/onboarding/WelcomeModal";
 import { queryClient, queryPersister } from "./lib/queryClient";
 import { preloadMainRoutes } from "./lib/routePreload";
@@ -50,6 +51,7 @@ const AppContent = () => {
     <BrowserRouter>
       <ScreenTracker />
       <DeepLinkHandler />
+      <PurchaseSync />
       <WelcomeModal />
       <BreathProvider>
         <Suspense fallback={<LoadingSkeleton />}>
