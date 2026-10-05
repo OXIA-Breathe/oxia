@@ -126,10 +126,14 @@ const PremiumModal = ({ open, onOpenChange, highlight, onPurchased }: PremiumMod
       });
     } catch (error: any) {
       console.error("Restore error:", error);
-      setRestoreError(error?.message || "Could not restore purchases. Please try again.");
+      const linkedElsewhere = error?.code === "linked_to_other_account";
+      const msg = linkedElsewhere
+        ? "This phone's subscription belongs to a different OXIA account. Sign in with that account to use Premium."
+        : "Could not restore purchases. Please try again.";
+      setRestoreError(msg);
       toast({
-        title: "Restore failed",
-        description: "Could not restore purchases. Please try again.",
+        title: linkedElsewhere ? "Linked to another account" : "Restore failed",
+        description: msg,
         variant: "destructive",
       });
     } finally {
