@@ -204,7 +204,7 @@ export const purchaseSubscription = async (plan: SubscriptionPlan): Promise<void
   if (!store) throw new Error("Purchase store not initialised");
 
   const product = store.get(PRODUCT_IDS[plan]);
-  const offer = product?.getOffer?.();
+  const offer = pickOffer(product);
   if (!offer) {
     throw new Error("This plan isn't available right now. Please try again later.");
   }
@@ -326,6 +326,24 @@ export const restorePurchases = async (): Promise<void> => {
   const store = getStore();
   if (!store) return;
   await store.restorePurchases?.();
+  await syncOwnedPurchases();
+};
+
+/**
+ * Verify every subscription Google/Apple says this device owns. Catches
+ * purchases that were paid but never reached our server (e.g. the app was
+ * closed during checkout). Safe to call repeatedly.
+ */
+export const syncOwnedPurchases = async (): Promise<void> => {
+  const store = getStore();
+  if (!store) return;
+  const txs: any[] = (store.localReceipts ?? []).flatMap((r: any) => r?.transactions ?? []);
+  const owned = txs.filter(
+    (t) => isOurProduct(t) && ["approved", "finished"].includes(String(t?.state)),
+  );
+  const results = await Promise.allSettled(owned.map(verifyTransaction));
+  const failed = results.find((r) => r.status === "rejected") as PromiseRejectedResult | undefined;
+  if (failed && !results.some((r) => r.status === "fulfilled")) throw failed.reason;
 };
 
 /** Android application id — required by the Play subscription deep link. */
