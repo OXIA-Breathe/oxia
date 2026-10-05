@@ -12,7 +12,7 @@ import PremiumModal from "@/components/premium/PremiumModal";
 const OtherSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { isPremium, isEmotionTrackingEnabled, isLoading: isPremiumLoading } = usePremiumStatus();
+  const { isPremium, isEmotionTrackingEnabled, isLoading: isPremiumLoading, refresh } = usePremiumStatus();
   const [emotionTrackingEnabled, setEmotionTrackingEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [premiumOpen, setPremiumOpen] = useState(false);
@@ -59,6 +59,9 @@ const OtherSettings = () => {
       if (error) throw error;
 
       setEmotionTrackingEnabled(enabled);
+      // Progress cards and the pre-session check-in read this flag from the
+      // cached premium status, so refresh it right away.
+      await refresh();
       toast({
         title: enabled ? "Emotional state tracking enabled" : "Emotional state tracking disabled",
         description: enabled 
