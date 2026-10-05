@@ -42,6 +42,39 @@ declare global {
 
 let initPromise: Promise<void> | null = null;
 let pending: { resolve: () => void; reject: (e: unknown) => void } | null = null;
+const inFlight = new Map<string, Promise<void>>();
+
+/** Event fired after the server confirms a purchase, so screens refresh Premium. */
+export const PREMIUM_UPDATED_EVENT = "oxia:premium-updated";
+
+const isOurProduct = (t: any) =>
+  (t?.products ?? []).some((p: any) => Object.values(PRODUCT_IDS).includes(p?.id));
+
+/** Verify one store transaction on the server (deduplicated), then acknowledge it. */
+const verifyTransaction = (t: any): Promise<void> => {
+  const key = String(t?.transactionId ?? t?.nativePurchase?.purchaseToken ?? Math.random());
+  const existing = inFlight.get(key);
+  if (existing) return existing;
+  const run = (async () => {
+    await verifyPurchaseOnServer(normaliseTransaction(t));
+    // Acknowledge only after the server has saved it; Google refunds
+    // unacknowledged purchases after 3 days, so nothing is lost on failure.
+    await t.finish?.();
+    window.dispatchEvent(new Event(PREMIUM_UPDATED_EVENT));
+  })();
+  inFlight.set(key, run);
+  run.finally(() => inFlight.delete(key));
+  return run;
+};
+
+/** Pick the offer that starts with a free trial when the user is eligible. */
+const pickOffer = (product: any) => {
+  const offers: any[] = product?.offers ?? [];
+  const trial = offers.find((o) =>
+    (o?.pricingPhases ?? []).some((ph: any) => ph?.priceMicros === 0),
+  );
+  return trial ?? product?.getOffer?.() ?? offers[0];
+};
 
 const isNative = () => Capacitor.isNativePlatform();
 
@@ -89,10 +122,11 @@ export const initPurchases = async (): Promise<void> => {
         { id: PRODUCT_IDS.yearly, type: Cdv.ProductType.PAID_SUBSCRIPTION, platform },
       ]);
 
+      // Fires for new purchases AND for paid-but-unconfirmed ones Google
+      // re-delivers on app start, so a purchase is never left unverified.
       store.when().approved(async (t: any) => {
         try {
-          await verifyPurchaseOnServer(normaliseTransaction(t));
-          await t.finish();
+          await verifyTransaction(t);
           pending?.resolve();
         } catch (err) {
           console.error("Purchase verification failed", err);
