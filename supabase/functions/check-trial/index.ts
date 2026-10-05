@@ -1,18 +1,26 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+// The native app (https://localhost, capacitor://localhost) must be allowed,
+// otherwise the guest session counter is blocked on phones.
 const ALLOWED_ORIGINS = [
   "https://d3590b81-c814-4932-9e6d-4fbda085725b.lovable.app",
   "https://id-preview--d3590b81-c814-4932-9e6d-4fbda085725b.lovable.app",
+  "https://localhost",
+  "http://localhost",
+  "capacitor://localhost",
 ];
 
 const TRIAL_LIMIT = 10;
 
 function getCorsHeaders(origin: string | null) {
-  const allowed = origin && ALLOWED_ORIGINS.some(o => origin.startsWith(o.replace(/\/$/, '')));
+  const allowed = origin && ALLOWED_ORIGINS.some(o => origin === o || origin.startsWith(o + ":"));
   return {
     "Access-Control-Allow-Origin": allowed ? origin! : ALLOWED_ORIGINS[0],
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "Vary": "Origin",
   };
 }
 

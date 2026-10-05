@@ -2,11 +2,13 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { createLogger, fingerprint, type Logger } from "../_shared/logging.ts";
 
-const ALLOWED_ORIGIN = "https://d3590b81-c814-4932-9e6d-4fbda085725b.lovable.app";
-
+// Auth is enforced via the user's Bearer token, so any origin may call this —
+// the native Android/iOS app runs on https://localhost / capacitor://localhost.
 const corsHeaders = {
-  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const PACKAGE_NAME = "app.lovable.d3590b81c81449329e6d4fbda085725b";
