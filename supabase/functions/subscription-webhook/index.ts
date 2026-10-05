@@ -41,9 +41,20 @@ serve(async (req) => {
   const token = new URL(req.url).searchParams.get("token");
 
   if (!secret || !token || token !== secret) {
+    // TEMP DEBUG: fingerprint comparison to diagnose token mismatch (remove after).
+    const fingerprintHex = async (s: string) => {
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+      return Array.from(new Uint8Array(digest).slice(0, 8))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    };
     return fail("unauthorized", 401, "Unauthorized.", {
       secret_configured: Boolean(secret),
       token_supplied: Boolean(token),
+      secret_length: secret?.length ?? 0,
+      token_length: token?.length ?? 0,
+      secret_fingerprint: secret ? await fingerprintHex(secret) : null,
+      token_fingerprint: token ? await fingerprintHex(token) : null,
     });
   }
 
