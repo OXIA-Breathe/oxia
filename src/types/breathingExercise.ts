@@ -399,7 +399,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Restore emotional balance and inner quiet",
     ],
     howItHelps:
-      "The main purpose of Bee Breathing is to calm the nervous system and stabilize emotional fluctuations. The humming vibration activates the vagus nerve - the body's natural relaxation switch - lowering heart rate and blood pressure while reducing anxiety and agitation.\n\nThis sound-based breath harmonizes brainwave activity and brings the mind into a meditative state, similar to deep chanting or mantra work. Regular practice can improve focus, sleep, and emotional regulation while easing symptoms of stress, anger, or frustration. The gentle vibration also helps release tension in the head, face, and neck, creating a profound sense of stillness and inner quiet.",
+      "The main purpose of Bee Breathing is to calm the nervous system and stabilize emotional fluctuations. The slow humming exhale may help activate the body's relaxation response, and many people find it eases tension and agitation.\n\nThis sound-based breath can bring the mind into a meditative state, similar to deep chanting or mantra work. Regular practice can improve focus, sleep, and emotional regulation while easing symptoms of stress, anger, or frustration. The gentle vibration also helps release tension in the head, face, and neck, creating a profound sense of stillness and inner quiet.",
     commonMistakes: [
       "Forcing the hum (throat tension or loud buzzing)",
       "Tensing the face or jaw",

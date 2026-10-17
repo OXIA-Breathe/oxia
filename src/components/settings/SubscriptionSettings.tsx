@@ -112,7 +112,7 @@ const SubscriptionSettings = () => {
             <p className="text-sm text-muted-foreground">
               {isPremium
                 ? "You have access to all premium features."
-                : "Unlock emotion tracking, AI insights, and wellness reports."}
+                : "Unlock detailed mood and stress insights, AI reflections, and wellness reports."}
             </p>
           </div>
           {isPremium && (
