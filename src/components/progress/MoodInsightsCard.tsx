@@ -1,3 +1,4 @@
+import { getMoodConfig } from "@/constants/emotionConfig";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
@@ -95,21 +96,22 @@ const MoodInsightsCard = () => {
         ) : (
           <div className={overlayType ? "blur-sm pointer-events-none" : ""}>
             {/* Summary Stats */}
-            {preMostCommon && postMostCommon && (
-              <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    {getMoodTrendIcon()}
-                    <span className="text-muted-foreground">
-                      Most common: <strong style={{ color: preMostCommon.color }}>{preMostCommon.label}</strong> → <strong style={{ color: postMostCommon.color }}>{postMostCommon.label}</strong>
-                    </span>
-                  </div>
-                  {summary.moodImprovement !== 0 && (
-                    <span className={`font-medium ${summary.moodImprovement > 0 ? "text-success" : "text-destructive"}`}>
-                      {summary.moodImprovement > 0 ? "+" : ""}{summary.moodImprovement.toFixed(1)} avg
-                    </span>
-                  )}
-                </div>
+            {summary.pairedCount > 0 && (
+              <div className="mb-4 p-3 bg-muted/50 rounded-lg text-sm">
+                {summary.topTransition ? (
+                  <p className="text-muted-foreground">
+                    Most frequent change:{" "}
+                    <strong style={{ color: getMoodConfig(summary.topTransition.from).color }}>{getMoodConfig(summary.topTransition.from).label}</strong> →{" "}
+                    <strong style={{ color: getMoodConfig(summary.topTransition.to).color }}>{getMoodConfig(summary.topTransition.to).label}</strong>
+                    {" "}({summary.topTransition.count} {summary.topTransition.count === 1 ? "session" : "sessions"})
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground">Your mood stayed the same in every session with both check-ins.</p>
+                )}
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Based on {summary.pairedCount} {summary.pairedCount === 1 ? "session" : "sessions"} with both check-ins
+                  {summary.missingCount > 0 ? ` · ${summary.missingCount} without both` : ""}. Self-reported.
+                </p>
               </div>
             )}
 

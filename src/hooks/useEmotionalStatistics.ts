@@ -158,34 +158,40 @@ export const processStressData = (records: EmotionRecord[]): DailyStressData[] =
     .sort((a, b) => a.date.localeCompare(b.date));
 };
 
-// Calculate summary statistics
+// Calculate summary statistics — only sessions with BOTH check-ins count ("paired").
 export const calculateMoodSummary = (records: EmotionRecord[]) => {
-  const preMoods = records.map(r => r.pre_valence).filter((v): v is number => v !== null);
-  const postMoods = records.map(r => r.post_valence).filter((v): v is number => v !== null);
-  
-  if (preMoods.length === 0 || postMoods.length === 0) {
-    return { avgPreMood: 0, avgPostMood: 0, moodImprovement: 0 };
+  const paired = records.filter(r => r.pre_valence !== null && r.post_valence !== null);
+  const transitions: Record<string, { from: number; to: number; count: number }> = {};
+  for (const r of paired) {
+    const key = `${r.pre_valence}->${r.post_valence}`;
+    transitions[key] = transitions[key] || { from: r.pre_valence as number, to: r.post_valence as number, count: 0 };
+    transitions[key].count++;
   }
-  
-  const avgPreMood = preMoods.reduce((a, b) => a + b, 0) / preMoods.length;
-  const avgPostMood = postMoods.reduce((a, b) => a + b, 0) / postMoods.length;
-  const moodImprovement = avgPostMood - avgPreMood;
-  
-  return { avgPreMood, avgPostMood, moodImprovement };
+  const changed = Object.values(transitions).filter(t => t.from !== t.to).sort((a, b) => b.count - a.count);
+  const topTransition = changed[0] ?? null;
+  return {
+    pairedCount: paired.length,
+    missingCount: records.length - paired.length,
+    unchangedCount: paired.filter(r => r.pre_valence === r.post_valence).length,
+    topTransition,
+  };
 };
 
 export const calculateStressSummary = (records: EmotionRecord[]) => {
-  const preStress = records.map(r => r.pre_arousal).filter((v): v is number => v !== null);
-  const postStress = records.map(r => r.post_arousal).filter((v): v is number => v !== null);
-  
-  if (preStress.length === 0 || postStress.length === 0) {
-    return { avgPreStress: 0, avgPostStress: 0, stressReduction: 0, stressReductionPercent: 0 };
+  const paired = records.filter(r => r.pre_arousal !== null && r.post_arousal !== null);
+  if (paired.length === 0) {
+    return { pairedCount: 0, missingCount: records.length, avgPreStress: 0, avgPostStress: 0, avgChange: 0, lowerCount: 0, higherCount: 0, unchangedCount: 0 };
   }
-  
-  const avgPreStress = preStress.reduce((a, b) => a + b, 0) / preStress.length;
-  const avgPostStress = postStress.reduce((a, b) => a + b, 0) / postStress.length;
-  const stressReduction = avgPreStress - avgPostStress;
-  const stressReductionPercent = avgPreStress > 0 ? (stressReduction / avgPreStress) * 100 : 0;
-  
-  return { avgPreStress, avgPostStress, stressReduction, stressReductionPercent };
+  const avgPreStress = paired.reduce((a, r) => a + (r.pre_arousal as number), 0) / paired.length;
+  const avgPostStress = paired.reduce((a, r) => a + (r.post_arousal as number), 0) / paired.length;
+  return {
+    pairedCount: paired.length,
+    missingCount: records.length - paired.length,
+    avgPreStress,
+    avgPostStress,
+    avgChange: avgPostStress - avgPreStress, // negative = reported stress went down
+    lowerCount: paired.filter(r => (r.post_arousal as number) < (r.pre_arousal as number)).length,
+    higherCount: paired.filter(r => (r.post_arousal as number) > (r.pre_arousal as number)).length,
+    unchangedCount: paired.filter(r => r.post_arousal === r.pre_arousal).length,
+  };
 };
