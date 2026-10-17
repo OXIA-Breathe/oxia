@@ -54,8 +54,8 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
   const isCompletingRef = useRef(false);
   const completionDataRef = useRef<{ breathCount: number } | null>(null);
 
-  // Build the finished session; it is only stored when the user taps Save.
-  const completeSession = useCallback((finalBreathCount: number) => {
+  // Build the finished session (full or ended early) and hand it to the caller, which saves it.
+  const completeSession = useCallback((finalBreathCount: number, completedReps?: number) => {
     const sessionEndTime = Date.now();
     const totalDuration = sessionStartTimeRef.current ? Math.floor((sessionEndTime - sessionStartTimeRef.current) / 1000) : 0;
 
@@ -63,7 +63,7 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
     const newSession: PendingSession = {
       id: sessionId,
       date: new Date().toISOString(),
-      repetitions: exerciseSettings.repetitions,
+      repetitions: completedReps ?? exerciseSettings.repetitions,
       holdDuration: exerciseSettings.firstHoldDuration,
       totalDuration,
       breathCount: finalBreathCount,
@@ -170,7 +170,17 @@ export const useBreathingSession = (onSessionComplete?: (sessionData: { breathCo
     }
   }, [exerciseSettings.repetitions]);
 
+  // Ending early still counts as a real session once at least one breath is done.
+  const finishEarly = () => {
+    if (sessionStartTimeRef.current !== null && breathCount > 0) {
+      completeSession(breathCount, breathCount);
+      return true;
+    }
+    return false;
+  };
+
   return {
+    finishEarly,
     phase,
     isActive,
     currentRepetition,

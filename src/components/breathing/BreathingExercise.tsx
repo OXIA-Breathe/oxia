@@ -19,7 +19,9 @@ import { useSavedSessionCount } from "@/hooks/useSavedSessionCount";
 import { usePremiumStatus } from "@/hooks/usePremiumStatus";
 import { supabase } from "@/integrations/supabase/client";
 import { keepScreenAwake, allowScreenSleep } from "@/lib/keepAwake";
-import { wasShown, markShown, PREMIUM_REMINDER_MILESTONES } from "@/lib/upsellPrompts";
+import { wasShown, markShown } from "@/lib/upsellPrompts";
+import { useBreath } from "@/context/BreathContext";
+import { useQueryClient } from "@tanstack/react-query";
 import SessionCompleteModal from "./SessionCompleteModal";
 import PremiumModal from "@/components/premium/PremiumModal";
 import type { PendingSession } from "./hooks/useBreathingSession";
@@ -28,6 +30,9 @@ const TRIAL_LIMIT = 10;
 
 const BreathingExercise = () => {
   const { user } = useAuth();
+  const { deleteSession } = useBreath();
+  const queryClient = useQueryClient();
+  const [savedSession, setSavedSession] = useState<PendingSession | null>(null);
   const { toast } = useToast();
   const { hasReachedLimit, remainingSessions, incrementTrial } = useTrialCounter();
   const [showSignUpModal, setShowSignUpModal] = useState(false);
@@ -86,7 +91,7 @@ const BreathingExercise = () => {
       stopMusic();
     }, 500);
 
-    // Show the "Well done!" screen; nothing is stored until the user taps Save.
+    // Save straight away and show the "Well done!" screen with an Undo option.
     setPendingSession(sessionData.session);
   }, [stopMusic]);
 
@@ -104,6 +109,7 @@ const BreathingExercise = () => {
     toggleExercise,
     handlePhaseComplete,
     saveSession,
+    finishEarly,
   } = useBreathingSession(handleSessionComplete);
 
   // Keep the screen awake while an exercise is running (user setting).
@@ -113,23 +119,28 @@ const BreathingExercise = () => {
   }, [isActive]);
   useEffect(() => () => { allowScreenSleep(); }, []);
 
-  const handleSaveSession = async () => {
-    if (!pendingSession) return;
+  // Auto-save as soon as a session finishes.
+  useEffect(() => {
+    if (!pendingSession || savedSession?.id === pendingSession.id) return;
     const session = pendingSession;
+    setSavedSession(session);
     setIsSaving(true);
-    try {
-      await saveSession(session);
-    } finally {
-      setIsSaving(false);
-      setPendingSession(null);
-    }
+    saveSession(session).finally(() => setIsSaving(false));
+    if (!user) incrementTrial();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingSession]);
+
+  // "Done": keep the saved session and continue with the follow-ups.
+  const handleDone = () => {
+    const session = pendingSession;
+    setPendingSession(null);
+    setSavedSession(null);
+    if (!session) return;
 
     if (!user) {
-      // Guests: each saved session uses one of the free trial sessions.
-      const wasLast = remainingSessions <= 1;
-      const isFirst = remainingSessions === TRIAL_LIMIT;
-      incrementTrial();
-      if (wasLast) {
+      // remainingSessions already reflects this session after auto-save.
+      const isFirst = remainingSessions === TRIAL_LIMIT - 1;
+      if (remainingSessions <= 0) {
         setSignUpVariant("limit");
         setTimeout(() => setShowSignUpModal(true), 400);
       } else if (isFirst && !wasShown(null, "signup-first")) {
@@ -142,25 +153,33 @@ const BreathingExercise = () => {
     if (isTrackingEnabled) {
       setCompletedSessionData({ breathCount: session.breathCount, duration: session.totalDuration, sessionId: session.id });
       setShowPostTracking(true);
-      return;
-    }
-
-    toast({ title: "Session saved", description: "You'll find it in your Progress." });
-
-    // Registered free users: Premium reminder after the 10th, 20th and 100th session.
-    if (user && !isPremium) {
-      const total = savedSessionCount + 1;
-      const milestone = PREMIUM_REMINDER_MILESTONES.find((m) => m === total);
-      if (milestone && !wasShown(user.id, `premium-${milestone}`)) {
-        markShown(user.id, `premium-${milestone}`);
-        startAfterUpsellRef.current = false;
-        setTimeout(() => setShowTrackingUpsell(true), 400);
-      }
     }
   };
 
-  const handleDiscardSession = () => {
+  // "Undo": remove the session that was just saved.
+  const handleUndo = async () => {
+    const session = pendingSession;
     setPendingSession(null);
+    setSavedSession(null);
+    handleReset();
+    if (!session) return;
+    deleteSession(session.id);
+    if (user) {
+      await supabase.from("emotion_tracking").delete().eq("session_id", session.id).eq("user_id", user.id);
+      await supabase.from("breath_sessions").delete().eq("id", session.id).eq("user_id", user.id);
+      await Promise.all(
+        ["breathSessions", "userStats", "activityDates", "emotionalStats", "sessionCount"].map((k) =>
+          queryClient.invalidateQueries({ queryKey: [k, user.id] })
+        )
+      );
+    }
+    toast({ title: "Session removed", description: "It won't appear in your Progress." });
+  };
+
+  // "Restart": keep the saved session and go again.
+  const handleRestart = () => {
+    setPendingSession(null);
+    setSavedSession(null);
     handleReset();
   };
 
@@ -278,14 +297,6 @@ const BreathingExercise = () => {
       return;
     }
 
-    // Registered free users: invite to Premium before their 2nd session.
-    if (user && !isPremium && !isActive && phase === "idle" && savedSessionCount >= 1 && !wasShown(user.id, "premium-before-2")) {
-      markShown(user.id, "premium-before-2");
-      startAfterUpsellRef.current = true;
-      setShowTrackingUpsell(true);
-      return;
-    }
-
     // Show pre-exercise check-in if emotion tracking is enabled and starting fresh
     if (!isActive && phase === "idle" && isTrackingEnabled) {
       setShowPreCheckIn(true);
@@ -315,6 +326,19 @@ const BreathingExercise = () => {
   };
 
   const handleReset = () => {
+    stopVoice();
+    stopMusic();
+    resetExercise();
+    resetEmotionTracking();
+  };
+
+  // Reset button mid-session: end early and keep it as a real session.
+  const handleResetButton = () => {
+    if (finishEarly()) return;
+    handleReset();
+  };
+
+  const _unusedReset = () => {
     stopVoice();
     stopMusic();
     resetExercise();
@@ -365,8 +389,9 @@ const BreathingExercise = () => {
         repetitions={pendingSession?.repetitions ?? 0}
         durationSeconds={pendingSession?.totalDuration ?? 0}
         saving={isSaving}
-        onSave={handleSaveSession}
-        onDiscard={handleDiscardSession}
+        onDone={handleDone}
+        onUndo={handleUndo}
+        onRestart={handleRestart}
       />
       <PremiumModal
         open={showTrackingUpsell}
