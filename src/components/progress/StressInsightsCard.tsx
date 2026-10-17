@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, ArrowDown } from "lucide-react";
+import { Activity } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import TimeFilterSelect from "./TimeFilterSelect";
 import InsufficientDataOverlay from "./InsufficientDataOverlay";
@@ -88,27 +88,19 @@ const StressInsightsCard = () => {
         ) : (
           <div className={overlayType ? "blur-sm pointer-events-none" : ""}>
             {/* Summary Stats */}
-            {summary.stressReduction !== 0 && (
-              <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    {summary.stressReduction > 0 ? (
-                      <ArrowDown className="h-4 w-4 text-success" />
-                    ) : (
-                      <ArrowDown className="h-4 w-4 text-destructive rotate-180" />
-                    )}
-                    <span className="text-muted-foreground">
-                      Average stress reduction
-                    </span>
-                  </div>
-                  <span className={`font-medium ${summary.stressReduction > 0 ? "text-success" : "text-destructive"}`}>
-                    {summary.stressReduction > 0 ? "-" : "+"}{Math.abs(Math.round(summary.stressReductionPercent))}%
+            {summary.pairedCount > 0 && (
+              <div className="mb-4 p-3 bg-muted/50 rounded-lg text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Average reported change</span>
+                  <span className="font-medium text-foreground">
+                    {Math.round(summary.avgPreStress)} → {Math.round(summary.avgPostStress)}
                   </span>
                 </div>
-                <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-                  <span>Before: {Math.round(summary.avgPreStress)}</span>
-                  <span>After: {Math.round(summary.avgPostStress)}</span>
-                </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {Math.abs(Math.round(summary.avgChange))} points {summary.avgChange <= 0 ? "lower" : "higher"} across {summary.pairedCount} {summary.pairedCount === 1 ? "session" : "sessions"} with both check-ins
+                  {" "}(lower {summary.lowerCount} · same {summary.unchangedCount} · higher {summary.higherCount})
+                  {summary.missingCount > 0 ? ` · ${summary.missingCount} without both` : ""}. Self-reported 0–100.
+                </p>
               </div>
             )}
 
@@ -133,7 +125,7 @@ const StressInsightsCard = () => {
                   formatter={(value) => <span className="text-muted-foreground">{value}</span>}
                 />
                 <Line 
-                  type="monotone" 
+                  type="linear" 
                   dataKey="preBefore" 
                   name="Before Exercise"
                   stroke="hsl(25, 85%, 55%)" 
@@ -143,7 +135,7 @@ const StressInsightsCard = () => {
                   connectNulls
                 />
                 <Line 
-                  type="monotone" 
+                  type="linear" 
                   dataKey="postAfter" 
                   name="After Exercise"
                   stroke="hsl(142, 70%, 45%)" 
