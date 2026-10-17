@@ -254,7 +254,7 @@ const ConsistencyPage = () => {
               <SessionHistory selectedDate={selectedCalendarDate} />
             </div>
 
-            {/* AI Wellness Journal */}
+            {/* Practice reflection */}
             <div className="md:col-span-2">
               <Card className="border-none shadow-md bg-card">
                 <CardContent className="p-6">
@@ -262,7 +262,7 @@ const ConsistencyPage = () => {
                     <div className="flex items-center gap-3">
                       <Sparkles className="h-5 w-5 text-primary" />
                       <div>
-                        <h3 className="font-semibold text-card-foreground">AI Wellness Journal</h3>
+                        <h3 className="font-semibold text-card-foreground">Practice reflection</h3>
                         <p className="text-sm text-muted-foreground">Get personalized insights from your data</p>
                       </div>
                     </div>

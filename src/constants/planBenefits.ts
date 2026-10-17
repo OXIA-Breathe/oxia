@@ -6,7 +6,7 @@ export const ACCOUNT_BENEFITS = [
 ];
 
 export const PREMIUM_BENEFITS = [
-  "AI Wellness Journal",
+  "Practice reflection",
   "Stress & mood tracking before and after sessions",
   "Mood, stress and exercise-effectiveness insights",
   "Monthly PDF wellness report",

@@ -19,8 +19,9 @@ interface Props {
   repetitions: number;
   durationSeconds: number;
   saving?: boolean;
-  onSave: () => void;
-  onDiscard: () => void;
+  onDone: () => void;
+  onUndo: () => void;
+  onRestart: () => void;
 }
 
 const formatDuration = (s: number) => {
@@ -29,8 +30,8 @@ const formatDuration = (s: number) => {
   return `${m} min ${String(sec).padStart(2, "0")} s`;
 };
 
-const SessionCompleteModal = ({ open, exerciseTitle, repetitions, durationSeconds, saving, onSave, onDiscard }: Props) => {
-  const [confirm, setConfirm] = useState<null | "delete" | "restart">(null);
+const SessionCompleteModal = ({ open, exerciseTitle, repetitions, durationSeconds, saving, onDone, onUndo, onRestart }: Props) => {
+  const [confirm, setConfirm] = useState<null | "delete">(null);
 
   return (
     <>
@@ -61,15 +62,18 @@ const SessionCompleteModal = ({ open, exerciseTitle, repetitions, durationSecond
           </div>
 
           <div className="flex flex-col gap-2">
-            <Button className="w-full min-h-[44px] rounded-full font-semibold" onClick={onSave} disabled={saving}>
-              {saving ? "Saving…" : "Save"}
+            <p className="text-center text-xs text-muted-foreground" aria-live="polite">
+              {saving ? "Saving…" : "Saved to your Progress."}
+            </p>
+            <Button className="w-full min-h-[44px] rounded-full font-semibold" onClick={onDone} disabled={saving}>
+              Done
             </Button>
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="outline" className="min-h-[44px] rounded-full" onClick={() => setConfirm("restart")} disabled={saving}>
+              <Button variant="outline" className="min-h-[44px] rounded-full" onClick={onRestart} disabled={saving}>
                 Restart
               </Button>
               <Button variant="outline" className="min-h-[44px] rounded-full" onClick={() => setConfirm("delete")} disabled={saving}>
-                Delete
+                Undo save
               </Button>
             </div>
           </div>
@@ -79,11 +83,9 @@ const SessionCompleteModal = ({ open, exerciseTitle, repetitions, durationSecond
       <AlertDialog open={confirm !== null} onOpenChange={(o) => !o && setConfirm(null)}>
         <AlertDialogContent className="max-w-sm rounded-2xl bg-white/95 backdrop-blur">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Remove this session?</AlertDialogTitle>
             <AlertDialogDescription>
-              {confirm === "restart"
-                ? "This session won't be saved, and you'll start the exercise again."
-                : "This session won't be saved."}
+              This session will be removed from your Progress.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -91,7 +93,7 @@ const SessionCompleteModal = ({ open, exerciseTitle, repetitions, durationSecond
             <AlertDialogAction
               onClick={() => {
                 setConfirm(null);
-                onDiscard();
+                onUndo();
               }}
             >
               Yes

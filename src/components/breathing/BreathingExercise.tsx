@@ -338,13 +338,6 @@ const BreathingExercise = () => {
     handleReset();
   };
 
-  const _unusedReset = () => {
-    stopVoice();
-    stopMusic();
-    resetExercise();
-    resetEmotionTracking();
-  };
-
   // Handle background music and countdown sound
   useEffect(() => {
     if (isActive && phase === "countdown") {

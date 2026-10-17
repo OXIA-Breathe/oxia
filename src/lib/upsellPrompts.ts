@@ -21,5 +21,3 @@ export const markShown = (userId: string | null | undefined, milestone: string) 
   }
 };
 
-/** Session counts after which a free user is invited to Premium again. */
-export const PREMIUM_REMINDER_MILESTONES = [10, 20, 100];
