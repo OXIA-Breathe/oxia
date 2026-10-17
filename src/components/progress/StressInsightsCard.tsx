@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, ArrowDown } from "lucide-react";
+import { Activity } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import TimeFilterSelect from "./TimeFilterSelect";
 import InsufficientDataOverlay from "./InsufficientDataOverlay";

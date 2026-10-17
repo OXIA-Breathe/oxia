@@ -1,6 +1,6 @@
 import { getMoodConfig } from "@/constants/emotionConfig";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Heart } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import TimeFilterSelect from "./TimeFilterSelect";
 import InsufficientDataOverlay from "./InsufficientDataOverlay";
@@ -24,12 +24,6 @@ const MoodInsightsCard = () => {
   };
   
   const overlayType = getOverlayType();
-  
-  const getMoodTrendIcon = () => {
-    if (summary.moodImprovement > 0.5) return <TrendingUp className="h-4 w-4 text-success" />;
-    if (summary.moodImprovement < -0.5) return <TrendingDown className="h-4 w-4 text-destructive" />;
-    return <Minus className="h-4 w-4 text-muted-foreground" />;
-  };
   
   const getMostCommonMood = (data: typeof preMoodData) => {
     if (data.length === 0) return null;

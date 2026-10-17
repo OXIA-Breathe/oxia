@@ -1,3 +1,5 @@
+import { calculateStressSummary, calculateMoodSummary, type EmotionRecord } from "@/hooks/useEmotionalStatistics";
+import { getMoodLabel } from "@/constants/emotionConfig";
 
 import { WellnessPDFData } from "./wellnessPdfTypes";
 
@@ -296,21 +298,12 @@ export const assembleWellnessHtml = (data: WellnessPDFData): HTMLElement => {
   body.appendChild(statsGrid);
 
   // ── 2. Key insights ──────────────────────────────────────────────────
-  const preStress = emotionRecords.map(r => r.pre_arousal).filter((v): v is number => v !== null);
-  const postStress = emotionRecords.map(r => r.post_arousal).filter((v): v is number => v !== null);
-  const preMood = emotionRecords.map(r => r.pre_valence).filter((v): v is number => v !== null);
-  const postMood = emotionRecords.map(r => r.post_valence).filter((v): v is number => v !== null);
+  const stressSummary = calculateStressSummary(emotionRecords as EmotionRecord[]);
+  const moodSummary = calculateMoodSummary(emotionRecords as EmotionRecord[]);
+  const hasStress = stressSummary.pairedCount > 0;
+  const hasMood = moodSummary.pairedCount > 0;
 
-  const avgPreStress = preStress.length ? preStress.reduce((a, b) => a + b, 0) / preStress.length : null;
-  const avgPostStress = postStress.length ? postStress.reduce((a, b) => a + b, 0) / postStress.length : null;
-  const stressReductionPct = (avgPreStress && avgPostStress && avgPreStress > 0)
-    ? Math.round(((avgPreStress - avgPostStress) / avgPreStress) * 100) : null;
-
-  const avgPreMood = preMood.length ? preMood.reduce((a, b) => a + b, 0) / preMood.length : null;
-  const avgPostMood = postMood.length ? postMood.reduce((a, b) => a + b, 0) / postMood.length : null;
-  const moodShift = (avgPreMood !== null && avgPostMood !== null) ? Math.round((avgPostMood - avgPreMood) * 10) / 10 : null;
-
-  if (stressReductionPct !== null || moodShift !== null || streakData) {
+  if (hasStress || hasMood || streakData) {
     const insightTitle = document.createElement("div");
     insightTitle.className = "section-title";
     insightTitle.textContent = "Key Insights";
@@ -319,23 +312,24 @@ export const assembleWellnessHtml = (data: WellnessPDFData): HTMLElement => {
     const insightGrid = document.createElement("div");
     insightGrid.className = "insight-grid";
 
-    if (stressReductionPct !== null) {
-      const cls = stressReductionPct >= 10 ? "positive" : stressReductionPct >= 0 ? "neutral" : "negative";
+    if (hasStress) {
+      const change = Math.round(stressSummary.avgChange);
+      const cls = change < 0 ? "positive" : change === 0 ? "neutral" : "negative";
       insightGrid.innerHTML += `
         <div class="insight-box ${cls}">
-          <div class="insight-label">Avg. Stress Reduction</div>
-          <div class="insight-value">${stressReductionPct >= 0 ? "−" : "+"}${Math.abs(stressReductionPct)}%</div>
-          <div class="insight-sub">per session this month</div>
+          <div class="insight-label">Average reported stress</div>
+          <div class="insight-value">${Math.round(stressSummary.avgPreStress)} → ${Math.round(stressSummary.avgPostStress)}</div>
+          <div class="insight-sub">${stressSummary.pairedCount} sessions with both check-ins (self-reported)</div>
         </div>`;
     }
 
-    if (moodShift !== null) {
-      const cls = moodShift >= 0.5 ? "positive" : moodShift >= 0 ? "neutral" : "negative";
+    if (hasMood && moodSummary.topTransition) {
+      const t = moodSummary.topTransition;
       insightGrid.innerHTML += `
-        <div class="insight-box ${cls}">
-          <div class="insight-label">Mood Improvement</div>
-          <div class="insight-value">${moodShift >= 0 ? "+" : ""}${moodShift} pts</div>
-          <div class="insight-sub">avg. before vs after</div>
+        <div class="insight-box info">
+          <div class="insight-label">Most frequent mood change</div>
+          <div class="insight-value">${getMoodLabel(t.from)} → ${getMoodLabel(t.to)}</div>
+          <div class="insight-sub">${t.count} of ${moodSummary.pairedCount} sessions with both check-ins</div>
         </div>`;
     }
 
