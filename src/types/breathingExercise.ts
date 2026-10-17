@@ -263,7 +263,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     repetitions: 30,
     isCustom: false,
     detailedDescription:
-      "Alternate Nostril Breathing (Nadi Shodhana) is a traditional yogic pranayama technique where you gently breathe in through one nostril, close it with your fingers, and exhale through the other - then repeat in the opposite direction. The Sanskrit term Nadi Shodhana means \"channel purification,\" referring to the idea that breath moves through subtle energy pathways (nadis), clearing mental and physical blockages.\n\nIt's more than a simple breathing rhythm - it's a mindful balancing act between the left and right sides of the body and brain. The left nostril is linked to calm, introspective energy (the parasympathetic system), while the right nostril activates alertness and focus (the sympathetic system). By alternating between them, you bring both hemispheres into harmony, creating inner equilibrium.",
+      "Alternate Nostril Breathing (Nadi Shodhana) is a traditional yogic pranayama technique where you gently breathe in through one nostril, close it with your fingers, and exhale through the other - then repeat in the opposite direction. The Sanskrit term Nadi Shodhana means \"channel purification,\" referring to the idea that breath moves through subtle energy pathways (nadis), clearing mental and physical blockages.\n\nIt's more than a simple breathing rhythm - it's a mindful balancing act between the left and right sides of the body and brain. In yoga tradition the left side is associated with calm and the right with alertness; research on these side-specific effects is still limited. Many people find that alternating sides this way feels balancing and settling.",
     whenToUse: [
       "Preparing for sleep, meditation, or deep work",
       "After intense activity or stressful events",
@@ -435,7 +435,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
     repetitions: 50,
     isCustom: false,
     detailedDescription:
-      "Resonant Breathing, also known as Coherent Breathing, is a scientifically validated breathing technique that involves inhaling and exhaling at a steady, equal pace — typically around 5 to 6 breaths per minute (about 5-6 seconds in, 5-6 seconds out).\n\nThis rhythm aligns your breathing with your body's natural heart rate variability (HRV) - creating a resonance between the cardiovascular, respiratory, and nervous systems.\n\nIn simple terms, it means breathing in harmony with your body's own biological rhythm. The result is a deeply balanced, synchronized state that supports mental clarity, emotional regulation, and physiological calm.",
+      "Resonant Breathing, also known as Coherent Breathing, is a well-studied breathing technique that involves inhaling and exhaling at a steady, equal pace — typically around 5 to 6 breaths per minute (5 seconds in + 5 seconds out = 6 breaths/min; 6 + 6 = 5 breaths/min).\n\nThis rhythm aligns your breathing with your body's natural heart rate variability (HRV) - creating a resonance between the cardiovascular, respiratory, and nervous systems.\n\nIn simple terms, it means breathing in harmony with your body's own biological rhythm. The result is a deeply balanced, synchronized state that supports mental clarity, emotional regulation, and physiological calm.",
     whenToUse: [
       "Recover from stress or emotional overload",
       "Rebalance after intense exercise or conflict",
@@ -462,7 +462,7 @@ export const defaultBreathingExercises: BreathingExercise[] = [
       "Continue this for preferred time (few minutes at least).",
     ],
     parametersNote:
-      "Aim for 10 minutes to start, focusing on a steady rhythm of approximately 5 to 6 breaths per minute, meaning a 5 to 6-second inhale followed by a 5 to 6-second exhale. You can practice for longer, up to 20 minutes, as you become more comfortable.",
+      "Aim for 10 minutes to start, focusing on a steady rhythm of approximately 5 to 6 breaths per minute, meaning a 5 to 6-second inhale followed by a 5 to 6-second exhale (5+5 s = 6 breaths/min, 6+6 s = 5 breaths/min). You can practice for longer, up to 20 minutes, as you become more comfortable.",
     parameterSuggestion:
       "As the breathing rate should be 5-6 breaths per minute, then the parameters should stay between 5-6 seconds for both - inhale and exhale. Breathing is smooth, nasal and continuous, so no holds. Keep the inhale and exhale equal.",
   },

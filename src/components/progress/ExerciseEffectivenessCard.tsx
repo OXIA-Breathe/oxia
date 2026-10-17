@@ -58,21 +58,13 @@ const ExerciseEffectivenessCard = () => {
     label: truncate(d.exerciseTitle, 18),
   }));
 
-  // Medal emoji for top 3
-  const medal = (index: number) => {
-    if (index === 0) return "🥇";
-    if (index === 1) return "🥈";
-    if (index === 2) return "🥉";
-    return null;
-  };
-
   return (
     <Card className="border-none shadow-md bg-card relative overflow-hidden">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between mb-1">
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-amber-500" />
-            <span className="text-card-foreground">Exercise Effectiveness</span>
+            <span className="text-card-foreground">Your exercise results</span>
           </CardTitle>
           <TimeFilterSelect
             value={filter}
@@ -82,7 +74,7 @@ const ExerciseEffectivenessCard = () => {
           />
         </div>
         <CardDescription className="text-muted-foreground">
-          Which exercises reduce your stress the most (min. 2 sessions)
+          Average reported stress change per exercise. Early observations, not a ranking — results depend on when and why you practised.
         </CardDescription>
       </CardHeader>
 
@@ -139,15 +131,15 @@ const ExerciseEffectivenessCard = () => {
                     className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/40"
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-base leading-none w-5 flex-shrink-0">{medal(index) ?? <span className="text-xs text-muted-foreground font-medium">{index + 1}</span>}</span>
+                      <span className="text-base leading-none w-5 flex-shrink-0"><span className="text-xs text-muted-foreground font-medium">{index + 1}</span></span>
                       <span className="text-sm font-medium text-card-foreground truncate">{item.exerciseTitle}</span>
                     </div>
                     <div className="flex items-center gap-3 flex-shrink-0 ml-2">
-                      <span className="text-xs text-muted-foreground">{item.sessionCount} sessions</span>
+                      <span className="text-xs text-muted-foreground">{item.sessionCount < 5 ? "Early · " : ""}{item.sessionCount} sessions</span>
                       <span
                         className={`text-sm font-bold ${item.avgStressReductionPercent >= 0 ? "text-green-600" : "text-red-500"}`}
                       >
-                        {item.avgStressReductionPercent >= 0 ? "−" : "+"}{Math.abs(item.avgStressReductionPercent)}%
+                        {item.avgStressReductionPercent >= 0 ? "−" : "+"}{Math.abs(Math.round(item.avgStressReductionPercent))}%
                       </span>
                     </div>
                   </div>
