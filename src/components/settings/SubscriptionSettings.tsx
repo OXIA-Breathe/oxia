@@ -186,7 +186,7 @@ const SubscriptionSettings = () => {
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                AI Wellness Journal
+                Practice reflection
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="h-3.5 w-3.5 text-amber-500" />

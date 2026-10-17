@@ -31,7 +31,7 @@ interface PremiumModalProps {
 const BENEFITS = [
   {
     icon: Sparkles,
-    label: "AI Wellness Journal",
+    label: "Practice reflection",
     description: "A personal journal that looks over your last 30 days of breathing and check-ins, and writes you a gentle reflection — with one small thing worth trying.",
   },
   {

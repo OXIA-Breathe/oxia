@@ -124,7 +124,7 @@ const PremiumDebugPage = () => {
             <CardTitle className="text-base">Gating across premium surfaces</CardTitle>
           </CardHeader>
           <CardContent className="divide-y divide-border">
-            <GateRow label="AI Wellness Journal" path="/journal" unlocked={status.isPremium} />
+            <GateRow label="Practice reflection" path="/journal" unlocked={status.isPremium} />
             <GateRow label="Mood insights card" path="/progress" unlocked={status.isPremium} />
             <GateRow label="Stress insights card" path="/progress" unlocked={status.isPremium} />
             <GateRow label="Exercise effectiveness card" path="/progress" unlocked={status.isPremium} />

@@ -191,7 +191,7 @@ const WellnessJournalPage = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 flex items-center justify-center gap-2 text-foreground">
             <Sparkles className="h-7 w-7 text-muted-foreground" />
-            AI Wellness Journal
+            Practice reflection
           </h1>
           <p className="text-muted-foreground text-sm">
             A structured reflection based on your last 30 days of breathing &amp; emotion data.
@@ -239,7 +239,7 @@ const WellnessJournalPage = () => {
             <PremiumModal
               open={premiumOpen}
               onOpenChange={setPremiumOpen}
-              highlight="Imagine a journal that reads your last 30 days of breathing and writes you a personal reflection — that's the AI Wellness Journal."
+              highlight="Practice reflection reads your last 30 days of breathing and writes you a short, personal summary."
             />
           </>
         )}

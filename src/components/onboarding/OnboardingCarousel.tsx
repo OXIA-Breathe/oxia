@@ -122,7 +122,7 @@ const OnboardingCarousel = ({ onComplete }: OnboardingCarouselProps) => {
       icon: <Crown className="w-16 h-16 text-amber-500 animate-[bounce_1.5s_ease-in-out_infinite]" />,
       heading: "OXIA Premium",
       paragraph:
-        "Go deeper with a 7-day free trial:\n• AI Wellness Journal\n• Stress & mood tracking before and after sessions\n• Mood, stress and exercise-effectiveness insights\n• Monthly PDF wellness report",
+        "Go deeper with a 7-day free trial:\n• Practice reflection\n• Stress & mood tracking before and after sessions\n• Mood, stress and exercise-effectiveness insights\n• Monthly PDF wellness report",
       isPremium: true,
     },
     {
