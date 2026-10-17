@@ -1,5 +1,6 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
+import type React from "react";
 import { BreathingExercise, defaultBreathingExercises } from "@/types/breathingExercise";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,7 +15,14 @@ interface BreathingExerciseContextType {
   isLoading: boolean;
 }
 
-const BreathingExerciseContext = createContext<BreathingExerciseContextType | undefined>(undefined);
+// Keep one context object across live reloads, so editing exercise data
+// doesn't leave the running provider and its consumers on different contexts.
+const contextHolder = globalThis as unknown as {
+  __oxiaBreathingExerciseContext?: React.Context<BreathingExerciseContextType | undefined>;
+};
+const BreathingExerciseContext =
+  contextHolder.__oxiaBreathingExerciseContext ??
+  (contextHolder.__oxiaBreathingExerciseContext = createContext<BreathingExerciseContextType | undefined>(undefined));
 
 // Helper: convert DB row to BreathingExercise
 const dbToExercise = (row: any): BreathingExercise => ({
