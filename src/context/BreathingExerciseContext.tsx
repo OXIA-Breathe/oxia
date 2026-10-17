@@ -1,5 +1,6 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
+import type React from "react";
 import { BreathingExercise, defaultBreathingExercises } from "@/types/breathingExercise";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
